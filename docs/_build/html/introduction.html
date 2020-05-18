@@ -209,14 +209,14 @@ supercomputers that you can reuse.</p>
 <p>To build QMCPACK:</p>
 <ol class="arabic simple">
 <li><p>Download the latest QMCPACK distribution from <a class="reference external" href="http://www.qmcpack.org">http://www.qmcpack.org</a>.</p></li>
-<li><p>Untar the archive (e.g., <code class="docutils literal notranslate"><span class="pre">tar</span> <span class="pre">xvf</span> <span class="pre">qmcpack\_v1.3.tar.gz</span></code>).</p></li>
+<li><p>Untar the archive (e.g., <code class="docutils literal notranslate"><span class="pre">tar</span> <span class="pre">xvf</span> <span class="pre">qmcpack_v1.3.tar.gz</span></code>).</p></li>
 <li><p>Check the instructions in the README file.</p></li>
 <li><p>Run CMake in a suitable build directory to configure QMCPACK for your
 system: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">qmcpack/build;</span> <span class="pre">cmake</span> <span class="pre">..</span></code></p></li>
 <li><p>If CMake is unable to find all needed libraries, see Chapter
 <a class="reference external" href="#chap:obtaininginstalling">[chap:obtaininginstalling]</a> for
 instructions and specific build instructions for common systems.</p></li>
-<li><p>Build QMCPACK: <code class="docutils literal notranslate"><span class="pre">`make</span></code> or <code class="docutils literal notranslate"><span class="pre">`make</span> <span class="pre">-j</span> <span class="pre">16</span></code>; use the latter for a faster parallel build on a
+<li><p>Build QMCPACK: <code class="docutils literal notranslate"><span class="pre">make</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">16</span></code>; use the latter for a faster parallel build on a
 system using, for example, 16 processes.</p></li>
 <li><p>The QMCPACK executable is <code class="docutils literal notranslate"><span class="pre">bin/qmcpack</span></code>.</p></li>
 </ol>
@@ -230,7 +230,7 @@ a water molecule:</p>
 <div class="line">(Optional) Put the QMCPACK binary on your path: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=\$PATH:location-of-qmcpack/build/bin</span></code></div>
 </div>
 </li>
-<li><p>Run QMCPACK: <code class="docutils literal notranslate"><span class="pre">`../../../build/bin/qmcpack</span> <span class="pre">simple-H2O.xml</span></code> or <code class="docutils literal notranslate"><span class="pre">`qmcpack</span> <span class="pre">simple-H2O.xml</span></code> if you followed the step above.</p></li>
+<li><p>Run QMCPACK: <code class="docutils literal notranslate"><span class="pre">../../../build/bin/qmcpack</span> <span class="pre">simple-H2O.xml</span></code> or <code class="docutils literal notranslate"><span class="pre">qmcpack</span> <span class="pre">simple-H2O.xml</span></code> if you followed the step above.</p></li>
 <li><p>The run will output to the screen and generate a number of files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ls H2O*
 H2O.HF.wfs.xml      H2O.s001.scalar.dat H2O.s002.cont.xml
