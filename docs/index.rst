@@ -3,8 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to QMC Manual's documentation!
-======================================
+
+
+User's Guide and Developer's Manual for
+=======================================
+.. image:: QMCPACK_logo.png
+ :width: 80.0%
 
 .. toctree::
    :maxdepth: 2
@@ -12,11 +16,10 @@ Welcome to QMC Manual's documentation!
 
    simulationcell
 
+::
 
+  QMCPACK website: http://www.qmcpack.org
 
-Indices and tables
-==================
+  Releases & source code: https://github.com/QMCPACK
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+  Google Group: https://groups.google.com/forum/#!forum/qmcpack
