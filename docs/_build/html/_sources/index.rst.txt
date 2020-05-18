@@ -14,6 +14,7 @@ User's Guide and Developer's Manual for
    :maxdepth: 2
    :caption: Contents:
 
+   introduction
    simulationcell
 
 ::
