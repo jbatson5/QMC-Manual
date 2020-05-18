@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Specifying the Simulation Cell" href="simulationcell.html" />
+    <link rel="next" title="Features of QMCPACK" href="features.html" />
     <link rel="prev" title="User’s Guide and Developer’s Manual for" href="index.html" /> 
 </head>
 
@@ -88,7 +88,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#authors-and-history">Authors and History</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#support-and-contacting-the-developers">Support and Contacting the Developers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#performance">Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#open-source-license">Open source license</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#open-source-license">Open Source License</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing-to-qmcpack">Contributing to QMCPACK</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#qmcpack-roadmap">QMCPACK Roadmap</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#code">Code</a></li>
@@ -97,6 +97,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
 </ul>
 
@@ -208,16 +209,16 @@ supercomputers that you can reuse.</p>
 <p>To build QMCPACK:</p>
 <ol class="arabic simple">
 <li><p>Download the latest QMCPACK distribution from <a class="reference external" href="http://www.qmcpack.org">http://www.qmcpack.org</a>.</p></li>
-<li><p>Untar the archive (e.g., <cite>tar xvf qmcpack_v1.3.tar.gz</cite>).</p></li>
+<li><p>Untar the archive (e.g., <code class="docutils literal notranslate"><span class="pre">tar</span> <span class="pre">xvf</span> <span class="pre">qmcpack\_v1.3.tar.gz</span></code>).</p></li>
 <li><p>Check the instructions in the README file.</p></li>
 <li><p>Run CMake in a suitable build directory to configure QMCPACK for your
-system: <cite>cd qmcpack/build; cmake ..</cite></p></li>
+system: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">qmcpack/build;</span> <span class="pre">cmake</span> <span class="pre">..</span></code></p></li>
 <li><p>If CMake is unable to find all needed libraries, see Chapter
 <a class="reference external" href="#chap:obtaininginstalling">[chap:obtaininginstalling]</a> for
 instructions and specific build instructions for common systems.</p></li>
-<li><p>Build QMCPACK: <cite>make</cite> or <cite>make -j 16</cite>; use the latter for a faster parallel build on a
+<li><p>Build QMCPACK: <code class="docutils literal notranslate"><span class="pre">`make</span></code> or <code class="docutils literal notranslate"><span class="pre">`make</span> <span class="pre">-j</span> <span class="pre">16</span></code>; use the latter for a faster parallel build on a
 system using, for example, 16 processes.</p></li>
-<li><p>The QMCPACK executable is <cite>bin/qmcpack</cite>.</p></li>
+<li><p>The QMCPACK executable is <code class="docutils literal notranslate"><span class="pre">bin/qmcpack</span></code>.</p></li>
 </ol>
 <p>QMCPACK is distributed with examples illustrating different
 capabilities. Most of the examples are designed to run quickly with
@@ -226,10 +227,10 @@ a water molecule:</p>
 <ol class="arabic">
 <li><p>Go to the appropriate example directory: .</p></li>
 <li><div class="line-block">
-<div class="line">(Optional) Put the QMCPACK binary on your path: <cite>export PATH=$PATH:location-of-qmcpack/build/bin</cite></div>
+<div class="line">(Optional) Put the QMCPACK binary on your path: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=\$PATH:location-of-qmcpack/build/bin</span></code></div>
 </div>
 </li>
-<li><p>Run QMCPACK: <cite>../../../build/bin/qmcpack simple-H2O.xml</cite> or <cite>qmcpack simple-H2O.xml</cite> if you followed the step above.</p></li>
+<li><p>Run QMCPACK: <code class="docutils literal notranslate"><span class="pre">`../../../build/bin/qmcpack</span> <span class="pre">simple-H2O.xml</span></code> or <code class="docutils literal notranslate"><span class="pre">`qmcpack</span> <span class="pre">simple-H2O.xml</span></code> if you followed the step above.</p></li>
 <li><p>The run will output to the screen and generate a number of files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ls H2O*
 H2O.HF.wfs.xml      H2O.s001.scalar.dat H2O.s002.cont.xml
@@ -253,7 +254,7 @@ qmca -t -q e H2O.s002.scalar.dat # Graphical plot of DMC energy
 </pre></div>
 </div>
 <p>The last command will produce a graph as per
-Fig. <a class="reference external" href="#fig:quick_qmca_dmc_trace.png">[fig:quick_qmca_dmc_trace]</a>. This
+Fig. <a class="reference external" href="#image:quick_qmca_dmc_trace.png">[1]</a>. This
 shows the average energy of the DMC walkers at each timestep. In a real
 simulation we would have to check equilibration, convergence with walker
 population, time step, etc.</p>
@@ -261,6 +262,8 @@ population, time step, etc.</p>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="_images/quick_qmca_dmc_trace.png"><img alt="_images/quick_qmca_dmc_trace.png" src="_images/quick_qmca_dmc_trace.png" style="width: 400px;" /></a>
 </div>
+<p>Figure 1: Trace of walker energies produced by the qmca tool for a simple water
+molecule example.</p>
 </div>
 <div class="section" id="authors-and-history">
 <span id="sec-history"></span><h2>Authors and History<a class="headerlink" href="#authors-and-history" title="Permalink to this headline">¶</a></h2>
@@ -318,7 +321,7 @@ calculation is sufficiently mainstream we will optimize QMCPACK to
 improve the performance.</p>
 </div>
 <div class="section" id="open-source-license">
-<span id="sec-license"></span><h2>Open source license<a class="headerlink" href="#open-source-license" title="Permalink to this headline">¶</a></h2>
+<span id="sec-license"></span><h2>Open Source License<a class="headerlink" href="#open-source-license" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK is distributed under the University of Illinois at
 Urbana-Champaign/National Center for Supercomputing Applications
 (UIUC/NCSA) Open Source License.</p>
@@ -453,7 +456,7 @@ needed for benchmarking).
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="simulationcell.html" class="btn btn-neutral float-right" title="Specifying the Simulation Cell" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="features.html" class="btn btn-neutral float-right" title="Features of QMCPACK" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="User’s Guide and Developer’s Manual for" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

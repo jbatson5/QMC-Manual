@@ -15,6 +15,7 @@ User's Guide and Developer's Manual for
    :caption: Contents:
 
    introduction
+   features
    simulationcell
 
 ::

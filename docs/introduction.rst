@@ -53,7 +53,7 @@ To build QMCPACK:
 
 #. Download the latest QMCPACK distribution from http://www.qmcpack.org.
 
-#. Untar the archive (e.g., ``tar xvf qmcpack\_v1.3.tar.gz``).
+#. Untar the archive (e.g., ``tar xvf qmcpack_v1.3.tar.gz``).
 
 #. Check the instructions in the README file.
 
@@ -64,7 +64,7 @@ To build QMCPACK:
    `[chap:obtaininginstalling] <#chap:obtaininginstalling>`__ for
    instructions and specific build instructions for common systems.
 
-#. Build QMCPACK: ```make`` or ```make -j 16``; use the latter for a faster parallel build on a
+#. Build QMCPACK: ``make`` or ``make -j 16``; use the latter for a faster parallel build on a
    system using, for example, 16 processes.
 
 #. The QMCPACK executable is ``bin/qmcpack``.
@@ -78,7 +78,7 @@ a water molecule:
 
 #. | (Optional) Put the QMCPACK binary on your path: ``export PATH=\$PATH:location-of-qmcpack/build/bin``
 
-#. Run QMCPACK: ```../../../build/bin/qmcpack simple-H2O.xml`` or ```qmcpack simple-H2O.xml`` if you followed the step above.
+#. Run QMCPACK: ``../../../build/bin/qmcpack simple-H2O.xml`` or ``qmcpack simple-H2O.xml`` if you followed the step above.
 
 #. The run will output to the screen and generate a number of files:
 
@@ -106,7 +106,7 @@ analyzing QMCPACK data.
    qmca -t -q e H2O.s002.scalar.dat # Graphical plot of DMC energy
 
 The last command will produce a graph as per
-Fig. \ `[1] <#fig:quick_qmca_dmc_trace.png>`__. This
+Fig. \ `[1] <#image:quick_qmca_dmc_trace.png>`__. This
 shows the average energy of the DMC walkers at each timestep. In a real
 simulation we would have to check equilibration, convergence with walker
 population, time step, etc.
@@ -120,8 +120,8 @@ Congratulations, you have completed a DMC calculation with QMCPACK!
 .. figure:: quick_qmca_dmc_trace.png
   :width: 400
 
-  Figure 1: Trace of walker energies produced by the qmca tool for a simple water
-   molecule example.
+Figure 1: Trace of walker energies produced by the qmca tool for a simple water
+molecule example.
 
 
 
