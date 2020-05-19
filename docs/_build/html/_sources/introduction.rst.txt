@@ -95,7 +95,7 @@ a water molecule:
 
 If you have Python and matplotlib installed, you can use the analysis
 utility to produce statistics and plots of the data. See
-Chapter \ `[chap:analyzing] <#chap:analyzing>`__ for information on
+:ref:`analyzing` for information on
 analyzing QMCPACK data.
 
 ::
