@@ -185,25 +185,25 @@ or <a class="reference internal" href="#obdevelopment"><span class="std std-ref
 installed (<a class="reference internal" href="#prerequisites"><span class="std std-ref">Prerequisites</span></a>).</p></li>
 <li><p>If you will use Quantum ESPRESSO, download and patch it. The patch
 adds the pw2qmcpack utility
-(Section <a class="reference external" href="#sec:buildqe">[sec:buildqe]</a>).</p></li>
-<li><p>Run the cmake configure step and build with make (Sections
-<a class="reference external" href="#sec:cmake">1.6</a> and <a class="reference external" href="#sec:cmakequick">1.6.1</a>). Examples for
+(<span class="xref std std-ref">buildqe</span>.</p></li>
+<li><p>Run the cmake configure step and build with make (
+<a class="reference internal" href="#cmake"><span class="std std-ref">Building with CMake</span></a> and <a class="reference internal" href="#cmakequick"><span class="std std-ref">Quick build instructions (try first)</span></a>). Examples for
 common systems are given in
-Section <a class="reference external" href="#sec:installexamples">[sec:installexamples]</a>.</p></li>
+<span class="xref std std-ref">installexamples</span>.</p></li>
 <li><p>Run the tests to verify QMCPACK
-(Section <a class="reference external" href="#sec:testing">[sec:testing]</a>).</p></li>
+(<span class="xref std std-ref">testing</span>).</p></li>
 <li><p>Build the ppconvert utility in QMCPACK
-(Section <a class="reference external" href="#sec:buildppconvert">[sec:buildppconvert]</a>).</p></li>
+(<span class="xref std std-ref">buildppconvert</span>).</p></li>
 </ol>
 <p>Hints for high performance are in
-Section <a class="reference external" href="#sec:buildperformance">[sec:buildperformance]</a>.
+<span class="xref std std-ref">buildperformance</span>.
 Troubleshooting suggestions are in
-Section <a class="reference external" href="#sec:troubleshoot">[sec:troubleshoot]</a>.</p>
+<span class="xref std std-ref">troubleshoot</span>.</p>
 <p>Note that there are two different QMCPACK executables that can be
 produced: the general one, which is the default, and the “complex”
 version, which supports periodic calculations at arbitrary twist angles
 and k-points. This second version is enabled via a cmake configuration
-parameter (see Section <a class="reference external" href="#sec:cmakeoptions">[sec:cmakeoptions]</a>).
+parameter (see <span class="xref std std-ref">cmakeoptions</span>).
 The general version supports only wavefunctions that can be made real.
 If you run a calculation that needs the complex version, QMCPACK will
 stop and inform you.</p>
@@ -223,7 +223,7 @@ corresponding to the release. To obtain the latest release:</p>
 </ul>
 <p>Releases can also be obtained from the ‘master’ branch of the QMCPACK
 git repository, similar to obtaining the development version
-(Section <a class="reference external" href="#sec:obdevelopment">1.3</a>).</p>
+(<a class="reference internal" href="#obdevelopment"><span class="std std-ref">Obtaining the latest development version</span></a>).</p>
 </div>
 <div class="section" id="obtaining-the-latest-development-version">
 <span id="obdevelopment"></span><h2>Obtaining the latest development version<a class="headerlink" href="#obtaining-the-latest-development-version" title="Permalink to this headline">¶</a></h2>
@@ -307,8 +307,8 @@ GCC and resolve the issue.</p>
 <h3>Intel compiler<a class="headerlink" href="#intel-compiler" title="Permalink to this headline">¶</a></h3>
 <p>The Intel compiler version must be 18 or newer. The version 17 compiler
 cannot compile some of the C++ 14 constructs in the code.</p>
-<p>If a newer GCC is needed, the option can be used to point to a different
-GCC installation. (Alternately, the or options can be used.) Be sure to
+<p>If a newer GCC is needed, the <code class="docutils literal notranslate"><span class="pre">-cxxlib</span></code> option can be used to point to a different
+GCC installation. (Alternately, the <code class="docutils literal notranslate"><span class="pre">-gcc-name</span></code> or <code class="docutils literal notranslate"><span class="pre">-gxx-name</span></code> options can be used.) Be sure to
 pass this flag to the C compiler in addition to the C++ compiler. This
 is necessary because CMake extracts some library paths from the C
 compiler, and those paths usually also contain to the C++ library. The
@@ -367,7 +367,7 @@ your system. For example, with OpenMPI use</p>
 such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
-give examples for a number of common systems in <a class="reference external" href="#sec:installexamples">Install Example</a>.</p>
+give examples for a number of common systems in <span class="xref std std-ref">installexamples</span>.</p>
 </div>
 </div>
 </div>

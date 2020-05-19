@@ -218,9 +218,8 @@ replaces the older, less efficient Array-of-Structures (AoS) code and
 can be enabled or disabled at compile time. The memory footprint is also
 reduced in the SoA implementation by better algorithms, enabling more
 systems to be run.</p>
-<p>The SoA build was made the default for QMCPACK v3.7.0. As described in
-Section <a class="reference external" href="#sec:cmakeoptions">[sec:cmakeoptions]</a>, the SoA
-implementation can be disabled by configuring with .</p>
+<p>The SoA build was made the default for QMCPACK v3.7.0. As described in <span class="xref std std-ref">cmakeoptions</span>, the SoA
+implementation can be disabled by configuring with <code class="docutils literal notranslate"><span class="pre">-DENABLE_SOA=0</span></code>.</p>
 <p>The SoA code path currently does <em>not</em> support:</p>
 <ul class="simple">
 <li><p>Backflow wavefunctions</p></li>

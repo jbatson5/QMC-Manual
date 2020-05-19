@@ -81,9 +81,8 @@ can be enabled or disabled at compile time. The memory footprint is also
 reduced in the SoA implementation by better algorithms, enabling more
 systems to be run.
 
-The SoA build was made the default for QMCPACK v3.7.0. As described in
-Section \ `[sec:cmakeoptions] <#sec:cmakeoptions>`__, the SoA
-implementation can be disabled by configuring with .
+The SoA build was made the default for QMCPACK v3.7.0. As described in :ref:`cmakeoptions`, the SoA
+implementation can be disabled by configuring with ``-DENABLE_SOA=0``.
 
 The SoA code path currently does *not* support:
 

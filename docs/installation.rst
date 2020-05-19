@@ -25,29 +25,29 @@ are given in the referenced sections.
 
 #. If you will use Quantum ESPRESSO, download and patch it. The patch
    adds the pw2qmcpack utility
-   (Section `[sec:buildqe] <#sec:buildqe>`__).
+   (:ref:`buildqe`).
 
-#. Run the cmake configure step and build with make (Sections
-   `1.6 <#sec:cmake>`__ and \ `1.6.1 <#sec:cmakequick>`__). Examples for
+#. Run the cmake configure step and build with make
+   (:ref:`cmake` and :ref:`cmakequick`). Examples for
    common systems are given in
-   Section \ `[sec:installexamples] <#sec:installexamples>`__.
+   :ref:`installexamples`.
 
 #. Run the tests to verify QMCPACK
-   (Section `[sec:testing] <#sec:testing>`__).
+   (:ref:`testing`).
 
 #. Build the ppconvert utility in QMCPACK
-   (Section `[sec:buildppconvert] <#sec:buildppconvert>`__).
+   (:ref:`buildppconvert`).
 
 Hints for high performance are in
-Section \ `[sec:buildperformance] <#sec:buildperformance>`__.
+:ref:`buildperformance`.
 Troubleshooting suggestions are in
-Section \ `[sec:troubleshoot] <#sec:troubleshoot>`__.
+:ref:`troubleshoot`.
 
 Note that there are two different QMCPACK executables that can be
 produced: the general one, which is the default, and the “complex”
 version, which supports periodic calculations at arbitrary twist angles
 and k-points. This second version is enabled via a cmake configuration
-parameter (see Section \ `[sec:cmakeoptions] <#sec:cmakeoptions>`__).
+parameter (see :ref:`cmakeoptions`).
 The general version supports only wavefunctions that can be made real.
 If you run a calculation that needs the complex version, QMCPACK will
 stop and inform you.
@@ -72,7 +72,7 @@ corresponding to the release. To obtain the latest release:
 
 Releases can also be obtained from the ‘master’ branch of the QMCPACK
 git repository, similar to obtaining the development version
-(Section `1.3 <#sec:obdevelopment>`__).
+(:ref:`obdevelopment`).
 
 .. _obdevelopment:
 
@@ -111,7 +111,7 @@ documentation.
 
 **Use of the latest versions of all compilers and libraries is strongly
 encouraged** but not absolutely essential. Generally, newer versions are
-faster; see Section \ `[sec:buildperformance] <#sec:buildperformance>`__
+faster; see :ref:`buildperformance`
 for performance suggestions.
 
 -  C/C++ compilers such as GNU, Clang, Intel, and IBM XL. C++ compilers
@@ -180,8 +180,8 @@ Intel compiler
 The Intel compiler version must be 18 or newer. The version 17 compiler
 cannot compile some of the C++ 14 constructs in the code.
 
-If a newer GCC is needed, the option can be used to point to a different
-GCC installation. (Alternately, the or options can be used.) Be sure to
+If a newer GCC is needed, the ``-cxxlib`` option can be used to point to a different
+GCC installation. (Alternately, the ``-gcc-name`` or ``-gxx-name`` options can be used.) Be sure to
 pass this flag to the C compiler in addition to the C++ compiler. This
 is necessary because CMake extracts some library paths from the C
 compiler, and those paths usually also contain to the C++ library. The
@@ -255,4 +255,104 @@ The complexities of modern computer hardware and software systems are
 such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
-give examples for a number of common systems in `Install Example <#sec:installexamples>`__.
+give examples for a number of common systems in :ref:`installexamples`.
+
+.. _envvar:
+
+Environment variables
+~~~~~~~~~~~~~~~~~~~~~
+
+A number of environment variables affect the build.  In particular
+they can control the default paths for libraries, the default
+compilers, etc.  The list of environment variables is given below:
+
+::
+
+  CXX              C++ compiler
+  CC               C Compiler
+  MKL_ROOT         Path for MKL
+  HDF5_ROOT        Path for HDF5
+  BOOST_ROOT       Path for Boost
+  FFTW_HOME        Path for FFTW
+
+.. _cmakeoptions:
+
+Configuration Options
+~~~~~~~~~~~~~~~~~~~~~
+
+In addition to reading the environment variables, CMake provides a
+number of optional variables that can be set to control the build and
+configure steps.  When passed to CMake, these variables will take
+precedent over the environment and default variables.  To set them,
+add -D FLAG=VALUE to the configure line between the CMake command and
+the path to the source directory.
+
+- Key QMCPACK build options
+
+::
+
+  QMC_CUDA              Enable CUDA and GPU acceleration (1:yes, 0:no)
+  QMC_COMPLEX           Build the complex (general twist/k-point) version (1:yes, 0:no)
+  QMC_MIXED_PRECISION   Build the mixed precision (mixing double/float) version
+                        (1:yes (GPU default), 0:no (CPU default)).
+                        The CPU support is experimental.
+                        Use float and double for base and full precision.
+                        The GPU support is quite mature.
+                        Use always double for host side base and full precision
+                        and use float and double for CUDA base and full precision.
+  ENABLE_SOA            Enable data layout and algorithm optimizations using
+                        Structure-of-Array (SoA) datatypes (1:yes (default), 0:no).
+  ENABLE_TIMERS         Enable fine-grained timers (1:yes, 0:no (default)).
+                        Timers are off by default to avoid potential slowdown in small
+                        systems. For large systems (100+ electrons) there is no risk.
+
+- General build options
+
+::
+
+  CMAKE_BUILD_TYPE     A variable which controls the type of build
+                       (defaults to Release). Possible values are:
+                       None (Do not set debug/optmize flags, use
+                       CMAKE_C_FLAGS or CMAKE_CXX_FLAGS)
+                       Debug (create a debug build)
+                       Release (create a release/optimized build)
+                       RelWithDebInfo (create a release/optimized build with debug info)
+                       MinSizeRel (create an executable optimized for size)
+  CMAKE_C_COMPILER     Set the C compiler
+  CMAKE_CXX_COMPILER   Set the C++ compiler
+  CMAKE_C_FLAGS        Set the C flags.  Note: to prevent default
+                       debug/release flags from being used, set the CMAKE_BUILD_TYPE=None
+                       Also supported: CMAKE_C_FLAGS_DEBUG,
+                       CMAKE_C_FLAGS_RELEASE, and CMAKE_C_FLAGS_RELWITHDEBINFO
+  CMAKE_CXX_FLAGS      Set the C++ flags.  Note: to prevent default
+                       debug/release flags from being used, set the CMAKE_BUILD_TYPE=None
+                       Also supported: CMAKE_CXX_FLAGS_DEBUG,
+                       CMAKE_CXX_FLAGS_RELEASE, and CMAKE_CXX_FLAGS_RELWITHDEBINFO
+  CMAKE_INSTALL_PREFIX Set the install location (if using the optional install step)
+  INSTALL_NEXUS        Install Nexus alongside QMCPACK (if using the optional install step)
+
+- Additional QMCPACK build options
+
+::
+
+  QE_BIN                    Location of Quantum Espresso binaries including pw2qmcpack.x
+  QMC_DATA                  Specify data directory for QMCPACK performance and integration tests
+  QMC_INCLUDE               Add extra include paths
+  QMC_EXTRA_LIBS            Add extra link libraries
+  QMC_BUILD_STATIC          Add -static flags to build
+  QMC_SYMLINK_TEST_FILES    Set to zero to require test files to be copied. Avoids space
+                            saving default use of symbolic links for test files. Useful
+                            if the build is on a separate filesystem from the source, as
+                            required on some HPC systems.
+  QMC_VERBOSE_CONFIGURATION Print additional information during cmake configuration
+                            including details of which tests are enabled.
+
+- Intel MKL related
+
+::
+
+  ENABLE_MKL          Enable Intel MKL libraries (1:yes (default for intel compiler),
+                                                  0:no (default otherwise)).
+  MKL_ROOT            Path to MKL libraries (only necessary for non intel compilers
+                      or intel without standard environment variables.)
+                      One of the above environment variables can be used.
