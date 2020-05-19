@@ -152,7 +152,7 @@ density functional theory. The code and many features are in
 development. Check the latest version of QMCPACK for an up-to-date
 description of available features. A partial list of the current
 capabilities of the code follows. For a detailed description of the
-available features, see chapter \ `[chap:afqmc] <#chap:afqmc>`__.
+available features, see  :ref:`afqmc`.
 
 -  Phaseless AFQMC algorithm of Zhang et al. (S. Zhang and H. Krakauer.
    2003. “Quantum Monte Carlo Method using Phase-Free Random Walks with
@@ -213,6 +213,6 @@ To use this feature, the following needs to be done:
 -  In the determinant set definition of the <wavefunction> section, the
    “gpusharing" parameter needs to be set (i.e., <determinantset
    gpusharing=“yes">). See
-   Section \ `[sec:spo_spline] <#sec:spo_spline>`__.
+   :ref:`spo_spline`.
 
 .. bibliography:: bibliography.bib

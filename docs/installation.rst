@@ -1,4 +1,4 @@
-.. _chap:obtaininginstalling:
+.. _obtaininginstalling:
 
 Obtaining, installing, and validating QMCPACK
 =============================================

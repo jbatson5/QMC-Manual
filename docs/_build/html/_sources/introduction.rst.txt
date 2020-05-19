@@ -1,4 +1,4 @@
-.. _chap:introduction:
+.. _introduction:
 
 Introduction
 ============
@@ -43,9 +43,9 @@ these systems. If C++, MPI, BLAS/LAPACK, FFTW, HDF5, and CMake are
 already installed, QMCPACK can be built and run within five minutes. For
 supercomputers, cross-compilation systems, and other computer clusters,
 the build system might require hints on the locations of libraries and
-which versions to use, typical of any code; see Chapter
-`[chap:obtaininginstalling] <#chap:obtaininginstalling>`__.
-Section \ `[sec:installexamples] <#sec:installexamples>`__ includes
+which versions to use, typical of any code; see
+:ref:`obtaininginstalling`.
+:ref:`installexamples` includes
 complete examples of installations for common workstations and
 supercomputers that you can reuse.
 
@@ -60,8 +60,8 @@ To build QMCPACK:
 #. Run CMake in a suitable build directory to configure QMCPACK for your
    system: ``cd qmcpack/build; cmake ..``
 
-#. If CMake is unable to find all needed libraries, see Chapter
-   `[chap:obtaininginstalling] <#chap:obtaininginstalling>`__ for
+#. If CMake is unable to find all needed libraries, see
+   :ref:`obtaininginstalling` for
    instructions and specific build instructions for common systems.
 
 #. Build QMCPACK: ``make`` or ``make -j 16``; use the latter for a faster parallel build on a
@@ -106,26 +106,25 @@ analyzing QMCPACK data.
    qmca -t -q e H2O.s002.scalar.dat # Graphical plot of DMC energy
 
 The last command will produce a graph as per
-Fig. \ `[1] <#image:quick_qmca_dmc_trace.png>`__. This
+:numref:`fig1`. This
 shows the average energy of the DMC walkers at each timestep. In a real
 simulation we would have to check equilibration, convergence with walker
 population, time step, etc.
 
 Congratulations, you have completed a DMC calculation with QMCPACK!
 
-.. raw:: latex
 
-   \centering
-
+.. _fig1:
 .. figure:: quick_qmca_dmc_trace.png
-  :width: 400
+    :width: 400
+    :align: center
 
-Figure 1: Trace of walker energies produced by the qmca tool for a simple water
-molecule example.
+    Trace of walker energies produced by the qmca tool for a simple water
+    molecule example.
 
 
 
-.. _sec:history:
+.. _history:
 
 Authors and History
 -------------------
@@ -176,7 +175,7 @@ https://groups.google.com/forum/#!forum/qmcpack. You may also email any
 of the developers, but we recommend checking the group first. Particular
 attention is given to any problem reports.
 
-.. _sec:performance:
+.. _performance:
 
 Performance
 -----------
@@ -194,7 +193,7 @@ contact one of the developers. These reports are valuable. If your
 calculation is sufficiently mainstream we will optimize QMCPACK to
 improve the performance.
 
-.. _sec:license:
+.. _license:
 
 Open Source License
 -------------------
@@ -248,7 +247,7 @@ Copyright is generally believed to remain with the authors of the
 individual sections of code. See the various notations in the source
 code as well as the code history.
 
-.. _sec:contributing:
+.. _contributing:
 
 Contributing to QMCPACK
 -----------------------
@@ -294,13 +293,12 @@ Please note the following guidelines for contributions:
    used for validation and for examples. We can help with this and their
    integration into the test system.
 
-.. _sec:roadmap:
+.. _roadmap:
 
 QMCPACK Roadmap
 ---------------
 
-A general outline of the QMCPACK roadmap is given in Sections 1.7.1 and
-1.7.2 . Suggestions for improvements are welcome, particularly those
+A general outline of the QMCPACK roadmap is given in the following sections. Suggestions for improvements are welcome, particularly those
 that would facilitate new scientific applications. For example, if an
 interface to a particular quantum chemical or density functional code
 would help, this would be given strong consideration.

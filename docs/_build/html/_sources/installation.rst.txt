@@ -1,4 +1,4 @@
-.. _chap:obtaininginstalling:
+.. _obtaininginstalling:
 
 Obtaining, installing, and validating QMCPACK
 =============================================
@@ -17,11 +17,11 @@ Installation steps
 To install QMCPACK, follow the steps below. Full details of each step
 are given in the referenced sections.
 
-#. Download the source code (:ref:`obrelease`
-   or :ref:`obdevelopment`).
+#. Download the source code from :ref:`obrelease`
+   or :ref:`obdevelopment`.
 
 #. Verify that you have the required compilers, libraries, and tools
-   installed (Section `1.4 <#sec:prerequisites>`__).
+   installed (:ref:`prerequisites`).
 
 #. If you will use Quantum ESPRESSO, download and patch it. The patch
    adds the pw2qmcpack utility
@@ -98,7 +98,7 @@ and compare with previous release versions before using for any serious
 calculations. We try to keep bugs out, but occasionally they crawl in!
 Reports of any breakages are appreciated.
 
-.. _sec:prerequisites:
+.. _prerequisites:
 
 Prerequisites
 -------------
@@ -188,7 +188,7 @@ compiler, and those paths usually also contain to the C++ library. The
 symptom of this problem is C++ 14 standard library functions not found
 at link time.
 
-.. _sec:cmake:
+.. _cmake:
 
 Building with CMake
 -------------------
@@ -215,7 +215,7 @@ through specific environment or CMake variables. When the libraries are
 installed in standard locations (e.g., /usr, /usr/local), there is no
 need to set environment or CMake variables for the packages.
 
-.. _sec:cmakequick:
+.. _cmakequick:
 
 Quick build instructions (try first)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

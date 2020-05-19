@@ -98,6 +98,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
 </ul>
 
@@ -164,7 +165,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="introduction">
-<span id="chap-introduction"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>QMCPACK is an open-source, high-performance electronic structure code
 that implements numerous Quantum Monte Carlo (QMC) algorithms. Its main
 applications are electronic structure calculations of molecular,
@@ -201,9 +202,9 @@ these systems. If C++, MPI, BLAS/LAPACK, FFTW, HDF5, and CMake are
 already installed, QMCPACK can be built and run within five minutes. For
 supercomputers, cross-compilation systems, and other computer clusters,
 the build system might require hints on the locations of libraries and
-which versions to use, typical of any code; see Chapter
-<a class="reference external" href="#chap:obtaininginstalling">[chap:obtaininginstalling]</a>.
-Section <a class="reference external" href="#sec:installexamples">[sec:installexamples]</a> includes
+which versions to use, typical of any code; see
+<a class="reference internal" href="installation.html#obtaininginstalling"><span class="std std-ref">Obtaining, installing, and validating QMCPACK</span></a>.
+<span class="xref std std-ref">installexamples</span> includes
 complete examples of installations for common workstations and
 supercomputers that you can reuse.</p>
 <p>To build QMCPACK:</p>
@@ -213,8 +214,8 @@ supercomputers that you can reuse.</p>
 <li><p>Check the instructions in the README file.</p></li>
 <li><p>Run CMake in a suitable build directory to configure QMCPACK for your
 system: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">qmcpack/build;</span> <span class="pre">cmake</span> <span class="pre">..</span></code></p></li>
-<li><p>If CMake is unable to find all needed libraries, see Chapter
-<a class="reference external" href="#chap:obtaininginstalling">[chap:obtaininginstalling]</a> for
+<li><p>If CMake is unable to find all needed libraries, see
+<a class="reference internal" href="installation.html#obtaininginstalling"><span class="std std-ref">Obtaining, installing, and validating QMCPACK</span></a> for
 instructions and specific build instructions for common systems.</p></li>
 <li><p>Build QMCPACK: <code class="docutils literal notranslate"><span class="pre">make</span></code> or <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">-j</span> <span class="pre">16</span></code>; use the latter for a faster parallel build on a
 system using, for example, 16 processes.</p></li>
@@ -254,19 +255,19 @@ qmca -t -q e H2O.s002.scalar.dat # Graphical plot of DMC energy
 </pre></div>
 </div>
 <p>The last command will produce a graph as per
-Fig. <a class="reference external" href="#image:quick_qmca_dmc_trace.png">[1]</a>. This
+<a class="reference internal" href="#fig1"><span class="std std-numref">Fig. 1</span></a>. This
 shows the average energy of the DMC walkers at each timestep. In a real
 simulation we would have to check equilibration, convergence with walker
 population, time step, etc.</p>
 <p>Congratulations, you have completed a DMC calculation with QMCPACK!</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="_images/quick_qmca_dmc_trace.png"><img alt="_images/quick_qmca_dmc_trace.png" src="_images/quick_qmca_dmc_trace.png" style="width: 400px;" /></a>
+<div class="figure align-center" id="id3">
+<span id="fig1"></span><a class="reference internal image-reference" href="_images/quick_qmca_dmc_trace.png"><img alt="_images/quick_qmca_dmc_trace.png" src="_images/quick_qmca_dmc_trace.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Trace of walker energies produced by the qmca tool for a simple water
+molecule example.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
-<p>Figure 1: Trace of walker energies produced by the qmca tool for a simple water
-molecule example.</p>
 </div>
 <div class="section" id="authors-and-history">
-<span id="sec-history"></span><h2>Authors and History<a class="headerlink" href="#authors-and-history" title="Permalink to this headline">¶</a></h2>
+<span id="history"></span><h2>Authors and History<a class="headerlink" href="#authors-and-history" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK was initially written by Jeongnim Kim while in the group of
 Professor David Ceperley at the University of Illinois at
 Urbana-Champaign, with later contributations being made at Oak Ridge
@@ -306,7 +307,7 @@ of the developers, but we recommend checking the group first. Particular
 attention is given to any problem reports.</p>
 </div>
 <div class="section" id="performance">
-<span id="sec-performance"></span><h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK implements modern Monte Carlo (MC) algorithms, is highly
 parallel, and is written using very efficient code for high per-CPU or
 on-node performance. In particular, the code is highly vectorizable,
@@ -321,7 +322,7 @@ calculation is sufficiently mainstream we will optimize QMCPACK to
 improve the performance.</p>
 </div>
 <div class="section" id="open-source-license">
-<span id="sec-license"></span><h2>Open Source License<a class="headerlink" href="#open-source-license" title="Permalink to this headline">¶</a></h2>
+<span id="license"></span><h2>Open Source License<a class="headerlink" href="#open-source-license" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK is distributed under the University of Illinois at
 Urbana-Champaign/National Center for Supercomputing Applications
 (UIUC/NCSA) Open Source License.</p>
@@ -370,7 +371,7 @@ individual sections of code. See the various notations in the source
 code as well as the code history.</p>
 </div>
 <div class="section" id="contributing-to-qmcpack">
-<span id="sec-contributing"></span><h2>Contributing to QMCPACK<a class="headerlink" href="#contributing-to-qmcpack" title="Permalink to this headline">¶</a></h2>
+<span id="contributing"></span><h2>Contributing to QMCPACK<a class="headerlink" href="#contributing-to-qmcpack" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK is fully open source, and we welcome contributions. If you are
 planning a development, early discussions are encouraged. Please post on
 the QMCPACK Google group or contact the developers. We can tell you
@@ -407,9 +408,8 @@ integration into the test system.</p></li>
 </ul>
 </div>
 <div class="section" id="qmcpack-roadmap">
-<span id="sec-roadmap"></span><h2>QMCPACK Roadmap<a class="headerlink" href="#qmcpack-roadmap" title="Permalink to this headline">¶</a></h2>
-<p>A general outline of the QMCPACK roadmap is given in Sections 1.7.1 and
-1.7.2 . Suggestions for improvements are welcome, particularly those
+<span id="roadmap"></span><h2>QMCPACK Roadmap<a class="headerlink" href="#qmcpack-roadmap" title="Permalink to this headline">¶</a></h2>
+<p>A general outline of the QMCPACK roadmap is given in the following sections. Suggestions for improvements are welcome, particularly those
 that would facilitate new scientific applications. For example, if an
 interface to a particular quantum chemical or density functional code
 would help, this would be given strong consideration.</p>

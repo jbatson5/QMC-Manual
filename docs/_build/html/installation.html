@@ -166,7 +166,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="obtaining-installing-and-validating-qmcpack">
-<span id="chap-obtaininginstalling"></span><h1>Obtaining, installing, and validating QMCPACK<a class="headerlink" href="#obtaining-installing-and-validating-qmcpack" title="Permalink to this headline">¶</a></h1>
+<span id="obtaininginstalling"></span><h1>Obtaining, installing, and validating QMCPACK<a class="headerlink" href="#obtaining-installing-and-validating-qmcpack" title="Permalink to this headline">¶</a></h1>
 <p>This chapter describes how to obtain, build, and validate QMCPACK. This
 process is designed to be as simple as possible and should be no harder
 than building a modern plane-wave density functional theory code such as
@@ -179,10 +179,10 @@ administrator to install QMCPACK.</p>
 <p>To install QMCPACK, follow the steps below. Full details of each step
 are given in the referenced sections.</p>
 <ol class="arabic simple">
-<li><p>Download the source code (<a class="reference internal" href="#obrelease"><span class="std std-ref">Obtaining the latest release version</span></a>
-or <a class="reference internal" href="#obdevelopment"><span class="std std-ref">Obtaining the latest development version</span></a>).</p></li>
+<li><p>Download the source code from <a class="reference internal" href="#obrelease"><span class="std std-ref">Obtaining the latest release version</span></a>
+or <a class="reference internal" href="#obdevelopment"><span class="std std-ref">Obtaining the latest development version</span></a>.</p></li>
 <li><p>Verify that you have the required compilers, libraries, and tools
-installed (Section <a class="reference external" href="#sec:prerequisites">1.4</a>).</p></li>
+installed (<a class="reference internal" href="#prerequisites"><span class="std std-ref">Prerequisites</span></a>).</p></li>
 <li><p>If you will use Quantum ESPRESSO, download and patch it. The patch
 adds the pw2qmcpack utility
 (Section <a class="reference external" href="#sec:buildqe">[sec:buildqe]</a>).</p></li>
@@ -245,7 +245,7 @@ calculations. We try to keep bugs out, but occasionally they crawl in!
 Reports of any breakages are appreciated.</p>
 </div>
 <div class="section" id="prerequisites">
-<span id="sec-prerequisites"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>The following items are required to build QMCPACK. For workstations,
 these are available via the standard package manager. On shared
 supercomputers this software is usually installed by default and is
@@ -317,7 +317,7 @@ at link time.</p>
 </div>
 </div>
 <div class="section" id="building-with-cmake">
-<span id="sec-cmake"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake" title="Permalink to this headline">¶</a></h2>
+<span id="cmake"></span><h2>Building with CMake<a class="headerlink" href="#building-with-cmake" title="Permalink to this headline">¶</a></h2>
 <p>The build system for QMCPACK is based on CMake. It will autoconfigure
 based on the detected compilers and libraries. The most recent version
 of CMake has the best detection for the greatest variety of systems. The
@@ -338,7 +338,7 @@ through specific environment or CMake variables. When the libraries are
 installed in standard locations (e.g., /usr, /usr/local), there is no
 need to set environment or CMake variables for the packages.</p>
 <div class="section" id="quick-build-instructions-try-first">
-<span id="sec-cmakequick"></span><h3>Quick build instructions (try first)<a class="headerlink" href="#quick-build-instructions-try-first" title="Permalink to this headline">¶</a></h3>
+<span id="cmakequick"></span><h3>Quick build instructions (try first)<a class="headerlink" href="#quick-build-instructions-try-first" title="Permalink to this headline">¶</a></h3>
 <p>If you are feeling lucky and are on a standard UNIX-like system such as
 a Linux workstation, the following might quickly give a working QMCPACK:</p>
 <p>The safest quick build option is to specify the C and C++ compilers
