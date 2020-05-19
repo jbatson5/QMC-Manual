@@ -17,11 +17,11 @@ Installation steps
 To install QMCPACK, follow the steps below. Full details of each step
 are given in the referenced sections.
 
-#. Download the source code (Section `1.2 <#sec:obrelease>`__
-   or \ `1.3 <#sec:obdevelopment>`__).
+#. Download the source code from :ref:`obrelease`
+   or :ref:`obdevelopment`.
 
 #. Verify that you have the required compilers, libraries, and tools
-   installed (Section `1.4 <#sec:prerequisites>`__).
+   installed (:ref:`prerequisites`).
 
 #. If you will use Quantum ESPRESSO, download and patch it. The patch
    adds the pw2qmcpack utility
@@ -52,7 +52,7 @@ The general version supports only wavefunctions that can be made real.
 If you run a calculation that needs the complex version, QMCPACK will
 stop and inform you.
 
-.. _sec:obrelease:
+.. _obrelease:
 
 Obtaining the latest release version
 ------------------------------------
@@ -74,7 +74,7 @@ Releases can also be obtained from the ‘master’ branch of the QMCPACK
 git repository, similar to obtaining the development version
 (Section `1.3 <#sec:obdevelopment>`__).
 
-.. _sec:obdevelopment:
+.. _obdevelopment:
 
 Obtaining the latest development version
 ----------------------------------------
@@ -98,7 +98,7 @@ and compare with previous release versions before using for any serious
 calculations. We try to keep bugs out, but occasionally they crawl in!
 Reports of any breakages are appreciated.
 
-.. _sec:prerequisites:
+.. _prerequisites:
 
 Prerequisites
 -------------
@@ -188,7 +188,7 @@ compiler, and those paths usually also contain to the C++ library. The
 symptom of this problem is C++ 14 standard library functions not found
 at link time.
 
-.. _sec:cmake:
+.. _cmake:
 
 Building with CMake
 -------------------
@@ -215,7 +215,7 @@ through specific environment or CMake variables. When the libraries are
 installed in standard locations (e.g., /usr, /usr/local), there is no
 need to set environment or CMake variables for the packages.
 
-.. _sec:cmakequick:
+.. _cmakequick:
 
 Quick build instructions (try first)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -255,4 +255,4 @@ The complexities of modern computer hardware and software systems are
 such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
-give examples for a number of common systems in `Install Examples <#sec:installexamples>`__.
+give examples for a number of common systems in `Install Example <#sec:installexamples>`__.

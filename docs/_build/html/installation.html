@@ -35,7 +35,9 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Specifying the Simulation Cell" href="simulationcell.html" />
+    <link rel="prev" title="Features of QMCPACK" href="features.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,9 +82,24 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Obtaining, installing, and validating QMCPACK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-the-latest-release-version">Obtaining the latest release version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-the-latest-development-version">Obtaining the latest development version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#c-14-standard-library">C++ 14 standard library</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#intel-compiler">Intel compiler</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-with-cmake">Building with CMake</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-build-instructions-try-first">Quick build instructions (try first)</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
 </ul>
 
@@ -162,8 +179,8 @@ administrator to install QMCPACK.</p>
 <p>To install QMCPACK, follow the steps below. Full details of each step
 are given in the referenced sections.</p>
 <ol class="arabic simple">
-<li><p>Download the source code (Section <a class="reference external" href="#sec:obrelease">1.2</a>
-or <a class="reference external" href="#sec:obdevelopment">1.3</a>).</p></li>
+<li><p>Download the source code (<a class="reference internal" href="#obrelease"><span class="std std-ref">Obtaining the latest release version</span></a>
+or <a class="reference internal" href="#obdevelopment"><span class="std std-ref">Obtaining the latest development version</span></a>).</p></li>
 <li><p>Verify that you have the required compilers, libraries, and tools
 installed (Section <a class="reference external" href="#sec:prerequisites">1.4</a>).</p></li>
 <li><p>If you will use Quantum ESPRESSO, download and patch it. The patch
@@ -192,7 +209,7 @@ If you run a calculation that needs the complex version, QMCPACK will
 stop and inform you.</p>
 </div>
 <div class="section" id="obtaining-the-latest-release-version">
-<span id="sec-obrelease"></span><h2>Obtaining the latest release version<a class="headerlink" href="#obtaining-the-latest-release-version" title="Permalink to this headline">¶</a></h2>
+<span id="obrelease"></span><h2>Obtaining the latest release version<a class="headerlink" href="#obtaining-the-latest-release-version" title="Permalink to this headline">¶</a></h2>
 <p>Major releases of QMCPACK are distributed from <a class="reference external" href="http://www.qmcpack.org">http://www.qmcpack.org</a>.
 Because these versions undergo the most testing, we encourage using them
 for all production calculations unless there are specific reasons not to
@@ -209,7 +226,7 @@ git repository, similar to obtaining the development version
 (Section <a class="reference external" href="#sec:obdevelopment">1.3</a>).</p>
 </div>
 <div class="section" id="obtaining-the-latest-development-version">
-<span id="sec-obdevelopment"></span><h2>Obtaining the latest development version<a class="headerlink" href="#obtaining-the-latest-development-version" title="Permalink to this headline">¶</a></h2>
+<span id="obdevelopment"></span><h2>Obtaining the latest development version<a class="headerlink" href="#obtaining-the-latest-development-version" title="Permalink to this headline">¶</a></h2>
 <p>The most recent development version of QMCPACK can be obtained
 anonymously via</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span>
@@ -350,7 +367,7 @@ your system. For example, with OpenMPI use</p>
 such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
-give examples for a number of common systems in <a class="reference external" href="#sec:installexamples">Install Examples</a>.</p>
+give examples for a number of common systems in <a class="reference external" href="#sec:installexamples">Install Example</a>.</p>
 </div>
 </div>
 </div>
@@ -360,6 +377,15 @@ give examples for a number of common systems in <a class="reference external" hr
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simulationcell.html" class="btn btn-neutral float-right" title="Specifying the Simulation Cell" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="features.html" class="btn btn-neutral float-left" title="Features of QMCPACK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
