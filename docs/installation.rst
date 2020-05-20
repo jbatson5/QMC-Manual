@@ -540,3 +540,24 @@ than usually needed for comprehensiveness:
 
 Using vendor-optimized numerical libraries (e.g., Intel MKL)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Although QMC does not make extensive use of linear algebra, use of
+vendor-optimized libraries is strongly recommended for highest
+performance. BLAS routines are used in the Slater determinant update, the VMC wavefunction optimizer,
+and to apply orbital coefficients in local basis calculations. Vectorized
+math functions are also beneficial (e.g., for the phase factor
+computation in solid-state calculations). CMake is generally successful
+in finding these libraries, but specific combinations can require
+additional hints, as described in the following:
+
+Using Intel MKL with non-Intel compilers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To use Intel MKL with, e.g. an MPICH wrapped gcc:
+
+::
+
+  cmake \
+    -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx \
+    -DENABLE_MKL=1 -DMKL_ROOT=$MKLROOT/lib \
+    ..
