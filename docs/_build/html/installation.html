@@ -103,7 +103,28 @@
 <li class="toctree-l3"><a class="reference internal" href="#configure-and-build-using-cmake-and-make">Configure and build using CMake and make</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-configure-and-build">Example configure and build</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#build-scripts">Build scripts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-vendor-optimized-numerical-libraries-e-g-intel-mkl">Using vendor-optimized numerical libraries (e.g., Intel MKL)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-vendor-optimized-numerical-libraries-e-g-intel-mkl">Using vendor-optimized numerical libraries (e.g., Intel MKL)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#using-intel-mkl-with-non-intel-compilers">Using Intel MKL with non-Intel compilers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#serial-or-multithreaded-library">Serial or multithreaded library</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-compiling">Cross compiling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-instructions-for-common-workstations-and-supercomputers">Installation instructions for common workstations and supercomputers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-ubuntu-linux-or-other-apt-get-based-distributions">Installing on Ubuntu Linux or other apt-get–based distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-centos-linux-or-other-yum-based-distributions">Installing on CentOS Linux or other yum-based distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-mac-os-x-using-macports">Installing on Mac OS X using Macports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-mac-os-x-using-homebrew-brew">Installing on Mac OS X using Homebrew (brew)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-alcf-theta-cray-xc40">Installing on ALCF Theta, Cray XC40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-ornl-olcf-summit">Installing on ORNL OLCF Summit</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#building-qmcpack">Building QMCPACK</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#building-quantum-espresso">Building Quantum Espresso</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-nersc-cori-haswell-partition-cray-xc40">Installing on NERSC Cori, Haswell Partition, Cray XC40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-nersc-cori-xeon-phi-knl-partition-cray-xc40">Installing on NERSC Cori, Xeon Phi KNL partition, Cray XC40</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-systems-with-armv8-based-processors">Installing on systems with ARMv8-based processors</a></li>
 </ul>
 </li>
 </ul>
@@ -632,6 +653,402 @@ than usually needed for comprehensiveness:</p>
 </div>
 <div class="section" id="using-vendor-optimized-numerical-libraries-e-g-intel-mkl">
 <h3>Using vendor-optimized numerical libraries (e.g., Intel MKL)<a class="headerlink" href="#using-vendor-optimized-numerical-libraries-e-g-intel-mkl" title="Permalink to this headline">¶</a></h3>
+<p>Although QMC does not make extensive use of linear algebra, use of
+vendor-optimized libraries is strongly recommended for highest
+performance. BLAS routines are used in the Slater determinant update, the VMC wavefunction optimizer,
+and to apply orbital coefficients in local basis calculations. Vectorized
+math functions are also beneficial (e.g., for the phase factor
+computation in solid-state calculations). CMake is generally successful
+in finding these libraries, but specific combinations can require
+additional hints, as described in the following:</p>
+<div class="section" id="using-intel-mkl-with-non-intel-compilers">
+<h4>Using Intel MKL with non-Intel compilers<a class="headerlink" href="#using-intel-mkl-with-non-intel-compilers" title="Permalink to this headline">¶</a></h4>
+<p>To use Intel MKL with, e.g. an MPICH wrapped gcc:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cmake \
+  -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx \
+  -DENABLE_MKL=1 -DMKL_ROOT=$MKLROOT/lib \
+  ..
+</pre></div>
+</div>
+<p>MKLROOT is the directory containing the MKL binary, examples, and lib
+directories (etc.) and is often /opt/intel/mkl.</p>
+</div>
+<div class="section" id="serial-or-multithreaded-library">
+<h4>Serial or multithreaded library<a class="headerlink" href="#serial-or-multithreaded-library" title="Permalink to this headline">¶</a></h4>
+<p>Vendors might provide both serial and multithreaded versions of their libraries.
+Using the right version is critical to QMCPACK performance.
+QMCPACK makes calls from both inside and outside threaded regions.
+When being called from outside an OpenMP parallel region, the multithreaded version is preferred for the possibility of using all the available cores.
+When being called from every thread inside an OpenMP parallel region, the serial version is preferred for not oversubscribing the cores.
+Fortunately, nowadays the multithreaded versions of many vendor libraries (MKL, ESSL) are OpenMP aware.
+They use only one thread when being called inside an OpenMP parallel region.
+This behavior meets exactly both QMCPACK needs and thus is preferred.
+If the multithreaded version does not provide this feature of dynamically adjusting the number of threads,
+the serial version is preferred. In addition, thread safety is required no matter which version is used.</p>
+</div>
+</div>
+<div class="section" id="cross-compiling">
+<h3>Cross compiling<a class="headerlink" href="#cross-compiling" title="Permalink to this headline">¶</a></h3>
+<p>Cross compiling is often difficult but is required on supercomputers
+with distinct host and compute processor generations or architectures.
+QMCPACK tried to do its best with CMake to facilitate cross compiling.</p>
+<ul class="simple">
+<li><p>On a machine using a Cray programming environment, we rely on
+compiler wrappers provided by Cray to correctly set architecture-specific
+flags. The CMake configure log should indicate that a
+Cray machine was detected.</p></li>
+<li><p>If not on a Cray machine, by default we assume building for
+the host architecture (e.g., -xHost is added for the Intel compiler
+and -march=native is added for GNU/Clang compilers).</p></li>
+<li><p>If -x/-ax or -march is specified by the user in CMAKE_C_FLAGS and CMAKE_CXX_FLAGS,
+we respect the user’s intention and do not add any architecture-specific flags.</p></li>
+</ul>
+<p>The general strategy for cross compiling should therefore be to
+manually set CMAKE_C_FLAGS and CMAKE_CXX_FLAGS for the target
+architecture. Using <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">VERBOSE=1</span></code> is a useful way to check the
+final compilation options.  If on a Cray machine, selection of the
+appropriate programming environment should be sufficient.</p>
+</div>
+</div>
+<div class="section" id="installation-instructions-for-common-workstations-and-supercomputers">
+<h2>Installation instructions for common workstations and supercomputers<a class="headerlink" href="#installation-instructions-for-common-workstations-and-supercomputers" title="Permalink to this headline">¶</a></h2>
+<p>This section describes how to build QMCPACK on various common systems
+including multiple Linux distributions, Apple OS X, and various
+supercomputers. The examples should serve as good starting points for
+building QMCPACK on similar machines. For example, the software
+environment on modern Crays is very consistent. Note that updates to
+operating systems and system software might require small modifications
+to these recipes. See <span class="xref std std-ref">buildperformance</span> for key
+points to check to obtain highest performance and
+<span class="xref std std-ref">troubleshoot</span> for troubleshooting hints.</p>
+<div class="section" id="installing-on-ubuntu-linux-or-other-apt-get-based-distributions">
+<h3>Installing on Ubuntu Linux or other apt-get–based distributions<a class="headerlink" href="#installing-on-ubuntu-linux-or-other-apt-get-based-distributions" title="Permalink to this headline">¶</a></h3>
+<p>The following is designed to obtain a working QMCPACK build on, for example, a
+student laptop, starting from a basic Linux installation with none of
+the developer tools installed. Fortunately, all the required packages
+are available in the default repositories making for a quick
+installation. Note that for convenience we use a generic BLAS. For
+production, a platform-optimized BLAS should be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">cmake</span> <span class="n">g</span><span class="o">++</span> <span class="n">openmpi</span><span class="o">-</span><span class="nb">bin</span> <span class="n">libopenmpi</span><span class="o">-</span><span class="n">dev</span> <span class="n">libboost</span><span class="o">-</span><span class="n">dev</span>
+<span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">libatlas</span><span class="o">-</span><span class="n">base</span><span class="o">-</span><span class="n">dev</span> <span class="n">liblapack</span><span class="o">-</span><span class="n">dev</span> <span class="n">libhdf5</span><span class="o">-</span><span class="n">dev</span> <span class="n">libxml2</span><span class="o">-</span><span class="n">dev</span> <span class="n">fftw3</span><span class="o">-</span><span class="n">dev</span>
+<span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">mpiCC</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">8</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="nb">bin</span><span class="o">/</span><span class="n">qmcpack</span>
+</pre></div>
+</div>
+<p>For qmca and other tools to function, we install some Python libraries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">numpy</span> <span class="n">python</span><span class="o">-</span><span class="n">matplotlib</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-centos-linux-or-other-yum-based-distributions">
+<h3>Installing on CentOS Linux or other yum-based distributions<a class="headerlink" href="#installing-on-centos-linux-or-other-yum-based-distributions" title="Permalink to this headline">¶</a></h3>
+<p>The following is designed to obtain a working QMCPACK build on, for example, a
+student laptop, starting from a basic Linux installation with none of
+the developer tools installed. CentOS 7 (Red Hat compatible) is using
+gcc 4.8.2. The installation is complicated only by the need to install
+another repository to obtain HDF5 packages that are not available by
+default. Note that for convenience we use a generic BLAS. For
+production, a platform-optimized BLAS should be used.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">make</span> <span class="n">cmake</span> <span class="n">gcc</span> <span class="n">gcc</span><span class="o">-</span><span class="n">c</span><span class="o">++</span> <span class="n">openmpi</span> <span class="n">openmpi</span><span class="o">-</span><span class="n">devel</span> <span class="n">fftw</span> <span class="n">fftw</span><span class="o">-</span><span class="n">devel</span> \
+                  <span class="n">boost</span> <span class="n">boost</span><span class="o">-</span><span class="n">devel</span> <span class="n">libxml2</span> <span class="n">libxml2</span><span class="o">-</span><span class="n">devel</span>
+<span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">blas</span><span class="o">-</span><span class="n">devel</span> <span class="n">lapack</span><span class="o">-</span><span class="n">devel</span> <span class="n">atlas</span><span class="o">-</span><span class="n">devel</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">mpi</span>
+</pre></div>
+</div>
+<p>To set up repoforge as a source for the HDF5 package, go to
+<a class="reference external" href="http://repoforge.org/use">http://repoforge.org/use</a>. Install the appropriate up-to-date
+release package for your operating system. By default, CentOS Firefox will offer
+to run the installer. The CentOS 6.5 settings were still usable for HDF5 on
+CentOS 7 in 2016, but use CentOS 7 versions when they become
+available.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">yum</span> <span class="n">install</span> <span class="n">hdf5</span> <span class="n">hdf5</span><span class="o">-</span><span class="n">devel</span>
+</pre></div>
+</div>
+<p>To build QMCPACK:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">module</span> <span class="n">load</span> <span class="n">mpi</span><span class="o">/</span><span class="n">openmpi</span><span class="o">-</span><span class="n">x86_64</span>
+<span class="n">which</span> <span class="n">mpirun</span>
+<span class="c1"># Sanity check; should print something like   /usr/lib64/openmpi/bin/mpirun</span>
+<span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">mpiCC</span>
+<span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">8</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="nb">bin</span><span class="o">/</span><span class="n">qmcpack</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-mac-os-x-using-macports">
+<h3>Installing on Mac OS X using Macports<a class="headerlink" href="#installing-on-mac-os-x-using-macports" title="Permalink to this headline">¶</a></h3>
+<p>These instructions assume a fresh installation of macports
+and use the gcc 6.1 compiler. Older versions are fine, but it is vital to ensure that
+matching compilers and libraries are used for all
+packages and to force use of what is installed in /opt/local.  Performance should be very reasonable.
+Note that we use the Apple-provided Accelerate framework for
+optimized BLAS.</p>
+<p>Follow the Macports install instructions at <a class="reference external" href="https://www.macports.org/">https://www.macports.org/</a>.</p>
+<ul class="simple">
+<li><p>Install Xcode and the Xcode Command Line Tools.</p></li>
+<li><p>Agree to Xcode license in Terminal: sudo xcodebuild -license.</p></li>
+<li><p>Install MacPorts for your version of OS X.</p></li>
+</ul>
+<p>Install the required tools:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">select</span> <span class="n">gcc</span> <span class="n">mp</span><span class="o">-</span><span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">openmpi</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">select</span> <span class="o">--</span><span class="nb">set</span> <span class="n">mpi</span> <span class="n">openmpi</span><span class="o">-</span><span class="n">devel</span><span class="o">-</span><span class="n">gcc61</span><span class="o">-</span><span class="n">fortran</span>
+
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">fftw</span><span class="o">-</span><span class="mi">3</span> <span class="o">+</span><span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">libxml2</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">cmake</span>
+<span class="n">sudo</span> <span class="n">post</span> <span class="n">install</span> <span class="n">boost</span> <span class="o">+</span><span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">hdf5</span> <span class="o">+</span><span class="n">gcc6</span>
+
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">select</span> <span class="o">--</span><span class="nb">set</span> <span class="n">python</span> <span class="n">python27</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">py27</span><span class="o">-</span><span class="n">numpy</span> <span class="o">+</span><span class="n">gcc6</span>
+<span class="n">sudo</span> <span class="n">port</span> <span class="n">install</span> <span class="n">py27</span><span class="o">-</span><span class="n">matplotlib</span>  <span class="c1">#For graphical plots with qmca</span>
+</pre></div>
+</div>
+<p>QMCPACK build:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=</span><span class="n">mpicc</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=</span><span class="n">mpiCXX</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">6</span> <span class="c1"># Adjust for available core count</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="nb">bin</span><span class="o">/</span><span class="n">qmcpack</span>
+</pre></div>
+</div>
+<p>Cmake should pickup the versions of HDF5 and libxml (etc.) installed in
+/opt/local by macports. If you have other copies of these libraries
+installed and wish to force use of a specific version, use the
+environment variables detailed in <a class="reference internal" href="#envvar"><span class="std std-ref">Environment variables</span></a>.</p>
+<p>This recipe was verified on July 1, 2016, on a Mac running OS X 10.11.5
+“El Capitain.”</p>
+</div>
+<div class="section" id="installing-on-mac-os-x-using-homebrew-brew">
+<h3>Installing on Mac OS X using Homebrew (brew)<a class="headerlink" href="#installing-on-mac-os-x-using-homebrew-brew" title="Permalink to this headline">¶</a></h3>
+<p>Homebrew is a package manager for OS X that provides a convenient
+route to install all the QMCPACK dependencies. The
+following recipe will install the latest available versions of each
+package. This was successfully tested under OS X 10.12 “Sierra” in December 2017. Note that it is necessary to build the MPI software from
+source to use the brew-provided gcc instead of Apple CLANG.</p>
+<ol class="arabic simple">
+<li><p>Install Homebrew from <a class="reference external" href="http://brew.sh/">http://brew.sh/</a>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">ruby</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;$(curl -fsSL</span>
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">raw</span><span class="o">.</span><span class="n">githubusercontent</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Homebrew</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">master</span><span class="o">/</span><span class="n">install</span><span class="p">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Install the prerequisites:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">brew</span> <span class="n">install</span> <span class="n">gcc</span> <span class="c1"># installs gcc 7.2.0 on 2017-12-19</span>
+<span class="n">export</span> <span class="n">HOMEBREW_CXX</span><span class="o">=</span><span class="n">g</span><span class="o">++-</span><span class="mi">7</span>
+<span class="n">export</span> <span class="n">HOMEBREW_CC</span><span class="o">=</span><span class="n">gcc</span><span class="o">-</span><span class="mi">7</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">mpich2</span> <span class="o">--</span><span class="n">build</span><span class="o">-</span><span class="n">from</span><span class="o">-</span><span class="n">source</span>
+<span class="c1"># Build from source required to use homebrew compiled compilers as</span>
+<span class="c1"># opposed to Apple CLANG. Check &quot;mpicc -v&quot; indicates Homebrew gcc</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">cmake</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">fftw</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">boost</span>
+<span class="n">brew</span> <span class="n">install</span> <span class="n">homebrew</span><span class="o">/</span><span class="n">science</span><span class="o">/</span><span class="n">hdf5</span>
+<span class="c1">#Note: Libxml2 is not required via brew since OS X already includes it.</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Configure and build QMCPACK:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mpicc</span> \
+      <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">mpicxx</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">12</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Run the short tests. When MPICH is used for the first time, OSX will request approval of the network connection for each executable.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">short</span> <span class="o">-</span><span class="n">LE</span> <span class="n">unstable</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="installing-on-alcf-theta-cray-xc40">
+<h3>Installing on ALCF Theta, Cray XC40<a class="headerlink" href="#installing-on-alcf-theta-cray-xc40" title="Permalink to this headline">¶</a></h3>
+<p>Theta is a 9.65 petaflops system manufactured by Cray with 3,624 compute nodes.
+Each node features a second-generation Intel Xeon Phi 7230 processor and 192 GB DDR4 RAM.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CRAYPE_LINK_TYPE</span><span class="o">=</span><span class="n">dynamic</span>
+<span class="c1"># Do not use cmake 3.9.1, it causes trouble with parallel HDF5.</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.11</span><span class="o">.</span><span class="mi">4</span>
+<span class="n">module</span> <span class="n">unload</span> <span class="n">cray</span><span class="o">-</span><span class="n">libsci</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">gcc</span>   <span class="c1"># Make C++ 14 standard library available to the Intel compiler</span>
+<span class="n">export</span> <span class="n">BOOST_ROOT</span><span class="o">=/</span><span class="n">soft</span><span class="o">/</span><span class="n">libraries</span><span class="o">/</span><span class="n">boost</span><span class="o">/</span><span class="mf">1.64</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">intel</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">24</span>
+<span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="nb">bin</span><span class="o">/</span><span class="n">qmcpack</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-ornl-olcf-summit">
+<h3>Installing on ORNL OLCF Summit<a class="headerlink" href="#installing-on-ornl-olcf-summit" title="Permalink to this headline">¶</a></h3>
+<p>Summit is an IBM system at the ORNL OLCF built with IBM Power System AC922
+nodes. They have two IBM Power 9 processors and six NVIDIA Volta V100
+accelerators.</p>
+<div class="section" id="building-qmcpack">
+<h4>Building QMCPACK<a class="headerlink" href="#building-qmcpack" title="Permalink to this headline">¶</a></h4>
+<p>Note that these build instructions are preliminary as the
+software environment is subject to change. As of December 2018, the
+IBM XL compiler does not support C++14, so we currently use the
+gnu compiler.</p>
+<p>For ease of reproducibility we provide build scripts for Summit.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">qmcpack</span>
+<span class="o">./</span><span class="n">config</span><span class="o">/</span><span class="n">build_olcf_summit</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">ls</span> <span class="nb">bin</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-quantum-espresso">
+<h4>Building Quantum Espresso<a class="headerlink" href="#building-quantum-espresso" title="Permalink to this headline">¶</a></h4>
+<p>We provide a build script for the v6.4.1 release of Quantum Espresso (QE).
+The following can be used to build a CPU version of QE on Summit,
+placing the script in the external_codes/quantum_espresso directory.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">external_codes</span><span class="o">/</span><span class="n">quantum_espresso</span>
+<span class="o">./</span><span class="n">build_qe_olcf_summit</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Note that performance is
+not yet optimized although vendor libraries are
+used. Alternatively, the wavefunction files can be generated on
+another system and the converted HDF5 files copied over.</p>
+</div>
+</div>
+<div class="section" id="installing-on-nersc-cori-haswell-partition-cray-xc40">
+<h3>Installing on NERSC Cori, Haswell Partition, Cray XC40<a class="headerlink" href="#installing-on-nersc-cori-haswell-partition-cray-xc40" title="Permalink to this headline">¶</a></h3>
+<p>Cori is a Cray XC40 that includes 16-core Intel “Haswell” nodes
+installed at NERSC. In the following example, the source code is
+cloned in $HOME/qmc/git_QMCPACK and QMCPACK is built in the scratch
+space.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mkdir $HOME/qmc
+mkdir $HOME/qmc/git_QMCPACK
+cd $HOME/qmc_git_QMCPACK
+git clone https://github.com/QMCPACK/qmcpack.git
+cd qmcpack
+git checkout v3.7.0 # Edit for desired version
+export CRAYPE_LINK_TYPE=dynamic
+module unload cray-libsci
+module load boost/1.70.0
+module load cray-hdf5-parallel
+module load cmake/3.14.0
+module load gcc/7.3.0 # Make C++ 14 standard library available to the Intel compiler
+cd $SCRATCH
+mkdir build_cori_hsw
+cd build_cori_hsw
+cmake -DQMC_SYMLINK_TEST_FILES=0 $HOME/qmc/git_QMCPACK/qmcpack/
+nice make -j 8
+ls -l bin/qmcpack
+</pre></div>
+</div>
+<p>When the preceding was tested on May 16, 2019, the following module and
+software versions were present:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build_cori_hsw</span><span class="o">&gt;</span> <span class="n">module</span> <span class="nb">list</span>
+<span class="n">Currently</span> <span class="n">Loaded</span> <span class="n">Modulefiles</span><span class="p">:</span>
+<span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">10.6</span>                                   <span class="mi">14</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">43</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__ga796da32</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                          <span class="mi">15</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">18</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">47</span><span class="n">__g2aa4f39</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">3</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">18.0</span><span class="o">.</span><span class="mf">1.163</span>                                   <span class="mi">16</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
+<span class="mi">4</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                               <span class="mi">17</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">4</span>
+<span class="mi">5</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">15</span>                                      <span class="mi">18</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">haswell</span>
+<span class="mi">6</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">13</span><span class="n">__g5196236</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">19</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">3</span>
+<span class="mi">7</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">13</span><span class="n">__gea11d3d</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">20</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">7.3</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">8</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                         <span class="mi">21</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>
+<span class="mi">9</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__g5a674e0</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">22</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">4</span>
+<span class="mi">10</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">11</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span>   <span class="mi">23</span><span class="p">)</span> <span class="n">boost</span><span class="o">/</span><span class="mf">1.70</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">11</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">15</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">11</span><span class="n">__g7549d06</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">24</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span><span class="o">/</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">2.0</span>
+<span class="mi">12</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">43</span><span class="n">__g6c4e934</span><span class="o">.</span><span class="n">ari</span>              <span class="mi">25</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">13</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.7_2</span><span class="o">.</span><span class="mf">2.118</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_10</span><span class="o">.</span><span class="mi">1</span><span class="n">__g58b37a2</span>
+</pre></div>
+</div>
+<p>The following slurm job file can be used to run the tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#!/bin/bash
+#SBATCH --qos=debug
+#SBATCH --time=00:10:00
+#SBATCH --nodes=1
+#SBATCH --tasks-per-node=32
+#SBATCH --constraint=haswell
+echo --- Start `date`
+echo --- Working directory: `pwd`
+ctest -VV -R deterministic
+echo --- End `date`
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-nersc-cori-xeon-phi-knl-partition-cray-xc40">
+<h3>Installing on NERSC Cori, Xeon Phi KNL partition, Cray XC40<a class="headerlink" href="#installing-on-nersc-cori-xeon-phi-knl-partition-cray-xc40" title="Permalink to this headline">¶</a></h3>
+<p>Cori is a Cray XC40 that includes Intel Xeon Phi Knight’s Landing (KNL) nodes. The following build recipe ensures that the code
+generation is appropriate for the KNL nodes. The source is assumed to
+be in $HOME/qmc/git_QMCPACK/qmcpack as per the Haswell example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export CRAYPE_LINK_TYPE=dynamic
+module swap craype-haswell craype-mic-knl # Only difference between Haswell and KNL recipes
+module unload cray-libsci
+module load boost/1.70.0
+module load cray-hdf5-parallel
+module load cmake/3.14.0
+module load gcc/7.3.0 # Make C++ 14 standard library available to the Intel compiler
+cd $SCRATCH
+mkdir build_cori_knl
+cd build_cori_knl
+cmake -DQMC_SYMLINK_TEST_FILES=0 $HOME/git_QMCPACK/qmcpack/
+nice make -j 8
+ls -l bin/qmcpack
+</pre></div>
+</div>
+<p>When the preceding was tested on May 16, 2019, the following module and
+software versions were present:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build_cori_knl</span><span class="o">&gt;</span> <span class="n">module</span> <span class="nb">list</span>
+  <span class="n">Currently</span> <span class="n">Loaded</span> <span class="n">Modulefiles</span><span class="p">:</span>
+  <span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">10.6</span>                                  <span class="mi">14</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">43</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__ga796da32</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                         <span class="mi">15</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">18</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">47</span><span class="n">__g2aa4f39</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">3</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">18.0</span><span class="o">.</span><span class="mf">1.163</span>                                  <span class="mi">16</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
+  <span class="mi">4</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                              <span class="mi">17</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">4</span>
+  <span class="mi">5</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">15</span>                                     <span class="mi">18</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">mic</span><span class="o">-</span><span class="n">knl</span>
+  <span class="mi">6</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">13</span><span class="n">__g5196236</span><span class="o">.</span><span class="n">ari</span>            <span class="mi">19</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">3</span>
+  <span class="mi">7</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">13</span><span class="n">__gea11d3d</span><span class="o">.</span><span class="n">ari</span>          <span class="mi">20</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">7.3</span><span class="o">.</span><span class="mi">0</span>
+  <span class="mi">8</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                        <span class="mi">21</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>
+  <span class="mi">9</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__g5a674e0</span><span class="o">.</span><span class="n">ari</span>            <span class="mi">22</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">4</span>
+  <span class="mi">10</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">11</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span>  <span class="mi">23</span><span class="p">)</span> <span class="n">boost</span><span class="o">/</span><span class="mf">1.70</span><span class="o">.</span><span class="mi">0</span>
+  <span class="mi">11</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">15</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">11</span><span class="n">__g7549d06</span><span class="o">.</span><span class="n">ari</span>          <span class="mi">24</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span><span class="o">/</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">2.0</span>
+  <span class="mi">12</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">43</span><span class="n">__g6c4e934</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">25</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">0</span>
+  <span class="mi">13</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.7_2</span><span class="o">.</span><span class="mf">2.118</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_10</span><span class="o">.</span><span class="mi">1</span><span class="n">__g58b37a2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-systems-with-armv8-based-processors">
+<h3>Installing on systems with ARMv8-based processors<a class="headerlink" href="#installing-on-systems-with-armv8-based-processors" title="Permalink to this headline">¶</a></h3>
+<p>The following build recipe was verified using the <a href="#id2"><span class="problematic" id="id3">`</span></a>Arm Compiler for HPC’ on the ANL JLSE Comanche system with Cavium ThunderX2 processors on November 6, 2018.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># load armclang compiler</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">Generic</span><span class="o">-</span><span class="n">AArch64</span><span class="o">/</span><span class="n">RHEL</span><span class="o">/</span><span class="mi">7</span><span class="o">/</span><span class="n">arm</span><span class="o">-</span><span class="n">hpc</span><span class="o">-</span><span class="n">compiler</span><span class="o">/</span><span class="mf">18.4</span>
+<span class="c1"># load Arm performance libraries</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">ThunderX2CN99</span><span class="o">/</span><span class="n">RHEL</span><span class="o">/</span><span class="mi">7</span><span class="o">/</span><span class="n">arm</span><span class="o">-</span><span class="n">hpc</span><span class="o">-</span><span class="n">compiler</span><span class="o">-</span><span class="mf">18.4</span><span class="o">/</span><span class="n">armpl</span><span class="o">/</span><span class="mf">18.4</span><span class="o">.</span><span class="mi">0</span>
+<span class="c1"># define path to pre-installed packages</span>
+<span class="n">export</span> <span class="n">HDF5_ROOT</span><span class="o">=&lt;/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">hdf5</span><span class="o">/</span><span class="n">install</span><span class="o">/&gt;</span>
+<span class="n">export</span> <span class="n">BOOST_ROOT</span><span class="o">=&lt;/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">boost</span><span class="o">/</span><span class="n">install</span><span class="o">&gt;</span> <span class="c1"># header-only, no need to build</span>
+</pre></div>
+</div>
+<p>Then using the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">build_armclang</span>
+<span class="n">cd</span> <span class="n">build_armclang</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=</span><span class="n">armclang</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=</span><span class="n">armclang</span><span class="o">++</span> <span class="o">-</span><span class="n">DQMC_MPI</span><span class="o">=</span><span class="mi">0</span> \
+    <span class="o">-</span><span class="n">DLAPACK_LIBRARIES</span><span class="o">=</span><span class="s2">&quot;-L$ARMPL_DIR/lib -larmpl_mp&quot;</span> \
+    <span class="o">-</span><span class="n">DFFTW_INCLUDE_DIR</span><span class="o">=</span><span class="s2">&quot;$ARMPL_DIR/include&quot;</span> \
+    <span class="o">-</span><span class="n">DFFTW_LIBRARIES</span><span class="o">=</span><span class="s2">&quot;$ARMPL_DIR/lib/libarmpl_mp.a&quot;</span> \
+    <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">56</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
