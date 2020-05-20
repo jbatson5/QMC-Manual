@@ -96,6 +96,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#building-with-cmake">Building with CMake</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#quick-build-instructions-try-first">Quick build instructions (try first)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-options">Configuration Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-from-cmake">Installation from CMake</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#role-of-qmc-data">Role of QMC_DATA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configure-and-build-using-cmake-and-make">Configure and build using CMake and make</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-configure-and-build">Example configure and build</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-scripts">Build scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-vendor-optimized-numerical-libraries-e-g-intel-mkl">Using vendor-optimized numerical libraries (e.g., Intel MKL)</a></li>
 </ul>
 </li>
 </ul>
@@ -185,9 +193,9 @@ or <a class="reference internal" href="#obdevelopment"><span class="std std-ref
 installed (<a class="reference internal" href="#prerequisites"><span class="std std-ref">Prerequisites</span></a>).</p></li>
 <li><p>If you will use Quantum ESPRESSO, download and patch it. The patch
 adds the pw2qmcpack utility
-(<span class="xref std std-ref">buildqe</span>.</p></li>
-<li><p>Run the cmake configure step and build with make (
-<a class="reference internal" href="#cmake"><span class="std std-ref">Building with CMake</span></a> and <a class="reference internal" href="#cmakequick"><span class="std std-ref">Quick build instructions (try first)</span></a>). Examples for
+(<span class="xref std std-ref">buildqe</span>).</p></li>
+<li><p>Run the cmake configure step and build with make
+(<a class="reference internal" href="#cmake"><span class="std std-ref">Building with CMake</span></a> and <a class="reference internal" href="#cmakequick"><span class="std std-ref">Quick build instructions (try first)</span></a>). Examples for
 common systems are given in
 <span class="xref std std-ref">installexamples</span>.</p></li>
 <li><p>Run the tests to verify QMCPACK
@@ -203,7 +211,7 @@ Troubleshooting suggestions are in
 produced: the general one, which is the default, and the “complex”
 version, which supports periodic calculations at arbitrary twist angles
 and k-points. This second version is enabled via a cmake configuration
-parameter (see <span class="xref std std-ref">cmakeoptions</span>).
+parameter (see <a class="reference internal" href="#cmakeoptions"><span class="std std-ref">Configuration Options</span></a>).
 The general version supports only wavefunctions that can be made real.
 If you run a calculation that needs the complex version, QMCPACK will
 stop and inform you.</p>
@@ -253,7 +261,7 @@ often accessed via a modules environment—check your system
 documentation.</p>
 <p><strong>Use of the latest versions of all compilers and libraries is strongly
 encouraged</strong> but not absolutely essential. Generally, newer versions are
-faster; see Section <a class="reference external" href="#sec:buildperformance">[sec:buildperformance]</a>
+faster; see <span class="xref std std-ref">buildperformance</span>
 for performance suggestions.</p>
 <ul class="simple">
 <li><p>C/C++ compilers such as GNU, Clang, Intel, and IBM XL. C++ compilers
@@ -368,6 +376,262 @@ such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
 give examples for a number of common systems in <span class="xref std std-ref">installexamples</span>.</p>
+</div>
+<div class="section" id="environment-variables">
+<span id="envvar"></span><h3>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
+<p>A number of environment variables affect the build.  In particular
+they can control the default paths for libraries, the default
+compilers, etc.  The list of environment variables is given below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CXX</span>              <span class="n">C</span><span class="o">++</span> <span class="n">compiler</span>
+<span class="n">CC</span>               <span class="n">C</span> <span class="n">Compiler</span>
+<span class="n">MKL_ROOT</span>         <span class="n">Path</span> <span class="k">for</span> <span class="n">MKL</span>
+<span class="n">HDF5_ROOT</span>        <span class="n">Path</span> <span class="k">for</span> <span class="n">HDF5</span>
+<span class="n">BOOST_ROOT</span>       <span class="n">Path</span> <span class="k">for</span> <span class="n">Boost</span>
+<span class="n">FFTW_HOME</span>        <span class="n">Path</span> <span class="k">for</span> <span class="n">FFTW</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration-options">
+<span id="cmakeoptions"></span><h3>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this headline">¶</a></h3>
+<p>In addition to reading the environment variables, CMake provides a
+number of optional variables that can be set to control the build and
+configure steps.  When passed to CMake, these variables will take
+precedent over the environment and default variables.  To set them,
+add -D FLAG=VALUE to the configure line between the CMake command and
+the path to the source directory.</p>
+<ul>
+<li><p>Key QMCPACK build options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QMC_CUDA</span>              <span class="n">Enable</span> <span class="n">CUDA</span> <span class="ow">and</span> <span class="n">GPU</span> <span class="n">acceleration</span> <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">no</span><span class="p">)</span>
+<span class="n">QMC_COMPLEX</span>           <span class="n">Build</span> <span class="n">the</span> <span class="nb">complex</span> <span class="p">(</span><span class="n">general</span> <span class="n">twist</span><span class="o">/</span><span class="n">k</span><span class="o">-</span><span class="n">point</span><span class="p">)</span> <span class="n">version</span> <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">no</span><span class="p">)</span>
+<span class="n">QMC_MIXED_PRECISION</span>   <span class="n">Build</span> <span class="n">the</span> <span class="n">mixed</span> <span class="n">precision</span> <span class="p">(</span><span class="n">mixing</span> <span class="n">double</span><span class="o">/</span><span class="nb">float</span><span class="p">)</span> <span class="n">version</span>
+                      <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span> <span class="p">(</span><span class="n">GPU</span> <span class="n">default</span><span class="p">),</span> <span class="mi">0</span><span class="p">:</span><span class="n">no</span> <span class="p">(</span><span class="n">CPU</span> <span class="n">default</span><span class="p">))</span><span class="o">.</span>
+                      <span class="n">The</span> <span class="n">CPU</span> <span class="n">support</span> <span class="ow">is</span> <span class="n">experimental</span><span class="o">.</span>
+                      <span class="n">Use</span> <span class="nb">float</span> <span class="ow">and</span> <span class="n">double</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">and</span> <span class="n">full</span> <span class="n">precision</span><span class="o">.</span>
+                      <span class="n">The</span> <span class="n">GPU</span> <span class="n">support</span> <span class="ow">is</span> <span class="n">quite</span> <span class="n">mature</span><span class="o">.</span>
+                      <span class="n">Use</span> <span class="n">always</span> <span class="n">double</span> <span class="k">for</span> <span class="n">host</span> <span class="n">side</span> <span class="n">base</span> <span class="ow">and</span> <span class="n">full</span> <span class="n">precision</span>
+                      <span class="ow">and</span> <span class="n">use</span> <span class="nb">float</span> <span class="ow">and</span> <span class="n">double</span> <span class="k">for</span> <span class="n">CUDA</span> <span class="n">base</span> <span class="ow">and</span> <span class="n">full</span> <span class="n">precision</span><span class="o">.</span>
+<span class="n">ENABLE_SOA</span>            <span class="n">Enable</span> <span class="n">data</span> <span class="n">layout</span> <span class="ow">and</span> <span class="n">algorithm</span> <span class="n">optimizations</span> <span class="n">using</span>
+                      <span class="n">Structure</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">Array</span> <span class="p">(</span><span class="n">SoA</span><span class="p">)</span> <span class="n">datatypes</span> <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span> <span class="p">(</span><span class="n">default</span><span class="p">),</span> <span class="mi">0</span><span class="p">:</span><span class="n">no</span><span class="p">)</span><span class="o">.</span>
+<span class="n">ENABLE_TIMERS</span>         <span class="n">Enable</span> <span class="n">fine</span><span class="o">-</span><span class="n">grained</span> <span class="n">timers</span> <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="n">no</span> <span class="p">(</span><span class="n">default</span><span class="p">))</span><span class="o">.</span>
+                      <span class="n">Timers</span> <span class="n">are</span> <span class="n">off</span> <span class="n">by</span> <span class="n">default</span> <span class="n">to</span> <span class="n">avoid</span> <span class="n">potential</span> <span class="n">slowdown</span> <span class="ow">in</span> <span class="n">small</span>
+                      <span class="n">systems</span><span class="o">.</span> <span class="n">For</span> <span class="n">large</span> <span class="n">systems</span> <span class="p">(</span><span class="mi">100</span><span class="o">+</span> <span class="n">electrons</span><span class="p">)</span> <span class="n">there</span> <span class="ow">is</span> <span class="n">no</span> <span class="n">risk</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p>General build options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMAKE_BUILD_TYPE</span>     <span class="n">A</span> <span class="n">variable</span> <span class="n">which</span> <span class="n">controls</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">build</span>
+                     <span class="p">(</span><span class="n">defaults</span> <span class="n">to</span> <span class="n">Release</span><span class="p">)</span><span class="o">.</span> <span class="n">Possible</span> <span class="n">values</span> <span class="n">are</span><span class="p">:</span>
+                     <span class="kc">None</span> <span class="p">(</span><span class="n">Do</span> <span class="ow">not</span> <span class="nb">set</span> <span class="n">debug</span><span class="o">/</span><span class="n">optmize</span> <span class="n">flags</span><span class="p">,</span> <span class="n">use</span>
+                     <span class="n">CMAKE_C_FLAGS</span> <span class="ow">or</span> <span class="n">CMAKE_CXX_FLAGS</span><span class="p">)</span>
+                     <span class="n">Debug</span> <span class="p">(</span><span class="n">create</span> <span class="n">a</span> <span class="n">debug</span> <span class="n">build</span><span class="p">)</span>
+                     <span class="n">Release</span> <span class="p">(</span><span class="n">create</span> <span class="n">a</span> <span class="n">release</span><span class="o">/</span><span class="n">optimized</span> <span class="n">build</span><span class="p">)</span>
+                     <span class="n">RelWithDebInfo</span> <span class="p">(</span><span class="n">create</span> <span class="n">a</span> <span class="n">release</span><span class="o">/</span><span class="n">optimized</span> <span class="n">build</span> <span class="k">with</span> <span class="n">debug</span> <span class="n">info</span><span class="p">)</span>
+                     <span class="n">MinSizeRel</span> <span class="p">(</span><span class="n">create</span> <span class="n">an</span> <span class="n">executable</span> <span class="n">optimized</span> <span class="k">for</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">CMAKE_C_COMPILER</span>     <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span> <span class="n">compiler</span>
+<span class="n">CMAKE_CXX_COMPILER</span>   <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span><span class="o">++</span> <span class="n">compiler</span>
+<span class="n">CMAKE_C_FLAGS</span>        <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span> <span class="n">flags</span><span class="o">.</span>  <span class="n">Note</span><span class="p">:</span> <span class="n">to</span> <span class="n">prevent</span> <span class="n">default</span>
+                     <span class="n">debug</span><span class="o">/</span><span class="n">release</span> <span class="n">flags</span> <span class="kn">from</span> <span class="nn">being</span> <span class="n">used</span><span class="p">,</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="kc">None</span>
+                     <span class="n">Also</span> <span class="n">supported</span><span class="p">:</span> <span class="n">CMAKE_C_FLAGS_DEBUG</span><span class="p">,</span>
+                     <span class="n">CMAKE_C_FLAGS_RELEASE</span><span class="p">,</span> <span class="ow">and</span> <span class="n">CMAKE_C_FLAGS_RELWITHDEBINFO</span>
+<span class="n">CMAKE_CXX_FLAGS</span>      <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span><span class="o">++</span> <span class="n">flags</span><span class="o">.</span>  <span class="n">Note</span><span class="p">:</span> <span class="n">to</span> <span class="n">prevent</span> <span class="n">default</span>
+                     <span class="n">debug</span><span class="o">/</span><span class="n">release</span> <span class="n">flags</span> <span class="kn">from</span> <span class="nn">being</span> <span class="n">used</span><span class="p">,</span> <span class="nb">set</span> <span class="n">the</span> <span class="n">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="kc">None</span>
+                     <span class="n">Also</span> <span class="n">supported</span><span class="p">:</span> <span class="n">CMAKE_CXX_FLAGS_DEBUG</span><span class="p">,</span>
+                     <span class="n">CMAKE_CXX_FLAGS_RELEASE</span><span class="p">,</span> <span class="ow">and</span> <span class="n">CMAKE_CXX_FLAGS_RELWITHDEBINFO</span>
+<span class="n">CMAKE_INSTALL_PREFIX</span> <span class="n">Set</span> <span class="n">the</span> <span class="n">install</span> <span class="n">location</span> <span class="p">(</span><span class="k">if</span> <span class="n">using</span> <span class="n">the</span> <span class="n">optional</span> <span class="n">install</span> <span class="n">step</span><span class="p">)</span>
+<span class="n">INSTALL_NEXUS</span>        <span class="n">Install</span> <span class="n">Nexus</span> <span class="n">alongside</span> <span class="n">QMCPACK</span> <span class="p">(</span><span class="k">if</span> <span class="n">using</span> <span class="n">the</span> <span class="n">optional</span> <span class="n">install</span> <span class="n">step</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Additional QMCPACK build options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QE_BIN</span>                    <span class="n">Location</span> <span class="n">of</span> <span class="n">Quantum</span> <span class="n">Espresso</span> <span class="n">binaries</span> <span class="n">including</span> <span class="n">pw2qmcpack</span><span class="o">.</span><span class="n">x</span>
+<span class="n">QMC_DATA</span>                  <span class="n">Specify</span> <span class="n">data</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">QMCPACK</span> <span class="n">performance</span> <span class="ow">and</span> <span class="n">integration</span> <span class="n">tests</span>
+<span class="n">QMC_INCLUDE</span>               <span class="n">Add</span> <span class="n">extra</span> <span class="n">include</span> <span class="n">paths</span>
+<span class="n">QMC_EXTRA_LIBS</span>            <span class="n">Add</span> <span class="n">extra</span> <span class="n">link</span> <span class="n">libraries</span>
+<span class="n">QMC_BUILD_STATIC</span>          <span class="n">Add</span> <span class="o">-</span><span class="n">static</span> <span class="n">flags</span> <span class="n">to</span> <span class="n">build</span>
+<span class="n">QMC_SYMLINK_TEST_FILES</span>    <span class="n">Set</span> <span class="n">to</span> <span class="n">zero</span> <span class="n">to</span> <span class="n">require</span> <span class="n">test</span> <span class="n">files</span> <span class="n">to</span> <span class="n">be</span> <span class="n">copied</span><span class="o">.</span> <span class="n">Avoids</span> <span class="n">space</span>
+                          <span class="n">saving</span> <span class="n">default</span> <span class="n">use</span> <span class="n">of</span> <span class="n">symbolic</span> <span class="n">links</span> <span class="k">for</span> <span class="n">test</span> <span class="n">files</span><span class="o">.</span> <span class="n">Useful</span>
+                          <span class="k">if</span> <span class="n">the</span> <span class="n">build</span> <span class="ow">is</span> <span class="n">on</span> <span class="n">a</span> <span class="n">separate</span> <span class="n">filesystem</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">source</span><span class="p">,</span> <span class="k">as</span>
+                          <span class="n">required</span> <span class="n">on</span> <span class="n">some</span> <span class="n">HPC</span> <span class="n">systems</span><span class="o">.</span>
+<span class="n">QMC_VERBOSE_CONFIGURATION</span> <span class="n">Print</span> <span class="n">additional</span> <span class="n">information</span> <span class="n">during</span> <span class="n">cmake</span> <span class="n">configuration</span>
+                          <span class="n">including</span> <span class="n">details</span> <span class="n">of</span> <span class="n">which</span> <span class="n">tests</span> <span class="n">are</span> <span class="n">enabled</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p>Intel MKL related</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ENABLE_MKL</span>          <span class="n">Enable</span> <span class="n">Intel</span> <span class="n">MKL</span> <span class="n">libraries</span> <span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">yes</span> <span class="p">(</span><span class="n">default</span> <span class="k">for</span> <span class="n">intel</span> <span class="n">compiler</span><span class="p">),</span>
+                                              <span class="mi">0</span><span class="p">:</span><span class="n">no</span> <span class="p">(</span><span class="n">default</span> <span class="n">otherwise</span><span class="p">))</span><span class="o">.</span>
+<span class="n">MKL_ROOT</span>            <span class="n">Path</span> <span class="n">to</span> <span class="n">MKL</span> <span class="n">libraries</span> <span class="p">(</span><span class="n">only</span> <span class="n">necessary</span> <span class="k">for</span> <span class="n">non</span> <span class="n">intel</span> <span class="n">compilers</span>
+                    <span class="ow">or</span> <span class="n">intel</span> <span class="n">without</span> <span class="n">standard</span> <span class="n">environment</span> <span class="n">variables</span><span class="o">.</span><span class="p">)</span>
+                    <span class="n">One</span> <span class="n">of</span> <span class="n">the</span> <span class="n">above</span> <span class="n">environment</span> <span class="n">variables</span> <span class="n">can</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p>libxml2 related</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LIBXML2_INCLUDE_DIR</span>   <span class="n">Include</span> <span class="n">directory</span> <span class="k">for</span> <span class="n">libxml2</span>
+
+<span class="n">LIBXML2_LIBRARY</span>       <span class="n">Libxml2</span> <span class="n">library</span>
+</pre></div>
+</div>
+</li>
+<li><p>HDF5 related</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HDF5_PREFER_PARALLEL</span> <span class="mi">1</span><span class="p">(</span><span class="n">default</span> <span class="k">for</span> <span class="n">MPI</span> <span class="n">build</span><span class="p">)</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span> <span class="n">enables</span><span class="o">/</span><span class="n">disable</span> <span class="n">parallel</span> <span class="n">HDF5</span> <span class="n">library</span> <span class="n">searching</span><span class="o">.</span>
+<span class="n">ENABLE_PHDF5</span>         <span class="mi">1</span><span class="p">(</span><span class="n">default</span> <span class="k">for</span> <span class="n">parallel</span> <span class="n">HDF5</span> <span class="n">library</span><span class="p">)</span><span class="o">/</span><span class="mi">0</span><span class="p">,</span> <span class="n">enables</span><span class="o">/</span><span class="n">disable</span> <span class="n">parallel</span> <span class="n">collective</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p>FFTW related</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FFTW_INCLUDE_DIRS</span>   <span class="n">Specify</span> <span class="n">include</span> <span class="n">directories</span> <span class="k">for</span> <span class="n">FFTW</span>
+<span class="n">FFTW_LIBRARY_DIRS</span>   <span class="n">Specify</span> <span class="n">library</span> <span class="n">directories</span> <span class="k">for</span> <span class="n">FFTW</span>
+</pre></div>
+</div>
+</li>
+<li><p>CTest related</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MPIEXEC_EXECUTABLE</span>     <span class="n">Specify</span> <span class="n">the</span> <span class="n">mpi</span> <span class="n">wrapper</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="n">srun</span><span class="p">,</span> <span class="n">aprun</span><span class="p">,</span> <span class="n">mpirun</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span>
+<span class="n">MPIEXEC_NUMPROC_FLAG</span>   <span class="n">Specify</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">mpi</span> <span class="n">processes</span> <span class="n">flag</span><span class="p">,</span>
+                       <span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="s2">&quot;-np&quot;</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span>
+<span class="n">MPIEXEC_PREFLAGS</span>       <span class="n">Flags</span> <span class="n">to</span> <span class="k">pass</span> <span class="n">to</span> <span class="n">MPIEXEC_EXECUTABLE</span> <span class="n">directly</span> <span class="n">before</span> <span class="n">the</span> <span class="n">executable</span> <span class="n">to</span> <span class="n">run</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p>LLVM/Clang Developer Options</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LLVM_SANITIZE_ADDRES</span>  <span class="n">link</span> <span class="k">with</span> <span class="n">the</span> <span class="n">Clang</span> <span class="n">address</span> <span class="n">sanitizer</span> <span class="n">library</span>
+<span class="n">LLVM_SANITIZE_MEMORY</span>  <span class="n">link</span> <span class="k">with</span> <span class="n">the</span> <span class="n">Clang</span> <span class="n">memory</span> <span class="n">sanitizer</span> <span class="n">library</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><a class="reference external" href="https://clang.llvm.org/docs/AddressSanitizer.html">Clang address sanitizer library</a></p>
+<p><a class="reference external" href="https://clang.llvm.org/docs/MemorySanitizer.html">Clang memory sanitizer library</a></p>
+<p>See <span class="xref std std-ref">LLVM-Sanitizer-Libraries</span> for more information.</p>
+</div>
+<div class="section" id="installation-from-cmake">
+<h3>Installation from CMake<a class="headerlink" href="#installation-from-cmake" title="Permalink to this headline">¶</a></h3>
+<p>Installation is optional. The QMCPACK executable can be run from the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory in the build location.
+If the install step is desired, run the <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> command to install the QMCPACK executable, the converter,
+and some additional executables.
+Also installed is the <code class="docutils literal notranslate"><span class="pre">qmcpack.settings</span></code> file that records options used to compile QMCPACK.
+Specify the <code class="docutils literal notranslate"><span class="pre">CMAKE_INSTALL_PREFIX</span></code> CMake variable during configuration to set the install location.</p>
+</div>
+<div class="section" id="role-of-qmc-data">
+<h3>Role of QMC_DATA<a class="headerlink" href="#role-of-qmc-data" title="Permalink to this headline">¶</a></h3>
+<p>QMCPACK includes a variety of optional performance and integration
+tests that use research quality wavefunctions to obtain meaningful
+performance and to more thoroughly test the code. The necessarily
+large input files are stored in the location pointed to by QMC_DATA (e.g., scratch or long-lived project space on a supercomputer). These
+files are not included in the source code distribution to minimize
+size. The tests are activated if CMake detects the files when
+configured. See tests/performance/NiO/README,
+tests/solids/NiO_afqmc/README, tests/performance/C-graphite/README, and tests/performance/C-molecule/README
+for details of the current tests and input files and to download them.</p>
+<p>Currently the files must be downloaded via <a class="reference external" href="https://anl.box.com/s/yxz1ic4kxtdtgpva5hcmlom9ixfl3v3c">https://anl.box.com/s/yxz1ic4kxtdtgpva5hcmlom9ixfl3v3c</a>.</p>
+<p>The layout of current complete set of files is given below. If a file is missing, the appropriate performance test is skipped.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">graphite</span><span class="o">/</span><span class="n">lda</span><span class="o">.</span><span class="n">pwscf</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C12</span><span class="o">-</span><span class="n">e48</span><span class="o">-</span><span class="n">pp</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C12</span><span class="o">-</span><span class="n">e72</span><span class="o">-</span><span class="n">ae</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C18</span><span class="o">-</span><span class="n">e108</span><span class="o">-</span><span class="n">ae</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C18</span><span class="o">-</span><span class="n">e72</span><span class="o">-</span><span class="n">pp</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C24</span><span class="o">-</span><span class="n">e144</span><span class="o">-</span><span class="n">ae</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C24</span><span class="o">-</span><span class="n">e96</span><span class="o">-</span><span class="n">pp</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C30</span><span class="o">-</span><span class="n">e120</span><span class="o">-</span><span class="n">pp</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C30</span><span class="o">-</span><span class="n">e180</span><span class="o">-</span><span class="n">ae</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">C</span><span class="o">-</span><span class="n">molecule</span><span class="o">/</span><span class="n">C60</span><span class="o">-</span><span class="n">e240</span><span class="o">-</span><span class="n">pp</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S1</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S2</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S4</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S8</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S16</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S32</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S64</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S128</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO</span><span class="o">-</span><span class="n">fcc</span><span class="o">-</span><span class="n">supertwist111</span><span class="o">-</span><span class="n">supershift000</span><span class="o">-</span><span class="n">S256</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO_afm_fcidump</span><span class="o">.</span><span class="n">h5</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO_afm_wfn</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">QMC_DATA</span><span class="o">/</span><span class="n">NiO</span><span class="o">/</span><span class="n">NiO_nm_choldump</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-and-build-using-cmake-and-make">
+<h3>Configure and build using CMake and make<a class="headerlink" href="#configure-and-build-using-cmake-and-make" title="Permalink to this headline">¶</a></h3>
+<p>To configure and build QMCPACK, move to build directory, run CMake, and make</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">8</span>
+</pre></div>
+</div>
+<p>As you will have gathered, CMake encourages “out of source” builds,
+where all the files for a specific build configuration reside in their
+own directory separate from the source files. This allows multiple
+builds to be created from the same source files, which is very useful
+when the file system is shared between different systems. You can also
+build versions with different settings (e.g., QMC_COMPLEX) and
+different compiler settings. The build directory does not have to be
+called build—use something descriptive such as build_machinename or
+build_complex. The “..” in the CMake line refers to the directory
+containing CMakeLists.txt. Update the “..” for other build
+directory locations.</p>
+</div>
+<div class="section" id="example-configure-and-build">
+<h3>Example configure and build<a class="headerlink" href="#example-configure-and-build" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p>Set the environments (the examples below assume bash, Intel compilers, and MKL library)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">icpc</span>
+<span class="n">export</span> <span class="n">CC</span><span class="o">=</span><span class="n">icc</span>
+<span class="n">export</span> <span class="n">MKL_ROOT</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">mkl</span><span class="o">/</span><span class="mf">10.0</span><span class="o">.</span><span class="mf">3.020</span>
+<span class="n">export</span> <span class="n">HDF5_ROOT</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
+<span class="n">export</span> <span class="n">BOOST_ROOT</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">boost</span>
+<span class="n">export</span> <span class="n">FFTW_HOME</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">fftw</span>
+</pre></div>
+</div>
+</li>
+<li><p>Move to build directory, run CMake, and make</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">build</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Release</span> <span class="o">..</span>
+<span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">8</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="build-scripts">
+<h3>Build scripts<a class="headerlink" href="#build-scripts" title="Permalink to this headline">¶</a></h3>
+<p>We recommended creating a helper script that contains the
+configure line for CMake.  This is particularly useful when avoiding
+environment variables, packages are installed in custom locations,
+or the configure line is long or complex.  In this case it is also
+recommended to add “rm -rf CMake*” before the configure line to remove
+existing CMake configure files to ensure a fresh configure each time
+the script is called. Deleting all the files in the build
+directory is also acceptable. If you do so we recommend adding some sanity
+checks in case the script is run from the wrong directory (e.g.,
+checking for the existence of some QMCPACK files).</p>
+<p>Some build script examples for different systems are given in the
+config directory. For example, on Cray systems these scripts might
+load the appropriate modules to set the appropriate programming
+environment, specific library versions, etc.</p>
+<p>An example script build.sh is given below. It is much more complex
+than usually needed for comprehensiveness:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CXX</span><span class="o">=</span><span class="n">mpic</span><span class="o">++</span>
+<span class="n">export</span> <span class="n">CC</span><span class="o">=</span><span class="n">mpicc</span>
+<span class="n">export</span> <span class="n">ACML_HOME</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">acml</span><span class="o">-</span><span class="mf">5.3</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="n">gfortran64</span>
+<span class="n">export</span> <span class="n">HDF5_ROOT</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">hdf5</span>
+<span class="n">export</span> <span class="n">BOOST_ROOT</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">boost</span>
+
+<span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">CMake</span><span class="o">*</span>
+
+<span class="n">cmake</span>                                                \
+  <span class="o">-</span><span class="n">D</span> <span class="n">CMAKE_BUILD_TYPE</span><span class="o">=</span><span class="n">Debug</span>                         \
+  <span class="o">-</span><span class="n">D</span> <span class="n">LIBXML2_INCLUDE_DIR</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">libxml2</span>      \
+  <span class="o">-</span><span class="n">D</span> <span class="n">LIBXML2_LIBRARY</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span><span class="o">/</span><span class="n">libxml2</span><span class="o">.</span><span class="n">so</span> \
+  <span class="o">-</span><span class="n">D</span> <span class="n">FFTW_INCLUDE_DIRS</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span>                 \
+  <span class="o">-</span><span class="n">D</span> <span class="n">FFTW_LIBRARY_DIRS</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gnu</span>    \
+  <span class="o">-</span><span class="n">D</span> <span class="n">QMC_EXTRA_LIBS</span><span class="o">=</span><span class="s2">&quot;-ldl $</span><span class="si">{ACML_HOME}</span><span class="s2">/lib/libacml.a -lgfortran&quot;</span> \
+  <span class="o">-</span><span class="n">D</span> <span class="n">QMC_DATA</span><span class="o">=/</span><span class="n">projects</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmc</span><span class="o">-</span><span class="n">data</span>            \
+  <span class="o">..</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-vendor-optimized-numerical-libraries-e-g-intel-mkl">
+<h3>Using vendor-optimized numerical libraries (e.g., Intel MKL)<a class="headerlink" href="#using-vendor-optimized-numerical-libraries-e-g-intel-mkl" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
