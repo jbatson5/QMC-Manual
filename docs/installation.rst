@@ -1013,3 +1013,242 @@ different versions of QMCPACK can easily coexist with each other.
 The QMCPACK Spack package also knows how to automatically build
 and patch QE. In principle, QMCPACK can be installed with
 a single Spack command.
+
+Known limitations
+~~~~~~~~~~~~~~~~~
+
+The QMCPACK Spack package inherits the limitations of the underlying
+Spack infrastructure and its dependencies. The main limitation is that
+installation can fail when building a dependency such as HDF5, MPICH,
+etc. For ``spack install qmcpack`` to succeed, it is very
+important to leverage preinstalled packages on your computer or
+supercomputer. The other frequently encountered challenge is that the
+compiler configuration is nonintuitive.  This is especially the case
+with the Intel compiler. If you encounter any difficulties, we
+recommend testing the Spack compiler configuration on a simpler
+packages, e.g. HDF5.
+
+Here are some additional limitations of the QMCPACK Spack package that
+will be resolved in future releases:
+
+- CUDA support in Spack still has some limitations.  It will
+  catch only some compiler-CUDA conflicts.
+
+- The Intel compiler must find a recent and compatible GCC
+  compiler in its path or one must be explicity set with the
+  ``-gcc-name`` and ``-gxx-name`` flags.
+
+Setting up the Spack environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Begin by cloning Spack from GitHub and configuring your shell as described at
+https://spack.readthedocs.io/en/latest/getting_started.html.
+
+The goal of the next several steps is to set up the Spack environment
+for building. First, we highly recommend limiting the number of build jobs to
+a reasonable value for your machine. This can be
+accomplished by modifying your ``~/.spack/config.yaml`` file as follows:
+
+::
+
+  config:
+    build_jobs: 16
+
+Make sure any existing compilers are properly detected. For many
+architectures, compilers are properly detected with no additional
+effort.
+
+::
+
+  your-laptop> spack compilers
+  ==> Available compilers
+  -- gcc sierra-x86_64 --------------------------------------------
+  gcc@7.2.0  gcc@6.4.0  gcc@5.5.0  gcc@4.9.4  gcc@4.8.5  gcc@4.7.4  gcc@4.6.4
+
+However, if your compiler is not automatically detected, it is straightforward
+to add one:
+
+::
+
+  your-laptop> spack compiler add <path-to-compiler>
+
+The Intel compiler, and other commerical compilers like PGI, typically
+require extra environment variables to work properly. If you have an
+module environment set-up by your system administrators, it is
+recommended that you set the module name in
+``~/.spack/linux/compilers.yaml.`` Here is an example for the
+Intel compiler:
+
+::
+
+  - compiler:
+    environment:{}
+    extra_rpaths:  []
+    flags: {}
+    modules:
+    - intel/18.0.3
+    operating_system: ubuntu14.04
+    paths:
+      cc: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/icc
+      cxx: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/icpc
+      f77: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/ifort
+      fc: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/ifort
+    spec: intel@18.0.3
+    target: x86_64
+
+If a module is not available, you will have to set-up the environment variables manually:
+
+::
+
+  - compiler:
+    environment:
+      set:
+        INTEL_LICENSE_FILE: server@national-lab.doe.gov
+    extra_rpaths:
+    ['/soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64',
+    '/soft/apps/packages/gcc/gcc-6.2.0/lib64']
+    flags:
+      cflags: -gcc-name=/soft/apps/packages/gcc/gcc-6.2.0/bin/gcc
+      fflags: -gcc-name=/soft/apps/packages/gcc/gcc-6.2.0/bin/gcc
+      cxxflags: -gxx-name=/soft/apps/packages/gcc/gcc-6.2.0/bin/g++
+    modules: []
+    operating_system: ubuntu14.04
+    paths:
+      cc: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/icc
+      cxx: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/icpc
+      f77: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/ifort
+      fc: /soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/bin/intel64/ifort
+    spec: intel@18.0.3
+    target: x86_64
+
+This last step is the most troublesome. Pre-installed packages are not
+automatically detected. If vendor optimized libraries are already
+installed, you will need to manually add them to your
+``~/.spack/packages.yaml``. For example, this works on Mac OS X
+for the Intel MKL package.
+
+::
+
+  your-laptop> cat \~/.spack/packages.yaml
+  packages:
+    intel-mkl:
+        paths:
+            intel-mkl@2018.0.128: /opt/intel/compilers_and_libraries_2018.0.104/mac/mkl
+        buildable: False
+
+Some trial-and-error might be involved to set the directories
+correctly. If you do not include enough of the tree path, Spack will
+not be able to register the package in its database. More information
+about system packages can be found at
+http://spack.readthedocs.io/en/latest/getting_started.html#system-packages.
+
+Beginning with QMCPACK v3.9.0, Python 3.x is required. However,
+installing Python with a compiler besides GCC is tricky. We recommend
+leveraging your local Python installation by adding an entry in
+``~/.spack/packages.yaml``:
+
+::
+
+  packages:
+    python:
+       modules:
+         python@3.7.4: anaconda3/2019.10
+
+Or if a module is not available
+
+::
+
+  packages:
+    python:
+       paths:
+          python@3.7.4: /nfs/gce/software/custom/linux-ubuntu18.04-x86_64/anaconda3/2019.10/bin/python
+     buildable: False
+
+Building QMCPACK
+~~~~~~~~~~~~~~~~
+
+The QMCPACK Spack package has a number of variants to support different compile time
+options and different versions of the application. A full list can be displayed by typing:
+
+::
+
+  your laptop> spack info qmcpack
+  CMakePackage:   qmcpack
+
+  Description:
+    QMCPACK, is a modern high-performance open-source Quantum Monte Carlo
+    (QMC) simulation code.
+
+  Homepage: http://www.qmcpack.org/
+
+  Tags:
+    ecp  ecp-apps
+
+  Preferred version:
+    3.9.1      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.9.1
+
+  Safe versions:
+    develop  [git] https://github.com/QMCPACK/qmcpack.git
+    3.9.1      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.9.1
+    3.9.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.9.0
+    3.8.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.8.0
+    3.7.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.7.0
+    3.6.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.6.0
+    3.5.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.5.0
+    3.4.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.4.0
+    3.3.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.3.0
+    3.2.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.2.0
+    3.1.1      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.1.1
+    3.1.0      [git] https://github.com/QMCPACK/qmcpack.git at tag v3.1.0
+
+  Variants:
+    Name [Default]          Allowed values          Description
+
+
+    build_type [Release]    Debug, Release,         The build type to build
+                            RelWithDebInfo
+    afqmc [off]             True, False             Install with AFQMC support.
+                                                    NOTE that if used in
+                                                    combination with CUDA, only
+                                                    AFQMC will have CUDA.
+    complex [off]           True, False             Build the complex (general
+                                                    twist/k-point) version
+    cuda [off]              True, False             Build with CUDA
+    cuda_arch [none]        none, 53, 20, 62,       CUDA architecture
+                            60, 61, 50, 75, 70,
+                            72, 32, 52, 30, 35
+    da [off]                True, False             Install with support for basic
+                                                    data analysis tools
+    gui [off]               True, False             Install with Matplotlib (long
+                                                    installation time)
+    mixed [off]             True, False             Build the mixed precision
+                                                    (mixture of single and double
+                                                    precision) version for gpu and
+                                                    cpu
+    mpi [on]                True, False             Build with MPI support
+    phdf5 [on]              True, False             Build with parallel collective
+                                                    I/O
+    ppconvert [off]         True, False             Install with pseudopotential
+                                                    converter.
+    qe [on]                 True, False             Install with patched Quantum
+                                                    Espresso 6.4.0
+    soa [on]                True, False             Build with Structure-of-Array
+                                                    instead of Array-of-Structure
+                                                    code. Only for CPU codeand
+                                                    only in mixed precision
+    timers [off]            True, False             Build with support for timers
+
+  Installation Phases:
+    cmake    build    install
+
+  Build Dependencies:
+    blas  boost  cmake  cuda  fftw-api  hdf5  lapack  libxml2  mpi  python
+
+  Link Dependencies:
+    blas  boost  cuda  fftw-api  hdf5  lapack  libxml2  mpi  python
+
+  Run Dependencies:
+    py-matplotlib  py-numpy  quantum-espresso
+
+  Virtual Packages:
+    None

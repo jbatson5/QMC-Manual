@@ -125,6 +125,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#installing-on-nersc-cori-haswell-partition-cray-xc40">Installing on NERSC Cori, Haswell Partition, Cray XC40</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-on-nersc-cori-xeon-phi-knl-partition-cray-xc40">Installing on NERSC Cori, Xeon Phi KNL partition, Cray XC40</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-on-systems-with-armv8-based-processors">Installing on systems with ARMv8-based processors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-on-windows">Installing on Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-via-spack">Installing via Spack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#known-limitations">Known limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-spack-environment">Setting up the Spack environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Building QMCPACK</a></li>
 </ul>
 </li>
 </ul>
@@ -1047,6 +1054,247 @@ software versions were present:</p>
     <span class="o">-</span><span class="n">DFFTW_LIBRARIES</span><span class="o">=</span><span class="s2">&quot;$ARMPL_DIR/lib/libarmpl_mp.a&quot;</span> \
     <span class="o">..</span>
 <span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">56</span>
+</pre></div>
+</div>
+<p>Note that armclang is recognized as an <a href="#id4"><span class="problematic" id="id5">`</span></a>unknown’ compiler by CMake v3.13* and below. In this case, we need to force it as clang to apply necessary flags. To do so, pass the following additionals option to CMake:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DCMAKE_C_COMPILER_ID</span><span class="o">=</span><span class="n">Clang</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER_ID</span><span class="o">=</span><span class="n">Clang</span> \
+<span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER_VERSION</span><span class="o">=</span><span class="mf">5.0</span> <span class="o">-</span><span class="n">DCMAKE_CXX_STANDARD_COMPUTED_DEFAULT</span><span class="o">=</span><span class="mi">98</span> \
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-on-windows">
+<h3>Installing on Windows<a class="headerlink" href="#installing-on-windows" title="Permalink to this headline">¶</a></h3>
+<p>Install the Windows Subsystem for Linux and Bash on Windows.
+Open a bash shell and follow the install directions for Ubuntu in <span class="xref std std-ref">buildubuntu</span>.</p>
+</div>
+</div>
+<div class="section" id="installing-via-spack">
+<h2>Installing via Spack<a class="headerlink" href="#installing-via-spack" title="Permalink to this headline">¶</a></h2>
+<p>Spack is a package manager for scientific software.
+One of the primary goals of Spack is to reduce the barrier for users to install scientific
+software. Spack is intended to work on everything from laptop
+computers to high-end supercomputers. More information about Spack can
+be found at <a class="reference external" href="https://spack.readthedocs.io/en/latest">https://spack.readthedocs.io/en/latest</a>. The major
+advantage of installation with Spack is that all dependencies are
+automatically built, potentially including all the compilers and libraries, and
+different versions of QMCPACK can easily coexist with each other.
+The QMCPACK Spack package also knows how to automatically build
+and patch QE. In principle, QMCPACK can be installed with
+a single Spack command.</p>
+<div class="section" id="known-limitations">
+<h3>Known limitations<a class="headerlink" href="#known-limitations" title="Permalink to this headline">¶</a></h3>
+<p>The QMCPACK Spack package inherits the limitations of the underlying
+Spack infrastructure and its dependencies. The main limitation is that
+installation can fail when building a dependency such as HDF5, MPICH,
+etc. For <code class="docutils literal notranslate"><span class="pre">spack</span> <span class="pre">install</span> <span class="pre">qmcpack</span></code> to succeed, it is very
+important to leverage preinstalled packages on your computer or
+supercomputer. The other frequently encountered challenge is that the
+compiler configuration is nonintuitive.  This is especially the case
+with the Intel compiler. If you encounter any difficulties, we
+recommend testing the Spack compiler configuration on a simpler
+packages, e.g. HDF5.</p>
+<p>Here are some additional limitations of the QMCPACK Spack package that
+will be resolved in future releases:</p>
+<ul class="simple">
+<li><p>CUDA support in Spack still has some limitations.  It will
+catch only some compiler-CUDA conflicts.</p></li>
+<li><p>The Intel compiler must find a recent and compatible GCC
+compiler in its path or one must be explicity set with the
+<code class="docutils literal notranslate"><span class="pre">-gcc-name</span></code> and <code class="docutils literal notranslate"><span class="pre">-gxx-name</span></code> flags.</p></li>
+</ul>
+</div>
+<div class="section" id="setting-up-the-spack-environment">
+<h3>Setting up the Spack environment<a class="headerlink" href="#setting-up-the-spack-environment" title="Permalink to this headline">¶</a></h3>
+<p>Begin by cloning Spack from GitHub and configuring your shell as described at
+<a class="reference external" href="https://spack.readthedocs.io/en/latest/getting_started.html">https://spack.readthedocs.io/en/latest/getting_started.html</a>.</p>
+<p>The goal of the next several steps is to set up the Spack environment
+for building. First, we highly recommend limiting the number of build jobs to
+a reasonable value for your machine. This can be
+accomplished by modifying your <code class="docutils literal notranslate"><span class="pre">~/.spack/config.yaml</span></code> file as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">:</span>
+  <span class="n">build_jobs</span><span class="p">:</span> <span class="mi">16</span>
+</pre></div>
+</div>
+<p>Make sure any existing compilers are properly detected. For many
+architectures, compilers are properly detected with no additional
+effort.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">compilers</span>
+<span class="o">==&gt;</span> <span class="n">Available</span> <span class="n">compilers</span>
+<span class="o">--</span> <span class="n">gcc</span> <span class="n">sierra</span><span class="o">-</span><span class="n">x86_64</span> <span class="o">--------------------------------------------</span>
+<span class="n">gcc</span><span class="o">@</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">0</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">6.4</span><span class="o">.</span><span class="mi">0</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">5.5</span><span class="o">.</span><span class="mi">0</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">4.9</span><span class="o">.</span><span class="mi">4</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">4.8</span><span class="o">.</span><span class="mi">5</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">4.7</span><span class="o">.</span><span class="mi">4</span>  <span class="n">gcc</span><span class="o">@</span><span class="mf">4.6</span><span class="o">.</span><span class="mi">4</span>
+</pre></div>
+</div>
+<p>However, if your compiler is not automatically detected, it is straightforward
+to add one:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">compiler</span> <span class="n">add</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">compiler</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The Intel compiler, and other commerical compilers like PGI, typically
+require extra environment variables to work properly. If you have an
+module environment set-up by your system administrators, it is
+recommended that you set the module name in
+<code class="docutils literal notranslate"><span class="pre">~/.spack/linux/compilers.yaml.</span></code> Here is an example for the
+Intel compiler:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">compiler</span><span class="p">:</span>
+  <span class="n">environment</span><span class="p">:{}</span>
+  <span class="n">extra_rpaths</span><span class="p">:</span>  <span class="p">[]</span>
+  <span class="n">flags</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="n">modules</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">intel</span><span class="o">/</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span>
+  <span class="n">operating_system</span><span class="p">:</span> <span class="n">ubuntu14</span><span class="o">.</span><span class="mi">04</span>
+  <span class="n">paths</span><span class="p">:</span>
+    <span class="n">cc</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">icc</span>
+    <span class="n">cxx</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">icpc</span>
+    <span class="n">f77</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">ifort</span>
+    <span class="n">fc</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">ifort</span>
+  <span class="n">spec</span><span class="p">:</span> <span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span>
+  <span class="n">target</span><span class="p">:</span> <span class="n">x86_64</span>
+</pre></div>
+</div>
+<p>If a module is not available, you will have to set-up the environment variables manually:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">compiler</span><span class="p">:</span>
+  <span class="n">environment</span><span class="p">:</span>
+    <span class="nb">set</span><span class="p">:</span>
+      <span class="n">INTEL_LICENSE_FILE</span><span class="p">:</span> <span class="n">server</span><span class="nd">@national</span><span class="o">-</span><span class="n">lab</span><span class="o">.</span><span class="n">doe</span><span class="o">.</span><span class="n">gov</span>
+  <span class="n">extra_rpaths</span><span class="p">:</span>
+  <span class="p">[</span><span class="s1">&#39;/soft/com/packages/intel/18/u3/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;/soft/apps/packages/gcc/gcc-6.2.0/lib64&#39;</span><span class="p">]</span>
+  <span class="n">flags</span><span class="p">:</span>
+    <span class="n">cflags</span><span class="p">:</span> <span class="o">-</span><span class="n">gcc</span><span class="o">-</span><span class="n">name</span><span class="o">=/</span><span class="n">soft</span><span class="o">/</span><span class="n">apps</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">gcc</span><span class="o">/</span><span class="n">gcc</span><span class="o">-</span><span class="mf">6.2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gcc</span>
+    <span class="n">fflags</span><span class="p">:</span> <span class="o">-</span><span class="n">gcc</span><span class="o">-</span><span class="n">name</span><span class="o">=/</span><span class="n">soft</span><span class="o">/</span><span class="n">apps</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">gcc</span><span class="o">/</span><span class="n">gcc</span><span class="o">-</span><span class="mf">6.2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">gcc</span>
+    <span class="n">cxxflags</span><span class="p">:</span> <span class="o">-</span><span class="n">gxx</span><span class="o">-</span><span class="n">name</span><span class="o">=/</span><span class="n">soft</span><span class="o">/</span><span class="n">apps</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">gcc</span><span class="o">/</span><span class="n">gcc</span><span class="o">-</span><span class="mf">6.2</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">g</span><span class="o">++</span>
+  <span class="n">modules</span><span class="p">:</span> <span class="p">[]</span>
+  <span class="n">operating_system</span><span class="p">:</span> <span class="n">ubuntu14</span><span class="o">.</span><span class="mi">04</span>
+  <span class="n">paths</span><span class="p">:</span>
+    <span class="n">cc</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">icc</span>
+    <span class="n">cxx</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">icpc</span>
+    <span class="n">f77</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">ifort</span>
+    <span class="n">fc</span><span class="p">:</span> <span class="o">/</span><span class="n">soft</span><span class="o">/</span><span class="n">com</span><span class="o">/</span><span class="n">packages</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="mi">18</span><span class="o">/</span><span class="n">u3</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">3.222</span><span class="o">/</span><span class="n">linux</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">intel64</span><span class="o">/</span><span class="n">ifort</span>
+  <span class="n">spec</span><span class="p">:</span> <span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span>
+  <span class="n">target</span><span class="p">:</span> <span class="n">x86_64</span>
+</pre></div>
+</div>
+<p>This last step is the most troublesome. Pre-installed packages are not
+automatically detected. If vendor optimized libraries are already
+installed, you will need to manually add them to your
+<code class="docutils literal notranslate"><span class="pre">~/.spack/packages.yaml</span></code>. For example, this works on Mac OS X
+for the Intel MKL package.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">cat</span> \<span class="o">~/.</span><span class="n">spack</span><span class="o">/</span><span class="n">packages</span><span class="o">.</span><span class="n">yaml</span>
+<span class="n">packages</span><span class="p">:</span>
+  <span class="n">intel</span><span class="o">-</span><span class="n">mkl</span><span class="p">:</span>
+      <span class="n">paths</span><span class="p">:</span>
+          <span class="n">intel</span><span class="o">-</span><span class="n">mkl</span><span class="o">@</span><span class="mf">2018.0</span><span class="o">.</span><span class="mi">128</span><span class="p">:</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">compilers_and_libraries_2018</span><span class="o">.</span><span class="mf">0.104</span><span class="o">/</span><span class="n">mac</span><span class="o">/</span><span class="n">mkl</span>
+      <span class="n">buildable</span><span class="p">:</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Some trial-and-error might be involved to set the directories
+correctly. If you do not include enough of the tree path, Spack will
+not be able to register the package in its database. More information
+about system packages can be found at
+<a class="reference external" href="http://spack.readthedocs.io/en/latest/getting_started.html#system-packages">http://spack.readthedocs.io/en/latest/getting_started.html#system-packages</a>.</p>
+<p>Beginning with QMCPACK v3.9.0, Python 3.x is required. However,
+installing Python with a compiler besides GCC is tricky. We recommend
+leveraging your local Python installation by adding an entry in
+<code class="docutils literal notranslate"><span class="pre">~/.spack/packages.yaml</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">packages</span><span class="p">:</span>
+  <span class="n">python</span><span class="p">:</span>
+     <span class="n">modules</span><span class="p">:</span>
+       <span class="n">python</span><span class="o">@</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">4</span><span class="p">:</span> <span class="n">anaconda3</span><span class="o">/</span><span class="mf">2019.10</span>
+</pre></div>
+</div>
+<p>Or if a module is not available</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">packages</span><span class="p">:</span>
+  <span class="n">python</span><span class="p">:</span>
+     <span class="n">paths</span><span class="p">:</span>
+        <span class="n">python</span><span class="o">@</span><span class="mf">3.7</span><span class="o">.</span><span class="mi">4</span><span class="p">:</span> <span class="o">/</span><span class="n">nfs</span><span class="o">/</span><span class="n">gce</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">custom</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">ubuntu18</span><span class="o">.</span><span class="mi">04</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">anaconda3</span><span class="o">/</span><span class="mf">2019.10</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python</span>
+   <span class="n">buildable</span><span class="p">:</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Building QMCPACK<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>The QMCPACK Spack package has a number of variants to support different compile time
+options and different versions of the application. A full list can be displayed by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span> <span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">info</span> <span class="n">qmcpack</span>
+<span class="n">CMakePackage</span><span class="p">:</span>   <span class="n">qmcpack</span>
+
+<span class="n">Description</span><span class="p">:</span>
+  <span class="n">QMCPACK</span><span class="p">,</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">modern</span> <span class="n">high</span><span class="o">-</span><span class="n">performance</span> <span class="nb">open</span><span class="o">-</span><span class="n">source</span> <span class="n">Quantum</span> <span class="n">Monte</span> <span class="n">Carlo</span>
+  <span class="p">(</span><span class="n">QMC</span><span class="p">)</span> <span class="n">simulation</span> <span class="n">code</span><span class="o">.</span>
+
+<span class="n">Homepage</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">org</span><span class="o">/</span>
+
+<span class="n">Tags</span><span class="p">:</span>
+  <span class="n">ecp</span>  <span class="n">ecp</span><span class="o">-</span><span class="n">apps</span>
+
+<span class="n">Preferred</span> <span class="n">version</span><span class="p">:</span>
+  <span class="mf">3.9</span><span class="o">.</span><span class="mi">1</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">9.1</span>
+
+<span class="n">Safe</span> <span class="n">versions</span><span class="p">:</span>
+  <span class="n">develop</span>  <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span>
+  <span class="mf">3.9</span><span class="o">.</span><span class="mi">1</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">9.1</span>
+  <span class="mf">3.9</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">9.0</span>
+  <span class="mf">3.8</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">8.0</span>
+  <span class="mf">3.7</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">7.0</span>
+  <span class="mf">3.6</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">6.0</span>
+  <span class="mf">3.5</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">5.0</span>
+  <span class="mf">3.4</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">4.0</span>
+  <span class="mf">3.3</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">3.0</span>
+  <span class="mf">3.2</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">2.0</span>
+  <span class="mf">3.1</span><span class="o">.</span><span class="mi">1</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">1.1</span>
+  <span class="mf">3.1</span><span class="o">.</span><span class="mi">0</span>      <span class="p">[</span><span class="n">git</span><span class="p">]</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QMCPACK</span><span class="o">/</span><span class="n">qmcpack</span><span class="o">.</span><span class="n">git</span> <span class="n">at</span> <span class="n">tag</span> <span class="n">v3</span><span class="o">.</span><span class="mf">1.0</span>
+
+<span class="n">Variants</span><span class="p">:</span>
+  <span class="n">Name</span> <span class="p">[</span><span class="n">Default</span><span class="p">]</span>          <span class="n">Allowed</span> <span class="n">values</span>          <span class="n">Description</span>
+
+
+  <span class="n">build_type</span> <span class="p">[</span><span class="n">Release</span><span class="p">]</span>    <span class="n">Debug</span><span class="p">,</span> <span class="n">Release</span><span class="p">,</span>         <span class="n">The</span> <span class="n">build</span> <span class="nb">type</span> <span class="n">to</span> <span class="n">build</span>
+                          <span class="n">RelWithDebInfo</span>
+  <span class="n">afqmc</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>             <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Install</span> <span class="k">with</span> <span class="n">AFQMC</span> <span class="n">support</span><span class="o">.</span>
+                                                  <span class="n">NOTE</span> <span class="n">that</span> <span class="k">if</span> <span class="n">used</span> <span class="ow">in</span>
+                                                  <span class="n">combination</span> <span class="k">with</span> <span class="n">CUDA</span><span class="p">,</span> <span class="n">only</span>
+                                                  <span class="n">AFQMC</span> <span class="n">will</span> <span class="n">have</span> <span class="n">CUDA</span><span class="o">.</span>
+  <span class="nb">complex</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>           <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="n">the</span> <span class="nb">complex</span> <span class="p">(</span><span class="n">general</span>
+                                                  <span class="n">twist</span><span class="o">/</span><span class="n">k</span><span class="o">-</span><span class="n">point</span><span class="p">)</span> <span class="n">version</span>
+  <span class="n">cuda</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>              <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="k">with</span> <span class="n">CUDA</span>
+  <span class="n">cuda_arch</span> <span class="p">[</span><span class="n">none</span><span class="p">]</span>        <span class="n">none</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span>       <span class="n">CUDA</span> <span class="n">architecture</span>
+                          <span class="mi">60</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span>
+                          <span class="mi">72</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">52</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">35</span>
+  <span class="n">da</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>                <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Install</span> <span class="k">with</span> <span class="n">support</span> <span class="k">for</span> <span class="n">basic</span>
+                                                  <span class="n">data</span> <span class="n">analysis</span> <span class="n">tools</span>
+  <span class="n">gui</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>               <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Install</span> <span class="k">with</span> <span class="n">Matplotlib</span> <span class="p">(</span><span class="n">long</span>
+                                                  <span class="n">installation</span> <span class="n">time</span><span class="p">)</span>
+  <span class="n">mixed</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>             <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="n">the</span> <span class="n">mixed</span> <span class="n">precision</span>
+                                                  <span class="p">(</span><span class="n">mixture</span> <span class="n">of</span> <span class="n">single</span> <span class="ow">and</span> <span class="n">double</span>
+                                                  <span class="n">precision</span><span class="p">)</span> <span class="n">version</span> <span class="k">for</span> <span class="n">gpu</span> <span class="ow">and</span>
+                                                  <span class="n">cpu</span>
+  <span class="n">mpi</span> <span class="p">[</span><span class="n">on</span><span class="p">]</span>                <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="k">with</span> <span class="n">MPI</span> <span class="n">support</span>
+  <span class="n">phdf5</span> <span class="p">[</span><span class="n">on</span><span class="p">]</span>              <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="k">with</span> <span class="n">parallel</span> <span class="n">collective</span>
+                                                  <span class="n">I</span><span class="o">/</span><span class="n">O</span>
+  <span class="n">ppconvert</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>         <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Install</span> <span class="k">with</span> <span class="n">pseudopotential</span>
+                                                  <span class="n">converter</span><span class="o">.</span>
+  <span class="n">qe</span> <span class="p">[</span><span class="n">on</span><span class="p">]</span>                 <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Install</span> <span class="k">with</span> <span class="n">patched</span> <span class="n">Quantum</span>
+                                                  <span class="n">Espresso</span> <span class="mf">6.4</span><span class="o">.</span><span class="mi">0</span>
+  <span class="n">soa</span> <span class="p">[</span><span class="n">on</span><span class="p">]</span>                <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="k">with</span> <span class="n">Structure</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">Array</span>
+                                                  <span class="n">instead</span> <span class="n">of</span> <span class="n">Array</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">Structure</span>
+                                                  <span class="n">code</span><span class="o">.</span> <span class="n">Only</span> <span class="k">for</span> <span class="n">CPU</span> <span class="n">codeand</span>
+                                                  <span class="n">only</span> <span class="ow">in</span> <span class="n">mixed</span> <span class="n">precision</span>
+  <span class="n">timers</span> <span class="p">[</span><span class="n">off</span><span class="p">]</span>            <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>             <span class="n">Build</span> <span class="k">with</span> <span class="n">support</span> <span class="k">for</span> <span class="n">timers</span>
+
+<span class="n">Installation</span> <span class="n">Phases</span><span class="p">:</span>
+  <span class="n">cmake</span>    <span class="n">build</span>    <span class="n">install</span>
+
+<span class="n">Build</span> <span class="n">Dependencies</span><span class="p">:</span>
+  <span class="n">blas</span>  <span class="n">boost</span>  <span class="n">cmake</span>  <span class="n">cuda</span>  <span class="n">fftw</span><span class="o">-</span><span class="n">api</span>  <span class="n">hdf5</span>  <span class="n">lapack</span>  <span class="n">libxml2</span>  <span class="n">mpi</span>  <span class="n">python</span>
+
+<span class="n">Link</span> <span class="n">Dependencies</span><span class="p">:</span>
+  <span class="n">blas</span>  <span class="n">boost</span>  <span class="n">cuda</span>  <span class="n">fftw</span><span class="o">-</span><span class="n">api</span>  <span class="n">hdf5</span>  <span class="n">lapack</span>  <span class="n">libxml2</span>  <span class="n">mpi</span>  <span class="n">python</span>
+
+<span class="n">Run</span> <span class="n">Dependencies</span><span class="p">:</span>
+  <span class="n">py</span><span class="o">-</span><span class="n">matplotlib</span>  <span class="n">py</span><span class="o">-</span><span class="n">numpy</span>  <span class="n">quantum</span><span class="o">-</span><span class="n">espresso</span>
+
+<span class="n">Virtual</span> <span class="n">Packages</span><span class="p">:</span>
+  <span class="kc">None</span>
 </pre></div>
 </div>
 </div>
