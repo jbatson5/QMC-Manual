@@ -1322,3 +1322,165 @@ For MPI, using MPICH as the provider, try:
 ::
 
   your-laptop> spack install qmcpack%intel@18.0.3 ^boost%gcc ^pkgconf%gcc ^perl%gcc ^libpciaccess%gcc ^cmake%gcc ^findutils%gcc ^m4%gcc
+
+For serial,
+
+::
+
+  your-laptop> spack install qmcpack~mpi%intel@18.0.3 ^boost%gcc ^pkgconf%gcc ^perl%gcc ^cmake%gcc
+
+Installing QMCPACK with Spack on Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack works robustly on the standard flavors of Linux (Ubuntu, CentOS,
+Ubuntu, etc.) using GCC, Clang, PGI, and Intel compilers.
+
+Installing QMCPACK with Spack on Mac OS X
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack works on Mac OS X but requires installation of a few packages
+using Homebrew. You will need to install at minimum the GCC compilers,
+CMake, and pkg-config. The Intel compiler for Mac on OS X is not well
+supported by Spack packages and will most likely lead to a compile
+time failure in one of QMCPACK's dependencies.
+
+Installing QMCPACK with Spack on Cray Supercomputers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack now works with the Cray environment. To leverage the installed
+Cray environment, both a ``compilers.yaml`` and
+``packages.yaml`` file should be provided by the supercomputing
+facility. Additionally, Spack packages compiled by the facility can be
+reused by chaining Spack installations
+https://spack.readthedocs.io/en/latest/chain.html.
+
+Instructions for DOE supercomputing facilities that support Spack directly will be forthcoming.
+
+Reporting Bugs
+~~~~~~~~~~~~~~
+
+Bugs with the QMCPACK Spack package should be filed at the main GitHub
+Spack repo https://github.com/spack/spack/issues.
+
+In the GitHub issue, include ``@naromero77`` to get the attention
+of our developer.
+
+.. _testing
+
+Testing and validation of QMCPACK
+---------------------------------
+
+We **strongly encourage** running the included tests each time
+QMCPACK is built. A range of unit and integration tests ensure that
+the code behaves as expected and that results are consistent with
+known-good mean-field, quantum chemical, and historical QMC results.
+
+The tests include the following:
+
+- Unit tests: to check fundamental behavior. These should always pass.
+
+- Stochastic integration tests: to check computed results from
+  the Monte Carlo methods. These might fail statistically, but rarely
+  because of the use of three sigma level statistics. These tests are
+  further split into "short" tests, which have just sufficient
+  length to have valid statistics, and "long" tests, to check
+  behavior to higher statistical accuracy.
+
+- Converter tests: to check conversion of trial wavefunctions
+  from codes such as QE and GAMESS to QMCPACK's
+  formats. These should always pass.
+
+- Workflow tests: in the case of QE, we test the
+  entire cycle of DFT calculation, trial wavefunction conversion, and
+  a subsequent VMC run.
+
+- Performance: to help performance monitoring. Only the timing of
+  these runs is relevant.
+
+The test types are differentiated by prefixes in their names, for example, ``short-LiH_dimer_ae_vmc_hf_noj_16-1`` indicates a short VMC test
+for the LiH dime.
+
+QMCPACK also includes tests for developmental features and features
+that are unsupported on certain platforms. To indicate these, tests
+that are unstable are labeled with the CTest label
+"unstable." For example, they are unreliable, unsupported, or known to fail
+from partial implementation or bugs.
+
+When installing QMCPACK you should run at least the unit tests:
+
+::
+
+   ctest -R unit
+
+These tests take only a few seconds to run. All should pass. A
+failure here could indicate a major problem with the installation.
+
+A wider range of deterministic integration
+tests are being developed. The goal is to test much more of QMCPACK than the unit tests
+do and to do so in a manner that is reproducible
+across platforms. All of these should eventually pass 100\% reliably
+and quickly. At present, some fail on some platforms and for certain
+build types.
+
+::
+
+ ctest -R deterministic -LE unstable
+
+If time allows, the "short" stochastic tests should also be run.
+The short tests take a few minutes each on a 16-core machine---about 1 hour total depending on the platform. You can run these tests using the following command in the
+build directory:
+
+::
+
+  ctest -R short -LE unstable  # Run the tests with "short" in their name.
+                               # Exclude any known unstable tests.
+
+The output should be similar to the following:
+
+::
+
+  Test project build_gcc
+      Start  1: short-LiH_dimer_ae-vmc_hf_noj-16-1
+  1/44 Test  #1: short-LiH_dimer_ae-vmc_hf_noj-16-1 ..............  Passed   11.20 sec
+      Start  2: short-LiH_dimer_ae-vmc_hf_noj-16-1-kinetic
+  2/44 Test  #2: short-LiH_dimer_ae-vmc_hf_noj-16-1-kinetic ......  Passed    0.13 sec
+  ..
+  42/44 Test #42: short-monoO_1x1x1_pp-vmc_sdj-1-16 ...............  Passed   10.02 sec
+      Start 43: short-monoO_1x1x1_pp-vmc_sdj-1-16-totenergy
+  43/44 Test #43: short-monoO_1x1x1_pp-vmc_sdj-1-16-totenergy .....  Passed    0.08 sec
+      Start 44: short-monoO_1x1x1_pp-vmc_sdj-1-16-samples
+  44/44 Test #44: short-monoO_1x1x1_pp-vmc_sdj-1-16-samples .......  Passed    0.08 sec
+
+  100% tests passed, 0 tests failed out of 44
+
+  Total Test time (real) = 167.14 sec
+
+Note that the number of tests run varies between the
+standard, complex, and GPU compilations. These tests should pass with three sigma reliability. That is, they should nearly always pass, and when rerunning a failed test it should usually pass. Overly frequent failures suggest a problem that should be addressed before any scientific production.
+
+The  full set of tests consist of significantly longer versions of the short
+tests, as well as tests of the conversion utilities. The runs require
+several hours each for improved statistics and a much more
+stringent test of the code. To run all the tests, simply run CTest in the build
+directory:
+
+::
+
+  ctest -LE unstable           # Run all the stable tests. This will take several hours.
+
+You can also run verbose tests, which direct the QMCPACK
+output to the standard output:
+
+::
+
+  ctest -V -R short   # Verbose short tests
+
+The test system includes specific tests for the complex version of the code.
+
+The input data files for the tests are located in the ``tests`` directory.
+The system-level test directories are grouped into ``heg``, ``molecules``, and ``solids``, with particular physical systems under each (for example ``molecules/H4_ae`` [#f1]_ ).
+
+
+.. rubric:: Footnotes
+
+.. [#f1] The suffix "ae" is short for "all-electron," and "pp" is short for "pseudopotential."

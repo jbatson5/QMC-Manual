@@ -1434,3 +1434,55 @@ build directory:
 
   ctest -R short -LE unstable  # Run the tests with "short" in their name.
                                # Exclude any known unstable tests.
+
+The output should be similar to the following:
+
+::
+
+  Test project build_gcc
+      Start  1: short-LiH_dimer_ae-vmc_hf_noj-16-1
+  1/44 Test  #1: short-LiH_dimer_ae-vmc_hf_noj-16-1 ..............  Passed   11.20 sec
+      Start  2: short-LiH_dimer_ae-vmc_hf_noj-16-1-kinetic
+  2/44 Test  #2: short-LiH_dimer_ae-vmc_hf_noj-16-1-kinetic ......  Passed    0.13 sec
+  ..
+  42/44 Test #42: short-monoO_1x1x1_pp-vmc_sdj-1-16 ...............  Passed   10.02 sec
+      Start 43: short-monoO_1x1x1_pp-vmc_sdj-1-16-totenergy
+  43/44 Test #43: short-monoO_1x1x1_pp-vmc_sdj-1-16-totenergy .....  Passed    0.08 sec
+      Start 44: short-monoO_1x1x1_pp-vmc_sdj-1-16-samples
+  44/44 Test #44: short-monoO_1x1x1_pp-vmc_sdj-1-16-samples .......  Passed    0.08 sec
+
+  100% tests passed, 0 tests failed out of 44
+
+  Total Test time (real) = 167.14 sec
+
+Note that the number of tests run varies between the
+standard, complex, and GPU compilations. These tests should pass with three sigma reliability. That is, they should nearly always pass, and when rerunning a failed test it should usually pass. Overly frequent failures suggest a problem that should be addressed before any scientific production.
+
+The  full set of tests consist of significantly longer versions of the short
+tests, as well as tests of the conversion utilities. The runs require
+several hours each for improved statistics and a much more
+stringent test of the code. To run all the tests, simply run CTest in the build
+directory:
+
+::
+
+  ctest -LE unstable           # Run all the stable tests. This will take several hours.
+
+You can also run verbose tests, which direct the QMCPACK
+output to the standard output:
+
+::
+
+  ctest -V -R short   # Verbose short tests
+
+The test system includes specific tests for the complex version of the code.
+
+The input data files for the tests are located in the ``tests`` directory.
+The system-level test directories are grouped into ``heg``, ``molecules``, and ``solids``, with particular physical systems under each (for example ``molecules/H4_ae`` [#f1]_ ).
+Under each physical system directory there might be tests for multiple QMC methods or parameter variations.
+The numerical comparisons and test definitions are in the ``CMakeLists.txt`` file in each physical system directory.
+
+
+.. rubric:: Footnotes
+
+.. [#f1] The suffix "ae" is short for "all-electron," and "pp" is short for "pseudopotential."

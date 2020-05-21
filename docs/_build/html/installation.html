@@ -134,8 +134,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#id6">Building QMCPACK</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#loading-qmcpack-into-your-environment">Loading QMCPACK into your environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies-that-need-to-be-compiled-with-gcc">Dependencies that need to be compiled with GCC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-linux">Installing QMCPACK with Spack on Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-mac-os-x">Installing QMCPACK with Spack on Mac OS X</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-cray-supercomputers">Installing QMCPACK with Spack on Cray Supercomputers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-bugs">Reporting Bugs</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-and-validation-of-qmcpack">Testing and validation of QMCPACK</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
@@ -1351,7 +1356,137 @@ dependencies with GCC:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">%</span><span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span> <span class="o">^</span><span class="n">boost</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">pkgconf</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">perl</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">libpciaccess</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">cmake</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">findutils</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">m4</span><span class="o">%</span><span class="n">gcc</span>
 </pre></div>
 </div>
+<p>For serial,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">~</span><span class="n">mpi</span><span class="o">%</span><span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span> <span class="o">^</span><span class="n">boost</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">pkgconf</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">perl</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">cmake</span><span class="o">%</span><span class="n">gcc</span>
+</pre></div>
 </div>
+</div>
+<div class="section" id="installing-qmcpack-with-spack-on-linux">
+<h3>Installing QMCPACK with Spack on Linux<a class="headerlink" href="#installing-qmcpack-with-spack-on-linux" title="Permalink to this headline">¶</a></h3>
+<p>Spack works robustly on the standard flavors of Linux (Ubuntu, CentOS,
+Ubuntu, etc.) using GCC, Clang, PGI, and Intel compilers.</p>
+</div>
+<div class="section" id="installing-qmcpack-with-spack-on-mac-os-x">
+<h3>Installing QMCPACK with Spack on Mac OS X<a class="headerlink" href="#installing-qmcpack-with-spack-on-mac-os-x" title="Permalink to this headline">¶</a></h3>
+<p>Spack works on Mac OS X but requires installation of a few packages
+using Homebrew. You will need to install at minimum the GCC compilers,
+CMake, and pkg-config. The Intel compiler for Mac on OS X is not well
+supported by Spack packages and will most likely lead to a compile
+time failure in one of QMCPACK’s dependencies.</p>
+</div>
+<div class="section" id="installing-qmcpack-with-spack-on-cray-supercomputers">
+<h3>Installing QMCPACK with Spack on Cray Supercomputers<a class="headerlink" href="#installing-qmcpack-with-spack-on-cray-supercomputers" title="Permalink to this headline">¶</a></h3>
+<p>Spack now works with the Cray environment. To leverage the installed
+Cray environment, both a <code class="docutils literal notranslate"><span class="pre">compilers.yaml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">packages.yaml</span></code> file should be provided by the supercomputing
+facility. Additionally, Spack packages compiled by the facility can be
+reused by chaining Spack installations
+<a class="reference external" href="https://spack.readthedocs.io/en/latest/chain.html">https://spack.readthedocs.io/en/latest/chain.html</a>.</p>
+<p>Instructions for DOE supercomputing facilities that support Spack directly will be forthcoming.</p>
+</div>
+<div class="section" id="reporting-bugs">
+<h3>Reporting Bugs<a class="headerlink" href="#reporting-bugs" title="Permalink to this headline">¶</a></h3>
+<p>Bugs with the QMCPACK Spack package should be filed at the main GitHub
+Spack repo <a class="reference external" href="https://github.com/spack/spack/issues">https://github.com/spack/spack/issues</a>.</p>
+<p>In the GitHub issue, include <code class="docutils literal notranslate"><span class="pre">&#64;naromero77</span></code> to get the attention
+of our developer.</p>
+</div>
+</div>
+<div class="section" id="testing-and-validation-of-qmcpack">
+<h2>Testing and validation of QMCPACK<a class="headerlink" href="#testing-and-validation-of-qmcpack" title="Permalink to this headline">¶</a></h2>
+<p>We <strong>strongly encourage</strong> running the included tests each time
+QMCPACK is built. A range of unit and integration tests ensure that
+the code behaves as expected and that results are consistent with
+known-good mean-field, quantum chemical, and historical QMC results.</p>
+<p>The tests include the following:</p>
+<ul class="simple">
+<li><p>Unit tests: to check fundamental behavior. These should always pass.</p></li>
+<li><p>Stochastic integration tests: to check computed results from
+the Monte Carlo methods. These might fail statistically, but rarely
+because of the use of three sigma level statistics. These tests are
+further split into “short” tests, which have just sufficient
+length to have valid statistics, and “long” tests, to check
+behavior to higher statistical accuracy.</p></li>
+<li><p>Converter tests: to check conversion of trial wavefunctions
+from codes such as QE and GAMESS to QMCPACK’s
+formats. These should always pass.</p></li>
+<li><p>Workflow tests: in the case of QE, we test the
+entire cycle of DFT calculation, trial wavefunction conversion, and
+a subsequent VMC run.</p></li>
+<li><p>Performance: to help performance monitoring. Only the timing of
+these runs is relevant.</p></li>
+</ul>
+<p>The test types are differentiated by prefixes in their names, for example, <code class="docutils literal notranslate"><span class="pre">short-LiH_dimer_ae_vmc_hf_noj_16-1</span></code> indicates a short VMC test
+for the LiH dime.</p>
+<p>QMCPACK also includes tests for developmental features and features
+that are unsupported on certain platforms. To indicate these, tests
+that are unstable are labeled with the CTest label
+“unstable.” For example, they are unreliable, unsupported, or known to fail
+from partial implementation or bugs.</p>
+<p>When installing QMCPACK you should run at least the unit tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">unit</span>
+</pre></div>
+</div>
+<p>These tests take only a few seconds to run. All should pass. A
+failure here could indicate a major problem with the installation.</p>
+<p>A wider range of deterministic integration
+tests are being developed. The goal is to test much more of QMCPACK than the unit tests
+do and to do so in a manner that is reproducible
+across platforms. All of these should eventually pass 100% reliably
+and quickly. At present, some fail on some platforms and for certain
+build types.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">deterministic</span> <span class="o">-</span><span class="n">LE</span> <span class="n">unstable</span>
+</pre></div>
+</div>
+<p>If time allows, the “short” stochastic tests should also be run.
+The short tests take a few minutes each on a 16-core machine—about 1 hour total depending on the platform. You can run these tests using the following command in the
+build directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">short</span> <span class="o">-</span><span class="n">LE</span> <span class="n">unstable</span>  <span class="c1"># Run the tests with &quot;short&quot; in their name.</span>
+                             <span class="c1"># Exclude any known unstable tests.</span>
+</pre></div>
+</div>
+<p>The output should be similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Test</span> <span class="n">project</span> <span class="n">build_gcc</span>
+    <span class="n">Start</span>  <span class="mi">1</span><span class="p">:</span> <span class="n">short</span><span class="o">-</span><span class="n">LiH_dimer_ae</span><span class="o">-</span><span class="n">vmc_hf_noj</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">1</span>
+<span class="mi">1</span><span class="o">/</span><span class="mi">44</span> <span class="n">Test</span>  <span class="c1">#1: short-LiH_dimer_ae-vmc_hf_noj-16-1 ..............  Passed   11.20 sec</span>
+    <span class="n">Start</span>  <span class="mi">2</span><span class="p">:</span> <span class="n">short</span><span class="o">-</span><span class="n">LiH_dimer_ae</span><span class="o">-</span><span class="n">vmc_hf_noj</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">kinetic</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">44</span> <span class="n">Test</span>  <span class="c1">#2: short-LiH_dimer_ae-vmc_hf_noj-16-1-kinetic ......  Passed    0.13 sec</span>
+<span class="o">..</span>
+<span class="mi">42</span><span class="o">/</span><span class="mi">44</span> <span class="n">Test</span> <span class="c1">#42: short-monoO_1x1x1_pp-vmc_sdj-1-16 ...............  Passed   10.02 sec</span>
+    <span class="n">Start</span> <span class="mi">43</span><span class="p">:</span> <span class="n">short</span><span class="o">-</span><span class="n">monoO_1x1x1_pp</span><span class="o">-</span><span class="n">vmc_sdj</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="n">totenergy</span>
+<span class="mi">43</span><span class="o">/</span><span class="mi">44</span> <span class="n">Test</span> <span class="c1">#43: short-monoO_1x1x1_pp-vmc_sdj-1-16-totenergy .....  Passed    0.08 sec</span>
+    <span class="n">Start</span> <span class="mi">44</span><span class="p">:</span> <span class="n">short</span><span class="o">-</span><span class="n">monoO_1x1x1_pp</span><span class="o">-</span><span class="n">vmc_sdj</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="mi">16</span><span class="o">-</span><span class="n">samples</span>
+<span class="mi">44</span><span class="o">/</span><span class="mi">44</span> <span class="n">Test</span> <span class="c1">#44: short-monoO_1x1x1_pp-vmc_sdj-1-16-samples .......  Passed    0.08 sec</span>
+
+<span class="mi">100</span><span class="o">%</span> <span class="n">tests</span> <span class="n">passed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">tests</span> <span class="n">failed</span> <span class="n">out</span> <span class="n">of</span> <span class="mi">44</span>
+
+<span class="n">Total</span> <span class="n">Test</span> <span class="n">time</span> <span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">=</span> <span class="mf">167.14</span> <span class="n">sec</span>
+</pre></div>
+</div>
+<p>Note that the number of tests run varies between the
+standard, complex, and GPU compilations. These tests should pass with three sigma reliability. That is, they should nearly always pass, and when rerunning a failed test it should usually pass. Overly frequent failures suggest a problem that should be addressed before any scientific production.</p>
+<p>The  full set of tests consist of significantly longer versions of the short
+tests, as well as tests of the conversion utilities. The runs require
+several hours each for improved statistics and a much more
+stringent test of the code. To run all the tests, simply run CTest in the build
+directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">LE</span> <span class="n">unstable</span>           <span class="c1"># Run all the stable tests. This will take several hours.</span>
+</pre></div>
+</div>
+<p>You can also run verbose tests, which direct the QMCPACK
+output to the standard output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">V</span> <span class="o">-</span><span class="n">R</span> <span class="n">short</span>   <span class="c1"># Verbose short tests</span>
+</pre></div>
+</div>
+<p>The test system includes specific tests for the complex version of the code.</p>
+<p>The input data files for the tests are located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory.
+The system-level test directories are grouped into <code class="docutils literal notranslate"><span class="pre">heg</span></code>, <code class="docutils literal notranslate"><span class="pre">molecules</span></code>, and <code class="docutils literal notranslate"><span class="pre">solids</span></code>, with particular physical systems under each (for example <code class="docutils literal notranslate"><span class="pre">molecules/H4_ae</span></code> <a class="footnote-reference brackets" href="#f1" id="id7">1</a> ).</p>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>
+<dd><p>The suffix “ae” is short for “all-electron,” and “pp” is short for “pseudopotential.”</p>
+</dd>
+</dl>
 </div>
 </div>
 
