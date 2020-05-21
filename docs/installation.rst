@@ -1252,3 +1252,185 @@ options and different versions of the application. A full list can be displayed 
 
   Virtual Packages:
     None
+
+For example, to install the complex-valued version of QMCPACK in mixed-precision use:
+
+::
+
+  your-laptop> spack install qmcpack+mixed+complex%gcc@7.2.0 ^intel-mkl
+
+where
+
+::
+
+  %gcc@7.2.0
+
+specifies the compiler version to be used and
+
+::
+
+  ^intel-mkl
+
+specifies that the Intel MKL should be used as the BLAS and LAPACK
+provider. The ``^`` symbol indicates the the package to the right of the
+symbol should be used to fulfill the dependency needed by the installation.
+
+It is also possible to run the QMCPACK regression tests as part of the
+installation process, for example:
+
+::
+
+  your-laptop> spack install --test=root qmcpack+mixed+complex%gcc@7.2.0 ^intel-mkl
+
+will run the unit and short tests. The current behavior of the QMCPACK
+Spack package is to complete the install as long as all the unit tests
+pass. If the short tests fail, a warning is issued at the command prompt.
+
+For CUDA, you will need to specify and extra ``cuda_arch``
+parameter otherwise, it will default to ``cuda_arch=61``.
+
+::
+
+  your-laptop> spack install qmcpack+cuda%intel@18.0.3 cuda_arch=61 ^intel-mkl
+
+Due to limitations in the Spack CUDA package, if your compiler and
+CUDA combination conflict, you will need to set a
+specific verison of CUDA that is compatible with your compiler on the
+command line. For example,
+
+::
+
+  your-laptop> spack install qmcpack+cuda%intel@18.0.3 cuda_arch=61 ^cuda@10.0.130 ^intel-mkl
+
+Loading QMCPACK into your environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you already have modules set-up in your enviroment, the Spack
+modules will be detected automatically. Otherwise, Spack will not
+automatically find the additional packages. A few additional steps are
+needed.  Please see the main Spack documentation for additional details: https://spack.readthedocs.io/en/latest/module_file_support.html.
+
+Dependencies that need to be compiled with GCC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Failing to compile a QMCPACK dependency is the most common reason that
+a Spack build fails. We recommend that you compile the following
+dependencies with GCC:
+
+For MPI, using MPICH as the provider, try:
+
+::
+
+  your-laptop> spack install qmcpack%intel@18.0.3 ^boost%gcc ^pkgconf%gcc ^perl%gcc ^libpciaccess%gcc ^cmake%gcc ^findutils%gcc ^m4%gcc
+
+For serial,
+
+::
+
+  your-laptop> spack install qmcpack~mpi%intel@18.0.3 ^boost%gcc ^pkgconf%gcc ^perl%gcc ^cmake%gcc
+
+Installing QMCPACK with Spack on Linux
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack works robustly on the standard flavors of Linux (Ubuntu, CentOS,
+Ubuntu, etc.) using GCC, Clang, PGI, and Intel compilers.
+
+Installing QMCPACK with Spack on Mac OS X
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack works on Mac OS X but requires installation of a few packages
+using Homebrew. You will need to install at minimum the GCC compilers,
+CMake, and pkg-config. The Intel compiler for Mac on OS X is not well
+supported by Spack packages and will most likely lead to a compile
+time failure in one of QMCPACK's dependencies.
+
+Installing QMCPACK with Spack on Cray Supercomputers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Spack now works with the Cray environment. To leverage the installed
+Cray environment, both a ``compilers.yaml`` and
+``packages.yaml`` file should be provided by the supercomputing
+facility. Additionally, Spack packages compiled by the facility can be
+reused by chaining Spack installations
+https://spack.readthedocs.io/en/latest/chain.html.
+
+Instructions for DOE supercomputing facilities that support Spack directly will be forthcoming.
+
+Reporting Bugs
+~~~~~~~~~~~~~~
+
+Bugs with the QMCPACK Spack package should be filed at the main GitHub
+Spack repo https://github.com/spack/spack/issues.
+
+In the GitHub issue, include ``@naromero77`` to get the attention
+of our developer.
+
+.. _testing
+
+Testing and validation of QMCPACK
+---------------------------------
+
+We **strongly encourage** running the included tests each time
+QMCPACK is built. A range of unit and integration tests ensure that
+the code behaves as expected and that results are consistent with
+known-good mean-field, quantum chemical, and historical QMC results.
+
+The tests include the following:
+
+- Unit tests: to check fundamental behavior. These should always pass.
+
+- Stochastic integration tests: to check computed results from
+  the Monte Carlo methods. These might fail statistically, but rarely
+  because of the use of three sigma level statistics. These tests are
+  further split into "short" tests, which have just sufficient
+  length to have valid statistics, and "long" tests, to check
+  behavior to higher statistical accuracy.
+
+- Converter tests: to check conversion of trial wavefunctions
+  from codes such as QE and GAMESS to QMCPACK's
+  formats. These should always pass.
+
+- Workflow tests: in the case of QE, we test the
+  entire cycle of DFT calculation, trial wavefunction conversion, and
+  a subsequent VMC run.
+
+- Performance: to help performance monitoring. Only the timing of
+  these runs is relevant.
+
+The test types are differentiated by prefixes in their names, for example, ``short-LiH_dimer_ae_vmc_hf_noj_16-1`` indicates a short VMC test
+for the LiH dime.
+
+QMCPACK also includes tests for developmental features and features
+that are unsupported on certain platforms. To indicate these, tests
+that are unstable are labeled with the CTest label
+"unstable." For example, they are unreliable, unsupported, or known to fail
+from partial implementation or bugs.
+
+When installing QMCPACK you should run at least the unit tests:
+
+::
+
+   ctest -R unit
+
+These tests take only a few seconds to run. All should pass. A
+failure here could indicate a major problem with the installation.
+
+A wider range of deterministic integration
+tests are being developed. The goal is to test much more of QMCPACK than the unit tests
+do and to do so in a manner that is reproducible
+across platforms. All of these should eventually pass 100\% reliably
+and quickly. At present, some fail on some platforms and for certain
+build types.
+
+::
+
+ ctest -R deterministic -LE unstable
+
+If time allows, the "short" stochastic tests should also be run.
+The short tests take a few minutes each on a 16-core machine---about 1 hour total depending on the platform. You can run these tests using the following command in the
+build directory:
+
+::
+
+  ctest -R short -LE unstable  # Run the tests with "short" in their name.
+                               # Exclude any known unstable tests.

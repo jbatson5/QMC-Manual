@@ -1252,3 +1252,73 @@ options and different versions of the application. A full list can be displayed 
 
   Virtual Packages:
     None
+
+For example, to install the complex-valued version of QMCPACK in mixed-precision use:
+
+::
+
+  your-laptop> spack install qmcpack+mixed+complex%gcc@7.2.0 ^intel-mkl
+
+where
+
+::
+
+  %gcc@7.2.0
+
+specifies the compiler version to be used and
+
+::
+
+  ^intel-mkl
+
+specifies that the Intel MKL should be used as the BLAS and LAPACK
+provider. The ``^`` symbol indicates the the package to the right of the
+symbol should be used to fulfill the dependency needed by the installation.
+
+It is also possible to run the QMCPACK regression tests as part of the
+installation process, for example:
+
+::
+
+  your-laptop> spack install --test=root qmcpack+mixed+complex%gcc@7.2.0 ^intel-mkl
+
+will run the unit and short tests. The current behavior of the QMCPACK
+Spack package is to complete the install as long as all the unit tests
+pass. If the short tests fail, a warning is issued at the command prompt.
+
+For CUDA, you will need to specify and extra ``cuda_arch``
+parameter otherwise, it will default to ``cuda_arch=61``.
+
+::
+
+  your-laptop> spack install qmcpack+cuda%intel@18.0.3 cuda_arch=61 ^intel-mkl
+
+Due to limitations in the Spack CUDA package, if your compiler and
+CUDA combination conflict, you will need to set a
+specific verison of CUDA that is compatible with your compiler on the
+command line. For example,
+
+::
+
+  your-laptop> spack install qmcpack+cuda%intel@18.0.3 cuda_arch=61 ^cuda@10.0.130 ^intel-mkl
+
+Loading QMCPACK into your environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you already have modules set-up in your enviroment, the Spack
+modules will be detected automatically. Otherwise, Spack will not
+automatically find the additional packages. A few additional steps are
+needed.  Please see the main Spack documentation for additional details: https://spack.readthedocs.io/en/latest/module_file_support.html.
+
+Dependencies that need to be compiled with GCC
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Failing to compile a QMCPACK dependency is the most common reason that
+a Spack build fails. We recommend that you compile the following
+dependencies with GCC:
+
+For MPI, using MPICH as the provider, try:
+
+::
+
+  your-laptop> spack install qmcpack%intel@18.0.3 ^boost%gcc ^pkgconf%gcc ^perl%gcc ^libpciaccess%gcc ^cmake%gcc ^findutils%gcc ^m4%gcc

@@ -132,6 +132,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#known-limitations">Known limitations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-spack-environment">Setting up the Spack environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id6">Building QMCPACK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loading-qmcpack-into-your-environment">Loading QMCPACK into your environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies-that-need-to-be-compiled-with-gcc">Dependencies that need to be compiled with GCC</a></li>
 </ul>
 </li>
 </ul>
@@ -1295,6 +1297,58 @@ options and different versions of the application. A full list can be displayed 
 
 <span class="n">Virtual</span> <span class="n">Packages</span><span class="p">:</span>
   <span class="kc">None</span>
+</pre></div>
+</div>
+<p>For example, to install the complex-valued version of QMCPACK in mixed-precision use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">+</span><span class="n">mixed</span><span class="o">+</span><span class="nb">complex</span><span class="o">%</span><span class="n">gcc</span><span class="o">@</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">0</span> <span class="o">^</span><span class="n">intel</span><span class="o">-</span><span class="n">mkl</span>
+</pre></div>
+</div>
+<p>where</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">gcc</span><span class="o">@</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>specifies the compiler version to be used and</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">^</span><span class="n">intel</span><span class="o">-</span><span class="n">mkl</span>
+</pre></div>
+</div>
+<p>specifies that the Intel MKL should be used as the BLAS and LAPACK
+provider. The <code class="docutils literal notranslate"><span class="pre">^</span></code> symbol indicates the the package to the right of the
+symbol should be used to fulfill the dependency needed by the installation.</p>
+<p>It is also possible to run the QMCPACK regression tests as part of the
+installation process, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="o">--</span><span class="n">test</span><span class="o">=</span><span class="n">root</span> <span class="n">qmcpack</span><span class="o">+</span><span class="n">mixed</span><span class="o">+</span><span class="nb">complex</span><span class="o">%</span><span class="n">gcc</span><span class="o">@</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">0</span> <span class="o">^</span><span class="n">intel</span><span class="o">-</span><span class="n">mkl</span>
+</pre></div>
+</div>
+<p>will run the unit and short tests. The current behavior of the QMCPACK
+Spack package is to complete the install as long as all the unit tests
+pass. If the short tests fail, a warning is issued at the command prompt.</p>
+<p>For CUDA, you will need to specify and extra <code class="docutils literal notranslate"><span class="pre">cuda_arch</span></code>
+parameter otherwise, it will default to <code class="docutils literal notranslate"><span class="pre">cuda_arch=61</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">+</span><span class="n">cuda</span><span class="o">%</span><span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span> <span class="n">cuda_arch</span><span class="o">=</span><span class="mi">61</span> <span class="o">^</span><span class="n">intel</span><span class="o">-</span><span class="n">mkl</span>
+</pre></div>
+</div>
+<p>Due to limitations in the Spack CUDA package, if your compiler and
+CUDA combination conflict, you will need to set a
+specific verison of CUDA that is compatible with your compiler on the
+command line. For example,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">+</span><span class="n">cuda</span><span class="o">%</span><span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span> <span class="n">cuda_arch</span><span class="o">=</span><span class="mi">61</span> <span class="o">^</span><span class="n">cuda</span><span class="o">@</span><span class="mf">10.0</span><span class="o">.</span><span class="mi">130</span> <span class="o">^</span><span class="n">intel</span><span class="o">-</span><span class="n">mkl</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="loading-qmcpack-into-your-environment">
+<h3>Loading QMCPACK into your environment<a class="headerlink" href="#loading-qmcpack-into-your-environment" title="Permalink to this headline">¶</a></h3>
+<p>If you already have modules set-up in your enviroment, the Spack
+modules will be detected automatically. Otherwise, Spack will not
+automatically find the additional packages. A few additional steps are
+needed.  Please see the main Spack documentation for additional details: <a class="reference external" href="https://spack.readthedocs.io/en/latest/module_file_support.html">https://spack.readthedocs.io/en/latest/module_file_support.html</a>.</p>
+</div>
+<div class="section" id="dependencies-that-need-to-be-compiled-with-gcc">
+<h3>Dependencies that need to be compiled with GCC<a class="headerlink" href="#dependencies-that-need-to-be-compiled-with-gcc" title="Permalink to this headline">¶</a></h3>
+<p>Failing to compile a QMCPACK dependency is the most common reason that
+a Spack build fails. We recommend that you compile the following
+dependencies with GCC:</p>
+<p>For MPI, using MPICH as the provider, try:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">qmcpack</span><span class="o">%</span><span class="n">intel</span><span class="o">@</span><span class="mf">18.0</span><span class="o">.</span><span class="mi">3</span> <span class="o">^</span><span class="n">boost</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">pkgconf</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">perl</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">libpciaccess</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">cmake</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">findutils</span><span class="o">%</span><span class="n">gcc</span> <span class="o">^</span><span class="n">m4</span><span class="o">%</span><span class="n">gcc</span>
 </pre></div>
 </div>
 </div>
