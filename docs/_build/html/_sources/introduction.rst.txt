@@ -74,8 +74,7 @@ capabilities. Most of the examples are designed to run quickly with
 modest resources. We’ll run a short diffusion Monte Carlo calculation of
 a water molecule:
 
-#. Go to the appropriate example directory: ``cd
-    ../examples/molecules/H2O.``
+#. Go to the appropriate example directory: ``cd ../examples/molecules/H2O.``
 
 #. | (Optional) Put the QMCPACK binary on your path: ``export PATH=\$PATH:location-of-qmcpack/build/bin``
 

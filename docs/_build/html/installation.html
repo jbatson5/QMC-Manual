@@ -148,8 +148,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#nio-performance-tests">NiO performance tests</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting-tests">Troubleshooting tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#slow-testing-with-openmpi">Slow testing with OpenMPI</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#automated-testing-of-qmcpack">Automated testing of QMCPACK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-ppconvert-a-pseudopotential-format-converter">Building ppconvert, a pseudopotential format converter</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
@@ -245,7 +249,7 @@ common systems are given in
 <li><p>Run the tests to verify QMCPACK
 (<a class="reference internal" href="#testing"><span class="std std-ref">Testing and validation of QMCPACK</span></a>).</p></li>
 <li><p>Build the ppconvert utility in QMCPACK
-(<span class="xref std std-ref">buildppconvert</span>).</p></li>
+(<a class="reference internal" href="#buildppconvert"><span class="std std-ref">Building ppconvert, a pseudopotential format converter</span></a>).</p></li>
 </ol>
 <p>Hints for high performance are in
 <span class="xref std std-ref">buildperformance</span>.
@@ -1687,14 +1691,52 @@ future machines and require very large memory.</p>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="section" id="troubleshooting-tests">
+<h3>Troubleshooting tests<a class="headerlink" href="#troubleshooting-tests" title="Permalink to this headline">¶</a></h3>
+<p>CTest reports briefly pass or fail of tests in printout and also collects all the standard outputs to help investigating how tests fail.
+If the CTest execution is completed, look at <code class="docutils literal notranslate"><span class="pre">Testing/Temporary/LastTest.log</span></code>.
+If you manually stop the testing (ctrl+c), look at <code class="docutils literal notranslate"><span class="pre">Testing/Temporary/LastTest.log.tmp</span></code>.
+You can locate the failing tests by searching for the key word “Fail.”</p>
+</div>
+<div class="section" id="slow-testing-with-openmpi">
+<h3>Slow testing with OpenMPI<a class="headerlink" href="#slow-testing-with-openmpi" title="Permalink to this headline">¶</a></h3>
+<p>OpenMPI has a default binding policy that makes all the threads run on a single core during testing when there are two or fewer MPI ranks.
+This significantly increases testing time. If you are authorized to change the default setting, you can just add “hwloc_base_binding_policy=none” in /etc/openmpi/openmpi-mca-params.conf.</p>
+</div>
+</div>
+<div class="section" id="automated-testing-of-qmcpack">
+<h2>Automated testing of QMCPACK<a class="headerlink" href="#automated-testing-of-qmcpack" title="Permalink to this headline">¶</a></h2>
+<p>The QMCPACK developers run automatic tests of QMCPACK on several
+different computer systems,  many on a continuous basis. See the reports at
+<a class="reference external" href="https://cdash.qmcpack.org/CDash/index.php?project=QMCPACK">https://cdash.qmcpack.org/CDash/index.php?project=QMCPACK</a>.
+The combinations that are currently tested can be seen on CDash and are also listed in
+<a class="reference external" href="https://github.com/QMCPACK/qmcpack/blob/develop/README.md">https://github.com/QMCPACK/qmcpack/blob/develop/README.md</a>. They include GCC, Clang, Intel, and PGI compilers in combinations
+with various library versions and different MPI implementations. NVIDIA GPUs are also tested.</p>
+</div>
+<div class="section" id="building-ppconvert-a-pseudopotential-format-converter">
+<span id="buildppconvert"></span><h2>Building ppconvert, a pseudopotential format converter<a class="headerlink" href="#building-ppconvert-a-pseudopotential-format-converter" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK includes a utility—ppconvert—to convert between different
+pseudopotential formats. Examples include effective core potential
+formats (in Gaussians), the UPF format used by QE, and
+the XML format used by QMCPACK itself. The utility also enables the
+atomic orbitals to be recomputed via a numerical density functional
+calculation if they need to be reconstructed for use in an
+electronic structure calculation.</p>
+<div class="figure align-center" id="id9">
+<a class="reference internal image-reference" href="_images/QMCPACK_CDash_CTest_Results_20160129.png"><img alt="_images/QMCPACK_CDash_CTest_Results_20160129.png" src="_images/QMCPACK_CDash_CTest_Results_20160129.png" style="width: 80%;" /></a>
+<p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Example test results for QMCPACK showing data for a
+workstation (Intel, GCC, both CPU and GPU builds) and for two ORNL
+supercomputers. In this example, four errors were found. This
+dashboard is accessible at <a class="reference external" href="https://cdash.qmcpack.org">https://cdash.qmcpack.org</a></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>
 <dd><p>The suffix “ae” is short for “all-electron,” and “pp” is short for “pseudopotential.”</p>
 </dd>
 </dl>
-</div>
-</div>
 </div>
 </div>
 

@@ -1656,7 +1656,7 @@ future machines and require very large memory.
 
 .. table:: System sizes and names for NiO performance tests. GPU performance
     tests are named similarly but have different walker counts.
-    
+
 
   +----------------------------------+------------------+-------+------------+----------------+
   | Performance test name            | Historical name  | Atoms | Electrons  | Electrons/spin |
@@ -1673,6 +1673,63 @@ future machines and require very large memory.
   +----------------------------------+------------------+-------+------------+----------------+
   | performance-NiO-cpu-a1024-e12288 | S256             | 1024  | 12288      | 6144           |
   +----------------------------------+------------------+-------+------------+----------------+
+
+Troubleshooting tests
+~~~~~~~~~~~~~~~~~~~~~
+
+CTest reports briefly pass or fail of tests in printout and also collects all the standard outputs to help investigating how tests fail.
+If the CTest execution is completed, look at ``Testing/Temporary/LastTest.log``.
+If you manually stop the testing (ctrl+c), look at ``Testing/Temporary/LastTest.log.tmp``.
+You can locate the failing tests by searching for the key word "Fail."
+
+Slow testing with OpenMPI
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+OpenMPI has a default binding policy that makes all the threads run on a single core during testing when there are two or fewer MPI ranks.
+This significantly increases testing time. If you are authorized to change the default setting, you can just add "hwloc\_base\_binding\_policy=none" in /etc/openmpi/openmpi-mca-params.conf.
+
+Automated testing of QMCPACK
+----------------------------
+
+The QMCPACK developers run automatic tests of QMCPACK on several
+different computer systems,  many on a continuous basis. See the reports at
+https://cdash.qmcpack.org/CDash/index.php?project=QMCPACK.
+The combinations that are currently tested can be seen on CDash and are also listed in
+https://github.com/QMCPACK/qmcpack/blob/develop/README.md. They include GCC, Clang, Intel, and PGI compilers in combinations
+with various library versions and different MPI implementations. NVIDIA GPUs are also tested.
+
+.. _buildppconvert:
+
+Building ppconvert, a pseudopotential format converter
+------------------------------------------------------
+
+QMCPACK includes a utility---ppconvert---to convert between different
+pseudopotential formats. Examples include effective core potential
+formats (in Gaussians), the UPF format used by QE, and
+the XML format used by QMCPACK itself. The utility also enables the
+atomic orbitals to be recomputed via a numerical density functional
+calculation if they need to be reconstructed for use in an
+electronic structure calculation.
+
+.. _fig2
+.. figure:: QMCPACK_CDash_CTest_Results_20160129.png
+  :width: 80%
+  :align: center
+
+  Example test results for QMCPACK showing data for a
+  workstation (Intel, GCC, both CPU and GPU builds) and for two ORNL
+  supercomputers. In this example, four errors were found. This
+  dashboard is accessible at https://cdash.qmcpack.org
+
+.. _buildqe:
+
+Installing and patching Quantum ESPRESSO
+----------------------------------------
+
+For trial wavefunctions obtained in a plane-wave basis, we mainly
+support QE. Note that ABINIT and QBox were supported historically
+and could be reactivated.
+
 
 
 

@@ -226,11 +226,7 @@ capabilities. Most of the examples are designed to run quickly with
 modest resources. We’ll run a short diffusion Monte Carlo calculation of
 a water molecule:</p>
 <ol class="arabic">
-<li><dl class="simple">
-<dt>Go to the appropriate example directory: <a href="#id2"><span class="problematic" id="id3">``</span></a>cd</dt><dd><p>../examples/molecules/H2O.``</p>
-</dd>
-</dl>
-</li>
+<li><p>Go to the appropriate example directory: <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">../examples/molecules/H2O.</span></code></p></li>
 <li><div class="line-block">
 <div class="line">(Optional) Put the QMCPACK binary on your path: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">PATH=\$PATH:location-of-qmcpack/build/bin</span></code></div>
 </div>
@@ -264,10 +260,10 @@ shows the average energy of the DMC walkers at each timestep. In a real
 simulation we would have to check equilibration, convergence with walker
 population, time step, etc.</p>
 <p>Congratulations, you have completed a DMC calculation with QMCPACK!</p>
-<div class="figure align-center" id="id5">
-<span id="fig1"></span><a class="reference internal image-reference" href="quick_qmca_dmc_trace.png"><img alt="quick_qmca_dmc_trace.png" src="quick_qmca_dmc_trace.png" style="width: 400px;" /></a>
+<div class="figure align-center" id="id3">
+<span id="fig1"></span><a class="reference internal image-reference" href="_images/quick_qmca_dmc_trace.png"><img alt="_images/quick_qmca_dmc_trace.png" src="_images/quick_qmca_dmc_trace.png" style="width: 400px;" /></a>
 <p class="caption"><span class="caption-number">Fig. 1 </span><span class="caption-text">Trace of walker energies produced by the qmca tool for a simple water
-molecule example.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+molecule example.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="authors-and-history">
@@ -311,7 +307,7 @@ of the developers, but we recommend checking the group first. Particular
 attention is given to any problem reports.</p>
 </div>
 <div class="section" id="performance">
-<span id="id4"></span><h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h2>
 <p>QMCPACK implements modern Monte Carlo (MC) algorithms, is highly
 parallel, and is written using very efficient code for high per-CPU or
 on-node performance. In particular, the code is highly vectorizable,
