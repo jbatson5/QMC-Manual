@@ -137,6 +137,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-linux">Installing QMCPACK with Spack on Linux</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-mac-os-x">Installing QMCPACK with Spack on Mac OS X</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-cray-supercomputers">Installing QMCPACK with Spack on Cray Supercomputers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-quantum-espresso-with-spack">Installing Quantum-Espresso with Spack</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reporting-bugs">Reporting Bugs</a></li>
 </ul>
 </li>
@@ -1392,6 +1393,35 @@ reused by chaining Spack installations
 <a class="reference external" href="https://spack.readthedocs.io/en/latest/chain.html">https://spack.readthedocs.io/en/latest/chain.html</a>.</p>
 <p>Instructions for DOE supercomputing facilities that support Spack directly will be forthcoming.</p>
 </div>
+<div class="section" id="installing-quantum-espresso-with-spack">
+<h3>Installing Quantum-Espresso with Spack<a class="headerlink" href="#installing-quantum-espresso-with-spack" title="Permalink to this headline">¶</a></h3>
+<p>More information about the QE Spack package can be obtained directly
+from Spack</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">spack</span> <span class="n">info</span> <span class="n">quantum</span><span class="o">-</span><span class="n">espresso</span>
+</pre></div>
+</div>
+<p>There are many variants available for QE, most, but not all, are
+compatible with QMCPACK patch. Here is a minimalistic example of the
+Spack installation command that needs to be invoked:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">quantum</span><span class="o">-</span><span class="n">espresso</span><span class="o">+</span><span class="n">qmcpack</span><span class="o">~</span><span class="n">patch</span><span class="o">@</span><span class="mf">6.4</span><span class="o">.</span><span class="mi">1</span><span class="o">%</span><span class="n">gcc</span> <span class="n">hdf5</span><span class="o">=</span><span class="n">parallel</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">~</span></code> decorator means deactivate the <code class="docutils literal notranslate"><span class="pre">patch</span></code>
+variant. This refers not to the QMCPACK patch, but to the upstream
+patching that is present for some versions of QE. These upstream QE
+patches fix specific critical autoconf/configure fixes. Unfortunately,
+some of these QE upstream patches are incompatible with the QMCPACK
+patch. Note that the Spack package will prevent you from installing
+incompatible variants and will emit an error message explaining the
+nature of the incompatibility.</p>
+<p>A serial (no MPI) installation is also available, but the Spack installation command
+is non-intuitive for Spack newcomers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span><span class="o">-</span><span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">install</span> <span class="n">quantum</span><span class="o">-</span><span class="n">espresso</span><span class="o">+</span><span class="n">qmcpack</span><span class="o">~</span><span class="n">patch</span><span class="o">~</span><span class="n">mpi</span><span class="o">~</span><span class="n">scalapack</span><span class="o">@</span><span class="mf">6.4</span><span class="o">.</span><span class="mi">1</span><span class="o">%</span><span class="n">gcc</span> <span class="n">hdf5</span><span class="o">=</span><span class="n">serial</span>
+</pre></div>
+</div>
+<p>QE Spack package is well tested with GCC and Intel compilers, but will not work
+with the PGI compiler or in a cross-compile environment.</p>
+</div>
 <div class="section" id="reporting-bugs">
 <h3>Reporting Bugs<a class="headerlink" href="#reporting-bugs" title="Permalink to this headline">¶</a></h3>
 <p>Bugs with the QMCPACK Spack package should be filed at the main GitHub
@@ -1584,6 +1614,79 @@ architecture and problem size is required to achieve the best
 performance.</p>
 <div class="section" id="nio-performance-tests">
 <h4>NiO performance tests<a class="headerlink" href="#nio-performance-tests" title="Permalink to this headline">¶</a></h4>
+<p>Follow the instructions in tests/performance/NiO/README to
+enable and run the NiO tests.</p>
+<p>The NiO tests are for bulk supercells of varying size. The QMC runs consist of short blocks of (1) VMC
+without drift (2) VMC with drift term included, and (3) DMC with
+constant population. The tests use spline wavefunctions that must be
+downloaded as described in the README file because of their large size. You
+will need to set <code class="docutils literal notranslate"><span class="pre">-DQMC_DATA=YOUR_DATA_FOLDER</span> <span class="pre">-DENABLE_TIMERS=1</span></code>
+when running CMake as
+described in the README file.</p>
+<p>Two sets of wavefunction are tested: spline orbitals with one- and
+two-body Jastrow functions and a more complex form with an additional
+three-body Jastrow function. The Jastrows are the same for each run
+and are not reoptimized, as might be done for research purposes.  Runs
+in the hundreds of electrons up to low thousands of electrons are representative of
+research runs performed in 2017. The largest runs target
+future machines and require very large memory.</p>
+<table class="docutils align-default" id="id8">
+<caption><span class="caption-number">Table 1 </span><span class="caption-text">System sizes and names for NiO performance tests. GPU performance
+  tests are named similarly but have different walker counts.</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 21%" />
+<col style="width: 8%" />
+<col style="width: 14%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Performance test name</p></th>
+<th class="head"><p>Historical name</p></th>
+<th class="head"><p>Atoms</p></th>
+<th class="head"><p>Electrons</p></th>
+<th class="head"><p>Electrons/spin</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>performance-NiO-cpu-a32-e384</p></td>
+<td><p>S8</p></td>
+<td><p>32</p></td>
+<td><p>384</p></td>
+<td><p>192</p></td>
+</tr>
+<tr class="row-odd"><td><p>performance-NiO-cpu-a64-e768</p></td>
+<td><p>S16</p></td>
+<td><p>64</p></td>
+<td><p>768</p></td>
+<td><p>384</p></td>
+</tr>
+<tr class="row-even"><td><p>performance-NiO-cpu-a128-e1536</p></td>
+<td><p>S32</p></td>
+<td><p>128</p></td>
+<td><p>1536</p></td>
+<td><p>768</p></td>
+</tr>
+<tr class="row-odd"><td><p>performance-NiO-cpu-a256-e3072</p></td>
+<td><p>S64</p></td>
+<td><p>256</p></td>
+<td><p>3072</p></td>
+<td><p>1536</p></td>
+</tr>
+<tr class="row-even"><td><p>performance-NiO-cpu-a512-e6144</p></td>
+<td><p>S128</p></td>
+<td><p>512</p></td>
+<td><p>6144</p></td>
+<td><p>3072</p></td>
+</tr>
+<tr class="row-odd"><td><p>performance-NiO-cpu-a1024-e12288</p></td>
+<td><p>S256</p></td>
+<td><p>1024</p></td>
+<td><p>12288</p></td>
+<td><p>6144</p></td>
+</tr>
+</tbody>
+</table>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>

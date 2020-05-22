@@ -1635,6 +1635,45 @@ performance.
 NiO performance tests
 ^^^^^^^^^^^^^^^^^^^^^
 
+Follow the instructions in tests/performance/NiO/README to
+enable and run the NiO tests.
+
+The NiO tests are for bulk supercells of varying size. The QMC runs consist of short blocks of (1) VMC
+without drift (2) VMC with drift term included, and (3) DMC with
+constant population. The tests use spline wavefunctions that must be
+downloaded as described in the README file because of their large size. You
+will need to set ``-DQMC_DATA=YOUR_DATA_FOLDER -DENABLE_TIMERS=1``
+when running CMake as
+described in the README file.
+
+Two sets of wavefunction are tested: spline orbitals with one- and
+two-body Jastrow functions and a more complex form with an additional
+three-body Jastrow function. The Jastrows are the same for each run
+and are not reoptimized, as might be done for research purposes.  Runs
+in the hundreds of electrons up to low thousands of electrons are representative of
+research runs performed in 2017. The largest runs target
+future machines and require very large memory.
+
+.. table:: System sizes and names for NiO performance tests. GPU performance
+    tests are named similarly but have different walker counts.
+    
+
+  +----------------------------------+------------------+-------+------------+----------------+
+  | Performance test name            | Historical name  | Atoms | Electrons  | Electrons/spin |
+  +==================================+==================+=======+============+================+
+  | performance-NiO-cpu-a32-e384     | S8               | 32    | 384        | 192            |
+  +----------------------------------+------------------+-------+------------+----------------+
+  | performance-NiO-cpu-a64-e768     | S16              | 64    | 768        | 384            |
+  +----------------------------------+------------------+-------+------------+----------------+
+  | performance-NiO-cpu-a128-e1536   | S32              | 128   | 1536       | 768            |
+  +----------------------------------+------------------+-------+------------+----------------+
+  | performance-NiO-cpu-a256-e3072   | S64              | 256   | 3072       | 1536           |
+  +----------------------------------+------------------+-------+------------+----------------+
+  | performance-NiO-cpu-a512-e6144   | S128             | 512   | 6144       | 3072           |
+  +----------------------------------+------------------+-------+------------+----------------+
+  | performance-NiO-cpu-a1024-e12288 | S256             | 1024  | 12288      | 6144           |
+  +----------------------------------+------------------+-------+------------+----------------+
+
 
 
 .. rubric:: Footnotes
