@@ -1365,7 +1365,7 @@ Spack repo https://github.com/spack/spack/issues.
 In the GitHub issue, include ``@naromero77`` to get the attention
 of our developer.
 
-.. _testing
+.. _testing:
 
 Testing and validation of QMCPACK
 ---------------------------------
@@ -1479,6 +1479,125 @@ The test system includes specific tests for the complex version of the code.
 
 The input data files for the tests are located in the ``tests`` directory.
 The system-level test directories are grouped into ``heg``, ``molecules``, and ``solids``, with particular physical systems under each (for example ``molecules/H4_ae`` [#f1]_ ).
+Under each physical system directory there might be tests for multiple QMC methods or parameter variations.
+The numerical comparisons and test definitions are in the ``CMakeLists.txt`` file in each physical system directory.
+
+If *all* the QMC tests fail it is likely
+that the appropriate mpiexec (or mpirun, aprun, srun, jsrun) is not being
+called or found. If the QMC runs appear to work but all the other
+tests fail, it is possible that Python is not working on your system. We suggest checking some of the test console output in ``build/Testing/Temporary/LastTest.log``
+or the output files under ``build/tests/``.
+
+Note that because most of the tests are very small, consisting of only a few
+electrons, the performance is not representative of larger
+calculations. For example, although the calculations might fit in cache,
+there will be essentially no vectorization because of the small electron
+counts. **These tests should therefore not be used for any benchmarking or
+performance analysis**. Example runs that can be used for testing performance are described in
+:ref:`perftests`.
+
+Deterministic and unit tests
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+QMCPACK has a set of deterministic tests, predominantly unit tests.
+All of these tests can be run with the following command (in the build directory):
+
+::
+
+  ctest -R deterministic -LE unstable
+
+These tests should always pass. Failure could indicate a major problem
+with the compiler, compiler settings, or a linked library that would
+give incorrect results.
+
+The output should look similar to the following:
+
+::
+
+  Test project qmcpack/build
+      Start  1: unit_test_numerics
+  1/11 Test  #1: unit_test_numerics ...............   Passed    0.06 sec
+      Start  2: unit_test_utilities
+  2/11 Test  #2: unit_test_utilities ..............   Passed    0.02 sec
+      Start  3: unit_test_einspline
+  ...
+  10/11 Test #10: unit_test_hamiltonian ............   Passed    1.88 sec
+      Start 11: unit_test_drivers
+  11/11 Test #11: unit_test_drivers ................   Passed    0.01 sec
+
+  100% tests passed, 0 tests failed out of 11
+
+  Label Time Summary:
+  unit    =   2.20 sec
+
+  Total Test time (real) =   2.31 sec
+
+Individual unit test executables can be found in ``build/tests/bin``.
+The source for the unit tests is located in the ``tests`` directory under each directory in ``src`` (e.g. ``src/QMCWavefunctions/tests``).
+
+See :ref:`unit_testing` for more details about unit tests.
+
+.. _integtestqe:
+
+Integration tests with Quantum Espresso
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As described in :ref:`buildqe`, it is possible to test entire
+workflows of trial wavefunction generation, conversion, and eventual
+QMC calculation. A patched QE must be installed so that the
+pw2qmcpack converter is available.
+
+By adding ``-D QE_BIN=your_QE_binary_path`` in the CMake command line when building your QMCPACK,
+tests named with the "qe-" prefix will be included in the test set of your build.
+You can test the whole ``pw > pw2qmcpack > qmcpack`` workflow by
+
+::
+
+  ctest -R qe
+
+This provides a very solid test of the entire QMC
+toolchain for plane wave--generated wavefunctions.
+
+.. _perftests
+
+Performance tests
+~~~~~~~~~~~~~~~~~
+
+Performance tests representative of real research runs are included in the
+tests/performance directory. They can be used for benchmarking, comparing machine
+performance, or assessing optimizations. This is in
+contrast to the majority of the conventional integration tests in which the particle
+counts are too small to be representative. Care is still needed to
+remove initialization, I/O, and compute a representative performance
+measure.
+
+The CTest integration is sufficient to run the benchmarks and measure
+relative performance from version to version of QMCPACK and to assess
+proposed code changes. Performance tests are prefixed with
+"performance." To obtain the highest performance on a particular
+platform, you must run the benchmarks in a standalone manner and tune
+thread counts, placement, walker count (etc.). This is essential to
+fairly compare different machines. Check with the
+developers if you are unsure of what is a fair change.
+
+For the largest problem sizes, the initialization of spline orbitals might
+take a large portion of overall runtime. When QMCPACK is run at scale,
+the initialization is fast because it is fully
+parallelized. However, the performance tests usually run on a single node.
+Consider running QMCPACK once with ``save_coefs="yes"`` XML input tag
+added to the line of 'determinantset' to save the converted spline
+coefficients to the disk and load them for later runs in the same folder.
+See :ref:`spo_spline` for more information.
+
+The delayed update algorithm in :ref:`singledeterminant`
+significantly changes the performance characteristics of QMCPACK.  A
+parameter scan of the maximal number of delays specific to every
+architecture and problem size is required to achieve the best
+performance.
+
+NiO performance tests
+^^^^^^^^^^^^^^^^^^^^^
+
 
 
 .. rubric:: Footnotes

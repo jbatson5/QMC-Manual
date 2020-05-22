@@ -140,7 +140,15 @@
 <li class="toctree-l3"><a class="reference internal" href="#reporting-bugs">Reporting Bugs</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#testing-and-validation-of-qmcpack">Testing and validation of QMCPACK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-and-validation-of-qmcpack">Testing and validation of QMCPACK</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deterministic-and-unit-tests">Deterministic and unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-tests-with-quantum-espresso">Integration tests with Quantum Espresso</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-tests">Performance tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nio-performance-tests">NiO performance tests</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
@@ -234,7 +242,7 @@ adds the pw2qmcpack utility
 common systems are given in
 <span class="xref std std-ref">installexamples</span>.</p></li>
 <li><p>Run the tests to verify QMCPACK
-(<span class="xref std std-ref">testing</span>).</p></li>
+(<a class="reference internal" href="#testing"><span class="std std-ref">Testing and validation of QMCPACK</span></a>).</p></li>
 <li><p>Build the ppconvert utility in QMCPACK
 (<span class="xref std std-ref">buildppconvert</span>).</p></li>
 </ol>
@@ -1393,7 +1401,7 @@ of our developer.</p>
 </div>
 </div>
 <div class="section" id="testing-and-validation-of-qmcpack">
-<h2>Testing and validation of QMCPACK<a class="headerlink" href="#testing-and-validation-of-qmcpack" title="Permalink to this headline">¶</a></h2>
+<span id="testing"></span><h2>Testing and validation of QMCPACK<a class="headerlink" href="#testing-and-validation-of-qmcpack" title="Permalink to this headline">¶</a></h2>
 <p>We <strong>strongly encourage</strong> running the included tests each time
 QMCPACK is built. A range of unit and integration tests ensure that
 the code behaves as expected and that results are consistent with
@@ -1480,13 +1488,110 @@ output to the standard output:</p>
 </div>
 <p>The test system includes specific tests for the complex version of the code.</p>
 <p>The input data files for the tests are located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory.
-The system-level test directories are grouped into <code class="docutils literal notranslate"><span class="pre">heg</span></code>, <code class="docutils literal notranslate"><span class="pre">molecules</span></code>, and <code class="docutils literal notranslate"><span class="pre">solids</span></code>, with particular physical systems under each (for example <code class="docutils literal notranslate"><span class="pre">molecules/H4_ae</span></code> <a class="footnote-reference brackets" href="#f1" id="id7">1</a> ).</p>
+The system-level test directories are grouped into <code class="docutils literal notranslate"><span class="pre">heg</span></code>, <code class="docutils literal notranslate"><span class="pre">molecules</span></code>, and <code class="docutils literal notranslate"><span class="pre">solids</span></code>, with particular physical systems under each (for example <code class="docutils literal notranslate"><span class="pre">molecules/H4_ae</span></code> <a class="footnote-reference brackets" href="#f1" id="id7">1</a> ).
+Under each physical system directory there might be tests for multiple QMC methods or parameter variations.
+The numerical comparisons and test definitions are in the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file in each physical system directory.</p>
+<p>If <em>all</em> the QMC tests fail it is likely
+that the appropriate mpiexec (or mpirun, aprun, srun, jsrun) is not being
+called or found. If the QMC runs appear to work but all the other
+tests fail, it is possible that Python is not working on your system. We suggest checking some of the test console output in <code class="docutils literal notranslate"><span class="pre">build/Testing/Temporary/LastTest.log</span></code>
+or the output files under <code class="docutils literal notranslate"><span class="pre">build/tests/</span></code>.</p>
+<p>Note that because most of the tests are very small, consisting of only a few
+electrons, the performance is not representative of larger
+calculations. For example, although the calculations might fit in cache,
+there will be essentially no vectorization because of the small electron
+counts. <strong>These tests should therefore not be used for any benchmarking or
+performance analysis</strong>. Example runs that can be used for testing performance are described in
+<span class="xref std std-ref">perftests</span>.</p>
+<div class="section" id="deterministic-and-unit-tests">
+<h3>Deterministic and unit tests<a class="headerlink" href="#deterministic-and-unit-tests" title="Permalink to this headline">¶</a></h3>
+<p>QMCPACK has a set of deterministic tests, predominantly unit tests.
+All of these tests can be run with the following command (in the build directory):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">deterministic</span> <span class="o">-</span><span class="n">LE</span> <span class="n">unstable</span>
+</pre></div>
+</div>
+<p>These tests should always pass. Failure could indicate a major problem
+with the compiler, compiler settings, or a linked library that would
+give incorrect results.</p>
+<p>The output should look similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Test</span> <span class="n">project</span> <span class="n">qmcpack</span><span class="o">/</span><span class="n">build</span>
+    <span class="n">Start</span>  <span class="mi">1</span><span class="p">:</span> <span class="n">unit_test_numerics</span>
+<span class="mi">1</span><span class="o">/</span><span class="mi">11</span> <span class="n">Test</span>  <span class="c1">#1: unit_test_numerics ...............   Passed    0.06 sec</span>
+    <span class="n">Start</span>  <span class="mi">2</span><span class="p">:</span> <span class="n">unit_test_utilities</span>
+<span class="mi">2</span><span class="o">/</span><span class="mi">11</span> <span class="n">Test</span>  <span class="c1">#2: unit_test_utilities ..............   Passed    0.02 sec</span>
+    <span class="n">Start</span>  <span class="mi">3</span><span class="p">:</span> <span class="n">unit_test_einspline</span>
+<span class="o">...</span>
+<span class="mi">10</span><span class="o">/</span><span class="mi">11</span> <span class="n">Test</span> <span class="c1">#10: unit_test_hamiltonian ............   Passed    1.88 sec</span>
+    <span class="n">Start</span> <span class="mi">11</span><span class="p">:</span> <span class="n">unit_test_drivers</span>
+<span class="mi">11</span><span class="o">/</span><span class="mi">11</span> <span class="n">Test</span> <span class="c1">#11: unit_test_drivers ................   Passed    0.01 sec</span>
+
+<span class="mi">100</span><span class="o">%</span> <span class="n">tests</span> <span class="n">passed</span><span class="p">,</span> <span class="mi">0</span> <span class="n">tests</span> <span class="n">failed</span> <span class="n">out</span> <span class="n">of</span> <span class="mi">11</span>
+
+<span class="n">Label</span> <span class="n">Time</span> <span class="n">Summary</span><span class="p">:</span>
+<span class="n">unit</span>    <span class="o">=</span>   <span class="mf">2.20</span> <span class="n">sec</span>
+
+<span class="n">Total</span> <span class="n">Test</span> <span class="n">time</span> <span class="p">(</span><span class="n">real</span><span class="p">)</span> <span class="o">=</span>   <span class="mf">2.31</span> <span class="n">sec</span>
+</pre></div>
+</div>
+<p>Individual unit test executables can be found in <code class="docutils literal notranslate"><span class="pre">build/tests/bin</span></code>.
+The source for the unit tests is located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory under each directory in <code class="docutils literal notranslate"><span class="pre">src</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">src/QMCWavefunctions/tests</span></code>).</p>
+<p>See <span class="xref std std-ref">unit_testing</span> for more details about unit tests.</p>
+</div>
+<div class="section" id="integration-tests-with-quantum-espresso">
+<span id="integtestqe"></span><h3>Integration tests with Quantum Espresso<a class="headerlink" href="#integration-tests-with-quantum-espresso" title="Permalink to this headline">¶</a></h3>
+<p>As described in <span class="xref std std-ref">buildqe</span>, it is possible to test entire
+workflows of trial wavefunction generation, conversion, and eventual
+QMC calculation. A patched QE must be installed so that the
+pw2qmcpack converter is available.</p>
+<p>By adding <code class="docutils literal notranslate"><span class="pre">-D</span> <span class="pre">QE_BIN=your_QE_binary_path</span></code> in the CMake command line when building your QMCPACK,
+tests named with the “qe-” prefix will be included in the test set of your build.
+You can test the whole <code class="docutils literal notranslate"><span class="pre">pw</span> <span class="pre">&gt;</span> <span class="pre">pw2qmcpack</span> <span class="pre">&gt;</span> <span class="pre">qmcpack</span></code> workflow by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">qe</span>
+</pre></div>
+</div>
+<p>This provides a very solid test of the entire QMC
+toolchain for plane wave–generated wavefunctions.</p>
+</div>
+<div class="section" id="performance-tests">
+<h3>Performance tests<a class="headerlink" href="#performance-tests" title="Permalink to this headline">¶</a></h3>
+<p>Performance tests representative of real research runs are included in the
+tests/performance directory. They can be used for benchmarking, comparing machine
+performance, or assessing optimizations. This is in
+contrast to the majority of the conventional integration tests in which the particle
+counts are too small to be representative. Care is still needed to
+remove initialization, I/O, and compute a representative performance
+measure.</p>
+<p>The CTest integration is sufficient to run the benchmarks and measure
+relative performance from version to version of QMCPACK and to assess
+proposed code changes. Performance tests are prefixed with
+“performance.” To obtain the highest performance on a particular
+platform, you must run the benchmarks in a standalone manner and tune
+thread counts, placement, walker count (etc.). This is essential to
+fairly compare different machines. Check with the
+developers if you are unsure of what is a fair change.</p>
+<p>For the largest problem sizes, the initialization of spline orbitals might
+take a large portion of overall runtime. When QMCPACK is run at scale,
+the initialization is fast because it is fully
+parallelized. However, the performance tests usually run on a single node.
+Consider running QMCPACK once with <code class="docutils literal notranslate"><span class="pre">save_coefs=&quot;yes&quot;</span></code> XML input tag
+added to the line of ‘determinantset’ to save the converted spline
+coefficients to the disk and load them for later runs in the same folder.
+See <span class="xref std std-ref">spo_spline</span> for more information.</p>
+<p>The delayed update algorithm in <span class="xref std std-ref">singledeterminant</span>
+significantly changes the performance characteristics of QMCPACK.  A
+parameter scan of the maximal number of delays specific to every
+architecture and problem size is required to achieve the best
+performance.</p>
+<div class="section" id="nio-performance-tests">
+<h4>NiO performance tests<a class="headerlink" href="#nio-performance-tests" title="Permalink to this headline">¶</a></h4>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>
 <dd><p>The suffix “ae” is short for “all-electron,” and “pp” is short for “pseudopotential.”</p>
 </dd>
 </dl>
+</div>
+</div>
 </div>
 </div>
 

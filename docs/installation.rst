@@ -1356,6 +1356,43 @@ https://spack.readthedocs.io/en/latest/chain.html.
 
 Instructions for DOE supercomputing facilities that support Spack directly will be forthcoming.
 
+Installing Quantum-Espresso with Spack
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+More information about the QE Spack package can be obtained directly
+from Spack
+
+::
+
+  spack info quantum-espresso
+
+There are many variants available for QE, most, but not all, are
+compatible with QMCPACK patch. Here is a minimalistic example of the
+Spack installation command that needs to be invoked:
+
+::
+
+  your-laptop> spack install quantum-espresso+qmcpack~patch@6.4.1%gcc hdf5=parallel
+
+The ``~`` decorator means deactivate the ``patch``
+variant. This refers not to the QMCPACK patch, but to the upstream
+patching that is present for some versions of QE. These upstream QE
+patches fix specific critical autoconf/configure fixes. Unfortunately,
+some of these QE upstream patches are incompatible with the QMCPACK
+patch. Note that the Spack package will prevent you from installing
+incompatible variants and will emit an error message explaining the
+nature of the incompatibility.
+
+A serial (no MPI) installation is also available, but the Spack installation command
+is non-intuitive for Spack newcomers:
+
+::
+
+  your-laptop> spack install quantum-espresso+qmcpack~patch~mpi~scalapack@6.4.1%gcc hdf5=serial
+
+QE Spack package is well tested with GCC and Intel compilers, but will not work
+with the PGI compiler or in a cross-compile environment.
+
 Reporting Bugs
 ~~~~~~~~~~~~~~
 
@@ -1365,7 +1402,7 @@ Spack repo https://github.com/spack/spack/issues.
 In the GitHub issue, include ``@naromero77`` to get the attention
 of our developer.
 
-.. _testing
+.. _testing:
 
 Testing and validation of QMCPACK
 ---------------------------------
@@ -1537,7 +1574,7 @@ The source for the unit tests is located in the ``tests`` directory under each d
 
 See :ref:`unit_testing` for more details about unit tests.
 
-.. _integtestqe
+.. _integtestqe:
 
 Integration tests with Quantum Espresso
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
