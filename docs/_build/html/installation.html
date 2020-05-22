@@ -154,6 +154,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#automated-testing-of-qmcpack">Automated testing of QMCPACK</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-ppconvert-a-pseudopotential-format-converter">Building ppconvert, a pseudopotential format converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-and-patching-quantum-espresso">Installing and patching Quantum ESPRESSO</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-build-the-fastest-executable-version-of-qmcpack">How to build the fastest executable version of QMCPACK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting-the-installation">Troubleshooting the installation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
@@ -241,7 +244,7 @@ or <a class="reference internal" href="#obdevelopment"><span class="std std-ref
 installed (<a class="reference internal" href="#prerequisites"><span class="std std-ref">Prerequisites</span></a>).</p></li>
 <li><p>If you will use Quantum ESPRESSO, download and patch it. The patch
 adds the pw2qmcpack utility
-(<span class="xref std std-ref">buildqe</span>).</p></li>
+(<a class="reference internal" href="#buildqe"><span class="std std-ref">Installing and patching Quantum ESPRESSO</span></a>).</p></li>
 <li><p>Run the cmake configure step and build with make
 (<a class="reference internal" href="#cmake"><span class="std std-ref">Building with CMake</span></a> and <a class="reference internal" href="#cmakequick"><span class="std std-ref">Quick build instructions (try first)</span></a>). Examples for
 common systems are given in
@@ -252,9 +255,9 @@ common systems are given in
 (<a class="reference internal" href="#buildppconvert"><span class="std std-ref">Building ppconvert, a pseudopotential format converter</span></a>).</p></li>
 </ol>
 <p>Hints for high performance are in
-<span class="xref std std-ref">buildperformance</span>.
+<a class="reference internal" href="#buildperformance"><span class="std std-ref">How to build the fastest executable version of QMCPACK</span></a>.
 Troubleshooting suggestions are in
-<span class="xref std std-ref">troubleshoot</span>.</p>
+<a class="reference internal" href="#troubleshoot"><span class="std std-ref">Troubleshooting the installation</span></a>.</p>
 <p>Note that there are two different QMCPACK executables that can be
 produced: the general one, which is the default, and the “complex”
 version, which supports periodic calculations at arbitrary twist angles
@@ -309,7 +312,7 @@ often accessed via a modules environment—check your system
 documentation.</p>
 <p><strong>Use of the latest versions of all compilers and libraries is strongly
 encouraged</strong> but not absolutely essential. Generally, newer versions are
-faster; see <span class="xref std std-ref">buildperformance</span>
+faster; see <a class="reference internal" href="#buildperformance"><span class="std std-ref">How to build the fastest executable version of QMCPACK</span></a>
 for performance suggestions.</p>
 <ul class="simple">
 <li><p>C/C++ compilers such as GNU, Clang, Intel, and IBM XL. C++ compilers
@@ -745,9 +748,9 @@ supercomputers. The examples should serve as good starting points for
 building QMCPACK on similar machines. For example, the software
 environment on modern Crays is very consistent. Note that updates to
 operating systems and system software might require small modifications
-to these recipes. See <span class="xref std std-ref">buildperformance</span> for key
+to these recipes. See <a class="reference internal" href="#buildperformance"><span class="std std-ref">How to build the fastest executable version of QMCPACK</span></a> for key
 points to check to obtain highest performance and
-<span class="xref std std-ref">troubleshoot</span> for troubleshooting hints.</p>
+<a class="reference internal" href="#troubleshoot"><span class="std std-ref">Troubleshooting the installation</span></a> for troubleshooting hints.</p>
 <div class="section" id="installing-on-ubuntu-linux-or-other-apt-get-based-distributions">
 <h3>Installing on Ubuntu Linux or other apt-get–based distributions<a class="headerlink" href="#installing-on-ubuntu-linux-or-other-apt-get-based-distributions" title="Permalink to this headline">¶</a></h3>
 <p>The following is designed to obtain a working QMCPACK build on, for example, a
@@ -1573,7 +1576,7 @@ The source for the unit tests is located in the <code class="docutils literal no
 </div>
 <div class="section" id="integration-tests-with-quantum-espresso">
 <span id="integtestqe"></span><h3>Integration tests with Quantum Espresso<a class="headerlink" href="#integration-tests-with-quantum-espresso" title="Permalink to this headline">¶</a></h3>
-<p>As described in <span class="xref std std-ref">buildqe</span>, it is possible to test entire
+<p>As described in <a class="reference internal" href="#buildqe"><span class="std std-ref">Installing and patching Quantum ESPRESSO</span></a>, it is possible to test entire
 workflows of trial wavefunction generation, conversion, and eventual
 QMC calculation. A patched QE must be installed so that the
 pw2qmcpack converter is available.</p>
@@ -1731,6 +1734,103 @@ workstation (Intel, GCC, both CPU and GPU builds) and for two ORNL
 supercomputers. In this example, four errors were found. This
 dashboard is accessible at <a class="reference external" href="https://cdash.qmcpack.org">https://cdash.qmcpack.org</a></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
+</div>
+<div class="section" id="installing-and-patching-quantum-espresso">
+<span id="buildqe"></span><h2>Installing and patching Quantum ESPRESSO<a class="headerlink" href="#installing-and-patching-quantum-espresso" title="Permalink to this headline">¶</a></h2>
+<p>For trial wavefunctions obtained in a plane-wave basis, we mainly
+support QE. Note that ABINIT and QBox were supported historically
+and could be reactivated.</p>
+<p>QE stores wavefunctions in a nonstandard internal
+“save” format. To convert these to a conventional HDF5 format file
+we have developed a converter—pw2qmcpack—which is an add-on to the
+QE distribution.</p>
+<p>To simplify the process of patching QE we have developed
+a script that will automatically download and patch the source
+code. The patches are specific to each version. For example, to download and
+patch QE v6.3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">external_codes</span><span class="o">/</span><span class="n">quantum_espresso</span>
+<span class="o">./</span><span class="n">download_and_patch_qe6</span><span class="o">.</span><span class="mf">3.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>After running the patch, you must configure QE with
+the HDF5 capability enabled in either way:</p>
+<ul class="simple">
+<li><p>If your system already has HDF5 installed with Fortran, use the -{}-with-hdf5 configuration option.</p></li>
+</ul>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">qe</span><span class="o">-</span><span class="mf">6.3</span>
+<span class="o">./</span><span class="n">configure</span> <span class="o">--</span><span class="k">with</span><span class="o">-</span><span class="n">hdf5</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">local</span>   <span class="c1"># Specify HDF5 base directory</span>
+</pre></div>
+</div>
+<p><strong>Check</strong> the end of the configure output if HDF5 libraries are found properly.
+If not, either install a complete library or use the other scheme. If using a parallel HDF5 library, be sure to use
+the same MPI with QE as used to build the parallel HDF5 library.</p>
+<p>Currently, HDF5 support in QE itself is preliminary. To enable use of pw2qmcpack
+but use the old non-HDF5 I/O within QE, replace <code class="docutils literal notranslate"><span class="pre">-D__HDF5</span></code> with <code class="docutils literal notranslate"><span class="pre">{-D__HDF5_C}</span></code> in make.inc.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>If your system has HDF5 with C only, manually edit make.inc by adding <code class="docutils literal notranslate"><span class="pre">-D__HDF5_C</span></code> and <code class="docutils literal notranslate"><span class="pre">-DH5_USE_16_API</span></code>
+in <code class="docutils literal notranslate"><span class="pre">DFLAGS</span></code> and provide include and library path in <code class="docutils literal notranslate"><span class="pre">IFLAGS</span></code> and <code class="docutils literal notranslate"><span class="pre">HDF5_LIB</span></code>.</p></li>
+</ul>
+<p>The complete process is described in external_codes/quantum_espresso/README.</p>
+<p>The tests involving pw.x and pw2qmcpack.x have been integrated into the test suite of QMCPACK.
+By adding <code class="docutils literal notranslate"><span class="pre">-D</span> <span class="pre">QE_BIN=your_QE_binary_path</span></code> in the CMake command line when building your QMCPACK,
+tests named with the “qe-” prefix will be included in the test set of your build.
+You can test the whole <code class="docutils literal notranslate"><span class="pre">pw</span> <span class="pre">&gt;</span> <span class="pre">pw2qmcpack</span> <span class="pre">&gt;</span> <span class="pre">qmcpack</span> <span class="pre">workflow</span></code> by</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ctest</span> <span class="o">-</span><span class="n">R</span> <span class="n">qe</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#integtestqe"><span class="std std-ref">Integration tests with Quantum Espresso</span></a> and the testing section for more details.</p>
+</div>
+<div class="section" id="how-to-build-the-fastest-executable-version-of-qmcpack">
+<span id="buildperformance"></span><h2>How to build the fastest executable version of QMCPACK<a class="headerlink" href="#how-to-build-the-fastest-executable-version-of-qmcpack" title="Permalink to this headline">¶</a></h2>
+<p>To build the fastest version of QMCPACK we recommend the following:</p>
+<ul class="simple">
+<li><p>Use the latest C++ compilers available for your
+system. Substantial gains have been made optimizing C++ in recent
+years.</p></li>
+<li><p>Use a vendor-optimized BLAS library such as Intel MKL and AMD ACML. Although
+QMC does not make extensive use of linear algebra, it is used in the
+VMC wavefunction optimizer to apply the orbital coefficients in local basis
+calculations and in the Slater determinant update.</p></li>
+<li><p>Use a vector math library such as Intel VML.  For periodic
+calculations, the calculation of the structure factor and Ewald
+potential benefit from vectorized evaluation of sin and
+cos. Currently we only autodetect Intel VML, as provided with MKL,
+but support for MASSV and AMD LibM is included via #defines. See,
+for example, src/Numerics/e2iphi.h. For
+large supercells, this optimization can gain 10% in performance.</p></li>
+</ul>
+<p>Note that greater speedups of QMC calculations can usually be obtained by
+carefully choosing the required statistics for each
+investigation. That is, do not compute smaller error bars than necessary.</p>
+</div>
+<div class="section" id="troubleshooting-the-installation">
+<span id="troubleshoot"></span><h2>Troubleshooting the installation<a class="headerlink" href="#troubleshooting-the-installation" title="Permalink to this headline">¶</a></h2>
+<p>Some tips to help troubleshoot installations of QMCPACK:</p>
+<ul>
+<li><p>First, build QMCPACK on a workstation you control or on any
+system with a simple and up-to-date set of development
+tools. You can compare the results of CMake and QMCPACK on this
+system with any more difficult systems you encounter.</p></li>
+<li><p>Use up-to-date development software, particularly a recent
+CMake.</p></li>
+<li><p>Verify that the compilers and libraries you expect are
+being configured. It is common to have multiple versions
+installed. The configure system will stop at the first version it
+finds, which might not be the most recent. If this occurs, directly specify the appropriate
+directories and files (<a class="reference internal" href="#cmakeoptions"><span class="std std-ref">Configuration Options</span></a>). For example,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=/</span><span class="n">full</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">mpicc</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=/</span><span class="n">full</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">mpicxx</span> <span class="o">..</span>
+</pre></div>
+</div>
+</li>
+<li><p>To monitor the compiler and linker settings, use a verbose build, <code class="docutils literal notranslate"><span class="pre">make</span>
+<span class="pre">VERBOSE=1</span></code>. If an individual source file fails to compile you
+can experiment by hand using the output of the verbose build to
+reconstruct the full compilation line.</p></li>
+</ul>
+<p>If you still have problems please post to the QMCPACK Google group with full
+details, or contact a developer.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
 <dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>

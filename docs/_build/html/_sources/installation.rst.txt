@@ -1721,6 +1721,123 @@ electronic structure calculation.
   supercomputers. In this example, four errors were found. This
   dashboard is accessible at https://cdash.qmcpack.org
 
+.. _buildqe:
+
+Installing and patching Quantum ESPRESSO
+----------------------------------------
+
+For trial wavefunctions obtained in a plane-wave basis, we mainly
+support QE. Note that ABINIT and QBox were supported historically
+and could be reactivated.
+
+QE stores wavefunctions in a nonstandard internal
+"save" format. To convert these to a conventional HDF5 format file
+we have developed a converter---pw2qmcpack---which is an add-on to the
+QE distribution.
+
+To simplify the process of patching QE we have developed
+a script that will automatically download and patch the source
+code. The patches are specific to each version. For example, to download and
+patch QE v6.3:
+
+::
+
+  cd external_codes/quantum_espresso
+  ./download_and_patch_qe6.3.sh
+
+After running the patch, you must configure QE with
+the HDF5 capability enabled in either way:
+
+-  If your system already has HDF5 installed with Fortran, use the -{}-with-hdf5 configuration option.
+
+  ::
+
+    cd qe-6.3
+    ./configure --with-hdf5=/opt/local   # Specify HDF5 base directory
+
+  **Check** the end of the configure output if HDF5 libraries are found properly.
+  If not, either install a complete library or use the other scheme. If using a parallel HDF5 library, be sure to use
+  the same MPI with QE as used to build the parallel HDF5 library.
+
+  Currently, HDF5 support in QE itself is preliminary. To enable use of pw2qmcpack
+  but use the old non-HDF5 I/O within QE, replace ``-D__HDF5`` with ``{-D__HDF5_C}`` in make.inc.
+
+- If your system has HDF5 with C only, manually edit make.inc by adding ``-D__HDF5_C`` and ``-DH5_USE_16_API``
+  in ``DFLAGS`` and provide include and library path in ``IFLAGS`` and ``HDF5_LIB``.
+
+The complete process is described in external\_codes/quantum\_espresso/README.
+
+The tests involving pw.x and pw2qmcpack.x have been integrated into the test suite of QMCPACK.
+By adding ``-D QE_BIN=your_QE_binary_path`` in the CMake command line when building your QMCPACK,
+tests named with the "qe-" prefix will be included in the test set of your build.
+You can test the whole ``pw > pw2qmcpack > qmcpack workflow`` by
+
+::
+
+  ctest -R qe
+
+See :ref:`integtestqe` and the testing section for more details.
+
+.. _buildperformance:
+
+How to build the fastest executable version of QMCPACK
+------------------------------------------------------
+
+To build the fastest version of QMCPACK we recommend the following:
+
+- Use the latest C++ compilers available for your
+  system. Substantial gains have been made optimizing C++ in recent
+  years.
+
+- Use a vendor-optimized BLAS library such as Intel MKL and AMD ACML. Although
+  QMC does not make extensive use of linear algebra, it is used in the
+  VMC wavefunction optimizer to apply the orbital coefficients in local basis
+  calculations and in the Slater determinant update.
+
+- Use a vector math library such as Intel VML.  For periodic
+  calculations, the calculation of the structure factor and Ewald
+  potential benefit from vectorized evaluation of sin and
+  cos. Currently we only autodetect Intel VML, as provided with MKL,
+  but support for MASSV and AMD LibM is included via \#defines. See,
+  for example, src/Numerics/e2iphi.h. For
+  large supercells, this optimization can gain 10\% in performance.
+
+Note that greater speedups of QMC calculations can usually be obtained by
+carefully choosing the required statistics for each
+investigation. That is, do not compute smaller error bars than necessary.
+
+.. _troubleshoot:
+
+Troubleshooting the installation
+--------------------------------
+
+Some tips to help troubleshoot installations of QMCPACK:
+
+- First, build QMCPACK on a workstation you control or on any
+  system with a simple and up-to-date set of development
+  tools. You can compare the results of CMake and QMCPACK on this
+  system with any more difficult systems you encounter.
+
+- Use up-to-date development software, particularly a recent
+  CMake.
+
+- Verify that the compilers and libraries you expect are
+  being configured. It is common to have multiple versions
+  installed. The configure system will stop at the first version it
+  finds, which might not be the most recent. If this occurs, directly specify the appropriate
+  directories and files (:ref:`cmakeoptions`). For example,
+
+  ::
+
+      cmake -DCMAKE_C_COMPILER=/full/path/to/mpicc -DCMAKE_CXX_COMPILER=/full/path/to/mpicxx ..
+
+- To monitor the compiler and linker settings, use a verbose build, ``make
+  VERBOSE=1``. If an individual source file fails to compile you
+  can experiment by hand using the output of the verbose build to
+  reconstruct the full compilation line.
+
+If you still have problems please post to the QMCPACK Google group with full
+details, or contact a developer.
 
 
 
