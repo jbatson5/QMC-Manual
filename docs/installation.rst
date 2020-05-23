@@ -961,7 +961,7 @@ software versions were present:
 Installing on systems with ARMv8-based processors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following build recipe was verified using the `Arm Compiler for HPC' on the ANL JLSE Comanche system with Cavium ThunderX2 processors on November 6, 2018.
+The following build recipe was verified using the 'Arm Compiler for HPC' on the ANL JLSE Comanche system with Cavium ThunderX2 processors on November 6, 2018.
 
 ::
 
@@ -1076,7 +1076,7 @@ The Intel compiler, and other commerical compilers like PGI, typically
 require extra environment variables to work properly. If you have an
 module environment set-up by your system administrators, it is
 recommended that you set the module name in
-``~/.spack/linux/compilers.yaml.`` Here is an example for the
+``~/.spack/linux/compilers.yaml``. Here is an example for the
 Intel compiler:
 
 ::
