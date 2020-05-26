@@ -17,6 +17,7 @@ User's Guide and Developer's Manual for
    introduction
    features
    installation
+   running
    simulationcell
 
 

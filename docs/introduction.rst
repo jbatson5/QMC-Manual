@@ -164,7 +164,7 @@ including the following:
 -  Materials Computation Center (MCC), supported by the US National
    Science Foundation
 
-.. _sec:support:
+.. _support:
 
 Support and Contacting the Developers
 -------------------------------------
