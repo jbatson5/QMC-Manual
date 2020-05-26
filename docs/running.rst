@@ -155,7 +155,7 @@ Memory considerations
 ~~~~~~~~~~~~~~~~~~~~~
 
 When using threads, some memory objects are shared by all the threads. Usually these memory objects are read only when the walkers are evolving, for instance the ionic distance table and wavefunction coefficients.
-If a wavefunction is represented by B-splines, the whole table is shared by all the threads. It usually takes a large chunk of memory when a large primitive cell was used in the simulation. Its actual size is reported as ``MEMORY increase XXX MB BsplineSetReader'' in the output file.
+If a wavefunction is represented by B-splines, the whole table is shared by all the threads. It usually takes a large chunk of memory when a large primitive cell was used in the simulation. Its actual size is reported as "MEMORY increase XXX MB BsplineSetReader" in the output file.
 See details about how to reduce it in :ref:`spo_spline`.
 
 The other memory objects that are distinct for each walker during random walks need to be
@@ -229,7 +229,7 @@ usage, at the expense (risk) of obtaining inaccurate results. Proceed
 with caution if this option has to be considered.  It is also possible
 to distribute the B-spline coefficients table between the host and GPU
 memory, see option Spline\_Size\_Limit\_MB in
-Section :ref:`spo_spline`.
+:ref:`spo_spline`.
 
 
 .. bibliography:: bibliography.bib
