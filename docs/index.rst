@@ -18,6 +18,7 @@ User's Guide and Developer's Manual for
    features
    installation
    running
+   units
    simulationcell
 
 
