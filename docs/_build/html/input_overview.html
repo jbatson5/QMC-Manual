@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Input file overview &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Specifying the Simulation Cell" href="simulationcell.html" />
+    <link rel="prev" title="Units used in QMCPACK" href="units.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input file overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project">Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#random-number-initialization">Random number initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="particleset.html">Specifying the particle set</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Input file overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/input_overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="input-file-overview">
+<span id="input-overview"></span><h1>Input file overview<a class="headerlink" href="#input-file-overview" title="Permalink to this headline">¶</a></h1>
+<p>This chapter introduces XML as it is used in the QMCPACK input file.  The focus is on the XML file format itself and the general structure of the input file rather than an exhaustive discussion of all keywords and structure elements.</p>
+<p>QMCPACK uses XML to represent structured data in its input file.  Instead of text blocks like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">begin</span> <span class="n">project</span>
+  <span class="nb">id</span>     <span class="o">=</span> <span class="n">vmc</span>
+  <span class="n">series</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">end</span> <span class="n">project</span>
+
+<span class="n">begin</span> <span class="n">vmc</span>
+  <span class="n">move</span>     <span class="o">=</span> <span class="n">pbyp</span>
+  <span class="n">blocks</span>   <span class="o">=</span> <span class="mi">200</span>
+  <span class="n">steps</span>    <span class="o">=</span>  <span class="mi">10</span>
+  <span class="n">timestep</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">end</span> <span class="n">vmc</span>
+</pre></div>
+</div>
+<p>QMCPACK input looks like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">project</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;vmc&quot;</span> <span class="n">series</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">project</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;vmc&quot;</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;pbyp&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span>  <span class="o">&gt;</span>  <span class="mi">200</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span>   <span class="o">&gt;</span>   <span class="mi">10</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span>  <span class="mf">0.4</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>XML elements start with <code class="docutils literal notranslate"><span class="pre">&lt;element\_name&gt;</span></code>, end with <code class="docutils literal notranslate"><span class="pre">&lt;/element\_name&gt;}</span></code>, and can be nested within each other to denote substructure (the trial wavefunction is composed of a Slater determinant and a Jastrow factor, which are each further composed of <span class="math notranslate nohighlight">\(...\)</span>).  <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">series</span></code> are attributes of the <code class="docutils literal notranslate"><span class="pre">&lt;project/&gt;</span></code> element.  XML attributes are generally used to represent simple values, like names, integers, or real values.  Similar functionality is also commonly provided by <code class="docutils literal notranslate"><span class="pre">&lt;parameter/&gt;</span></code> elements like those previously shown.</p>
+<p>The overall structure of the input file reflects different aspects of the QMC simulation: the simulation cell, particles, trial wavefunction, Hamiltonian, and QMC run parameters.  A condensed version of the actual input file is shown as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;simulation&gt;
+
+&lt;project id=&quot;vmc&quot; series=&quot;0&quot;&gt;
+  ...
+&lt;/project&gt;
+
+&lt;qmcsystem&gt;
+
+  &lt;simulationcell&gt;
+    ...
+  &lt;/simulationcell&gt;
+
+  &lt;particleset name=&quot;e&quot;&gt;
+    ...
+  &lt;/particleset&gt;
+
+  &lt;particleset name=&quot;ion0&quot;&gt;
+    ...
+  &lt;/particleset&gt;
+
+  &lt;wavefunction name=&quot;psi0&quot; ... &gt;
+    ...
+    &lt;determinantset&gt;
+      &lt;slaterdeterminant&gt;
+        ..
+      &lt;/slaterdeterminant&gt;
+    &lt;/determinantset&gt;
+    &lt;jastrow type=&quot;One-Body&quot; ... &gt;
+       ...
+    &lt;/jastrow&gt;
+    &lt;jastrow type=&quot;Two-Body&quot; ... &gt;
+      ...
+    &lt;/jastrow&gt;
+  &lt;/wavefunction&gt;
+
+  &lt;hamiltonian name=&quot;h0&quot; ... &gt;
+    &lt;pairpot type=&quot;coulomb&quot; name=&quot;ElecElec&quot; ... /&gt;
+    &lt;pairpot type=&quot;coulomb&quot; name=&quot;IonIon&quot;   ... /&gt;
+    &lt;pairpot type=&quot;pseudo&quot; name=&quot;PseudoPot&quot; ... &gt;
+      ...
+    &lt;/pairpot&gt;
+  &lt;/hamiltonian&gt;
+
+ &lt;/qmcsystem&gt;
+
+ &lt;qmc method=&quot;vmc&quot; move=&quot;pbyp&quot;&gt;
+   &lt;parameter name=&quot;warmupSteps&quot;&gt;   20 &lt;/parameter&gt;
+   &lt;parameter name=&quot;blocks&quot;     &gt;  200 &lt;/parameter&gt;
+   &lt;parameter name=&quot;steps&quot;      &gt;   10 &lt;/parameter&gt;
+   &lt;parameter name=&quot;timestep&quot;   &gt;  0.4 &lt;/parameter&gt;
+ &lt;/qmc&gt;
+
+&lt;/simulation&gt;
+</pre></div>
+</div>
+<p>The omitted portions <code class="docutils literal notranslate"><span class="pre">...</span></code> are more fine-grained inputs such as the axes of the simulation cell, the number of up and down electrons, positions of atomic species, external orbital files, starting Jastrow parameters, and external pseudopotential files.</p>
+<div class="section" id="project">
+<h2>Project<a class="headerlink" href="#project" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;project&gt;</span></code> tag uses the <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">series</span></code> attributes.
+The value of <code class="docutils literal notranslate"><span class="pre">id</span></code> is the first part of the prefix for output file names.</p>
+<p>Output file names also contain the series number, starting at the value given by the
+<code class="docutils literal notranslate"><span class="pre">series</span></code> tag.  After every <code class="docutils literal notranslate"><span class="pre">&lt;qmc&gt;</span></code> section, the series value will increment, giving each section a unique prefix.</p>
+<p>For the input file shown previously, the output files will start with <code class="docutils literal notranslate"><span class="pre">vmc.s000</span></code>, for example, <code class="docutils literal notranslate"><span class="pre">vmc.s000.scalar.dat</span></code>.
+If there were another <code class="docutils literal notranslate"><span class="pre">&lt;qmc&gt;</span></code> section in the input file, the corresponding output files would use the prefix <code class="docutils literal notranslate"><span class="pre">vmc.s001</span></code>.</p>
+</div>
+<div class="section" id="random-number-initialization">
+<h2>Random number initialization<a class="headerlink" href="#random-number-initialization" title="Permalink to this headline">¶</a></h2>
+<p>The random number generator state is initialized from the <code class="docutils literal notranslate"><span class="pre">random</span></code> element using the <code class="docutils literal notranslate"><span class="pre">seed</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">random</span> <span class="n">seed</span><span class="o">=</span><span class="s2">&quot;1000&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>If the random element is not present, or the seed value is negative, the seed will be generated from the current time.</p>
+<p>To initialize the many independent random number generators (one per thread and MPI process), the seed value is used (modulo 1024) as a starting index into a list of prime numbers.
+Entries in this offset list of prime numbers are then used as the seed for the random generator on each thread and process.</p>
+<p>If checkpointing is enabled, the random number state is written to an HDF file at the end of each block (suffix: <code class="docutils literal notranslate"><span class="pre">.random.h5</span></code>).
+This file will be read if the <code class="docutils literal notranslate"><span class="pre">mcwalkerset</span></code> tag is present to perform a restart.
+For more information, see the <code class="docutils literal notranslate"><span class="pre">checkpoint</span></code> element in the QMC methods <span class="xref std std-ref">qmcmethods</span> and <span class="xref std std-ref">checkpoint_files</span> on checkpoint and restart files.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simulationcell.html" class="btn btn-neutral float-right" title="Specifying the Simulation Cell" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="units.html" class="btn btn-neutral float-left" title="Units used in QMCPACK" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, John Batson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
