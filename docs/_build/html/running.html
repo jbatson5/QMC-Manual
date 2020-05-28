@@ -99,15 +99,16 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#running-on-gpu-machines">Running on GPU machines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#gpu-performance">Performance considerations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Memory considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Memory considerations</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the Simulation Cell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="particleset.html">Specifying the particle set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
             
@@ -184,7 +185,7 @@ option is disabled:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--dryrun</span></code> Validate the input file without performing the simulation. This is a good way to ensure that QMCPACK will do what you think it will.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--enable-timers=none|coarse|medium|fine</span></code> Control the timer granularity when the build option <code class="docutils literal notranslate"><span class="pre">ENABLE_TIMERS</span></code> is enabled.</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a>help``Print version information as well as a list of optional
+<li><p><code class="docutils literal notranslate"><span class="pre">help</span></code> Print version information as well as a list of optional
 command-line arguments.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">noprint</span></code> Do not print extra information on Jastrow or pseudopotential.
 If this flag is not present, QMCPACK will create several <code class="docutils literal notranslate"><span class="pre">.dat</span></code> files
@@ -291,7 +292,7 @@ Cross checking and verification of accuracy is always required but is particular
 <h3>Memory considerations<a class="headerlink" href="#memory-considerations" title="Permalink to this headline">¶</a></h3>
 <p>When using threads, some memory objects are shared by all the threads. Usually these memory objects are read only when the walkers are evolving, for instance the ionic distance table and wavefunction coefficients.
 If a wavefunction is represented by B-splines, the whole table is shared by all the threads. It usually takes a large chunk of memory when a large primitive cell was used in the simulation. Its actual size is reported as “MEMORY increase XXX MB BsplineSetReader” in the output file.
-See details about how to reduce it in <span class="xref std std-ref">spo_spline</span>.</p>
+See details about how to reduce it in <a class="reference internal" href="intro_wavefunction.html#spo-spline"><span class="std std-ref">Spline basis sets</span></a>.</p>
 <p>The other memory objects that are distinct for each walker during random walks need to be
 associated with individual walkers and cannot be shared. This part of memory grows linearly as the number of walkers per MPI rank. Those objects include wavefunction values (Slater determinants) at given electronic configurations and electron-related distance tables (electron-electron distance table). Those matrices dominate the <span class="math notranslate nohighlight">\(N^2\)</span> scaling of the memory usage per walker.</p>
 </div>
@@ -303,7 +304,7 @@ the main source code. Commonly used functionalities for
 solid-state and molecular systems using B-spline single-particle
 orbitals are supported. Use of Gaussian basis sets, three-body
 Jastrow functions, and many observables are not yet supported. A detailed description of the GPU
-implementation can be found in <a class="bibtex reference internal" href="simulationcell.html#eslerkimceperleyshulenburger2012" id="id3">[EKCS12]</a>.</p>
+implementation can be found in <a class="bibtex reference internal" href="bibliography.html#eslerkimceperleyshulenburger2012" id="id1">[EKCS12]</a>.</p>
 <p>The current GPU implementation assumes one MPI process per GPU. To use
 nodes with multiple GPUs, use multiple MPI processes per node.
 Vectorization is achieved over walkers, that is, all walkers are
@@ -311,7 +312,7 @@ propagated in parallel. In each GPU kernel, loops over electrons,
 atomic cores, or orbitals are further vectorized to exploit an
 additional level of parallelism and to allow coalesced memory access.</p>
 <div class="section" id="gpu-performance">
-<span id="id4"></span><h3>Performance considerations<a class="headerlink" href="#gpu-performance" title="Permalink to this headline">¶</a></h3>
+<span id="id2"></span><h3>Performance considerations<a class="headerlink" href="#gpu-performance" title="Permalink to this headline">¶</a></h3>
 <p>To run with high performance on GPUs it is crucial to perform some
 benchmarking runs: the optimum configuration is system size, walker
 count, and GPU model dependent. The GPU implementation vectorizes
@@ -337,8 +338,8 @@ more than approximately 1,500 electrons. For typical calculations on
 smaller electron counts, the statistical error bars are much larger
 then the error introduced by mixed precision.</p>
 </div>
-<div class="section" id="id5">
-<h3>Memory considerations<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Memory considerations<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>In the GPU implementation, each walker has a buffer in the GPU’s
 global memory to store temporary data associated with the
 wavefunctions. Therefore, the amount of memory available on a GPU
@@ -353,16 +354,7 @@ usage, at the expense (risk) of obtaining inaccurate results. Proceed
 with caution if this option has to be considered.  It is also possible
 to distribute the B-spline coefficients table between the host and GPU
 memory, see option Spline_Size_Limit_MB in
-<span class="xref std std-ref">spo_spline</span>.</p>
-<p id="bibtex-bibliography-running-0"><dl class="citation">
-<dt class="bibtex label" id="eslerkimceperleyshulenburger2012"><span class="brackets"><a class="fn-backref" href="#id3">EKCS12</a></span></dt>
-<dd><p>Kenneth P. Esler, Jeongnim Kim, David M. Ceperley, and Luke Shulenburger. Accelerating quantum monte carlo simulations of real materials on gpu clusters. <em>Computing in Science and Engineering</em>, 14(1):40–51, 2012. <a class="reference external" href="https://doi.org/http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122">doi:http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122</a>.</p>
-</dd>
-<dt class="bibtex label" id="ipcc-sc17"><span class="brackets">MLC+17</span></dt>
-<dd><p>Amrita Mathuriya, Ye Luo, Raymond C. Clay, III, Anouar Benali, Luke Shulenburger, and Jeongnim Kim. Embracing a new era of highly efficient and productive quantum monte carlo simulations. In <em>Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis</em>, SC ‘17, 38:1–38:12. New York, NY, USA, 2017. ACM. URL: <a class="reference external" href="http://doi.acm.org/10.1145/3126908.3126952">http://doi.acm.org/10.1145/3126908.3126952</a>, <a class="reference external" href="https://doi.org/10.1145/3126908.3126952">doi:10.1145/3126908.3126952</a>.</p>
-</dd>
-</dl>
-</p>
+<a class="reference internal" href="intro_wavefunction.html#spo-spline"><span class="std std-ref">Spline basis sets</span></a>.</p>
 </div>
 </div>
 </div>

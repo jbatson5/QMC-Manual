@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Bibliography" href="bibliography.html" />
     <link rel="prev" title="Specifying the system to be simulated" href="simulationcell.html" /> 
 </head>
 
@@ -92,8 +93,13 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Trial wavefunction specificaion</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#single-determinant-wavefunctons">Single determinant wavefunctons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-particle-orbitals">Single-particle orbitals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#spline-basis-sets">Spline basis sets</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
             
@@ -252,6 +258,29 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 </pre></div>
 </div>
 </div>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
+By default or if <code class="docutils literal notranslate"><span class="pre">delay_rank=0</span></code> given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension <span class="math notranslate nohighlight">\(&lt;192\)</span> and 32 otherwise.
+<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="bibliography.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
+With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="bibliography.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="bibliography.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
+Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (<span class="math notranslate nohighlight">\(&gt;200\)</span> electrons).
+We have seen up to an order of magnitude speedup on large problem sizes.
+When studying the performance of QMCPACK, a scan of this parameter is required and we recommend starting from 32.
+The best <code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> giving the maximal speedup depends on the problem size.
+Usually the larger <code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> corresponds to a larger problem size.
+On CPUs, <code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> must be chosen as a multiple of SIMD vector length for good performance of BLAS libraries.
+The best <code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> depends on the processor microarchitecture.
+GPU support is under development.</p></li>
+</ul>
+</div>
+<div class="section" id="single-particle-orbitals">
+<span id="singleparticle"></span><h2>Single-particle orbitals<a class="headerlink" href="#single-particle-orbitals" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="spline-basis-sets">
+<span id="spo-spline"></span><h3>Spline basis sets<a class="headerlink" href="#spline-basis-sets" title="Permalink to this headline">¶</a></h3>
+<p>In this section we describe the use of spline basis sets to expand the <code class="docutils literal notranslate"><span class="pre">sposet</span></code>.
+Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.,Quantum ESPRESSO as a trial wavefunction generator).</p>
+</div>
 </div>
 </div>
 
@@ -262,6 +291,8 @@ The input xml block for <code class="docutils literal notranslate"><span class="
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="bibliography.html" class="btn btn-neutral float-right" title="Bibliography" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="simulationcell.html" class="btn btn-neutral float-left" title="Specifying the system to be simulated" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

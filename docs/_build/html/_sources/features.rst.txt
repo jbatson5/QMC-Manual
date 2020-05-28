@@ -212,6 +212,4 @@ To use this feature, the following needs to be done:
 -  In the determinant set definition of the <wavefunction> section, the
    “gpusharing" parameter needs to be set (i.e., <determinantset
    gpusharing=“yes">). See
-   :ref:`spo_spline`.
-
-.. bibliography:: bibliography.bib
+   :ref:`spo-spline`.

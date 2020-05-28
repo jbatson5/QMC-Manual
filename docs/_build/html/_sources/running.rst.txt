@@ -20,7 +20,7 @@ option is disabled:
 
 - ``--enable-timers=none|coarse|medium|fine`` Control the timer granularity when the build option ``ENABLE_TIMERS`` is enabled.
 
-- ``help``Print version information as well as a list of optional
+- ``help`` Print version information as well as a list of optional
   command-line arguments.
 
 - ``noprint`` Do not print extra information on Jastrow or pseudopotential.
@@ -156,7 +156,7 @@ Memory considerations
 
 When using threads, some memory objects are shared by all the threads. Usually these memory objects are read only when the walkers are evolving, for instance the ionic distance table and wavefunction coefficients.
 If a wavefunction is represented by B-splines, the whole table is shared by all the threads. It usually takes a large chunk of memory when a large primitive cell was used in the simulation. Its actual size is reported as "MEMORY increase XXX MB BsplineSetReader" in the output file.
-See details about how to reduce it in :ref:`spo_spline`.
+See details about how to reduce it in :ref:`spo-spline`.
 
 The other memory objects that are distinct for each walker during random walks need to be
 associated with individual walkers and cannot be shared. This part of memory grows linearly as the number of walkers per MPI rank. Those objects include wavefunction values (Slater determinants) at given electronic configurations and electron-related distance tables (electron-electron distance table). Those matrices dominate the :math:`N^2` scaling of the memory usage per walker.
@@ -229,7 +229,4 @@ usage, at the expense (risk) of obtaining inaccurate results. Proceed
 with caution if this option has to be considered.  It is also possible
 to distribute the B-spline coefficients table between the host and GPU
 memory, see option Spline\_Size\_Limit\_MB in
-:ref:`spo_spline`.
-
-
-.. bibliography:: bibliography.bib
+:ref:`spo-spline`.

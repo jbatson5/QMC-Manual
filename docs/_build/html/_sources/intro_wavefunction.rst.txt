@@ -87,3 +87,32 @@ The input xml block for ``slaterdeterminant`` is given in :ref:`Listing 1 <Listi
            </occupation>
          </determinant>
        </slaterdeterminant>
+
+
+Additional information:
+
+- ``delay_rank`` This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
+  By default or if ``delay_rank=0`` given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension :math:`<192` and 32 otherwise.
+  ``delay_rank=1`` uses the Fahy's variant :cite:`Fahy1990` of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
+  With ``delay_rank>1``, the delayed update algorithm :cite:`Luo2018delayedupdate,McDaniel2017` turns most of the computation to compute bound BLAS-3 calls.
+  Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (:math:`>200` electrons).
+  We have seen up to an order of magnitude speedup on large problem sizes.
+  When studying the performance of QMCPACK, a scan of this parameter is required and we recommend starting from 32.
+  The best ``delay_rank`` giving the maximal speedup depends on the problem size.
+  Usually the larger ``delay_rank`` corresponds to a larger problem size.
+  On CPUs, ``delay_rank`` must be chosen as a multiple of SIMD vector length for good performance of BLAS libraries.
+  The best ``delay_rank`` depends on the processor microarchitecture.
+  GPU support is under development.
+
+.. _singleparticle:
+
+Single-particle orbitals
+------------------------
+
+.. _spo-spline:
+
+Spline basis sets
+~~~~~~~~~~~~~~~~~
+
+In this section we describe the use of spline basis sets to expand the ``sposet``.
+Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.,\ Quantum ESPRESSO as a trial wavefunction generator).

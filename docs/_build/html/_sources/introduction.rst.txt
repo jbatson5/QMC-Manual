@@ -338,4 +338,3 @@ and read the source code to find them. New descriptions will be added
 over time but can also be prioritized and added on request (e.g., if a
 specialized Jastrow factor would help or a historical Jastrow form is
 needed for benchmarking).
-\
