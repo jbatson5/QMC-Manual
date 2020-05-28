@@ -193,8 +193,8 @@ is any of the Jastrow functions (described in <span class="xref std std-ref">jas
 <p>Placing a single determinant for each spin is the most used ansatz for the antisymmetric part of a trial wavefunction.
 The input xml block for <code class="docutils literal notranslate"><span class="pre">slaterdeterminant</span></code> is given in <a class="reference internal" href="#listing-1"><span class="std std-ref">Listing 1</span></a>. A list of options is given in
 <a class="reference internal" href="#table2"><span class="std std-numref">Table 2</span></a>.</p>
-<p class="centered">
-<strong><code class="docutils literal notranslate"><span class="pre">slaterdeterminant</span></code> element:</strong></p><table class="docutils align-default" id="table2">
+<p><code class="docutils literal notranslate"><span class="pre">slaterdeterminant</span></code> element:</p>
+<table class="docutils align-default" id="table2">
 <colgroup>
 <col style="width: 46%" />
 <col style="width: 54%" />
@@ -208,8 +208,8 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 </tr>
 </tbody>
 </table>
-<p class="centered">
-<strong>Attribute:</strong></p><table class="docutils align-default">
+<p>Attribute:</p>
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 23%" />
 <col style="width: 14%" />
@@ -278,27 +278,213 @@ GPU support is under development.</p></li>
 <span id="spo-spline"></span><h3>Spline basis sets<a class="headerlink" href="#spline-basis-sets" title="Permalink to this headline">¶</a></h3>
 <p>In this section we describe the use of spline basis sets to expand the <code class="docutils literal notranslate"><span class="pre">sposet</span></code>.
 Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.,Quantum ESPRESSO as a trial wavefunction generator).</p>
-<p id="bibtex-bibliography-intro_wavefunction-0"><dl class="citation">
-<dt class="bibtex label" id="eslerkimceperleyshulenburger2012"><span class="brackets">EKCS12</span></dt>
-<dd><p>Kenneth P. Esler, Jeongnim Kim, David M. Ceperley, and Luke Shulenburger. Accelerating quantum monte carlo simulations of real materials on gpu clusters. <em>Computing in Science and Engineering</em>, 14(1):40–51, 2012. <a class="reference external" href="https://doi.org/http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122">doi:http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122</a>.</p>
-</dd>
-<dt class="bibtex label" id="fahy1990"><span class="brackets"><a class="fn-backref" href="#id1">FWL90</a></span></dt>
-<dd><p>S. Fahy, X. W. Wang, and Steven G. Louie. Variational quantum Monte Carlo nonlocal pseudopotential approach to solids: Formulation and application to diamond, graphite, and silicon. <em>Physical Review B</em>, 42(6):3503–3522, 1990. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.42.3503">doi:10.1103/PhysRevB.42.3503</a>.</p>
-</dd>
-<dt class="bibtex label" id="luo2018delayedupdate"><span class="brackets"><a class="fn-backref" href="#id2">LK18</a></span></dt>
-<dd><p>Ye Luo and Jeongnim Kim. An highly efficient delayed update algorithm for evaluating slater determinants in quantum monte carlo. <em>in preparation</em>, ():, 2018.</p>
-</dd>
-<dt class="bibtex label" id="ipcc-sc17"><span class="brackets">MLC+17</span></dt>
-<dd><p>Amrita Mathuriya, Ye Luo, Raymond C. Clay, III, Anouar Benali, Luke Shulenburger, and Jeongnim Kim. Embracing a new era of highly efficient and productive quantum monte carlo simulations. In <em>Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis</em>, SC ‘17, 38:1–38:12. New York, NY, USA, 2017. ACM. URL: <a class="reference external" href="http://doi.acm.org/10.1145/3126908.3126952">http://doi.acm.org/10.1145/3126908.3126952</a>, <a class="reference external" href="https://doi.org/10.1145/3126908.3126952">doi:10.1145/3126908.3126952</a>.</p>
-</dd>
-<dt class="bibtex label" id="mcdaniel2017"><span class="brackets"><a class="fn-backref" href="#id3">MDAzevedoL+17</a></span></dt>
-<dd><p>T. McDaniel, E. F. D’Azevedo, Y. W. Li, K. Wong, and P. R. C. Kent. Delayed slater determinant update algorithms for high efficiency quantum monte carlo. <em>The Journal of Chemical Physics</em>, 147(17):174107, nov 2017. <a class="reference external" href="https://doi.org/10.1063/1.4998616">doi:10.1063/1.4998616</a>.</p>
-</dd>
-<dt class="bibtex label" id="natoli1995"><span class="brackets">NC95</span></dt>
-<dd><p>Vincent Natoli and David M. Ceperley. An optimized method for treating long-range potentials. <em>Journal of Computational Physics</em>, 117(1):171 – 178, 1995. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0021999185710546">http://www.sciencedirect.com/science/article/pii/S0021999185710546</a>, <a class="reference external" href="https://doi.org/http://dx.doi.org/10.1006/jcph.1995.1054">doi:http://dx.doi.org/10.1006/jcph.1995.1054</a>.</p>
-</dd>
-</dl>
-</p>
+<p>In QMC algorithms, all the SPOs <span class="math notranslate nohighlight">\(\{\phi(\vec{r})\}\)</span> need to be updated
+every time a single electron moves. Evaluating SPOs takes a very large portion of computation time.
+In principle, PW basis set can be used to express SPOs directly in QMC, as in DFT.
+But it introduces an unfavorable scaling because the basis set size increases linearly as the system size.
+For this reason, it is efficient to use a localized basis with compact
+support and a good transferability from the plane wave basis.</p>
+<p>In particular, 3D tricubic B-splines provide a basis in which only
+64 elements are nonzero at any given point in <a class="bibtex reference internal" href="simulationcell.html#blips4qmc" id="id4">[AlfeG04]</a>.
+The 1D cubic B-spline is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq3">
+<span class="eqno">(3)<a class="headerlink" href="#equation-eq3" title="Permalink to this equation">¶</a></span>\[f(x) = \sum_{i'=i-1}^{i+2} b^{i'\!,3}(x)\,\,  p_{i'},\]</div>
+<p>where <span class="math notranslate nohighlight">\(b^{i}(x)\)</span> is the piecewise cubic polynomial basis functions
+and <span class="math notranslate nohighlight">\(i = \text{floor}(\Delta^{-1} x)\)</span> is the index of the first
+grid point <span class="math notranslate nohighlight">\(\le x\)</span>. Constructing a tensor product in each
+Cartesian direction, we can represent a 3D orbital as</p>
+<div class="math notranslate nohighlight" id="equation-eq4">
+<span class="eqno">(4)<a class="headerlink" href="#equation-eq4" title="Permalink to this equation">¶</a></span>\[\phi_n(x,y,z) =
+    \!\!\!\!\sum_{i'=i-1}^{i+2} \!\! b_x^{i'\!,3}(x)
+    \!\!\!\!\sum_{j'=j-1}^{j+2} \!\! b_y^{j'\!,3}(y)
+    \!\!\!\!\sum_{k'=k-1}^{k+2} \!\! b_z^{k'\!,3}(z) \,\, p_{i', j', k',n}.\]</div>
+<p>This allows the rapid evaluation of each orbital in constant time.
+Furthermore, this basis is systematically improvable with a single spacing
+parameter so that accuracy is not compromised compared with the plane wave basis.</p>
+<p>The use of 3D tricubic B-splines greatly improves computational efficiency.
+The gain in computation time from a plane wave basis set to an equivalent B-spline basis set
+becomes increasingly large as the system size grows.
+On the downside, this computational efficiency comes at
+the expense of increased memory use, which is easily overcome, however, by the large
+aggregate memory available per node through OpenMP/MPI hybrid QMC.</p>
+<p>The input xml block for the spline SPOs is given in <a class="reference internal" href="#listing-2"><span class="std std-ref">Listing 2</span></a>. A list of options is given in
+<a class="reference internal" href="#table3"><span class="std std-numref">Table 3</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="listing-2">
+<div class="code-block-caption"><span class="caption-number">Listing 2 </span><span class="caption-text">Determinant set XML element.</span><a class="headerlink" href="#listing-2" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">determinantset</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;pwscf.h5&quot;</span>
+                <span class="n">tilematrix</span><span class="o">=</span><span class="s2">&quot;1 1 3 1 2 -1 -2 1 0&quot;</span> <span class="n">twistnum</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">meshfactor</span><span class="o">=</span><span class="s2">&quot;0.8&quot;</span>
+                <span class="n">twist</span><span class="o">=</span><span class="s2">&quot;0  0  0&quot;</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;updet&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;208&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">occupation</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;downdet&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;208&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">occupation</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">determinantset</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">determinantset</span></code> element:</p>
+<table class="docutils align-default" id="table3">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 58%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Parent elements</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wavefunction</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Child elements</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">slaterdeterminant</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>attribute:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 10%" />
+<col style="width: 22%" />
+<col style="width: 8%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Datatype</p></th>
+<th class="head"><p>Values</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Bspline</p></td>
+<td></td>
+<td><p>Type of <code class="docutils literal notranslate"><span class="pre">sposet</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">href</span></code></p></td>
+<td><p>Text</p></td>
+<td></td>
+<td></td>
+<td><p>Path to hdf5 file from pw2qmcpack.x.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tilematrix</span></code></p></td>
+<td><p>9 integers</p></td>
+<td></td>
+<td></td>
+<td><p>Tiling matrix used to expand supercell.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">twistnum</span></code></p></td>
+<td><p>Integer</p></td>
+<td></td>
+<td></td>
+<td><p>Index of the super twist.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">twist</span></code></p></td>
+<td><p>3 floats</p></td>
+<td></td>
+<td></td>
+<td><p>Super twist.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">meshfactor</span></code></p></td>
+<td><p>Float</p></td>
+<td><p><span class="math notranslate nohighlight">\(\le 1.0\)</span></p></td>
+<td></td>
+<td><p>Grid spacing ratio.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">precision</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Single/double</p></td>
+<td></td>
+<td><p>Precision of spline coefficients</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">gpu</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Yes/no</p></td>
+<td></td>
+<td><p>GPU switch.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gpusharing</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Yes/no</p></td>
+<td><p>No</p></td>
+<td><p>Share B-spline table across GPUs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Spline_Size_Limit_MB</span></code></p></td>
+<td><p>Integer</p></td>
+<td></td>
+<td></td>
+<td><p>Limit B-spline table size on GPU.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">check_orb_norm</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Yes/no</p></td>
+<td><p>Yes</p></td>
+<td><p>Check norms of orbitals from h5 file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">save_coefs</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Yes/no</p></td>
+<td><p>No</p></td>
+<td><p>Save the spline coefficients to h5 file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code></p></td>
+<td><p>Text</p></td>
+<td><p>Any</p></td>
+<td><p>Ion0</p></td>
+<td><p>Particle set with atomic positions.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="centered">
+<strong>Table 3 Options for the <code class="docutils literal notranslate"><span class="pre">determinantset</span></code> xml-block associated with B-spline single particle orbital sets.</strong></p><p>Additional information:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">precision</span></code>. Only effective on CPU versions without mixed
+precision, “single” is always imposed with mixed precision. Using
+single precision not only saves memory use but also speeds up the
+B-spline evaluation. We recommend using single precision since we saw
+little chance of really compromising the accuracy of calculation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">meshfactor</span></code>. The ratio of actual grid spacing of B-splines used in
+QMC calculation with respect to the original one calculated from h5.
+A smaller meshfactor saves memory use but reduces accuracy. The
+effects are similar to reducing plane wave cutoff in DFT
+calculations. Use with caution!</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">twistnum</span></code>. If positive, it is the index. We recommend not taking
+this way since the indexing might show some uncertainty. If negative,
+the super twist is referred by <code class="docutils literal notranslate"><span class="pre">twist</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">save_coefs</span></code>. If yes, dump the real-space B-spline coefficient
+table into an h5 file on the disk. When the orbital transformation
+from k space to B-spline requires more than the available amount of
+scratch memory on the compute nodes, users can perform this step on
+fat nodes and transfer back the h5 file for QMC calculations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gpusharing</span></code>. If enabled, spline data is shared across multiple
+GPUs on a given computational node. For example, on a
+two-GPU-per-node system, each GPU would have half of the orbitals.
+This enables larger overall spline tables than would normally fit in
+the memory of individual GPUs to be used, potentially up to the total
+GPU memory on a node. To obtain high performance, large electron
+counts or a high-performing CPU-GPU interconnect is required. To use
+this feature, the following needs to be done:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The CUDA Multi-Process Service (MPS) needs to be used (e.g., on</p></li>
+</ul>
+<p>Summit/SummitDev use “-alloc_flags gpumps” for bsub). If MPS is not
+detected, sharing will be disabled.</p>
+<ul class="simple">
+<li><p>CUDA_VISIBLE_DEVICES needs to be properly set to control each rank’s</p></li>
+</ul>
+<p>visible CUDA devices (e.g., on OLCF Summit/SummitDev one needs to
+create a resource set containing all GPUs with the respective number
+of ranks with “jsrun –task-per-rs Ngpus -g Ngpus”).</p>
+</div></blockquote>
+</li>
+</ul>
 </div>
 </div>
 </div>
