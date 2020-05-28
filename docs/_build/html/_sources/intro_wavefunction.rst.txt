@@ -116,3 +116,5 @@ Spline basis sets
 
 In this section we describe the use of spline basis sets to expand the ``sposet``.
 Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.,\ Quantum ESPRESSO as a trial wavefunction generator).
+
+.. bibliography:: bibliography.bib

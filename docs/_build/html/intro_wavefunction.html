@@ -36,7 +36,6 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Bibliography" href="bibliography.html" />
     <link rel="prev" title="Specifying the system to be simulated" href="simulationcell.html" /> 
 </head>
 
@@ -99,7 +98,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="bibliography.html">Bibliography</a></li>
 </ul>
 
             
@@ -262,8 +260,8 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
 By default or if <code class="docutils literal notranslate"><span class="pre">delay_rank=0</span></code> given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension <span class="math notranslate nohighlight">\(&lt;192\)</span> and 32 otherwise.
-<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="bibliography.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
-With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="bibliography.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="bibliography.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
+<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="simulationcell.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
+With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="simulationcell.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="simulationcell.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
 Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (<span class="math notranslate nohighlight">\(&gt;200\)</span> electrons).
 We have seen up to an order of magnitude speedup on large problem sizes.
 When studying the performance of QMCPACK, a scan of this parameter is required and we recommend starting from 32.
@@ -280,6 +278,27 @@ GPU support is under development.</p></li>
 <span id="spo-spline"></span><h3>Spline basis sets<a class="headerlink" href="#spline-basis-sets" title="Permalink to this headline">¶</a></h3>
 <p>In this section we describe the use of spline basis sets to expand the <code class="docutils literal notranslate"><span class="pre">sposet</span></code>.
 Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.,Quantum ESPRESSO as a trial wavefunction generator).</p>
+<p id="bibtex-bibliography-intro_wavefunction-0"><dl class="citation">
+<dt class="bibtex label" id="eslerkimceperleyshulenburger2012"><span class="brackets">EKCS12</span></dt>
+<dd><p>Kenneth P. Esler, Jeongnim Kim, David M. Ceperley, and Luke Shulenburger. Accelerating quantum monte carlo simulations of real materials on gpu clusters. <em>Computing in Science and Engineering</em>, 14(1):40–51, 2012. <a class="reference external" href="https://doi.org/http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122">doi:http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122</a>.</p>
+</dd>
+<dt class="bibtex label" id="fahy1990"><span class="brackets"><a class="fn-backref" href="#id1">FWL90</a></span></dt>
+<dd><p>S. Fahy, X. W. Wang, and Steven G. Louie. Variational quantum Monte Carlo nonlocal pseudopotential approach to solids: Formulation and application to diamond, graphite, and silicon. <em>Physical Review B</em>, 42(6):3503–3522, 1990. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.42.3503">doi:10.1103/PhysRevB.42.3503</a>.</p>
+</dd>
+<dt class="bibtex label" id="luo2018delayedupdate"><span class="brackets"><a class="fn-backref" href="#id2">LK18</a></span></dt>
+<dd><p>Ye Luo and Jeongnim Kim. An highly efficient delayed update algorithm for evaluating slater determinants in quantum monte carlo. <em>in preparation</em>, ():, 2018.</p>
+</dd>
+<dt class="bibtex label" id="ipcc-sc17"><span class="brackets">MLC+17</span></dt>
+<dd><p>Amrita Mathuriya, Ye Luo, Raymond C. Clay, III, Anouar Benali, Luke Shulenburger, and Jeongnim Kim. Embracing a new era of highly efficient and productive quantum monte carlo simulations. In <em>Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis</em>, SC ‘17, 38:1–38:12. New York, NY, USA, 2017. ACM. URL: <a class="reference external" href="http://doi.acm.org/10.1145/3126908.3126952">http://doi.acm.org/10.1145/3126908.3126952</a>, <a class="reference external" href="https://doi.org/10.1145/3126908.3126952">doi:10.1145/3126908.3126952</a>.</p>
+</dd>
+<dt class="bibtex label" id="mcdaniel2017"><span class="brackets"><a class="fn-backref" href="#id3">MDAzevedoL+17</a></span></dt>
+<dd><p>T. McDaniel, E. F. D’Azevedo, Y. W. Li, K. Wong, and P. R. C. Kent. Delayed slater determinant update algorithms for high efficiency quantum monte carlo. <em>The Journal of Chemical Physics</em>, 147(17):174107, nov 2017. <a class="reference external" href="https://doi.org/10.1063/1.4998616">doi:10.1063/1.4998616</a>.</p>
+</dd>
+<dt class="bibtex label" id="natoli1995"><span class="brackets">NC95</span></dt>
+<dd><p>Vincent Natoli and David M. Ceperley. An optimized method for treating long-range potentials. <em>Journal of Computational Physics</em>, 117(1):171 – 178, 1995. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0021999185710546">http://www.sciencedirect.com/science/article/pii/S0021999185710546</a>, <a class="reference external" href="https://doi.org/http://dx.doi.org/10.1006/jcph.1995.1054">doi:http://dx.doi.org/10.1006/jcph.1995.1054</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 </div>
@@ -291,8 +310,6 @@ Spline basis sets are designed to work seamlessly with plane wave DFT code (e.g.
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="bibliography.html" class="btn btn-neutral float-right" title="Bibliography" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="simulationcell.html" class="btn btn-neutral float-left" title="Specifying the system to be simulated" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

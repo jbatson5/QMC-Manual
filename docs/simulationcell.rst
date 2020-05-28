@@ -374,3 +374,5 @@ Example use cases
          </attrib>
        </group>
      </particleset>
+
+.. bibliography:: bibliography.bib

@@ -213,3 +213,5 @@ To use this feature, the following needs to be done:
    “gpusharing" parameter needs to be set (i.e., <determinantset
    gpusharing=“yes">). See
    :ref:`spo-spline`.
+
+.. bibliography:: bibliography.bib
