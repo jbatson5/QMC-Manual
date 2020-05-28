@@ -22,6 +22,7 @@ User's Guide and Developer's Manual for
    units
    input_overview
    simulationcell
+   intro_wavefunction
 
 
 ::
