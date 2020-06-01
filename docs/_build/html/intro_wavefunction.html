@@ -99,6 +99,8 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#hyrbid-orbital-representation">Hyrbid orbital representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plane-wave-basis-sets">Plane-wave basis sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#homogeneous-electron-gas">Homogeneous electron gas</a></li>
 </ul>
 </li>
 </ul>
@@ -922,12 +924,12 @@ Other options described elsewhere in this manual are “spline,”
 full shell of basis functions with the appropriate values of
 <em>“m”</em> will be defined for the corresponding value of
 <em>“l.”</em> Otherwise a single basis function will be given for the
-specific combination of <em>“”(l,m).”</em></p>
+specific combination of <em>“(l,m).”</em></p>
 </dd>
 </dl>
 </li>
 </ul>
-<p><code class="docutils literal notranslate"><span class="pre">radfunc</span></code> attributes for <a href="#id5"><span class="problematic" id="id6">``</span></a>type``=*”Gaussian”<a href="#id7"><span class="problematic" id="id8">*</span></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">radfunc</span></code> attributes for <code class="docutils literal notranslate"><span class="pre">type</span></code> = <em>“Gaussian”</em>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TBDoc</span></code></p></li>
 </ul>
@@ -939,12 +941,12 @@ specific combination of <em>“”(l,m).”</em></p>
 </div>
 <div class="section" id="hyrbid-orbital-representation">
 <span id="spo-hybrid"></span><h3>Hyrbid orbital representation<a class="headerlink" href="#hyrbid-orbital-representation" title="Permalink to this headline">¶</a></h3>
-<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <span class="bibtex" id="id9">[Luo2018hyb]</span>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
+<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <span class="bibtex" id="id5">[Luo2018hyb]</span>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
 In practice, we have seen that using a meshfactor=0.5 is often possible and achieves huge memory savings.
 <a class="reference internal" href="#fig3"><span class="std std-numref">Fig. 3</span></a> illustrates how the regions are assigned.</p>
-<div class="figure align-center" id="id10">
+<div class="figure align-center" id="id6">
 <span id="fig3"></span><a class="reference internal image-reference" href="_images/hybrid_new.jpg"><img alt="_images/hybrid_new.jpg" src="_images/hybrid_new.jpg" style="width: 400px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <p>Orbitals within region A are computed as</p>
 <div class="math notranslate nohighlight">
@@ -954,6 +956,145 @@ In practice, we have seen that using a meshfactor=0.5 is often possible and achi
 <span class="eqno">(6)<a class="headerlink" href="#equation-eq6" title="Permalink to this equation">¶</a></span>\[\phi^B_n(r) = S(r) \phi^A_n(r) + (1-S(r))\phi^C_n(r)\]</div>
 <div class="math notranslate nohighlight" id="equation-eq7">
 <span class="eqno">(7)<a class="headerlink" href="#equation-eq7" title="Permalink to this equation">¶</a></span>\[(S(r) = \frac{1}{2}-\frac{1}{2} tanh \left[\alpha\left(\frac{r-r_{\rm A/B}}{r_{\rm B/C}-r_{\rm A/B}}-\frac{1}{2}\right)\right]\]</div>
+<p>To enable hybrid orbital representation, the input XML needs to see the tag <code class="docutils literal notranslate"><span class="pre">hybridrep=&quot;yes&quot;</span></code> shown in <a class="reference internal" href="#listing-6"><span class="std std-ref">Listing 6</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="listing-6">
+<div class="code-block-caption"><span class="caption-number">Listing 6 </span><span class="caption-text">Hybrid orbital representation input example.</span><a class="headerlink" href="#listing-6" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">determinantset</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;pwscf.h5&quot;</span>
+              <span class="n">tilematrix</span><span class="o">=</span><span class="s2">&quot;1 1 3 1 2 -1 -2 1 0&quot;</span> <span class="n">twistnum</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">meshfactor</span><span class="o">=</span><span class="s2">&quot;0.8&quot;</span>
+              <span class="n">twist</span><span class="o">=</span><span class="s2">&quot;0  0  0&quot;</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;single&quot;</span> <span class="n">hybridrep</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">...</span>
+<span class="o">&lt;/</span><span class="n">determinantset</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>Second, the information describing the atomic regions is required in the particle set, shown in <a class="reference internal" href="#listing-7"><span class="std std-ref">Listing 7</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="listing-7">
+<div class="code-block-caption"><span class="caption-number">Listing 7 </span><span class="caption-text">particleset elements for ions with information needed by hybrid orbital representation.</span><a class="headerlink" href="#listing-7" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">group</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ni&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;charge&quot;</span><span class="o">&gt;</span>          <span class="mi">18</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;valence&quot;</span><span class="o">&gt;</span>         <span class="mi">18</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atomicnumber&quot;</span> <span class="o">&gt;</span>   <span class="mi">28</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cutoff_radius&quot;</span> <span class="o">&gt;</span> <span class="mf">1.6</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;inner_cutoff&quot;</span> <span class="o">&gt;</span>  <span class="mf">1.3</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lmax&quot;</span> <span class="o">&gt;</span>            <span class="mi">5</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spline_radius&quot;</span> <span class="o">&gt;</span> <span class="mf">1.8</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spline_npoints&quot;</span><span class="o">&gt;</span>  <span class="mi">91</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">group</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>The parameters specific to hybrid representation are listed as</p>
+<p><code class="docutils literal notranslate"><span class="pre">attrib</span></code> element</p>
+<p>Attribute:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 14%" />
+<col style="width: 12%" />
+<col style="width: 13%" />
+<col style="width: 39%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code></p></td>
+<td><p>Real</p></td>
+<td><p>&gt;=0.0</p></td>
+<td><p><em>None</em></p></td>
+<td><p>Cutoff radius for B/C boundary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lmax</span></code></p></td>
+<td><p>Integer</p></td>
+<td><p>&gt;=0</p></td>
+<td><p><em>None</em></p></td>
+<td><p>Largest angular channel</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">inner_cutoff</span></code></p></td>
+<td><p>Real</p></td>
+<td><p>&gt;=0.0</p></td>
+<td><p>Dep.</p></td>
+<td><p>Cutoff radius for A/B boundary</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spline_radius</span></code></p></td>
+<td><p>Real</p></td>
+<td><p>&gt;0.0</p></td>
+<td><p>Dep.</p></td>
+<td><p>Radial function radius used in spine</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">spline_npoints</span></code></p></td>
+<td><p>Integer</p></td>
+<td><p>&gt;0</p></td>
+<td><p>Dep.</p></td>
+<td><p>Number of spline knots</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code>  is required for every species. If a species is intended to not be covered by atomic regions, setting the value 0.0 will put default values for all the reset parameters. A good value is usually a bit larger than the core radius listed in the pseudopotential file. After a parametric scan, pick the one from the flat energy region with the smallest variance.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lmax</span></code> is required if <code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code> <span class="math notranslate nohighlight">\(&gt;\)</span> 0.0. This value usually needs to be at least the highest angular momentum plus 2.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inner_cutoff</span></code> is optional and set as <code class="docutils literal notranslate"><span class="pre">cutof\_radius</span></code> <span class="math notranslate nohighlight">\(-0.3\)</span> by default, which is fine in most cases.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spline_radius}</span> <span class="pre">and</span> <span class="pre">``spline_npoints</span></code> are optional. By default, they are calculated based on <code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code> and a grid displacement 0.02 bohr.
+If users prefer inputing them, it is required that <code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code> &lt;=  <code class="docutils literal notranslate"><span class="pre">spline_radius</span></code> <span class="math notranslate nohighlight">\(-\)</span> 2 <span class="math notranslate nohighlight">\(\times\)</span> <code class="docutils literal notranslate"><span class="pre">spline_radius</span></code>/(<code class="docutils literal notranslate"><span class="pre">spline_npoints</span></code> <span class="math notranslate nohighlight">\(-\)</span> 1).</p></li>
+</ul>
+<p>In addition, the hybrid orbital representation allows extra optimization to speed up the nonlocal pseudopotential evaluation using the batched algorithm listed in <span class="xref std std-ref">nlpp</span>.</p>
+</div>
+<div class="section" id="plane-wave-basis-sets">
+<span id="pwbasis"></span><h3>Plane-wave basis sets<a class="headerlink" href="#plane-wave-basis-sets" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="homogeneous-electron-gas">
+<span id="hegbasis"></span><h3>Homogeneous electron gas<a class="headerlink" href="#homogeneous-electron-gas" title="Permalink to this headline">¶</a></h3>
+<p>The interacting Fermi liquid has its own special <code class="docutils literal notranslate"><span class="pre">determinantset</span></code> for filling up a
+Fermi surface.  The shell number can be specified separately for both spin-up and spin-down.
+This determines how many electrons to include of each time; only closed shells are currently
+implemented.  The shells are filled according to the rules of a square box; if other lattice
+vectors are used, the electrons might not fill up a complete shell.</p>
+<p>This following example can also be used for Helium simulations by specifying the
+proper pair interaction in the Hamiltonian section.</p>
+<div class="literal-block-wrapper docutils container" id="listing-8">
+<div class="code-block-caption"><span class="caption-number">Listing 8 </span><span class="caption-text">2D Fermi liquid example: particle specification</span><a class="headerlink" href="#listing-8" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">qmcsystem</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">simulationcell</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;global&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rs&quot;</span> <span class="n">pol</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">condition</span><span class="o">=</span><span class="s2">&quot;74&quot;</span><span class="o">&gt;</span><span class="mf">6.5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bconds&quot;</span><span class="o">&gt;</span><span class="n">p</span> <span class="n">p</span> <span class="n">p</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LR_dim_cutoff&quot;</span><span class="o">&gt;</span><span class="mi">15</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">simulationcell</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">particleset</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">random</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">group</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;37&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;charge&quot;</span><span class="o">&gt;-</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">group</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">group</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;37&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;charge&quot;</span><span class="o">&gt;-</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">group</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">particleset</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">qmcsystem</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-9">
+<div class="code-block-caption"><span class="caption-number">Listing 9 </span><span class="caption-text">2D Fermi liquid example (Slater Jastrow wavefunction)</span><a class="headerlink" href="#listing-9" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">qmcsystem</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">wavefunction</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinantset</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;electron-gas&quot;</span> <span class="n">shell</span><span class="o">=</span><span class="s2">&quot;7&quot;</span> <span class="n">shell2</span><span class="o">=</span><span class="s2">&quot;7&quot;</span> <span class="n">randomize</span><span class="o">=</span><span class="s2">&quot;true&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">determinantset</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J2&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Two-Body&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;Bspline&quot;</span> <span class="nb">print</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;uu&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ud&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>

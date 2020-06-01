@@ -529,9 +529,9 @@ In the following, we give a more detailed description of all the options present
     full shell of basis functions with the appropriate values of
     *"m"* will be defined for the corresponding value of
     *"l."* Otherwise a single basis function will be given for the
-    specific combination of *""(l,m)."*
+    specific combination of *"(l,m)."*
 
-``radfunc`` attributes for ``type``=*"Gaussian"*:
+``radfunc`` attributes for ``type`` = *"Gaussian"*:
 
 - ``TBDoc``
 
@@ -570,3 +570,121 @@ Orbitals in region C are computed as the regular B-spline basis described in :re
   :label: eq7
 
   (S(r) = \frac{1}{2}-\frac{1}{2} tanh \left[\alpha\left(\frac{r-r_{\rm A/B}}{r_{\rm B/C}-r_{\rm A/B}}-\frac{1}{2}\right)\right]
+
+To enable hybrid orbital representation, the input XML needs to see the tag ``hybridrep="yes"`` shown in :ref:`Listing 6 <Listing 6>`.
+
+.. code-block::
+  :caption: Hybrid orbital representation input example.
+  :name: Listing 6
+
+  <determinantset type="bspline" source="i" href="pwscf.h5"
+                tilematrix="1 1 3 1 2 -1 -2 1 0" twistnum="-1" gpu="yes" meshfactor="0.8"
+                twist="0  0  0" precision="single" hybridrep="yes">
+    ...
+  </determinantset>
+
+Second, the information describing the atomic regions is required in the particle set, shown in :ref:`Listing 7 <Listing 7>`.
+
+.. code-block::
+  :caption: particleset elements for ions with information needed by hybrid orbital representation.
+  :name: Listing 7
+
+  <group name="Ni">
+    <parameter name="charge">          18 </parameter>
+    <parameter name="valence">         18 </parameter>
+    <parameter name="atomicnumber" >   28 </parameter>
+    <parameter name="cutoff_radius" > 1.6 </parameter>
+    <parameter name="inner_cutoff" >  1.3 </parameter>
+    <parameter name="lmax" >            5 </parameter>
+    <parameter name="spline_radius" > 1.8 </parameter>
+    <parameter name="spline_npoints">  91 </parameter>
+  </group>
+
+The parameters specific to hybrid representation are listed as
+
+``attrib`` element
+
+Attribute:
+
++---------------------+--------------+------------+-------------+---------------------------------------+
+| **Name**            | **Datatype** | **Values** | **Default** | **Description**                       |
++=====================+==============+============+=============+=======================================+
+| ``cutoff_radius``   | Real         | >=0.0      | *None*      | Cutoff radius for B/C boundary        |
++---------------------+--------------+------------+-------------+---------------------------------------+
+| ``lmax``            | Integer      | >=0        | *None*      | Largest angular channel               |
++---------------------+--------------+------------+-------------+---------------------------------------+
+| ``inner_cutoff``    | Real         | >=0.0      | Dep.        | Cutoff radius for A/B boundary        |
++---------------------+--------------+------------+-------------+---------------------------------------+
+| ``spline_radius``   | Real         | >0.0       | Dep.        | Radial function radius used in spine  |
++---------------------+--------------+------------+-------------+---------------------------------------+
+| ``spline_npoints``  | Integer      | >0         | Dep.        | Number of spline knots                |
++---------------------+--------------+------------+-------------+---------------------------------------+
+
+- ``cutoff_radius``  is required for every species. If a species is intended to not be covered by atomic regions, setting the value 0.0 will put default values for all the reset parameters. A good value is usually a bit larger than the core radius listed in the pseudopotential file. After a parametric scan, pick the one from the flat energy region with the smallest variance.
+
+- ``lmax`` is required if ``cutoff_radius`` :math:`>` 0.0. This value usually needs to be at least the highest angular momentum plus 2.
+
+- ``inner_cutoff`` is optional and set as ``cutof\_radius`` :math:`-0.3` by default, which is fine in most cases.
+
+- ``spline_radius} and ``spline_npoints`` are optional. By default, they are calculated based on ``cutoff_radius`` and a grid displacement 0.02 bohr.
+  If users prefer inputing them, it is required that ``cutoff_radius`` <=  ``spline_radius`` :math:`-` 2 :math:`\times` ``spline_radius``/(``spline_npoints`` :math:`-` 1).
+
+In addition, the hybrid orbital representation allows extra optimization to speed up the nonlocal pseudopotential evaluation using the batched algorithm listed in :ref:`nlpp`.
+
+.. _pwbasis:
+
+Plane-wave basis sets
+~~~~~~~~~~~~~~~~~~~~~
+
+.. _hegbasis:
+
+Homogeneous electron gas
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The interacting Fermi liquid has its own special ``determinantset`` for filling up a
+Fermi surface.  The shell number can be specified separately for both spin-up and spin-down.
+This determines how many electrons to include of each time; only closed shells are currently
+implemented.  The shells are filled according to the rules of a square box; if other lattice
+vectors are used, the electrons might not fill up a complete shell.
+
+This following example can also be used for Helium simulations by specifying the
+proper pair interaction in the Hamiltonian section.
+
+.. code-block::
+  :caption: 2D Fermi liquid example: particle specification
+  :name: Listing 8
+
+  <qmcsystem>
+  <simulationcell name="global">
+  <parameter name="rs" pol="0" condition="74">6.5</parameter>
+  <parameter name="bconds">p p p</parameter>
+  <parameter name="LR_dim_cutoff">15</parameter>
+  </simulationcell>
+  <particleset name="e" random="yes">
+  <group name="u" size="37">
+  <parameter name="charge">-1</parameter>
+  <parameter name="mass">1</parameter>
+  </group>
+  <group name="d" size="37">
+  <parameter name="charge">-1</parameter>
+  <parameter name="mass">1</parameter>
+  </group>
+  </particleset>
+  </qmcsystem>
+
+.. code-block::
+  :caption: 2D Fermi liquid example (Slater Jastrow wavefunction)
+  :name: Listing 9
+
+  <qmcsystem>
+    <wavefunction name="psi0" target="e">
+      <determinantset type="electron-gas" shell="7" shell2="7" randomize="true">
+    </determinantset>
+      <jastrow name="J2" type="Two-Body" function="Bspline" print="no">
+        <correlation speciesA="u" speciesB="u" size="8" cusp="0">
+          <coefficients id="uu" type="Array" optimize="yes">
+        </correlation>
+        <correlation speciesA="u" speciesB="d" size="8" cusp="0">
+          <coefficients id="ud" type="Array" optimize="yes">
+        </correlation>
+      </jastrow>
