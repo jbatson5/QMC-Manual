@@ -103,6 +103,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#homogeneous-electron-gas">Homogeneous electron gas</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#jastrow-factors">Jastrow Factors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#one-body-jastrow-functions">One-body Jastrow functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#input-specification">Input Specification</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -193,7 +200,7 @@ standard trial wavefunction for an electronic structure problem</p>
 <span class="eqno">(2)<a class="headerlink" href="#equation-eq2" title="Permalink to this equation">¶</a></span>\[Psi_T(\vec{r}) =  \textit{A}(\vec{r}) \prod_k \textit{J}_k(\vec{r}),\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textit{A}(\vec{r})\)</span>
 is one of the antisymmetric functions: (1) slater determinant, (2) multislater determinant, or (3) pfaffian and <span class="math notranslate nohighlight">\(\textit{J}_k\)</span>
-is any of the Jastrow functions (described in <span class="xref std std-ref">jastrow</span>).  The antisymmetric functions are built from a set of single particle orbitals <code class="docutils literal notranslate"><span class="pre">(sposet)</span></code>. QMCPACK implements four different types of <code class="docutils literal notranslate"><span class="pre">sposet</span></code>, described in the following section. Each <code class="docutils literal notranslate"><span class="pre">sposet</span></code> is designed for a different type of calculation, so their definition and generation varies accordingly.</p>
+is any of the Jastrow functions (described in <a class="reference internal" href="#jastrow"><span class="std std-ref">Jastrow Factors</span></a>).  The antisymmetric functions are built from a set of single particle orbitals <code class="docutils literal notranslate"><span class="pre">(sposet)</span></code>. QMCPACK implements four different types of <code class="docutils literal notranslate"><span class="pre">sposet</span></code>, described in the following section. Each <code class="docutils literal notranslate"><span class="pre">sposet</span></code> is designed for a different type of calculation, so their definition and generation varies accordingly.</p>
 </div>
 <div class="section" id="single-determinant-wavefunctons">
 <span id="singledeterminant"></span><h2>Single determinant wavefunctons<a class="headerlink" href="#single-determinant-wavefunctons" title="Permalink to this headline">¶</a></h2>
@@ -944,9 +951,9 @@ specific combination of <em>“(l,m).”</em></p>
 <p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <span class="bibtex" id="id5">[Luo2018hyb]</span>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
 In practice, we have seen that using a meshfactor=0.5 is often possible and achieves huge memory savings.
 <a class="reference internal" href="#fig3"><span class="std std-numref">Fig. 3</span></a> illustrates how the regions are assigned.</p>
-<div class="figure align-center" id="id6">
+<div class="figure align-center" id="id7">
 <span id="fig3"></span><a class="reference internal image-reference" href="_images/hybrid_new.jpg"><img alt="_images/hybrid_new.jpg" src="_images/hybrid_new.jpg" style="width: 400px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 <p>Orbitals within region A are computed as</p>
 <div class="math notranslate nohighlight">
@@ -1093,6 +1100,432 @@ proper pair interaction in the Hamiltonian section.</p>
       <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="jastrow-factors">
+<span id="jastrow"></span><h2>Jastrow Factors<a class="headerlink" href="#jastrow-factors" title="Permalink to this headline">¶</a></h2>
+<p>Jastrow factors are among the simplest and most effective ways of including
+dynamical correlation in the trial many body wavefunction.  The resulting many body
+wavefunction is expressed as the product of an antisymmetric (in the case
+of Fermions) or symmetric (for Bosons) part and a correlating Jastrow factor
+like so:</p>
+<div class="math notranslate nohighlight" id="equation-eq8">
+<span class="eqno">(8)<a class="headerlink" href="#equation-eq8" title="Permalink to this equation">¶</a></span>\[\Psi(\vec{R}) = \mathcal{A}(\vec{R}) \exp\left[J(\vec{R})\right]\]</div>
+<p>In this section we will detail the types and forms of Jastrow factor used
+in QMCPACK.  Note that each type of Jastrow factor needs to be specified using
+its own individual <code class="docutils literal notranslate"><span class="pre">jastrow</span></code> XML element.  For this reason, we have repeated the
+specification of the <code class="docutils literal notranslate"><span class="pre">jastrow</span></code> tag in each section, with specialization for the
+options available for that given type of Jastrow.</p>
+<div class="section" id="one-body-jastrow-functions">
+<span id="onebodyjastrow"></span><h3>One-body Jastrow functions<a class="headerlink" href="#one-body-jastrow-functions" title="Permalink to this headline">¶</a></h3>
+<p>The one-body Jastrow factor is a form that allows for the direct inclusion
+of correlations between particles that are included in the wavefunction with
+particles that are not explicitly part of it.  The most common example of
+this are correlations between electrons and ions.</p>
+<p>The Jastrow function is specified within a <code class="docutils literal notranslate"><span class="pre">wavefunction</span></code> element
+and must contain one or more <code class="docutils literal notranslate"><span class="pre">correlation</span></code> elements specifying
+additional parameters as well as the actual coefficients.
+<a class="reference internal" href="#bjsplineexamples"><span class="std std-ref">Example use cases</span></a> gives examples of the typical nesting of
+<code class="docutils literal notranslate"><span class="pre">jastrow</span></code>, <code class="docutils literal notranslate"><span class="pre">correlation</span></code>, and <code class="docutils literal notranslate"><span class="pre">coefficient</span></code> elements.</p>
+<div class="section" id="input-specification">
+<h4>Input Specification<a class="headerlink" href="#input-specification" title="Permalink to this headline">¶</a></h4>
+<p>Jastrow element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>name</strong></p></td>
+<td><p><strong>datatype</strong></p></td>
+<td><p><strong>values</strong></p></td>
+<td><p><strong>defaults</strong></p></td>
+<td><p><strong>description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>(required)</p></td>
+<td><p>Unique name
+for this
+Jastrow
+function</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>text</p></td>
+<td><p>One-body</p></td>
+<td><p>(required)</p></td>
+<td><p>Define a
+one-body
+function</p></td>
+</tr>
+<tr class="row-even"><td><p>function</p></td>
+<td><p>text</p></td>
+<td><p>Bspline</p></td>
+<td><p>(required)</p></td>
+<td><p>BSpline
+Jastrow</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>text</p></td>
+<td><p>pade2</p></td>
+<td></td>
+<td><p>Pade form</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>text</p></td>
+<td><p>…</p></td>
+<td></td>
+<td><p>…</p></td>
+</tr>
+<tr class="row-odd"><td><p>source</p></td>
+<td><p>text</p></td>
+<td><p>name</p></td>
+<td><p>(required)</p></td>
+<td><p>Name of
+attribute of
+classical
+particle set</p></td>
+</tr>
+<tr class="row-even"><td><p>print</p></td>
+<td><p>text</p></td>
+<td><p>yes / no</p></td>
+<td><p>yes</p></td>
+<td><p>Jastrow
+factor
+printed in
+external
+file?</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 22%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Correlation</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>To be more concrete, the one-body Jastrow factors used to describe correlations
+between electrons and ions take the form below:</p>
+<div class="math notranslate nohighlight" id="equation-eq9">
+<span class="eqno">(9)<a class="headerlink" href="#equation-eq9" title="Permalink to this equation">¶</a></span>\[J1=\sum_I^{ion0}\sum_i^e u_{ab}(|r_i-R_I|)\]</div>
+<p>where I runs over all of the ions in the calculation, i runs over the
+electrons and <span class="math notranslate nohighlight">\(u_{ab}\)</span> describes the functional form of the
+correlation between them. Many different forms of <span class="math notranslate nohighlight">\(u_{ab}\)</span> are
+implemented in QMCPACK. We will detail two of the most common ones
+below.</p>
+<div class="section" id="spline-form">
+<span id="onebodyjastrowspline"></span><h5>Spline form<a class="headerlink" href="#spline-form" title="Permalink to this headline">¶</a></h5>
+<p>The one-body spline Jastrow function is the most commonly used one-body
+Jastrow for solids. This form was first described and used in
+<a class="bibtex reference internal" href="simulationcell.html#eslerkimceperleyshulenburger2012" id="id6">[EKCS12]</a>. Here
+<span class="math notranslate nohighlight">\(u_{ab}\)</span> is an interpolating 1D B-spline (tricublc spline on a
+linear grid) between zero distance and <span class="math notranslate nohighlight">\(r_{cut}\)</span>. In 3D periodic
+systems the default cutoff distance is the Wigner Seitz cell radius. For
+other periodicities, including isolated molecules, the <span class="math notranslate nohighlight">\(r_{cut}\)</span>
+must be specified. The cusp can be set. <span class="math notranslate nohighlight">\(r_i\)</span> and <span class="math notranslate nohighlight">\(R_I\)</span> are
+most commonly the electron and ion positions, but any particlesets that
+can provide the needed centers can be used.</p>
+<p>Correlation element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>ElementType</p></td>
+<td><p>Text</p></td>
+<td><p>Name</p></td>
+<td><p>See below</p></td>
+<td><p>Classical
+particle
+target</p></td>
+</tr>
+<tr class="row-odd"><td><p>SpeciesA</p></td>
+<td><p>Text</p></td>
+<td><p>Name</p></td>
+<td><p>See below</p></td>
+<td><p>Classical
+particle
+target</p></td>
+</tr>
+<tr class="row-even"><td><p>SpeciesB</p></td>
+<td><p>Text</p></td>
+<td><p>Name</p></td>
+<td><p>See below</p></td>
+<td><p>Quantum
+species
+target</p></td>
+</tr>
+<tr class="row-odd"><td><p>Size</p></td>
+<td><p>Integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>(Required)</p></td>
+<td><p>Number of
+coefficients</p></td>
+</tr>
+<tr class="row-even"><td><p>Rcut</p></td>
+<td><p>Real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>See below</p></td>
+<td><p>Distance at
+which the
+correlation
+goes to 0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cusp</p></td>
+<td><p>Real</p></td>
+<td><p><span class="math notranslate nohighlight">\(\ge 0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Value for
+use in Kato
+cusp
+condition</p></td>
+</tr>
+<tr class="row-even"><td><p>Spin</p></td>
+<td><p>Text</p></td>
+<td><p>Yes or no</p></td>
+<td><p>No</p></td>
+<td><p>Spin
+dependent
+Jastrow
+factor</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 22%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Coefficients</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">elementType,</span> <span class="pre">speciesA,</span> <span class="pre">speciesB,</span> <span class="pre">spin</span></code></dt><dd><p>For a spin-independent Jastrow factor (spin = “no”), elementType
+should be the name of the group of ions in the classical particleset to
+which the quantum particles should be correlated. For a spin-dependent
+Jastrow factor (spin = “yes”), set speciesA to the group name in the
+classical particleset and speciesB to the group name in the quantum
+particleset.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">rcut</span></code></dt><dd><p>The cutoff distance for the function in atomic units (bohr). For 3D
+fully periodic systems, this parameter is optional, and a default of the
+Wigner Seitz cell radius is used. Otherwise this parameter is required.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">cusp</span></code></dt><dd><p>The one-body Jastrow factor can be used to make the wavefunction
+satisfy the electron-ion cusp condition :cite:<code class="docutils literal notranslate"><span class="pre">kato</span></code>. In this
+case, the derivative of the Jastrow factor as the electron approaches
+the nucleus will be given by</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="math notranslate nohighlight" id="equation-eq10">
+<span class="eqno">(10)<a class="headerlink" href="#equation-eq10" title="Permalink to this equation">¶</a></span>\[\left(\frac{\partial J}{\partial r_{iI}}\right)_{r_{iI} = 0} = -Z .\]</div>
+<p>Note that if the antisymmetric part of the wavefunction satisfies the electron-ion cusp
+condition (for instance by using single-particle orbitals that respect the cusp condition)
+or if a nondivergent pseudopotential is used, the Jastrow should be cuspless at the
+nucleus and this value should be kept at its default of 0.</p>
+<p>Coefficients element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Id</p></td>
+<td><p>Text</p></td>
+<td></td>
+<td><p>(Required)</p></td>
+<td><p>Unique
+identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p>Type</p></td>
+<td><p>Text</p></td>
+<td><p>Array</p></td>
+<td><p>(Required)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Optimize</p></td>
+<td><p>Text</p></td>
+<td><p>Yes or no</p></td>
+<td><p>Yes</p></td>
+<td><p>if no,
+values are
+fixed in
+optimizations</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>(No name)</p></td>
+<td><p>Real array</p></td>
+<td></td>
+<td><p>Zeros</p></td>
+<td><p>Jastrow
+coefficients</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="example-use-cases">
+<span id="bjsplineexamples"></span><h5>Example use cases<a class="headerlink" href="#example-use-cases" title="Permalink to this headline">¶</a></h5>
+<p>Specify a spin-independent function with four parameters. Because rcut  is not
+specified, the default cutoff of the Wigner Seitz cell radius is used; this
+Jastrow must be used with a 3D periodic system such as a bulk solid. The name of
+the particleset holding the ionic positions is “i.”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J1&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;One-Body&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;Bspline&quot;</span> <span class="nb">print</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;C&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;0.0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span><span class="o">&gt;</span> <span class="mi">0</span>  <span class="mi">0</span>  <span class="mi">0</span>  <span class="mi">0</span>  <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+ <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Specify a spin-dependent function with seven up-spin and seven down-spin parameters.
+The cutoff distance is set to 6 atomic units.  Note here that the particleset holding
+the ions is labeled as ion0 rather than “i,” as in the other example.  Also in this case,
+the ion is lithium with a coulomb potential, so the cusp condition is satisfied by
+setting cusp=”d.”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J1&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;One-Body&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;Bspline&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span> <span class="n">spin</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;7&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;6&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;eLiu&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span><span class="o">&gt;</span>
+    <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span>
+    <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;C&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;7&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;6&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;eLid&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span><span class="o">&gt;</span>
+    <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span>
+    <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pade-form">
+<span id="onebodyjastrowpade"></span><h5>Pade form<a class="headerlink" href="#pade-form" title="Permalink to this headline">¶</a></h5>
+<p>Although the spline Jastrow factor is the most flexible and most commonly used form implemented in QMCPACK,
+there are times where its flexibility can make it difficult to optimize.  As an example, a spline Jastrow
+with a very large cutoff can be difficult to optimize for isolated systems such as molecules because of the small
+number of samples present in the tail of the function.  In such cases, a simpler functional
+form might be advantageous.  The second-order Pade Jastrow factor, given in <a class="reference internal" href="#equation-eq11">(11)</a>, is a good choice
+in such cases.</p>
+<div class="math notranslate nohighlight" id="equation-eq11">
+<span class="eqno">(11)<a class="headerlink" href="#equation-eq11" title="Permalink to this equation">¶</a></span>\[u_{ab}(r) = \frac{a*r+c*r^2}{1+b*r}\]</div>
 </div>
 </div>
 </div>
