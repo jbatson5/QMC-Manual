@@ -108,6 +108,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#input-specification">Input Specification</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#two-body-jastrow-functions">Two-body Jastrow functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Input Specification</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#user-defined-functional-form">User defined functional form</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#long-ranged-jastrow-factors">Long-ranged Jastrow factors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#long-ranged-jastrow-k-space-jastrow">Long-ranged Jastrow: k-space Jastrow</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -274,8 +283,8 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
 By default or if <code class="docutils literal notranslate"><span class="pre">delay_rank=0</span></code> given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension <span class="math notranslate nohighlight">\(&lt;192\)</span> and 32 otherwise.
-<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="simulationcell.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
-With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="simulationcell.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="simulationcell.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
+<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="running.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
+With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="running.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="running.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
 Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (<span class="math notranslate nohighlight">\(&gt;200\)</span> electrons).
 We have seen up to an order of magnitude speedup on large problem sizes.
 When studying the performance of QMCPACK, a scan of this parameter is required and we recommend starting from 32.
@@ -299,7 +308,7 @@ But it introduces an unfavorable scaling because the basis set size increases li
 For this reason, it is efficient to use a localized basis with compact
 support and a good transferability from the plane wave basis.</p>
 <p>In particular, 3D tricubic B-splines provide a basis in which only
-64 elements are nonzero at any given point in <a class="bibtex reference internal" href="simulationcell.html#blips4qmc" id="id4">[AlfeG04]</a>.
+64 elements are nonzero at any given point in <a class="bibtex reference internal" href="running.html#blips4qmc" id="id4">[AlfeG04]</a>.
 The 1D cubic B-spline is given by</p>
 <div class="math notranslate nohighlight" id="equation-eq3">
 <span class="eqno">(3)<a class="headerlink" href="#equation-eq3" title="Permalink to this equation">¶</a></span>\[f(x) = \sum_{i'=i-1}^{i+2} b^{i'\!,3}(x)\,\,  p_{i'},\]</div>
@@ -948,12 +957,12 @@ specific combination of <em>“(l,m).”</em></p>
 </div>
 <div class="section" id="hyrbid-orbital-representation">
 <span id="spo-hybrid"></span><h3>Hyrbid orbital representation<a class="headerlink" href="#hyrbid-orbital-representation" title="Permalink to this headline">¶</a></h3>
-<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <span class="bibtex" id="id5">[Luo2018hyb]</span>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
+<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <a class="bibtex reference internal" href="running.html#luo2018hyb" id="id5">[LEKS18]</a>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
 In practice, we have seen that using a meshfactor=0.5 is often possible and achieves huge memory savings.
 <a class="reference internal" href="#fig3"><span class="std std-numref">Fig. 3</span></a> illustrates how the regions are assigned.</p>
-<div class="figure align-center" id="id7">
+<div class="figure align-center" id="id14">
 <span id="fig3"></span><a class="reference internal image-reference" href="_images/hybrid_new.jpg"><img alt="_images/hybrid_new.jpg" src="_images/hybrid_new.jpg" style="width: 400px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 3 </span><span class="caption-text">Regular and hybrid orbital representation. Regular B-spline representation (left panel) contains only one region and a sufficiently fine mesh to resolve orbitals near the nucleus. The hybrid orbital representation (right panel) contains near nucleus regions (A) where spherical harmonics and radial functions are used, buffers or interpolation regions (B), and an interstitial region (C) where a coarse B-spline mesh is used.</span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
 </div>
 <p>Orbitals within region A are computed as</p>
 <div class="math notranslate nohighlight">
@@ -1254,7 +1263,7 @@ below.</p>
 <span id="onebodyjastrowspline"></span><h5>Spline form<a class="headerlink" href="#spline-form" title="Permalink to this headline">¶</a></h5>
 <p>The one-body spline Jastrow function is the most commonly used one-body
 Jastrow for solids. This form was first described and used in
-<a class="bibtex reference internal" href="simulationcell.html#eslerkimceperleyshulenburger2012" id="id6">[EKCS12]</a>. Here
+<a class="bibtex reference internal" href="running.html#eslerkimceperleyshulenburger2012" id="id6">[EKCS12]</a>. Here
 <span class="math notranslate nohighlight">\(u_{ab}\)</span> is an interpolating 1D B-spline (tricublc spline on a
 linear grid) between zero distance and <span class="math notranslate nohighlight">\(r_{cut}\)</span>. In 3D periodic
 systems the default cutoff distance is the Wigner Seitz cell radius. For
@@ -1526,7 +1535,851 @@ form might be advantageous.  The second-order Pade Jastrow factor, given in <a c
 in such cases.</p>
 <div class="math notranslate nohighlight" id="equation-eq11">
 <span class="eqno">(11)<a class="headerlink" href="#equation-eq11" title="Permalink to this equation">¶</a></span>\[u_{ab}(r) = \frac{a*r+c*r^2}{1+b*r}\]</div>
+<p>Unlike the spline Jastrow factor, which includes a cutoff, this form has an infinite range and will be applied to every particle
+pair (subject to the minimum image convention).  It also is a cuspless Jastrow factor,
+so it should be used either in combination with a single particle basis set that contains the proper cusp or
+with a smooth pseudopotential.</p>
+<p>Correlation element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 18%" />
+<col style="width: 15%" />
+<col style="width: 18%" />
+<col style="width: 34%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>ElementType</p></td>
+<td><p>Text</p></td>
+<td><p>Name</p></td>
+<td><p>See below</p></td>
+<td><p>Classical particle target</p></td>
+</tr>
+<tr class="row-odd"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Coefficients</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Parameter element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Id</p></td>
+<td><p>String</p></td>
+<td><p>Name</p></td>
+<td><p>(Required)</p></td>
+<td><p>Name for
+variable</p></td>
+</tr>
+<tr class="row-odd"><td><p>Name</p></td>
+<td><p>String</p></td>
+<td><p>A or B or C</p></td>
+<td><p>(Required)</p></td>
+<td><p>See
+<a class="reference internal" href="#equation-eq11">(11)</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Optimize</p></td>
+<td><p>Text</p></td>
+<td><p>Yes or no</p></td>
+<td><p>Yes</p></td>
+<td><p>If no,
+values are
+fixed in
+optimizations</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+<col style="width: 21%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>(No name)</p></td>
+<td><p>Real</p></td>
+<td><p>Parameter
+value</p></td>
+<td><p>(Required)</p></td>
+<td><p>Jastrow
+coefficients</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
 </div>
+<div class="section" id="example-use-case">
+<span id="bjpadeexamples"></span><h5>Example use case<a class="headerlink" href="#example-use-case" title="Permalink to this headline">¶</a></h5>
+<p>Specify a spin-independent function with independent Jastrow factors for two different species (Li and H).
+The name of the particleset holding the ionic positions is “i.”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J1&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;pade2&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;One-Body&quot;</span> <span class="nb">print</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;LiA&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="o">&gt;</span>  <span class="mf">0.34</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;LiB&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="o">&gt;</span> <span class="mf">12.78</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;LiC&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="o">&gt;</span>  <span class="mf">1.62</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;H&quot;&quot;&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;HA&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="o">&gt;</span>  <span class="mf">0.14</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;HB&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="o">&gt;</span> <span class="mf">6.88</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;HC&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="o">&gt;</span> <span class="mf">0.237</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="short-range-cusp-form">
+<h5>Short Range Cusp Form<a class="headerlink" href="#short-range-cusp-form" title="Permalink to this headline">¶</a></h5>
+<p>The idea behind this functor is to encode nuclear cusps and other details at very
+short range around a nucleus in the region that the Gaussian orbitals of quantum
+chemistry are not capable of describing correctly.
+The functor is kept short ranged, because outside this small region, quantum chemistry
+orbital expansions are already capable of taking on the correct shapes.
+Unlike a pre-computed cusp correction, this optimizable functor can respond to
+changes in the wave function during VMC optimization.
+The functor’s form is</p>
+<div class="math notranslate nohighlight" id="equation-eq12">
+<span class="eqno">(12)<a class="headerlink" href="#equation-eq12" title="Permalink to this equation">¶</a></span>\[u(r) = -\exp{\left(-r/R_0\right)} \left( A R_0 + \sum_{k=0}^{N-1} B_k \frac{ (r/R_0)^{k+2} }{ 1 + (r/R_0)^{k+2} } \right)\]</div>
+<p>in which <span class="math notranslate nohighlight">\(R_0\)</span> acts as a soft cutoff radius (<span class="math notranslate nohighlight">\(u(r)\)</span> decays to zero quickly beyond roughly this distance)
+and <span class="math notranslate nohighlight">\(A\)</span> determines the cusp condition.</p>
+<div class="math notranslate nohighlight" id="equation-eq13">
+<span class="eqno">(13)<a class="headerlink" href="#equation-eq13" title="Permalink to this equation">¶</a></span>\[\lim_{r \to 0} \frac{\partial u}{\partial r} = A\]</div>
+<p>The simple exponential decay is modified by the <span class="math notranslate nohighlight">\(N\)</span> coefficients
+<span class="math notranslate nohighlight">\(B_k\)</span> that define an expansion in sigmoidal functions, thus adding
+detailed structure in a short-ranged region around a nucleus while
+maintaining the correct cusp condition at the nucleus. Note that
+sigmoidal functions are used instead of, say, a bare polynomial
+expansion, as they trend to unity past the soft cutoff radius and so
+interfere less with the exponential decay that keeps the functor short
+ranged. Although <span class="math notranslate nohighlight">\(A\)</span>, <span class="math notranslate nohighlight">\(R_0\)</span>, and the <span class="math notranslate nohighlight">\(B_k\)</span>
+coefficients can all be optimized as variational parameters, <span class="math notranslate nohighlight">\(A\)</span>
+will typically be fixed as the desired cusp condition is known.</p>
+<p>To specify this one-body Jastrow factor, use an input section like the following.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J1Cusps&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;One-Body&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;shortrangecusp&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span> <span class="nb">print</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;6&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;3&quot;</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;LiCuspR0&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;R0&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span> <span class="mf">0.06</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;LiCuspB&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+      <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+    <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;6&quot;</span> <span class="n">cusp</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">var</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;HCuspR0&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;R0&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span> <span class="mf">0.2</span> <span class="o">&lt;/</span><span class="n">var</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;HCuspB&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+      <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+    <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Here “rcut” is specified as the range beyond which the functor is
+assumed to be zero. The value of <span class="math notranslate nohighlight">\(A\)</span> can either be specified via
+the “cusp” option as shown above, in which case its optimization is
+disabled, or through its own “var” line as for <span class="math notranslate nohighlight">\(R_0\)</span>, in which
+case it can be specified as either optimizable (“yes”) or not (“no”).
+The coefficients <span class="math notranslate nohighlight">\(B_k\)</span> are specified via the “coefficients”
+section, with the length <span class="math notranslate nohighlight">\(N\)</span> of the expansion determined
+automatically based on the length of the array.</p>
+<p>Note that this one-body Jastrow form can (and probably should) be used in conjunction
+with a longer ranged one-body Jastrow, such as a spline form.
+Be sure to set the longer-ranged Jastrow to be cusp-free!</p>
+</div>
+</div>
+</div>
+<div class="section" id="two-body-jastrow-functions">
+<h3>Two-body Jastrow functions<a class="headerlink" href="#two-body-jastrow-functions" title="Permalink to this headline">¶</a></h3>
+<p>The two-body Jastrow factor is a form that allows for the explicit inclusion
+of dynamic correlation between two particles included in the wavefunction.  It
+is almost always given in a spin dependent form so as to satisfy the Kato cusp
+condition between electrons of different spins <a class="bibtex reference internal" href="running.html#kato" id="id7">[Kat51]</a>.</p>
+<p>The two body Jastrow function is specified within a <code class="docutils literal notranslate"><span class="pre">wavefunction</span></code> element
+and must contain one or more correlation elements specifying additional parameters
+as well as the actual coefficients.  <a class="reference internal" href="#id11"><span class="std std-ref">Example use cases</span></a> gives
+examples of the typical nesting of <code class="docutils literal notranslate"><span class="pre">jastrow</span></code>, <code class="docutils literal notranslate"><span class="pre">correlation</span></code> and
+<code class="docutils literal notranslate"><span class="pre">coefficient</span></code> elements.</p>
+<div class="section" id="id8">
+<h4>Input Specification<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<p>Jastrow element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>name</strong></p></td>
+<td><p><strong>datatype</strong></p></td>
+<td><p><strong>values</strong></p></td>
+<td><p><strong>defaults</strong></p></td>
+<td><p><strong>description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>(required)</p></td>
+<td><p>Unique name
+for this
+Jastrow
+function</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>text</p></td>
+<td><p>Two-body</p></td>
+<td><p>(required)</p></td>
+<td><p>Define a
+one-body
+function</p></td>
+</tr>
+<tr class="row-even"><td><p>function</p></td>
+<td><p>text</p></td>
+<td><p>Bspline</p></td>
+<td><p>(required)</p></td>
+<td><p>BSpline
+Jastrow</p></td>
+</tr>
+<tr class="row-odd"><td><p>print</p></td>
+<td><p>text</p></td>
+<td><p>yes / no</p></td>
+<td><p>yes</p></td>
+<td><p>Jastrow
+factor
+printed in
+external
+file?</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Correlation</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The two-body Jastrow factors used to describe correlations between electrons take the form</p>
+<div class="math notranslate nohighlight" id="equation-eq14">
+<span class="eqno">(14)<a class="headerlink" href="#equation-eq14" title="Permalink to this equation">¶</a></span>\[J2=\sum_i^{e}\sum_{j&gt;i}^{e} u_{ab}(|r_i-r_j|)\]</div>
+<p>The most commonly used form of two body Jastrow factor supported by the code is a splined
+Jastrow factor, with many similarities to the one body spline Jastrow.</p>
+<div class="section" id="twobodyjastrowspline">
+<span id="id9"></span><h5>Spline form<a class="headerlink" href="#twobodyjastrowspline" title="Permalink to this headline">¶</a></h5>
+<p>The two-body spline Jastrow function is the most commonly used two-body
+Jastrow for solids. This form was first described and used in
+<a class="bibtex reference internal" href="running.html#eslerkimceperleyshulenburger2012" id="id10">[EKCS12]</a>. Here
+<span class="math notranslate nohighlight">\(u_{ab}\)</span> is an interpolating 1D B-spline (tricublc spline on a
+linear grid) between zero distance and <span class="math notranslate nohighlight">\(r_{cut}\)</span>. In 3D periodic
+systems, the default cutoff distance is the Wigner Seitz cell radius.
+For other periodicities, including isolated molecules, the
+<span class="math notranslate nohighlight">\(r_{cut}\)</span> must be specified. <span class="math notranslate nohighlight">\(r_i\)</span> and <span class="math notranslate nohighlight">\(r_j\)</span> are
+typically electron positions. The cusp condition as <span class="math notranslate nohighlight">\(r_i\)</span>
+approaches <span class="math notranslate nohighlight">\(r_j\)</span> is set by the relative spin of the electrons.</p>
+<p>Correlation element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 26%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>SpeciesA</p></td>
+<td><p>Text</p></td>
+<td><p>U or d</p></td>
+<td><p>(Required)</p></td>
+<td><p>Quantum
+species
+target</p></td>
+</tr>
+<tr class="row-odd"><td><p>SpeciesB</p></td>
+<td><p>Text</p></td>
+<td><p>U or d</p></td>
+<td><p>(Required)</p></td>
+<td><p>Quantum
+species
+target</p></td>
+</tr>
+<tr class="row-even"><td><p>Size</p></td>
+<td><p>Integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>(Required)</p></td>
+<td><p>Number of
+coefficients</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rcut</p></td>
+<td><p>Real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>See below</p></td>
+<td><p>Distance at
+which the
+correlation
+goes to 0</p></td>
+</tr>
+<tr class="row-even"><td><p>Spin</p></td>
+<td><p>Text</p></td>
+<td><p>Yes or no</p></td>
+<td><p>No</p></td>
+<td><p>Spin-dependent
+Jastrow factor</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>Coefficients</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">speciesA,</span> <span class="pre">speciesB</span></code> The scale function u(r) is defined for species pairs uu and ud.</p></li>
+</ul>
+<p>There is no need to define ud or dd since uu=dd and ud=du.  The cusp condition is computed internally
+based on the charge of the quantum particles.</p>
+<p>Coefficients element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Datatype</strong></p></td>
+<td><p><strong>Values</strong></p></td>
+<td><p><strong>Defaults</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>Id</p></td>
+<td><p>Text</p></td>
+<td></td>
+<td><p>(Required)</p></td>
+<td><p>Unique
+identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p>Type</p></td>
+<td><p>Text</p></td>
+<td><p>Array</p></td>
+<td><p>(Required)</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Optimize</p></td>
+<td><p>Text</p></td>
+<td><p>Yes or no</p></td>
+<td><p>Yes</p></td>
+<td><p>If no,
+values are
+fixed in
+optimizations</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>(No name)</p></td>
+<td><p>Real array</p></td>
+<td></td>
+<td><p>Zeros</p></td>
+<td><p>Jastrow
+coefficients</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="id11">
+<span id="id12"></span><h5>Example use cases<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h5>
+<p>Specify a spin-dependent function with four parameters for each channel.  In this case, the cusp is set at
+a radius of 4.0 bohr (rather than to the default of the Wigner Seitz cell radius).  Also, in this example,
+the coefficients are set to not be optimized during an optimization step.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">jastrow</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;J2&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Two-Body&quot;</span> <span class="n">function</span><span class="o">=</span><span class="s2">&quot;Bspline&quot;</span> <span class="nb">print</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;4.0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;uu&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">&gt;</span> <span class="mf">0.2309049836</span> <span class="mf">0.1312646071</span> <span class="mf">0.05464141356</span> <span class="mf">0.01306231516</span><span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;4.0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;ud&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span> <span class="n">optimize</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">&gt;</span> <span class="mf">0.4351561096</span> <span class="mf">0.2377951747</span> <span class="mf">0.1129144262</span> <span class="mf">0.0356789236</span><span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">jastrow</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="user-defined-functional-form">
+<span id="jastrowuserform"></span><h3>User defined functional form<a class="headerlink" href="#user-defined-functional-form" title="Permalink to this headline">¶</a></h3>
+<p>To aid in implementing different forms for <span class="math notranslate nohighlight">\(u_{ab}(r)\)</span>, there is a
+script that uses a symbolic expression to generate the appropriate code
+(with spatial and parameter derivatives). The script is located in
+<code class="docutils literal notranslate"><span class="pre">src/QMCWaveFunctions/Jastrow/codegen/user_jastrow.py</span></code>. The script
+requires Sympy (www.sympy.org) for symbolic mathematics and code
+generation.</p>
+<p>To use the script, modify it to specify the functional form and a list
+of variational parameters. Optionally, there may be fixed parameters -
+ones that are specified in the input file, but are not part of the
+variational optimization. Also one symbol may be specified that accepts
+a cusp value in order to satisfy the cusp condition. There are several
+example forms in the script. The default form is the simple Padé.</p>
+<p>Once the functional form and parameters are specified in the script, run
+the script from the <code class="docutils literal notranslate"><span class="pre">codegen</span></code> directory and recompile QMCPACK. The
+main output of the script is the file
+<code class="docutils literal notranslate"><span class="pre">src/QMCWaveFunctions/Jastrow/UserFunctor.h</span></code>. The script also prints
+information to the screen, and one section is a sample XML input block
+containing all the parameters.</p>
+<p>There is a unit test in
+<code class="docutils literal notranslate"><span class="pre">src/QMCWaveFunctions/test/test_user_jastrow.cpp</span></code> to perform some
+minimal testing of the Jastrow factor. The unit test will need updating
+to properly test new functional forms. Most of the changes relate to the
+number and name of variational parameters.</p>
+<p>Jastrow element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+<col style="width: 21%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>name</strong></p></td>
+<td><p><strong>datatype</strong></p></td>
+<td><p><strong>values</strong></p></td>
+<td><p><strong>defaults</strong></p></td>
+<td><p><strong>description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>(required)</p></td>
+<td><p>Unique name
+for this
+Jastrow
+function</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>text</p></td>
+<td><p>One-body</p></td>
+<td><p>(required)</p></td>
+<td><p>Define a
+one-body
+function</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td><p>Two-body</p></td>
+<td><p>(required)</p></td>
+<td><p>Define a
+two-body
+function</p></td>
+</tr>
+<tr class="row-odd"><td><p>function</p></td>
+<td><p>text</p></td>
+<td><p>user</p></td>
+<td><p>(required)</p></td>
+<td><p>User-defined
+functor</p></td>
+</tr>
+</tbody>
+</table>
+<p>See other parameters as appropriate for one or two-body functions</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 22%" />
+<col style="width: 19%" />
+<col style="width: 22%" />
+<col style="width: 22%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>elements</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Correlation</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>Contents</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>(None)</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="long-ranged-jastrow-factors">
+<h3>Long-ranged Jastrow factors<a class="headerlink" href="#long-ranged-jastrow-factors" title="Permalink to this headline">¶</a></h3>
+<p>While short-ranged Jastrow factors capture the majority of the benefit
+for minimizing the total energy and the energy variance, long-ranged
+Jastrow factors are important to accurately reproduce the short-ranged
+(long wavelength) behavior of quantities such as the static structure
+factor, and are therefore essential for modern accurate finite size
+corrections in periodic systems.</p>
+<p>Below two types of long-ranged Jastrow factors are described. The first
+(the k-space Jastrow) is simply an expansion of the one and/or two body
+correlation functions in plane waves, with the coefficients comprising
+the optimizable parameters. The second type have few variational
+parameters and use the optimized breakup method of Natoli and
+Ceperley <a class="bibtex reference internal" href="running.html#natoli1995" id="id13">[NC95]</a> (the Yukawa and Gaskell RPA
+Jastrows).</p>
+<div class="section" id="long-ranged-jastrow-k-space-jastrow">
+<h4>Long-ranged Jastrow: k-space Jastrow<a class="headerlink" href="#long-ranged-jastrow-k-space-jastrow" title="Permalink to this headline">¶</a></h4>
+<p>The k-space Jastrow introduces explicit long-ranged dependence commensurate with the periodic supercell.  This Jastrow is to be used in periodic boundary conditions only.</p>
+<p>The input for the k-space Jastrow fuses both one and two-body forms into a single element and so they are discussed together here.  The one- and two-body terms in the k-Space Jastrow have the form:</p>
+<div class="math notranslate nohighlight" id="equation-eq15">
+<span class="eqno">(15)<a class="headerlink" href="#equation-eq15" title="Permalink to this equation">¶</a></span>\[J_1 = \sum_{G\ne 0}b_G\rho_G^I\rho_{-G}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq16">
+<span class="eqno">(16)<a class="headerlink" href="#equation-eq16" title="Permalink to this equation">¶</a></span>\[J_2 = \sum_{G\ne 0}a_G\rho_G\rho_{-G}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\rho_G\)</span> is the Fourier transform of the instantaneous electron density:</p>
+<div class="math notranslate nohighlight" id="equation-eq17">
+<span class="eqno">(17)<a class="headerlink" href="#equation-eq17" title="Permalink to this equation">¶</a></span>\[\rho_G=\sum_{n\in electrons}e^{iG\cdot r_n}\]</div>
+<p>and <span class="math notranslate nohighlight">\(\rho_G^I\)</span> has the same form, but for the fixed ions. In both cases the coefficients are restricted to be real, though in general the coefficients for the one-body term need not be.  See <span class="xref std std-ref">feature-kspace-jastrow</span> for more detail.</p>
+<p>Input for the k-space Jastrow follows the familar nesting of <code class="docutils literal notranslate"><span class="pre">jastrow-correlation-coefficients</span></code> elements, with attributes unique to the k-space Jastrow at the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> input level.</p>
+<p><code class="docutils literal notranslate"><span class="pre">jastrow</span> <span class="pre">type=kSpace</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wavefunction</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">correlation</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 14%" />
+<col style="width: 22%" />
+<col style="width: 13%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>kSpace</strong></p></td>
+<td></td>
+<td><p>must be kSpace</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>0</p></td>
+<td><p>Unique name for Jastrow</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td></td>
+<td><p>Ion particleset name</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">correlation</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jastrow</span> <span class="pre">type=kSpace</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">coefficients</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 13%" />
+<col style="width: 24%" />
+<col style="width: 12%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>One-body, Two-Body</strong></p></td>
+<td></td>
+<td><p>Must be One-body/Two-body</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kc</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>real</p></td>
+<td><p>kc <span class="math notranslate nohighlight">\(\ge\)</span> 0</p></td>
+<td><p>0.0</p></td>
+<td><p>k-space cutoff in a.u.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">symmetry</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>crystal,isotropic,none</p></td>
+<td><p>crystal</p></td>
+<td><p>symmetry of coefficients</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">spinDependent</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes,no</p></td>
+<td><p>no</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">coefficients</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">correlation</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 18%" />
+<col style="width: 15%" />
+<col style="width: 17%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>cG1/cG2</p></td>
+<td><p>Label for coeffs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Array</span></code></p></td>
+<td><p>0</p></td>
+<td><p>Must be Array</p></td>
+</tr>
+</tbody>
+</table>
+<p>body text: The body text is a list of real values for the parameters.</p>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p>It is normal to provide no coefficients as an initial guess. The
+number of coefficients will be automatically calculated according to
+the k-space cutoff + symmetry and set to zero.</p></li>
+<li><p>Providing an incorrect number of parameters also results in all
+parameters being set to zero.</p></li>
+<li><p>There is currently no way to turn optimization on/off for the k-space
+Jastrow. The coefficients are always optimized.</p></li>
+<li><p>Spin dependence is currently not implemented for this Jastrow.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kc</span></code>: Parameters with G vectors magnitudes less than <code class="docutils literal notranslate"><span class="pre">kc</span></code> are
+included in the Jastrow. If <code class="docutils literal notranslate"><span class="pre">kc</span></code> is zero, it is the same as
+excluding the k-space term.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symmetry=crystal</span></code>: Impose crystal symmetry on coefficients
+according to the structure factor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symmetry=isotropic</span></code>: Impose spherical symmetry on coefficients
+according to G-vector magnitude.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">symmetry=none</span></code>: Impose no symmetry on the coefficients.</p></li>
+</ul>
 </div>
 </div>
 </div>

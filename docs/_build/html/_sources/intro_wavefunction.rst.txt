@@ -966,3 +966,523 @@ in such cases.
   :label: eq11
 
   u_{ab}(r) = \frac{a*r+c*r^2}{1+b*r}
+
+Unlike the spline Jastrow factor, which includes a cutoff, this form has an infinite range and will be applied to every particle
+pair (subject to the minimum image convention).  It also is a cuspless Jastrow factor,
+so it should be used either in combination with a single particle basis set that contains the proper cusp or
+with a smooth pseudopotential.
+
+Correlation element:
+
+      +-------------+--------------+------------+--------------+---------------------------+
+      | **Name**    | **Datatype** | **Values** | **Defaults** | **Description**           |
+      +-------------+--------------+------------+--------------+---------------------------+
+      | ElementType | Text         | Name       | See below    | Classical particle target |
+      +-------------+--------------+------------+--------------+---------------------------+
+      | Elements    |              |            |              |                           |
+      +-------------+--------------+------------+--------------+---------------------------+
+      |             | Coefficients |            |              |                           |
+      +-------------+--------------+------------+--------------+---------------------------+
+      | Contents    |              |            |              |                           |
+      +-------------+--------------+------------+--------------+---------------------------+
+      |             | (None)       |            |              |                           |
+      +-------------+--------------+------------+--------------+---------------------------+
+
+Parameter element:
+
+      +-----------+-------------+-------------+-------------+-----------------+
+      | **Name**  |**Datatype** | **Values**  | **Defaults**| **Description** |
+      |           |             |             |             |                 |
+      +-----------+-------------+-------------+-------------+-----------------+
+      | Id        | String      | Name        | (Required)  | Name for        |
+      |           |             |             |             | variable        |
+      +-----------+-------------+-------------+-------------+-----------------+
+      | Name      | String      | A or B or C | (Required)  | See             |
+      |           |             |             |             | :eq:`eq11`      |
+      |           |             |             |             |                 |
+      +-----------+-------------+-------------+-------------+-----------------+
+      | Optimize  | Text        | Yes or no   | Yes         | If no,          |
+      |           |             |             |             | values are      |
+      |           |             |             |             | fixed in        |
+      |           |             |             |             | optimizations   |
+      |           |             |             |             |                 |
+      +-----------+-------------+-------------+-------------+-----------------+
+
+      +-----------+-------------+-------------+-------------+-------------+
+      | Elements  |             |             |             |             |
+      +-----------+-------------+-------------+-------------+-------------+
+      | (None)    |             |             |             |             |
+      +-----------+-------------+-------------+-------------+-------------+
+      | Contents  |             |             |             |             |
+      +-----------+-------------+-------------+-------------+-------------+
+      | (No name) | Real        | Parameter   | (Required)  | Jastrow     |
+      |           |             | value       |             | coefficients|
+      |           |             |             |             |             |
+      +-----------+-------------+-------------+-------------+-------------+
+
+.. _1bjpadeexamples:
+
+Example use case
+................
+
+Specify a spin-independent function with independent Jastrow factors for two different species (Li and H).
+The name of the particleset holding the ionic positions is "i."
+
+::
+
+  <jastrow name="J1" function="pade2" type="One-Body" print="yes" source="i">
+    <correlation elementType="Li">
+      <var id="LiA" name="A">  0.34 </var>
+      <var id="LiB" name="B"> 12.78 </var>
+      <var id="LiC" name="C">  1.62 </var>
+    </correlation>
+    <correlation elementType="H"">
+      <var id="HA" name="A">  0.14 </var>
+      <var id="HB" name="B"> 6.88 </var>
+      <var id="HC" name="C"> 0.237 </var>
+    </correlation>
+  </jastrow>
+
+.. onebodyjastrowsrcusp:
+
+Short Range Cusp Form
+.....................
+
+The idea behind this functor is to encode nuclear cusps and other details at very
+short range around a nucleus in the region that the Gaussian orbitals of quantum
+chemistry are not capable of describing correctly.
+The functor is kept short ranged, because outside this small region, quantum chemistry
+orbital expansions are already capable of taking on the correct shapes.
+Unlike a pre-computed cusp correction, this optimizable functor can respond to
+changes in the wave function during VMC optimization.
+The functor's form is
+
+.. math::
+  :label: eq12
+
+  u(r) = -\exp{\left(-r/R_0\right)} \left( A R_0 + \sum_{k=0}^{N-1} B_k \frac{ (r/R_0)^{k+2} }{ 1 + (r/R_0)^{k+2} } \right)
+
+in which :math:`R_0` acts as a soft cutoff radius (:math:`u(r)` decays to zero quickly beyond roughly this distance)
+and :math:`A` determines the cusp condition.
+
+.. math::
+  :label: eq13
+
+  \lim_{r \to 0} \frac{\partial u}{\partial r} = A
+
+The simple exponential decay is modified by the :math:`N` coefficients
+:math:`B_k` that define an expansion in sigmoidal functions, thus adding
+detailed structure in a short-ranged region around a nucleus while
+maintaining the correct cusp condition at the nucleus. Note that
+sigmoidal functions are used instead of, say, a bare polynomial
+expansion, as they trend to unity past the soft cutoff radius and so
+interfere less with the exponential decay that keeps the functor short
+ranged. Although :math:`A`, :math:`R_0`, and the :math:`B_k`
+coefficients can all be optimized as variational parameters, :math:`A`
+will typically be fixed as the desired cusp condition is known.
+
+To specify this one-body Jastrow factor, use an input section like the following.
+
+::
+
+  <jastrow name="J1Cusps" type="One-Body" function="shortrangecusp" source="ion0" print="yes">
+    <correlation rcut="6" cusp="3" elementType="Li">
+      <var id="LiCuspR0" name="R0" optimize="yes"> 0.06 </var>
+      <coefficients id="LiCuspB" type="Array" optimize="yes">
+        0 0 0 0 0 0 0 0 0 0
+      </coefficients>
+    </correlation>
+    <correlation rcut="6" cusp="1" elementType="H">
+      <var id="HCuspR0" name="R0" optimize="yes"> 0.2 </var>
+      <coefficients id="HCuspB" type="Array" optimize="yes">
+        0 0 0 0 0 0 0 0 0 0
+      </coefficients>
+    </correlation>
+  </jastrow>
+
+Here “rcut” is specified as the range beyond which the functor is
+assumed to be zero. The value of :math:`A` can either be specified via
+the “cusp” option as shown above, in which case its optimization is
+disabled, or through its own “var” line as for :math:`R_0`, in which
+case it can be specified as either optimizable (“yes”) or not (“no”).
+The coefficients :math:`B_k` are specified via the “coefficients”
+section, with the length :math:`N` of the expansion determined
+automatically based on the length of the array.
+
+
+Note that this one-body Jastrow form can (and probably should) be used in conjunction
+with a longer ranged one-body Jastrow, such as a spline form.
+Be sure to set the longer-ranged Jastrow to be cusp-free!
+
+Two-body Jastrow functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The two-body Jastrow factor is a form that allows for the explicit inclusion
+of dynamic correlation between two particles included in the wavefunction.  It
+is almost always given in a spin dependent form so as to satisfy the Kato cusp
+condition between electrons of different spins :cite:`kato`.
+
+The two body Jastrow function is specified within a ``wavefunction`` element
+and must contain one or more correlation elements specifying additional parameters
+as well as the actual coefficients.  :ref:`2bjsplineexamples` gives
+examples of the typical nesting of ``jastrow``, ``correlation`` and
+``coefficient`` elements.
+
+Input Specification
+^^^^^^^^^^^^^^^^^^^
+
+Jastrow element:
+
+    +----------+--------------+------------+--------------+-----------------+
+    | **name** | **datatype** | **values** | **defaults** | **description** |
+    |          |              |            |              |                 |
+    +----------+--------------+------------+--------------+-----------------+
+    | name     | text         |            | (required)   | Unique name     |
+    |          |              |            |              | for this        |
+    |          |              |            |              | Jastrow         |
+    |          |              |            |              | function        |
+    +----------+--------------+------------+--------------+-----------------+
+    | type     | text         | Two-body   | (required)   | Define a        |
+    |          |              |            |              | one-body        |
+    |          |              |            |              | function        |
+    +----------+--------------+------------+--------------+-----------------+
+    | function | text         | Bspline    | (required)   | BSpline         |
+    |          |              |            |              | Jastrow         |
+    +----------+--------------+------------+--------------+-----------------+
+    | print    | text         | yes / no   | yes          | Jastrow         |
+    |          |              |            |              | factor          |
+    |          |              |            |              | printed in      |
+    |          |              |            |              | external        |
+    |          |              |            |              | file?           |
+    +----------+--------------+------------+--------------+-----------------+
+    +----------+--------------+------------+--------------+-----------------+
+    | elements |              |            |              |                 |
+    +----------+--------------+------------+--------------+-----------------+
+    |          | Correlation  |            |              |                 |
+    +----------+--------------+------------+--------------+-----------------+
+    | Contents |              |            |              |                 |
+    +----------+--------------+------------+--------------+-----------------+
+    |          | (None)       |            |              |                 |
+    +----------+--------------+------------+--------------+-----------------+
+
+The two-body Jastrow factors used to describe correlations between electrons take the form
+
+.. math::
+  :label: eq14
+
+  J2=\sum_i^{e}\sum_{j>i}^{e} u_{ab}(|r_i-r_j|)
+
+The most commonly used form of two body Jastrow factor supported by the code is a splined
+Jastrow factor, with many similarities to the one body spline Jastrow.
+
+.. _twobodyjastrowspline:
+
+Spline form
+...........
+
+The two-body spline Jastrow function is the most commonly used two-body
+Jastrow for solids. This form was first described and used in
+:cite:`EslerKimCeperleyShulenburger2012`. Here
+:math:`u_{ab}` is an interpolating 1D B-spline (tricublc spline on a
+linear grid) between zero distance and :math:`r_{cut}`. In 3D periodic
+systems, the default cutoff distance is the Wigner Seitz cell radius.
+For other periodicities, including isolated molecules, the
+:math:`r_{cut}` must be specified. :math:`r_i` and :math:`r_j` are
+typically electron positions. The cusp condition as :math:`r_i`
+approaches :math:`r_j` is set by the relative spin of the electrons.
+
+Correlation element:
+
+    +----------+-------------+-------------+-------------+-----------------+
+    | **Name** | **Datatype**| **Values**  | **Defaults**| **Description** |
+    |          |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    | SpeciesA | Text        | U or d      | (Required)  | Quantum         |
+    |          |             |             |             | species         |
+    |          |             |             |             | target          |
+    +----------+-------------+-------------+-------------+-----------------+
+    | SpeciesB | Text        | U or d      | (Required)  | Quantum         |
+    |          |             |             |             | species         |
+    |          |             |             |             | target          |
+    +----------+-------------+-------------+-------------+-----------------+
+    | Size     | Integer     | :math:`> 0` | (Required)  | Number of       |
+    |          |             |             |             | coefficients    |
+    |          |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    | Rcut     | Real        | :math:`> 0` | See below   | Distance at     |
+    |          |             |             |             | which the       |
+    |          |             |             |             | correlation     |
+    |          |             |             |             | goes to 0       |
+    +----------+-------------+-------------+-------------+-----------------+
+    | Spin     | Text        | Yes or no   | No          | Spin-dependent  |
+    |          |             |             |             | Jastrow factor  |
+    |          |             |             |             |                 |
+    |          |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    +----------+-------------+-------------+-------------+-----------------+
+    |Elements  |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    |          | Coefficients|             |             |                 |
+    |          |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    |Contents  |             |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+    |          | (None)      |             |             |                 |
+    +----------+-------------+-------------+-------------+-----------------+
+
+Additional information:
+
+- ``speciesA, speciesB`` The scale function u(r) is defined for species pairs uu and ud.
+There is no need to define ud or dd since uu=dd and ud=du.  The cusp condition is computed internally
+based on the charge of the quantum particles.
+
+Coefficients element:
+
+    +-----------+--------------+------------+--------------+-----------------+
+    | **Name**  | **Datatype** | **Values** | **Defaults** | **Description** |
+    |           |              |            |              |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    | Id        | Text         |            | (Required)   | Unique          |
+    |           |              |            |              | identifier      |
+    +-----------+--------------+------------+--------------+-----------------+
+    | Type      | Text         | Array      | (Required)   |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    | Optimize  | Text         | Yes or no  | Yes          | If no,          |
+    |           |              |            |              | values are      |
+    |           |              |            |              | fixed in        |
+    |           |              |            |              | optimizations   |
+    |           |              |            |              |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    +-----------+--------------+------------+--------------+-----------------+
+    |Elements   |              |            |              |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    | (None)    |              |            |              |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    | Contents  |              |            |              |                 |
+    +-----------+--------------+------------+--------------+-----------------+
+    | (No name) | Real array   |            | Zeros        | Jastrow         |
+    |           |              |            |              | coefficients    |
+    +-----------+--------------+------------+--------------+-----------------+
+
+.. _2bjsplineexamples:
+
+Example use cases
+.................
+
+Specify a spin-dependent function with four parameters for each channel.  In this case, the cusp is set at
+a radius of 4.0 bohr (rather than to the default of the Wigner Seitz cell radius).  Also, in this example,
+the coefficients are set to not be optimized during an optimization step.
+
+::
+
+  <jastrow name="J2" type="Two-Body" function="Bspline" print="yes">
+    <correlation speciesA="u" speciesB="u" size="8" rcut="4.0">
+      <coefficients id="uu" type="Array" optimize="no"> 0.2309049836 0.1312646071 0.05464141356 0.01306231516</coefficients>
+    </correlation>
+    <correlation speciesA="u" speciesB="d" size="8" rcut="4.0">
+      <coefficients id="ud" type="Array" optimize="no"> 0.4351561096 0.2377951747 0.1129144262 0.0356789236</coefficients>
+    </correlation>
+  </jastrow>
+
+.. _jastrowuserform:
+
+User defined functional form
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To aid in implementing different forms for :math:`u_{ab}(r)`, there is a
+script that uses a symbolic expression to generate the appropriate code
+(with spatial and parameter derivatives). The script is located in
+``src/QMCWaveFunctions/Jastrow/codegen/user_jastrow.py``. The script
+requires Sympy (www.sympy.org) for symbolic mathematics and code
+generation.
+
+To use the script, modify it to specify the functional form and a list
+of variational parameters. Optionally, there may be fixed parameters -
+ones that are specified in the input file, but are not part of the
+variational optimization. Also one symbol may be specified that accepts
+a cusp value in order to satisfy the cusp condition. There are several
+example forms in the script. The default form is the simple Padé.
+
+Once the functional form and parameters are specified in the script, run
+the script from the ``codegen`` directory and recompile QMCPACK. The
+main output of the script is the file
+``src/QMCWaveFunctions/Jastrow/UserFunctor.h``. The script also prints
+information to the screen, and one section is a sample XML input block
+containing all the parameters.
+
+There is a unit test in
+``src/QMCWaveFunctions/test/test_user_jastrow.cpp`` to perform some
+minimal testing of the Jastrow factor. The unit test will need updating
+to properly test new functional forms. Most of the changes relate to the
+number and name of variational parameters.
+
+Jastrow element:
+
+    +----------+--------------+------------+--------------+----------------+
+    | **name** | **datatype** | **values** | **defaults** | **description**|
+    |          |              |            |              |                |
+    +----------+--------------+------------+--------------+----------------+
+    | name     | text         |            | (required)   | Unique name    |
+    |          |              |            |              | for this       |
+    |          |              |            |              | Jastrow        |
+    |          |              |            |              | function       |
+    +----------+--------------+------------+--------------+----------------+
+    | type     | text         | One-body   | (required)   | Define a       |
+    |          |              |            |              | one-body       |
+    |          |              |            |              | function       |
+    +----------+--------------+------------+--------------+----------------+
+    |          |              | Two-body   | (required)   | Define a       |
+    |          |              |            |              | two-body       |
+    |          |              |            |              | function       |
+    +----------+--------------+------------+--------------+----------------+
+    | function | text         | user       | (required)   | User-defined   |
+    |          |              |            |              | functor        |
+    +----------+--------------+------------+--------------+----------------+
+
+    See other parameters as appropriate for one or two-body functions
+
+    +----------+--------------+------------+--------------+--------------+
+    | elements |              |            |              |              |
+    +----------+--------------+------------+--------------+--------------+
+    |          | Correlation  |            |              |              |
+    +----------+--------------+------------+--------------+--------------+
+    | Contents |              |            |              |              |
+    +----------+--------------+------------+--------------+--------------+
+    |          | (None)       |            |              |              |
+    +----------+--------------+------------+--------------+--------------+
+
+Long-ranged Jastrow factors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+While short-ranged Jastrow factors capture the majority of the benefit
+for minimizing the total energy and the energy variance, long-ranged
+Jastrow factors are important to accurately reproduce the short-ranged
+(long wavelength) behavior of quantities such as the static structure
+factor, and are therefore essential for modern accurate finite size
+corrections in periodic systems.
+
+Below two types of long-ranged Jastrow factors are described. The first
+(the k-space Jastrow) is simply an expansion of the one and/or two body
+correlation functions in plane waves, with the coefficients comprising
+the optimizable parameters. The second type have few variational
+parameters and use the optimized breakup method of Natoli and
+Ceperley :cite:`Natoli1995` (the Yukawa and Gaskell RPA
+Jastrows).
+
+Long-ranged Jastrow: k-space Jastrow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The k-space Jastrow introduces explicit long-ranged dependence commensurate with the periodic supercell.  This Jastrow is to be used in periodic boundary conditions only.
+
+The input for the k-space Jastrow fuses both one and two-body forms into a single element and so they are discussed together here.  The one- and two-body terms in the k-Space Jastrow have the form:
+
+.. math::
+  :label: eq15
+
+  J_1 = \sum_{G\ne 0}b_G\rho_G^I\rho_{-G}
+
+.. math::
+  :label: eq16
+
+  J_2 = \sum_{G\ne 0}a_G\rho_G\rho_{-G}
+
+Here :math:`\rho_G` is the Fourier transform of the instantaneous electron density:
+
+.. math::
+  :label: eq17
+
+  \rho_G=\sum_{n\in electrons}e^{iG\cdot r_n}
+
+and :math:`\rho_G^I` has the same form, but for the fixed ions. In both cases the coefficients are restricted to be real, though in general the coefficients for the one-body term need not be.  See :ref:`feature-kspace-jastrow` for more detail.
+
+Input for the k-space Jastrow follows the familar nesting of ``jastrow-correlation-coefficients`` elements, with attributes unique to the k-space Jastrow at the ``correlation`` input level.
+
+``jastrow type=kSpace`` element:
+
+    +------------------+------------------+
+    | parent elements: | ``wavefunction`` |
+    +------------------+------------------+
+    | child elements:  | ``correlation``  |
+    +------------------+------------------+
+
+attributes:
+
+    +-----------------------+--------------+----------------------+-------------+--------------------------+
+    | **Name**              | **Datatype** | **Values**           | **Default** | **Description**          |
+    +=======================+==============+======================+=============+==========================+
+    | ``type``:math:`^r`    | text         | **kSpace**           |             | must be kSpace           |
+    +-----------------------+--------------+----------------------+-------------+--------------------------+
+    | ``name``:math:`^r`    | text         | *anything*           | 0           | Unique name for Jastrow  |
+    +-----------------------+--------------+----------------------+-------------+--------------------------+
+    | ``source``:math:`^r`  | text         | ``particleset.name`` |             | Ion particleset name     |
+    +-----------------------+--------------+----------------------+-------------+--------------------------+
+
+``correlation`` element:
+
+    +------------------+-------------------------+
+    | parent elements: | ``jastrow type=kSpace`` |
+    +------------------+-------------------------+
+    | child elements:  | ``coefficients``        |
+    +------------------+-------------------------+
+
+
+attributes:
+
+
+    +------------------------------+--------------+--------------------------+-------------+---------------------------+
+    | **Name**                     | **Datatype** | **Values**               | **Default** | **Description**           |
+    +==============================+==============+==========================+=============+===========================+
+    | ``type``:math:`^r`           | text         | **One-body, Two-Body**   |             | Must be One-body/Two-body |
+    +------------------------------+--------------+--------------------------+-------------+---------------------------+
+    | ``kc``:math:`^r`             | real         | kc :math:`\ge` 0         | 0.0         | k-space cutoff in a.u.    |
+    +------------------------------+--------------+--------------------------+-------------+---------------------------+
+    | ``symmetry``:math:`^o`       | text         | crystal,isotropic,none   | crystal     | symmetry of coefficients  |
+    +------------------------------+--------------+--------------------------+-------------+---------------------------+
+    | ``spinDependent``:math:`^o`  | boolean      | yes,no                   | no          | *No current function*     |
+    +------------------------------+--------------+--------------------------+-------------+---------------------------+
+
+``coefficients`` element:
+
+    +------------------+-----------------+
+    | parent elements: | ``correlation`` |
+    +------------------+-----------------+
+    | child elements:  | *None*          |
+    +------------------+-----------------+
+
+attributes:
+
+    +---------------------+--------------+------------+-------------+------------------+
+    | **Name**            | **Datatype** | **Values** | **Default** | **Description**  |
+    +=====================+==============+============+=============+==================+
+    | ``id``:math:`^r`    | text         | *anything* | cG1/cG2     | Label for coeffs |
+    +---------------------+--------------+------------+-------------+------------------+
+    | ``type``:math:`^r`  | text         | ``Array``  | 0           | Must be Array    |
+    +---------------------+--------------+------------+-------------+------------------+
+
+    body text: The body text is a list of real values for the parameters.
+
+Additional information:
+
+-  It is normal to provide no coefficients as an initial guess. The
+   number of coefficients will be automatically calculated according to
+   the k-space cutoff + symmetry and set to zero.
+
+-  Providing an incorrect number of parameters also results in all
+   parameters being set to zero.
+
+-  There is currently no way to turn optimization on/off for the k-space
+   Jastrow. The coefficients are always optimized.
+
+-  Spin dependence is currently not implemented for this Jastrow.
+
+-  ``kc``: Parameters with G vectors magnitudes less than ``kc`` are
+   included in the Jastrow. If ``kc`` is zero, it is the same as
+   excluding the k-space term.
+
+-  ``symmetry=crystal``: Impose crystal symmetry on coefficients
+   according to the structure factor.
+
+-  ``symmetry=isotropic``: Impose spherical symmetry on coefficients
+   according to G-vector magnitude.
+
+-  ``symmetry=none``: Impose no symmetry on the coefficients.
