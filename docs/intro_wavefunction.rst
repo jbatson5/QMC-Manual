@@ -1486,3 +1486,670 @@ Additional information:
    according to G-vector magnitude.
 
 -  ``symmetry=none``: Impose no symmetry on the coefficients.
+
+.. code-block::
+  :caption: k-space Jastrow with one- and two-body terms.
+  :name: Listing 10
+
+  <jastrow type="kSpace" name="Jk" source="ion0">
+    <correlation kc="4.0" type="One-Body" symmetry="cystal">
+      <coefficients id="cG1" type="Array">
+      </coefficients>
+    </correlation>
+    <correlation kc="4.0" type="Two-Body" symmetry="crystal">
+      <coefficients id="cG2" type="Array">
+      </coefficients>
+   </correlation>
+  </jastrow>
+
+.. code-block::
+  :caption: k-space Jastrow with one-body term only.
+  :name: Listing 11
+
+  <jastrow type="kSpace" name="Jk" source="ion0">
+     <correlation kc="4.0" type="One-Body" symmetry="crystal">
+        <coefficients id="cG1" type="Array">
+        </coefficients>
+     </correlation>
+  </jastrow>
+
+.. code-block::
+  :caption: k-space Jastrow with two-body term only.
+  :name: Listing 12
+
+  <jastrow type="kSpace" name="Jk" source="ion0">
+     <correlation kc="4.0" type="Two-Body" symmetry="crystal">
+        <coefficients id="cG2" type="Array">
+        </coefficients>
+     </correlation>
+  </jastrow>
+
+.. _twobodyjastrowlr:
+
+Long-ranged Jastrows: Gaskell RPA and Yukawa forms
+..................................................
+
+**NOTE: The Yukawa and RPA Jastrows do not work at present
+and are currently being revived.  Please contact the developers if
+you are interested in using them.**
+
+The exact Jastrow correlation functions contain terms which have a
+form similar to the Coulomb pair potential.  In periodic systems
+the Coulomb potential is replaced by an Ewald summation of the
+bare potential over all periodic image cells.  This sum is often
+handled by the optimized breakup method :cite:`Natoli1995` and this
+same approach is applied to the long-ranged Jastrow factors in QMCPACK.
+
+There are two main long-ranged Jastrow factors of this type
+implemented in QMCPACK: the Gaskell RPA :cite:`Gaskell1961,Gaskell1962`
+form and the :cite:`Ceperley1978` form.  Both of these forms
+were used by Ceperley in early studies of the electron gas :cite:`Ceperley1978`,
+but they are also appropriate starting points for general solids.
+
+The Yukawa form is defined in real space.  It's long-range form is
+formally defined as
+
+.. math::
+  :label: eq18
+
+  u_Y^{PBC}(r) = \sum_{L\ne 0}\sum_{i<j}u_Y(\left|{r_i-r_j+L}\right|)
+
+with :math:`u_Y(r)` given by
+
+.. math::
+  :label: eq19
+
+  u_Y(r) = \frac{a}{r}\left(1-e^{-r/b}\right)
+
+In QMCPACK a slightly more restricted form is used:
+
+.. math::
+  :label: eq20
+
+  u_Y(r) = \frac{r_s}{r}\left(1-e^{-r/\sqrt{r_s}}\right)
+
+here ":math:`$r_s`" is understood to be a variational parameter.
+
+The Gaskell RPA form---which contains correct short/long range limits
+and minimizes the total energy of the electron gas within the RPA---is
+defined directly in k-space:
+
+.. math::
+  :label: eq21
+
+  u_{RPA}(k) = -\frac{1}{2S_0(k)}+\frac{1}{2}\left(\frac{1}{S_0(k)^2}+\frac{4m_ev_k}{\hbar^2k^2}\right)^{1/2}
+
+where $v_k$ is the Fourier transform of the Coulomb potential and
+:math:`S_0(k)` is the static structure factor of the non-interacting
+electron gas:
+
+.. math::
+
+  S_0(k) = \left.
+      \begin{cases}
+        1 &  k>2k_F \\
+        \frac{3k}{4k_F}-\frac{1}{2}\left(\frac{k}{2k_F}\right)^3 & k<2k_F
+      \end{cases}
+      \right.
+
+When written in atomic units, RPA Jastrow implemented in QMCPACK has the
+form
+
+.. math::
+  :label: eq22
+
+  u_{RPA}(k) = \frac{1}{2N_e}\left(-\frac{1}{S_0(k)}+\left(\frac{1}{S_0(k)^2}+\frac{12}{r_s^3k^4}\right)^{1/2}\right)
+
+Here ":math:`r_s`" is again a variational parameter and :math:`k_F\equiv(\tfrac{9\pi}{4r_s^3})^{1/3}`.
+
+For both the Yukawa and Gaskell RPA Jastrows, the default value for :math:`r_s` is :math:`r_s=(\tfrac{3\Omega}{4\pi N_e})^{1/3}`.
+
+``jastrow type=Two-Body function=rpa/yukawa`` element:
+
+    +------------------+-----------------+
+    | parent elements: | ``wavefunction``|
+    +------------------+-----------------+
+    | child elements:  | ``correlation`` |
+    +------------------+-----------------+
+
+  attributes:
+
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+    | **Name**                 | **Datatype** | **Values**     | **Default** | **Description**          |
+    +==========================+==============+================+=============+==========================+
+    | ``type``:math:`^r`       | text         | **Two-body**   |             | Must be two-body         |
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+    | ``function``:math:`^r`   | text         | **rpa/yukawa** |             | Must be rpa or yukawa    |
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+    | ``name``:math:`^r`       | text         | *anything*     | RPA_Jee     | Unique name for Jastrow  |
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+    | ``longrange``:math:`^o`  | boolean      | yes/no         | yes         | Use long-range part      |
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+    | ``shortrange``:math:`^o` | boolean      | yes/no         | yes         | Use short-range part     |
+    +--------------------------+--------------+----------------+-------------+--------------------------+
+
+  parameters:
+
+    +-------------------+--------------+----------------+-------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+
+    | **Name**          | **Datatype** | **Values**     | **Default**                                                                                                                                     | **Description**         |
+    +===================+==============+================+=================================================================================================================================================+=========================+
+    | ``rs``:math:`^o`  | rs           | :math:`r_s>0`  | :math:`\tfrac{3\Omega}{4\pi N_e}`                                                                                                               | Avg. elec-elec distance |
+    +-------------------+--------------+----------------+-------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+
+    | ``kc``:math:`^o`  | kc           | :math:`k_c>0`  | :math:`2\left(\tfrac{9\pi}{4}\right)^{1/3}\tfrac{4\pi N_e}{3\Omega}`                                                                            | k-space cutoff          |
+    +-------------------+--------------+----------------+-------------------------------------------------------------------------------------------------------------------------------------------------+-------------------------+
+
+.. code-block::
+  :caption: Two body RPA Jastrow with long- and short-ranged parts.
+  :name: Listing 13
+
+  <jastrow name=''Jee'' type=''Two-Body'' function=''rpa''>
+  </jastrow>
+
+Three-body Jastrow functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Explicit three-body correlations can be included in the wavefunction via
+the three-body Jastrow factor. The three-body electron-electron-ion
+correlation function (:math:`u_{\sigma\sigma'I}`) currently used in is
+identical to the one proposed in :cite:`Drummond2004`:
+
+.. math::
+  :label: eq23
+
+   \begin{aligned}
+   u_{\sigma\sigma'I}(r_{\sigma I},r_{\sigma'I},r_{\sigma\sigma'}) &= \sum_{\ell=0}^{M_{eI}}\sum_{m=0}^{M_{eI}}\sum_{n=0}^{M_{ee}}\gamma_{\ell mn} r_{\sigma I}^\ell r_{\sigma'I}^m r_{\sigma\sigma'}^n \\
+      &\times \left(r_{\sigma I}-\frac{r_c}{2}\right)^3 \Theta\left(r_{\sigma I}-\frac{r_c}{2}\right) \nonumber \\
+      &\times \left(r_{\sigma' I}-\frac{r_c}{2}\right)^3 \Theta\left(r_{\sigma' I}-\frac{r_c}{2}\right) \nonumber\end{aligned}
+
+Here :math:`M_{eI}` and :math:`M_{ee}` are the maximum polynomial orders
+of the electron-ion and electron-electron distances, respectively,
+:math:`\{\gamma_{\ell mn}\}` are the optimizable parameters (modulo
+constraints), :math:`r_c` is a cutoff radius, and :math:`r_{ab}` are the
+distances between electrons or ions :math:`a` and :math:`b`. i.e. The
+correlation function is only a function of the interparticle distances
+and not a more complex function of the particle positions,
+:math:`\mathbf{r}`. As indicated by the :math:`\Theta` functions,
+correlations are set to zero beyond a distance of :math:`r_c/2` in
+either of the electron-ion distances and the largest meaningful
+electron-electron distance is :math:`r_c`. This is the highest-order
+Jastrow correlation function currently implemented.
+
+Today, solid state applications of QMCPACK usually utilize one and
+two-body B-spline Jastrow functions, with calculations on heavier
+elements often also using the three-body term described above.
+
+Example use case
+^^^^^^^^^^^^^^^^
+
+Here is an example of H2O molecule. After optimizing one and two body Jastrow factors, add the following block in the wavefunction.
+The coefficients will be filled zero automatically if not given.
+
+::
+
+  <jastrow name="J3" type="eeI" function="polynomial" source="ion0" print="yes">
+    <correlation ispecies="O" especies="u" isize="3" esize="3" rcut="10">
+      <coefficients id="uuO" type="Array" optimize="yes"> </coefficients>
+    </correlation>
+    <correlation ispecies="O" especies1="u" especies2="d" isize="3" esize="3" rcut="10">
+      <coefficients id="udO" type="Array" optimize="yes"> </coefficients>
+    </correlation>
+    <correlation ispecies="H" especies="u" isize="3" esize="3" rcut="10">
+      <coefficients id="uuH" type="Array" optimize="yes"> </coefficients>
+    </correlation>
+    <correlation ispecies="H" especies1="u" especies2="d" isize="3" esize="3" rcut="10">
+      <coefficients id="udH" type="Array" optimize="yes"> </coefficients>
+    </correlation>
+  </jastrow>
+
+.. _multideterminants:
+
+Multideterminant wavefunctions
+------------------------------
+
+Multiple schemes to generate a multideterminant wavefunction are
+possible, from CASSF to full CI or selected CI. The QMCPACK converter can
+convert MCSCF multideterminant wavefunctions from
+GAMESS :cite:`schmidt93` and CIPSI :cite:`Caffarel2013` wavefunctions from
+Quantum Package :cite:`QP` (QP). Full details of how to run a CIPSI
+calculation and convert the wavefunction for QMCPACK are given in
+:ref:`cipsi`.
+
+The script ``utils/determinants_tools.py`` can be used to generate
+useful information about the multideterminant wavefunction. This script takes, as a required argument, the path of an h5 file corresponding to the wavefunction. Used without optional arguments, it prints the number of determinants, the number of CSFs, and a histogram of the excitation degree.
+
+::
+
+  > determinants_tools.py ./tests/molecules/C2_pp/C2.h5
+  Summary:
+  excitation degree 0 count: 1
+  excitation degree 1 count: 6
+  excitation degree 2 count: 148
+  excitation degree 3 count: 27
+  excitation degree 4 count: 20
+
+  n_det 202
+  n_csf 104
+
+If the ``--verbose`` argument is used, the script will print each determinant,
+the associated CSF, and the excitation degree relative to the first determinant.
+
+::
+
+  > determinants_tools.py -v ./tests/molecules/C2_pp/C2.h5 | head
+  1
+  alpha  1111000000000000000000000000000000000000000000000000000000
+  beta   1111000000000000000000000000000000000000000000000000000000
+  scf    2222000000000000000000000000000000000000000000000000000000
+  excitation degree  0
+
+  2
+  alpha  1011100000000000000000000000000000000000000000000000000000
+  beta   1011100000000000000000000000000000000000000000000000000000
+  scf    2022200000000000000000000000000000000000000000000000000000
+  excitation degree  2
+
+.. _backflow:
+
+Backflow Wavefunctions
+----------------------
+
+One can perturb the nodal surface of a single-Slater/multi-Slater
+wavefunction through use of a backflow transformation. Specifically, if
+we have an antisymmetric function
+:math:`D(\mathbf{x}_{0\uparrow},\cdots,\mathbf{x}_{N\uparrow}, \mathbf{x}_{0\downarrow},\cdots,\mathbf{x}_{N\downarrow})`,
+and if :math:`i_\alpha` is the :math:`i`-th particle of species type
+:math:`\alpha`, then the backflow transformation works by making the
+coordinate transformation
+:math:`\mathbf{x}_{i_\alpha} \to \mathbf{x}'_{i_\alpha}` and evaluating
+:math:`D` at these new “quasiparticle" coordinates. QMCPACK currently
+supports quasiparticle transformations given by
+
+.. math::
+  :label: eq24
+
+  \mathbf{x}'_{i_\alpha}=\mathbf{x}_{i_\alpha}+\sum_{\alpha \leq \beta} \sum_{i_\alpha \neq j_\beta} \eta^{\alpha\beta}(|\mathbf{x}_{i_\alpha}-\mathbf{x}_{j_\beta}|)(\mathbf{x}_{i_\alpha}-\mathbf{x}_{j_\beta})\:.
+
+Here, :math:`\eta^{\alpha\beta}(|\mathbf{x}_{i_\alpha}-\mathbf{x}_{j_\beta}|)`
+is a radially symmetric backflow transformation between species
+:math:`\alpha` and :math:`\beta`. In QMCPACK, particle :math:`i_\alpha`
+is known as the “target" particle and :math:`j_\beta` is known as the
+“source." The main types of transformations are so-called one-body
+terms, which are between an electron and an ion
+:math:`\eta^{eI}(|\mathbf{x}_{i_e}-\mathbf{x}_{j_I}|)` and two-body
+terms. Two-body terms are distinguished as those between like and
+opposite spin electrons:
+:math:`\eta^{e(\uparrow)e(\uparrow)}(|\mathbf{x}_{i_e(\uparrow)}-\mathbf{x}_{j_e(\uparrow)}|)`
+and
+:math:`\eta^{e(\uparrow)e(\downarrow)}(|\mathbf{x}_{i_e(\uparrow)}-\mathbf{x}_{j_e(\downarrow)}|)`.
+Henceforth, we will assume that
+:math:`\eta^{e(\uparrow)e(\uparrow)}=\eta^{e(\downarrow)e(\downarrow)}`.
+
+In the following, we explain how to describe general terms such as
+:eq:`eq24` in a QMCPACK XML file. For specificity, we will
+consider a particle set consisting of H and He (in that order). This
+ordering will be important when we build the XML file, so you can find
+this out either through your specific declaration of <particleset>, by
+looking at the hdf5 file in the case of plane waves, or by looking at
+the QMCPACK output file in the section labeled “Summary of QMC systems."
+
+Input specifications
+~~~~~~~~~~~~~~~~~~~~
+
+All backflow declarations occur within a single ``<backflow> ... </backflow>`` block.  Backflow transformations occur in ``<transformation>`` blocks and have the following input parameters:
+
+Transformation element:
+
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+  | **Name** | **Datatype** | **Values** | **Default** | **Description**                                          |
+  +==========+==============+============+=============+==========================================================+
+  | name     | Text         |            | (Required)  | Unique name for this Jastrow function.                   |
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+  | type     | Text         | "e-I"      | (Required)  | Define a one-body backflow transformation.               |
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+  |          | Text         | "e-e"      |             | Define a two-body backflow transformation.               |
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+  | function | Text         | B-spline   | (Required)  | B-spline type transformation (no other types supported). |
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+  | source   | Text         |            |             | "e" if two body, ion particle set if one body.           |
+  +----------+--------------+------------+-------------+----------------------------------------------------------+
+
+Just like one- and two-body jastrows, parameterization of the backflow transformations are specified within the ``<transformation>`` blocks by  ``<correlation>`` blocks.  Please refer to :ref:`onebodyjastrowspline` for more information.
+
+Example Use Case
+~~~~~~~~~~~~~~~~
+
+Having specified the general form, we present a general example of one-body and two-body backflow transformations in a hydrogen-helium mixture.  The hydrogen and helium ions have independent backflow transformations, as do the like and unlike-spin two-body terms.  One caveat is in order:  ionic backflow transformations must be listed in the order they appear in the particle set.  If in our example, helium is listed first and hydrogen is listed second, the following example would be correct.  However, switching backflow declaration to hydrogen first then helium, will result in an error.  Outside of this, declaration of one-body blocks and two-body blocks are not sensitive to ordering.
+
+::
+
+  <backflow>
+  <!--The One-Body term with independent e-He and e-H terms. IN THAT ORDER -->
+  <transformation name="eIonB" type="e-I" function="Bspline" source="ion0">
+      <correlation cusp="0.0" size="8" type="shortrange" init="no" elementType="He" rcut="3.0">
+          <coefficients id="eHeC" type="Array" optimize="yes">
+              0 0 0 0 0 0 0 0
+          </coefficients>
+      </correlation>
+      <correlation cusp="0.0" size="8" type="shortrange" init="no" elementType="H" rcut="3.0">
+          <coefficients id="eHC" type="Array" optimize="yes">
+              0 0 0 0 0 0 0 0
+          </coefficients>
+      </correlation>
+  </transformation>
+
+  <!--The Two-Body Term with Like and Unlike Spins -->
+  <transformation name="eeB" type="e-e" function="Bspline" >
+      <correlation cusp="0.0" size="7" type="shortrange" init="no" speciesA="u" speciesB="u" rcut="1.2">
+          <coefficients id="uuB1" type="Array" optimize="yes">
+              0 0 0 0 0 0 0
+          </coefficients>
+      </correlation>
+      <correlation cusp="0.0" size="7" type="shortrange" init="no" speciesA="d" speciesB="u" rcut="1.2">
+          <coefficients id="udB1" type="Array" optimize="yes">
+              0 0 0 0 0 0 0
+          </coefficients>
+      </correlation>
+  </transformation>
+  </backflow>
+
+Currently, backflow works only with single-Slater determinant wavefunctions.  When a backflow transformation has been declared, it should be placed within the ``<determinantset>`` block, but outside of the ``<slaterdeterminant>`` blocks, like so:
+
+::
+
+  <determinantset ... >
+      <!--basis set declarations go here, if there are any -->
+
+      <backflow>
+          <transformation ...>
+            <!--Here is where one and two-body terms are defined -->
+           </transformation>
+       </backflow>
+
+       <slaterdeterminant>
+           <!--Usual determinant definitions -->
+       </slaterdeterminant>
+   </determinantset>
+
+Optimization Tips
+~~~~~~~~~~~~~~~~~
+
+Backflow is notoriously difficult to optimize---it is extremely nonlinear in the variational parameters and moves the nodal surface around.  As such, it is likely that a full Jastrow+Backflow optimization with all parameters initialized to zero might not converge in a reasonable time.  If you are experiencing this problem, the following pointers are suggested (in no particular order).
+
+Get a good starting guess for :math:`\Psi_T`:
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#. Try optimizing the Jastrow first without backflow.
+
+#. Freeze the Jastrow parameters, introduce only the e-e terms in the
+   backflow transformation, and optimize these parameters.
+
+#. Freeze the e-e backflow parameters, and then optimize the e-I terms.
+
+   -  If difficulty is encountered here, try optimizing each species
+      independently.
+
+
+#. Unfreeze all Jastrow, e-e backflow, and e-I backflow parameters, and
+   reoptimize.
+
+Optimizing Backflow Terms
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+It is possible that the previous prescription might grind to a halt in steps 2 or 3 with the inability to optimize the e-e or e-I backflow transformation independently, especially if it is initialized to zero.  One way to get around this is to build a good starting guess for the e-e or e-I backflow terms iteratively as follows:
+
+#. Start off with a small number of knots initialized to zero. Set
+   :math:`r_{cut}` to be small (much smaller than an interatomic distance).
+
+#. Optimize the backflow function.
+
+#. If this works, slowly increase :math:`r_{cut}` and/or the number of
+   knots.
+
+#. Repeat steps 2 and 3 until there is no noticeable change in energy or
+   variance of :math:`\Psi_T`.
+
+Tweaking the Optimization Run
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following modifications are worth a try in the optimization block:
+
+-  Try setting “useDrift" to “no." This eliminates the use of
+   wavefunction gradients and force biasing in the VMC algorithm. This
+   could be an issue for poorly optimized wavefunctions with
+   pathological gradients.
+
+-  Try increasing “exp0" in the optimization block. Larger values of
+   exp0 cause the search directions to more closely follow those
+   predicted by steepest-descent than those by the linear method.
+
+Note that the new adaptive shift optimizer has not yet been tried with
+backflow wavefunctions. It should perform better than the older
+optimizers, but a considered optimization process is still recommended.
+
+.. _fdlr:
+
+Finite-difference linear response wave functions
+------------------------------------------------
+
+The finite-difference linear response wavefunction (FDLR) is an
+experimental wavefunction type described in detail in
+:cite:`blunt_charge-transfer_2017`. In this method, the wavefunction is formed as the linear response of some existing trial wavefunction in QMCPACK. This derivatives of this linear response are
+approximated by a simple finite difference.
+
+Forming a wavefunction within the linear response space of an existing ansatz can be very powerful. For example, a configuration interaction singles (CIS) wavefunction can be formed as a linear combination of the first derivatives of a Slater determinant (with respect to its orbital rotation parameters). Thus, in this sense, CIS is the linear response of Hartree--Fock theory.
+
+Forming a CIS wavefunction as the linear response of an optimizable Slater determinant is where all testing of this wavefunction has been performed. In theory, the implementation is flexible and can be used with other trial wavefunctions in QMCPACK, but this has not been tested; the FDLR trial wavefunction is experimental.
+
+Mathematically, the FDLR wavefunction has the form
+
+.. math::
+  :label: eq25
+
+  \Psi_{\textrm{FDLR}} (\mathbf{\mu}, \mathbf{X}) = \Psi (\mathbf{X} + \mathbf{\mu}) - \Psi (\mathbf{X} - \mathbf{\mu})\: ,
+
+where :math:`\Psi(\mathbf{P})` is some trial wavefunction in QMCPACK,
+and :math:`\mathbf{P}` is its optimizable parameters. :math:`\mathbf{X}`
+is the “base” parameters about which the finite difference is performed
+(for example, an overall orbital rotation). :math:`\mathbf{\mu}` is the
+“finite-difference” parameters, which define the direction of the
+derivative, and whose magnitude determines the magnitude of the finite
+difference. In the limit that the magnitude of :math:`\mathbf{mu}` goes
+to :math:`0`, the :math:`\Psi_{\textrm{FDLR}}` object just defined
+becomes equivalent to
+
+.. math::
+  :label: eq26
+
+  \Psi_{\textrm{FDLR}} (\mathbf{\mu}, \mathbf{X}) = \sum_{pq} \mu_{pq} \: \frac{\partial \Psi_{\textrm{det}} (\mathbf{X}) }{\partial X_{pq}}\: ,
+
+which is the desired linear response wavefunction we are approximating.
+In the case that :math:`\Psi(\mathbf{P})` is a determinant with orbital
+rotation parameters :math:`\mathbf{P}`, the previous equation is a CIS
+wavefunction with CIS expansion coefficients :math:`\mathbf{\mu}` and
+orbital rotation :math:`\mathbf{X}`.
+
+Input specifications
+~~~~~~~~~~~~~~~~~~~~
+
+An FDLR wavefunction is specified within a ``<fdlr> ... </fdlr>`` block.
+
+To fully specify an FDLR wavefunction as done previously, we require the
+initial parameters for both :math:`\mathbf{X}` and :math:`\mathbf{\mu}`
+to be input. This therefore requires two trial wavefunctions to be
+provided on input. Each of these is best specified in its own XML file.
+The names of these two files are provided in an ``<include>`` tag via
+``<include wfn_x_href=“ ... ” wfn_d_href=“ ... ”>``. ``wfn_x_href``
+specifies the file that will hold the :math:`\mathbf{X}` parameters.
+``wfn_d_href`` specifies the file that will hold the
+:math:`\mathbf{\mu}` parameters.
+
+Other options inside the ``<include>`` tag are ``opt_x`` and ``opt_d``,
+which specify whether or not :math:`\mathbf{X}` and :math:`\mathbf{\mu}`
+parameters are optimizable, respectively.
+
+Example Use Case
+~~~~~~~~~~~~~~~~
+
+::
+
+  <fdlrwfn name="FDLR">
+    <include wfn_x_href="h2.wfn_x.xml" wfn_d_href="h2.wfn_d.xml" opt_x="yes" opt_d="yes"/>
+  </fdlrwfn>
+
+with the ``h2.wfn_x.xml`` file containing one of the wavefunctions and
+corresponding set of :math:`\mathbf{X}` parameters, such as:
+
+::
+
+  <?xml version="1.0"?>
+  <wfn_x>
+      <determinantset name="LCAOBSet" type="MolecularOrbital" transform="yes" source="ion0">
+        <basisset name="LCAOBSet">
+          <atomicBasisSet name="Gaussian-G2" angular="cartesian" type="Gaussian" elementType="H" normalized="no">
+            <grid type="log" ri="1.e-6" rf="1.e2" npts="1001"/>
+            <basisGroup rid="H00" n="0" l="0" type="Gaussian">
+              <radfunc exponent="1.923840000000e+01" contraction="3.282799101900e-02"/>
+              <radfunc exponent="2.898720000000e+00" contraction="2.312039367510e-01"/>
+              <radfunc exponent="6.534720000000e-01" contraction="8.172257764360e-01"/>
+            </basisGroup>
+            <basisGroup rid="H10" n="1" l="0" type="Gaussian">
+              <radfunc exponent="1.630642000000e-01" contraction="1.000000000000e+00"/>
+            </basisGroup>
+          </atomicBasisSet>
+        </basisset>
+
+      <slaterdeterminant optimize="yes">
+        <determinant id="det_up" sposet="spo-up">
+          <opt_vars size="3">
+            0.0 0.0 0.0
+          </opt_vars>
+        </determinant>
+
+        <determinant id="det_down" sposet="spo-dn">
+          <opt_vars size="3">
+            0.0 0.0 0.0
+          </opt_vars>
+        </determinant>
+      </slaterdeterminant>
+
+        <sposet basisset="LCAOBSet" name="spo-up" size="4" optimize="yes">
+          <occupation mode="ground"/>
+          <coefficient size="4" id="updetC">
+    2.83630000000000e-01  3.35683000000000e-01  2.83630000000000e-01  3.35683000000000e-01
+    1.66206000000000e-01  1.22367400000000e+00 -1.66206000000000e-01 -1.22367400000000e+00
+    8.68279000000000e-01 -6.95081000000000e-01  8.68279000000000e-01 -6.95081000000000e-01
+   -9.77898000000000e-01  1.19682400000000e+00  9.77898000000000e-01 -1.19682400000000e+00
+  </coefficient>
+        </sposet>
+        <sposet basisset="LCAOBSet" name="spo-dn" size="4" optimize="yes">
+          <occupation mode="ground"/>
+          <coefficient size="4" id="downdetC">
+    2.83630000000000e-01  3.35683000000000e-01  2.83630000000000e-01  3.35683000000000e-01
+    1.66206000000000e-01  1.22367400000000e+00 -1.66206000000000e-01 -1.22367400000000e+00
+    8.68279000000000e-01 -6.95081000000000e-01  8.68279000000000e-01 -6.95081000000000e-01
+   -9.77898000000000e-01  1.19682400000000e+00  9.77898000000000e-01 -1.19682400000000e+00
+  </coefficient>
+        </sposet>
+
+      </determinantset>
+  </wfn_x>
+
+and similarly for the ``h2.wfn_d.xml`` file, which will hold the initial
+:math:`\mathbf{\mu}` parameters.
+
+This use case is a wavefunction file for an optimizable determinant
+wavefunction for H\ :math:`_2`, in a double zeta valence basis set.
+Thus, the FDLR wavefunction here would perform CIS on H\ :math:`_2` in a
+double zeta basis set.
+
+.. _ionwf:
+
+Gaussian Product Wavefunction
+-----------------------------
+
+The Gaussian Product wavefunction implements :eq:`eq27`
+
+.. math::
+  :label: eq27
+
+  \Psi(\vec{R}) = \prod_{i=1}^N \exp\left[ -\frac{(\vec{R}_i-\vec{R}_i^o)^2}{2\sigma_i^2} \right]
+
+where :math:`\vec{R}_i` is the position of the :math:`i^{\text{th}}`
+quantum particle and :math:`\vec{R}_i^o` is its center. :math:`\sigma_i`
+is the width of the Gaussian orbital around center :math:`i`.
+
+This variational wavefunction enhances single-particle density at chosen
+spatial locations with adjustable strengths. It is useful whenever such
+localization is physically relevant yet not captured by other parts of
+the trial wavefunction. For example, in an electron-ion simulation of a
+solid, the ions are localized around their crystal lattice sites. This
+single-particle localization is not captured by the ion-ion Jastrow.
+Therefore, the addition of this localization term will improve the
+wavefunction. The simplest use case of this wavefunction is perhaps the
+quantum harmonic oscillator (please see the “tests/models/sho” folder
+for examples).
+
+.. centered:: Input specification
+
+
+Gaussian Product Wavefunction (ionwf):
+
+  +----------+--------------+------------+-------------+-----------------------------------+
+  | **Name** | **Datatype** | **Values** | **Default** | **Description**                   |
+  +==========+==============+============+=============+===================================+
+  | Name     | Text         | ionwf      | (Required)  | Unique name for this wavefunction |
+  +----------+--------------+------------+-------------+-----------------------------------+
+  | Width    | Floats       | 1.0 -1     | (Required)  | Widths of Gaussian orbitals       |
+  +----------+--------------+------------+-------------+-----------------------------------+
+  | Source   | Text         | ion0       | (Required)  | Name of classical particle set    |
+  +----------+--------------+------------+-------------+-----------------------------------+
+
+Additional information:
+
+-  ``width`` There must be one width provided for each quantum particle.
+   If a negative width is given, then its corresponding Gaussian orbital
+   is removed. Negative width is useful if one wants to use Gaussian
+   wavefunction for a subset of the quantum particles.
+
+-  ``source`` The Gaussian centers must be specified in the form of a
+   classical particle set. This classical particle set is likely the ion
+   positions “ion0,” hence the name “ionwf.” However, arbitrary centers
+   can be defined using a different particle set. Please refer to the
+   examples in “tests/models/sho.”
+
+Example Use Case
+~~~~~~~~~~~~~~~~
+
+::
+
+  <qmcsystem>
+    <simulationcell>
+      <parameter name="bconds">
+            n n n
+      </parameter>
+    </simulationcell>
+    <particleset name="e">
+      <group name="u" size="1">
+        <parameter name="mass">5.0</parameter>
+        <attrib name="position" datatype="posArray" condition="0">
+          0.0001 -0.0001 0.0002
+        </attrib>
+      </group>
+    </particleset>
+    <particleset name="ion0" size="1">
+      <group name="H">
+        <attrib name="position" datatype="posArray" condition="0">
+          0 0 0
+        </attrib>
+      </group>
+    </particleset>
+    <wavefunction target="e" id="psi0">
+      <ionwf name="iwf" source="ion0" width="0.8165"/>
+    </wavefunction>
+    <hamiltonian name="h0" type="generic" target="e">
+      <extpot type="HarmonicExt" mass="5.0" energy="0.3"/>
+      <estimator type="latticedeviation" name="latdev"
+        target="e"    tgroup="u"
+        source="ion0" sgroup="H"/>
+    </hamiltonian>
+  </qmcsystem>
