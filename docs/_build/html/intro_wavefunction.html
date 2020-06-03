@@ -308,7 +308,7 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
 By default or if <code class="docutils literal notranslate"><span class="pre">delay_rank=0</span></code> given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension <span class="math notranslate nohighlight">\(&lt;192\)</span> and 32 otherwise.
-<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="running.html#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
+<code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
 With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="running.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="running.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
 Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (<span class="math notranslate nohighlight">\(&gt;200\)</span> electrons).
 We have seen up to an order of magnitude speedup on large problem sizes.
@@ -333,7 +333,7 @@ But it introduces an unfavorable scaling because the basis set size increases li
 For this reason, it is efficient to use a localized basis with compact
 support and a good transferability from the plane wave basis.</p>
 <p>In particular, 3D tricubic B-splines provide a basis in which only
-64 elements are nonzero at any given point in <a class="bibtex reference internal" href="running.html#blips4qmc" id="id4">[AlfeG04]</a>.
+64 elements are nonzero at any given point in <a class="bibtex reference internal" href="#blips4qmc" id="id4">[AlfeG04]</a>.
 The 1D cubic B-spline is given by</p>
 <div class="math notranslate nohighlight" id="equation-eq3">
 <span class="eqno">(3)<a class="headerlink" href="#equation-eq3" title="Permalink to this equation">¶</a></span>\[f(x) = \sum_{i'=i-1}^{i+2} b^{i'\!,3}(x)\,\,  p_{i'},\]</div>
@@ -982,7 +982,7 @@ specific combination of <em>“(l,m).”</em></p>
 </div>
 <div class="section" id="hyrbid-orbital-representation">
 <span id="spo-hybrid"></span><h3>Hyrbid orbital representation<a class="headerlink" href="#hyrbid-orbital-representation" title="Permalink to this headline">¶</a></h3>
-<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <a class="bibtex reference internal" href="running.html#luo2018hyb" id="id5">[LEKS18]</a>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
+<p>The hybrid representation of the single particle orbitals combines a localized atomic basis set around atomic cores and B-splines in the interstitial regions to reduce memory use while retaining high evaluation speed and either retaining or increasing overall accuracy. Full details are provided in <a class="bibtex reference internal" href="#luo2018hyb" id="id5">[LEKS18]</a>, and <strong>users of this feature are kindly requested to cite this paper</strong>.
 In practice, we have seen that using a meshfactor=0.5 is often possible and achieves huge memory savings.
 <a class="reference internal" href="#fig3"><span class="std std-numref">Fig. 3</span></a> illustrates how the regions are assigned.</p>
 <div class="figure align-center" id="id29">
@@ -1288,7 +1288,7 @@ below.</p>
 <span id="onebodyjastrowspline"></span><h5>Spline form<a class="headerlink" href="#spline-form" title="Permalink to this headline">¶</a></h5>
 <p>The one-body spline Jastrow function is the most commonly used one-body
 Jastrow for solids. This form was first described and used in
-<a class="bibtex reference internal" href="running.html#eslerkimceperleyshulenburger2012" id="id6">[EKCS12]</a>. Here
+<a class="bibtex reference internal" href="#eslerkimceperleyshulenburger2012" id="id6">[EKCS12]</a>. Here
 <span class="math notranslate nohighlight">\(u_{ab}\)</span> is an interpolating 1D B-spline (tricublc spline on a
 linear grid) between zero distance and <span class="math notranslate nohighlight">\(r_{cut}\)</span>. In 3D periodic
 systems the default cutoff distance is the Wigner Seitz cell radius. For
@@ -1776,7 +1776,7 @@ Be sure to set the longer-ranged Jastrow to be cusp-free!</p>
 <p>The two-body Jastrow factor is a form that allows for the explicit inclusion
 of dynamic correlation between two particles included in the wavefunction.  It
 is almost always given in a spin dependent form so as to satisfy the Kato cusp
-condition between electrons of different spins <a class="bibtex reference internal" href="running.html#kato" id="id7">[Kat51]</a>.</p>
+condition between electrons of different spins <a class="bibtex reference internal" href="#kato" id="id7">[Kat51]</a>.</p>
 <p>The two body Jastrow function is specified within a <code class="docutils literal notranslate"><span class="pre">wavefunction</span></code> element
 and must contain one or more correlation elements specifying additional parameters
 as well as the actual coefficients.  <a class="reference internal" href="#id11"><span class="std std-ref">Example use cases</span></a> gives
@@ -1877,7 +1877,7 @@ Jastrow factor, with many similarities to the one body spline Jastrow.</p>
 <span id="id9"></span><h5>Spline form<a class="headerlink" href="#twobodyjastrowspline" title="Permalink to this headline">¶</a></h5>
 <p>The two-body spline Jastrow function is the most commonly used two-body
 Jastrow for solids. This form was first described and used in
-<a class="bibtex reference internal" href="running.html#eslerkimceperleyshulenburger2012" id="id10">[EKCS12]</a>. Here
+<a class="bibtex reference internal" href="#eslerkimceperleyshulenburger2012" id="id10">[EKCS12]</a>. Here
 <span class="math notranslate nohighlight">\(u_{ab}\)</span> is an interpolating 1D B-spline (tricublc spline on a
 linear grid) between zero distance and <span class="math notranslate nohighlight">\(r_{cut}\)</span>. In 3D periodic
 systems, the default cutoff distance is the Wigner Seitz cell radius.
@@ -2199,7 +2199,7 @@ corrections in periodic systems.</p>
 correlation functions in plane waves, with the coefficients comprising
 the optimizable parameters. The second type have few variational
 parameters and use the optimized breakup method of Natoli and
-Ceperley <a class="bibtex reference internal" href="running.html#natoli1995" id="id13">[NC95]</a> (the Yukawa and Gaskell RPA
+Ceperley <a class="bibtex reference internal" href="#natoli1995" id="id13">[NC95]</a> (the Yukawa and Gaskell RPA
 Jastrows).</p>
 <div class="section" id="long-ranged-jastrow-k-space-jastrow">
 <h4>Long-ranged Jastrow: k-space Jastrow<a class="headerlink" href="#long-ranged-jastrow-k-space-jastrow" title="Permalink to this headline">¶</a></h4>
@@ -2451,12 +2451,12 @@ you are interested in using them.</strong></p>
 form similar to the Coulomb pair potential.  In periodic systems
 the Coulomb potential is replaced by an Ewald summation of the
 bare potential over all periodic image cells.  This sum is often
-handled by the optimized breakup method <a class="bibtex reference internal" href="running.html#natoli1995" id="id14">[NC95]</a> and this
+handled by the optimized breakup method <a class="bibtex reference internal" href="#natoli1995" id="id14">[NC95]</a> and this
 same approach is applied to the long-ranged Jastrow factors in QMCPACK.</p>
 <p>There are two main long-ranged Jastrow factors of this type
-implemented in QMCPACK: the Gaskell RPA <span class="bibtex" id="id15">[Gaskell1961]</span><span class="bibtex" id="id16">[Gaskell1962]</span>
-form and the <span class="bibtex" id="id17">[Ceperley1978]</span> form.  Both of these forms
-were used by Ceperley in early studies of the electron gas <span class="bibtex" id="id18">[Ceperley1978]</span>,
+implemented in QMCPACK: the Gaskell RPA <a class="bibtex reference internal" href="#gaskell1961" id="id15">[Gas61]</a><a class="bibtex reference internal" href="#gaskell1962" id="id16">[Gas62]</a>
+form and the <a class="bibtex reference internal" href="#ceperley1978" id="id17">[Cep78]</a> form.  Both of these forms
+were used by Ceperley in early studies of the electron gas <a class="bibtex reference internal" href="#ceperley1978" id="id18">[Cep78]</a>,
 but they are also appropriate starting points for general solids.</p>
 <p>The Yukawa form is defined in real space.  It’s long-range form is
 formally defined as</p>
@@ -2610,7 +2610,7 @@ form</p>
 <p>Explicit three-body correlations can be included in the wavefunction via
 the three-body Jastrow factor. The three-body electron-electron-ion
 correlation function (<span class="math notranslate nohighlight">\(u_{\sigma\sigma'I}\)</span>) currently used in is
-identical to the one proposed in <span class="bibtex" id="id19">[Drummond2004]</span>:</p>
+identical to the one proposed in <a class="bibtex reference internal" href="#drummond2004" id="id19">[DTN04]</a>:</p>
 <div class="math notranslate nohighlight" id="equation-eq23">
 <span class="eqno">(23)<a class="headerlink" href="#equation-eq23" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
  u_{\sigma\sigma'I}(r_{\sigma I},r_{\sigma'I},r_{\sigma\sigma'}) &amp;= \sum_{\ell=0}^{M_{eI}}\sum_{m=0}^{M_{eI}}\sum_{n=0}^{M_{ee}}\gamma_{\ell mn} r_{\sigma I}^\ell r_{\sigma'I}^m r_{\sigma\sigma'}^n \\
@@ -2659,8 +2659,8 @@ The coefficients will be filled zero automatically if not given.</p>
 <p>Multiple schemes to generate a multideterminant wavefunction are
 possible, from CASSF to full CI or selected CI. The QMCPACK converter can
 convert MCSCF multideterminant wavefunctions from
-GAMESS <span class="bibtex" id="id21">[schmidt93]</span> and CIPSI <span class="bibtex" id="id22">[Caffarel2013]</span> wavefunctions from
-Quantum Package <span class="bibtex" id="id23">[QP]</span> (QP). Full details of how to run a CIPSI
+GAMESS <a class="bibtex reference internal" href="#schmidt93" id="id21">[SBB+93]</a> and CIPSI <a class="bibtex reference internal" href="#caffarel2013" id="id22">[EG13]</a> wavefunctions from
+Quantum Package <a class="bibtex reference internal" href="#qp" id="id23">[Sce17]</a> (QP). Full details of how to run a CIPSI
 calculation and convert the wavefunction for QMCPACK are given in
 <span class="xref std std-ref">cipsi</span>.</p>
 <p>The script <code class="docutils literal notranslate"><span class="pre">utils/determinants_tools.py</span></code> can be used to generate
@@ -2891,7 +2891,7 @@ optimizers, but a considered optimization process is still recommended.</p>
 <span id="fdlr"></span><h2>Finite-difference linear response wave functions<a class="headerlink" href="#finite-difference-linear-response-wave-functions" title="Permalink to this headline">¶</a></h2>
 <p>The finite-difference linear response wavefunction (FDLR) is an
 experimental wavefunction type described in detail in
-<span class="bibtex" id="id25">[blunt_charge-transfer_2017]</span>. In this method, the wavefunction is formed as the linear response of some existing trial wavefunction in QMCPACK. This derivatives of this linear response are
+<a class="bibtex reference internal" href="#blunt-charge-transfer-2017" id="id25">[BN17]</a>. In this method, the wavefunction is formed as the linear response of some existing trial wavefunction in QMCPACK. This derivatives of this linear response are
 approximated by a simple finite difference.</p>
 <p>Forming a wavefunction within the linear response space of an existing ansatz can be very powerful. For example, a configuration interaction singles (CIS) wavefunction can be formed as a linear combination of the first derivatives of a Slater determinant (with respect to its orbital rotation parameters). Thus, in this sense, CIS is the linear response of Hartree–Fock theory.</p>
 <p>Forming a CIS wavefunction as the linear response of an optimizable Slater determinant is where all testing of this wavefunction has been performed. In theory, the implementation is flexible and can be used with other trial wavefunctions in QMCPACK, but this has not been tested; the FDLR trial wavefunction is experimental.</p>
@@ -3107,6 +3107,51 @@ examples in “tests/models/sho.”</p></li>
 <span class="o">&lt;/</span><span class="n">qmcsystem</span><span class="o">&gt;</span>
 </pre></div>
 </div>
+<p id="bibtex-bibliography-intro_wavefunction-0"><dl class="citation">
+<dt class="bibtex label" id="blips4qmc"><span class="brackets"><a class="fn-backref" href="#id4">AlfeG04</a></span></dt>
+<dd><p>D. Alfè and M. J. Gillan. An efficient localized basis set for quantum Monte Carlo calculations on condensed matter. <em>Physical Review B</em>, 70(16):161101, 2004.</p>
+</dd>
+<dt class="bibtex label" id="blunt-charge-transfer-2017"><span class="brackets"><a class="fn-backref" href="#id25">BN17</a></span></dt>
+<dd><p>N. S. Blunt and Eric Neuscamman. Charge-transfer excited states: Seeking a balanced and efficient wave function ansatz in variational Monte Carlo. <em>The Journal of Chemical Physics</em>, 147(19):194101, November 2017. <a class="reference external" href="https://doi.org/10.1063/1.4998197">doi:10.1063/1.4998197</a>.</p>
+</dd>
+<dt class="bibtex label" id="ceperley1978"><span class="brackets">Cep78</span><span class="fn-backref">(<a href="#id17">1</a>,<a href="#id18">2</a>)</span></dt>
+<dd><p>D. Ceperley. Ground state of the fermion one-component plasma: a monte carlo study in two and three dimensions. <em>Phys. Rev. B</em>, 18:3126–3138, October 1978. URL: <a class="reference external" href="https://link.aps.org/doi/10.1103/PhysRevB.18.3126">https://link.aps.org/doi/10.1103/PhysRevB.18.3126</a>, <a class="reference external" href="https://doi.org/10.1103/PhysRevB.18.3126">doi:10.1103/PhysRevB.18.3126</a>.</p>
+</dd>
+<dt class="bibtex label" id="drummond2004"><span class="brackets"><a class="fn-backref" href="#id19">DTN04</a></span></dt>
+<dd><p>N. D. Drummond, M. D. Towler, and R. J. Needs. Jastrow correlation factor for atoms, molecules, and solids. <em>Physical Review B - Condensed Matter and Materials Physics</em>, 70(23):1–11, 2004. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.70.235119">doi:10.1103/PhysRevB.70.235119</a>.</p>
+</dd>
+<dt class="bibtex label" id="caffarel2013"><span class="brackets"><a class="fn-backref" href="#id22">EG13</a></span></dt>
+<dd><p>M. Caffarel E. Giner, A. Scemama. Using perturbatively selected configuration interaction in quantum monte carlo calculations. <em>Canadian Journal of Chemistry</em>, 91:9, 2013.</p>
+</dd>
+<dt class="bibtex label" id="eslerkimceperleyshulenburger2012"><span class="brackets">EKCS12</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id10">2</a>)</span></dt>
+<dd><p>Kenneth P. Esler, Jeongnim Kim, David M. Ceperley, and Luke Shulenburger. Accelerating quantum monte carlo simulations of real materials on gpu clusters. <em>Computing in Science and Engineering</em>, 14(1):40–51, 2012. <a class="reference external" href="https://doi.org/http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122">doi:http://doi.ieeecomputersociety.org/10.1109/MCSE.2010.122</a>.</p>
+</dd>
+<dt class="bibtex label" id="fahy1990"><span class="brackets"><a class="fn-backref" href="#id1">FWL90</a></span></dt>
+<dd><p>S. Fahy, X. W. Wang, and Steven G. Louie. Variational quantum Monte Carlo nonlocal pseudopotential approach to solids: Formulation and application to diamond, graphite, and silicon. <em>Physical Review B</em>, 42(6):3503–3522, 1990. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.42.3503">doi:10.1103/PhysRevB.42.3503</a>.</p>
+</dd>
+<dt class="bibtex label" id="gaskell1961"><span class="brackets"><a class="fn-backref" href="#id15">Gas61</a></span></dt>
+<dd><p>T Gaskell. The collective treatment of a fermi gas: ii. <em>Proceedings of the Physical Society</em>, 77(6):1182, 1961. URL: <a class="reference external" href="http://stacks.iop.org/0370-1328/77/i=6/a=312">http://stacks.iop.org/0370-1328/77/i=6/a=312</a>.</p>
+</dd>
+<dt class="bibtex label" id="gaskell1962"><span class="brackets"><a class="fn-backref" href="#id16">Gas62</a></span></dt>
+<dd><p>T Gaskell. The collective treatment of many-body systems: iii. <em>Proceedings of the Physical Society</em>, 80(5):1091, 1962. URL: <a class="reference external" href="http://stacks.iop.org/0370-1328/80/i=5/a=307">http://stacks.iop.org/0370-1328/80/i=5/a=307</a>.</p>
+</dd>
+<dt class="bibtex label" id="kato"><span class="brackets"><a class="fn-backref" href="#id7">Kat51</a></span></dt>
+<dd><p>T Kato. Fundamental properties of hamiltonian operators of the schrodinger type. <em>Transactions of the American Mathematical Society</em>, 70:195–211, 1951.</p>
+</dd>
+<dt class="bibtex label" id="luo2018hyb"><span class="brackets"><a class="fn-backref" href="#id5">LEKS18</a></span></dt>
+<dd><p>Ye Luo, Kenneth P. Esler, Paul R. C. Kent, and Luke Shulenburger. An efficient hybrid orbital representation for quantum monte carlo calculations. <em>The Journal of Chemical Physics</em>, 149(8):084107, 2018.</p>
+</dd>
+<dt class="bibtex label" id="natoli1995"><span class="brackets">NC95</span><span class="fn-backref">(<a href="#id13">1</a>,<a href="#id14">2</a>)</span></dt>
+<dd><p>Vincent Natoli and David M. Ceperley. An optimized method for treating long-range potentials. <em>Journal of Computational Physics</em>, 117(1):171 – 178, 1995. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0021999185710546">http://www.sciencedirect.com/science/article/pii/S0021999185710546</a>, <a class="reference external" href="https://doi.org/http://dx.doi.org/10.1006/jcph.1995.1054">doi:http://dx.doi.org/10.1006/jcph.1995.1054</a>.</p>
+</dd>
+<dt class="bibtex label" id="qp"><span class="brackets"><a class="fn-backref" href="#id23">Sce17</a></span></dt>
+<dd><p>A. Scemamma. Quantum package. <span><a class="reference external" href="#"></a></span>https://github.com/LCPQ/quantum_package, 2013–2017.</p>
+</dd>
+<dt class="bibtex label" id="schmidt93"><span class="brackets"><a class="fn-backref" href="#id21">SBB+93</a></span></dt>
+<dd><p>Michael W. Schmidt, Kim K. Baldridge, Jerry A. Boatz, Steven T. Elbert, Mark S. Gordon, Jan H. Jensen, Shiro Koseki, Nikita Matsunaga, Kiet A. Nguyen, Shujun Su, Theresa L. Windus, Michel Dupuis, and John A. Montgomery. General atomic and molecular electronic structure system. <em>Journal of Computational Chemistry</em>, 14(11):1347–1363, 1993. URL: <a class="reference external" href="http://dx.doi.org/10.1002/jcc.540141112">http://dx.doi.org/10.1002/jcc.540141112</a>, <a class="reference external" href="https://doi.org/10.1002/jcc.540141112">doi:10.1002/jcc.540141112</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 </div>

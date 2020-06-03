@@ -2153,3 +2153,5 @@ Example Use Case
         source="ion0" sgroup="H"/>
     </hamiltonian>
   </qmcsystem>
+
+.. bibliography:: /bibs/intro_wavefunction.bib
