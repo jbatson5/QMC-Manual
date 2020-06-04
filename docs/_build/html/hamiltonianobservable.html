@@ -1,0 +1,850 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hamiltonian and Observables &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Trial wavefunction specificaion" href="intro_wavefunction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hamiltonian and Observables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-hamiltonian">The Hamiltonian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pair-potentials">Pair potentials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#coulomb-potentials">Coulomb potentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pseudopotentials">Pseudopotentials</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Hamiltonian and Observables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hamiltonianobservable.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hamiltonian-and-observables">
+<span id="hamiltobs"></span><h1>Hamiltonian and Observables<a class="headerlink" href="#hamiltonian-and-observables" title="Permalink to this headline">¶</a></h1>
+<p>QMCPACK is capable of the simultaneous measurement of the Hamiltonian and many other quantum operators.  The Hamiltonian attains a special status among the available operators (also referred to as observables) because it ultimately generates all available information regarding the quantum system.  This is evident from an algorithmic standpoint as well since the Hamiltonian (embodied in the projector) generates the imaginary time dynamics of the walkers in DMC and reptation Monte Carlo (RMC).</p>
+<p>This section covers how the Hamiltonian can be specified, component by component, by the user in the XML format native to qmcpack. It also covers the input structure of statistical estimators corresponding to quantum observables such as the density, static structure factor, and forces.</p>
+<div class="section" id="the-hamiltonian">
+<h2>The Hamiltonian<a class="headerlink" href="#the-hamiltonian" title="Permalink to this headline">¶</a></h2>
+<p>The many-body Hamiltonian in Hartree units is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq28">
+<span class="eqno">(28)<a class="headerlink" href="#equation-eq28" title="Permalink to this equation">¶</a></span>\[\hat{H} = -\sum_i\frac{1}{2m_i}\nabla_i^2 + \sum_iv^{ext}(r_i) + \sum_{i&lt;j}v^{qq}(r_i,r_j)   + \sum_{i\ell}v^{qc}(r_i,r_\ell)   + \sum_{\ell&lt;m}v^{cc}(r_\ell,r_m)\:.\]</div>
+<p>Here, the sums indexed by <span class="math notranslate nohighlight">\(i/j\)</span> are over quantum particles, while
+<span class="math notranslate nohighlight">\(\ell/m\)</span> are reserved for classical particles. Often the quantum
+particles are electrons, and the classical particles are ions, though is
+not limited in this way. The mass of each quantum particle is denoted
+<span class="math notranslate nohighlight">\(m_i\)</span>, <span class="math notranslate nohighlight">\(v^{qq}/v^{qc}/v^{cc}\)</span> are pair potentials between
+quantum-quantum/quantum-classical/classical-classical particles, and
+<span class="math notranslate nohighlight">\(v^{ext}\)</span> denotes a purely external potential.</p>
+<p>QMCPACK is designed modularly so that any potential can be supported with
+minimal additions to the code base. Potentials currently supported
+include Coulomb interactions in open and periodic boundary conditions,
+the MPC potential, nonlocal pseudopotentials, helium pair potentials,
+and various model potentials such as hard sphere, Gaussian, and modified
+Poschl-Teller.</p>
+<p>Reference information and examples for the <code class="docutils literal notranslate"><span class="pre">&lt;hamiltonian/&gt;</span></code> XML
+element are provided subsequently. Detailed descriptions of the input
+for individual potentials is given in the sections that follow.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 74%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">simulation,</span> <span class="pre">qmcsystem</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">extpot</span> <span class="pre">estimator</span> <span class="pre">constant</span></code> (deprecated)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 19%" />
+<col style="width: 11%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name/id</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>h0</p></td>
+<td><p>Unique id for this Hamiltonian instance</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>generic</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">role</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>primary/extra</p></td>
+<td><p>extra</p></td>
+<td><p>Designate as Hamiltonian or not</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p>i</p></td>
+<td><p>Identify classical <code class="docutils literal notranslate"><span class="pre">particleset</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p>e</p></td>
+<td><p>Identify quantum <code class="docutils literal notranslate"><span class="pre">particleset</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">default</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p>Include kinetic energy term implicitly</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>target:</strong> Must be set to the name of the quantum <code class="docutils literal notranslate"><span class="pre">particleset</span></code>.
+The default value is typically sufficient. In normal usage, no other
+attributes are provided.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-14">
+<div class="code-block-caption"><span class="caption-number">Listing 14 </span><span class="caption-text">All electron Hamiltonian XML element.</span><a class="headerlink" href="#listing-14" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">hamiltonian</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ElecElec&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ElecIon&quot;</span>  <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;IonIon&quot;</span>   <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">hamiltonian</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-15">
+<div class="code-block-caption"><span class="caption-number">Listing 15 </span><span class="caption-text">Pseudopotential Hamiltonian XML element.</span><a class="headerlink" href="#listing-15" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">hamiltonian</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ElecElec&quot;</span>  <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PseudoPot&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;pseudo&quot;</span>  <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">wavefunction</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;Li.xml&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;H&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;H.xml&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">pairpot</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;IonIon&quot;</span>    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">hamiltonian</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pair-potentials">
+<h2>Pair potentials<a class="headerlink" href="#pair-potentials" title="Permalink to this headline">¶</a></h2>
+<p>Many pair potentials are supported.  Though only the most commonly used pair potentials are covered in detail in this section, all currently available potentials are listed subsequently.  If a potential you desire is not listed, or is not present at all, feel free to contact the developers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pairpot</span></code> factory element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 53%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">type</span></code> attribute</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 12%" />
+<col style="width: 64%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>type options</strong></p></td>
+<td><p>coulomb</p></td>
+<td><p>Coulomb/Ewald potential</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>pseudo</p></td>
+<td><p>Semilocal pseudopotential</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>mpc</p></td>
+<td><p>Model periodic Coulomb interaction/correction</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>cpp</p></td>
+<td><p>Core polarization potential</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>skpot</p></td>
+<td><p><em>Unknown</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>shared attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 12%" />
+<col style="width: 19%" />
+<col style="width: 21%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>See above</em></p></td>
+<td><p>0</p></td>
+<td><p>Select pairpot type</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>Anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for this pairpot</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">units</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>hartree</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>type:</strong> Used to select the desired pair potential. Must be selected
+from the list of type options.</p></li>
+<li><p><strong>name:</strong> A unique name used to identify this pair potential. Block
+averaged output data will appear under this name in <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code>
+and/or <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> files.</p></li>
+<li><p><strong>source/target:</strong> These specify the particles involved in a pair
+interaction. If an interaction is between classical (e.g., ions) and
+quantum (e.g., electrons), <code class="docutils literal notranslate"><span class="pre">source</span></code>/<code class="docutils literal notranslate"><span class="pre">target</span></code> should be the name
+of the classical/quantum <code class="docutils literal notranslate"><span class="pre">particleset</span></code>.</p></li>
+<li><p>Only <code class="docutils literal notranslate"><span class="pre">Coulomb,</span> <span class="pre">pseudo</span></code>, and <code class="docutils literal notranslate"><span class="pre">mpc</span></code> are described in detail in the
+following subsections. The older or less-used types (<code class="docutils literal notranslate"><span class="pre">cpp,</span> <span class="pre">skpot</span></code>)
+are not covered.</p></li>
+<li><p>Available only if <code class="docutils literal notranslate"><span class="pre">QMC_CUDA</span></code> is not defined: <code class="docutils literal notranslate"><span class="pre">skpot</span></code>.</p></li>
+<li><p>Available only if <code class="docutils literal notranslate"><span class="pre">OHMMS_DIM==3</span></code>: <code class="docutils literal notranslate"><span class="pre">mpc,</span> <span class="pre">vhxc,</span> <span class="pre">pseudo</span></code>.</p></li>
+<li><p>Available only if <code class="docutils literal notranslate"><span class="pre">OHMMS_DIM==3</span></code> and <code class="docutils literal notranslate"><span class="pre">QMC_CUDA</span></code> is not defined:
+<code class="docutils literal notranslate"><span class="pre">cpp</span></code>.</p></li>
+</ul>
+<div class="section" id="coulomb-potentials">
+<h3>Coulomb potentials<a class="headerlink" href="#coulomb-potentials" title="Permalink to this headline">¶</a></h3>
+<p>The bare Coulomb potential is used in open boundary conditions:</p>
+<div class="math notranslate nohighlight" id="equation-eq29">
+<span class="eqno">(29)<a class="headerlink" href="#equation-eq29" title="Permalink to this equation">¶</a></span>\[V_c^{open} = \sum_{i&lt;j}\frac{q_iq_j}{\left|{r_i-r_j}\right|}\:.\]</div>
+<p>When periodic boundary conditions are selected, Ewald summation is used automatically:</p>
+<div class="math notranslate nohighlight" id="equation-eq30">
+<span class="eqno">(30)<a class="headerlink" href="#equation-eq30" title="Permalink to this equation">¶</a></span>\[V_c^{pbc} = \sum_{i&lt;j}\frac{q_iq_j}{\left|{r_i-r_j}\right|} + \frac{1}{2}\sum_{L\ne0}\sum_{i,j}\frac{q_iq_j}{\left|{r_i-r_j+L}\right|}\:.\]</div>
+<p>The sum indexed by $L$ is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see <a class="bibtex reference internal" href="simulationcell.html#natoli1995" id="id1">[NC95]</a>) for details.</p>
+<p>For information on how to set the boundary conditions, consult <a class="reference internal" href="simulationcell.html#simulationcell"><span class="std std-ref">Specifying the system to be simulated</span></a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=coulomb</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 19%" />
+<col style="width: 20%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>coulomb</strong></p></td>
+<td></td>
+<td><p>Must be coulomb</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name/id</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>ElecElec</p></td>
+<td><p>Unique name for interaction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pbc</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p>Use Ewald summation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">physical</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p>Hamiltonian(yes)/Observable(no)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">forces</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p><em>Deprecated</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>type/source/target:</strong> See description for the previous generic
+<code class="docutils literal notranslate"><span class="pre">pairpot</span></code> factory element.</p></li>
+<li><p><strong>name:</strong> Traditional user-specified names for electron-electron,
+electron-ion, and ion-ion terms are <code class="docutils literal notranslate"><span class="pre">ElecElec</span></code>, <code class="docutils literal notranslate"><span class="pre">ElecIon</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">IonIon</span></code>, respectively. Although any choice can be used, the data
+analysis tools expect to find columns in <code class="docutils literal notranslate"><span class="pre">*.scalar.dat</span></code> with these
+names.</p></li>
+<li><p><strong>pbc</strong>: Ewald summation will not be performed if
+<code class="docutils literal notranslate"><span class="pre">simulationcell.bconds==</span> <span class="pre">n</span> <span class="pre">n</span> <span class="pre">n</span></code>, regardless of the value of
+<code class="docutils literal notranslate"><span class="pre">pbc</span></code>. Similarly, the <code class="docutils literal notranslate"><span class="pre">pbc</span></code> attribute can only be used to turn
+off Ewald summation if <code class="docutils literal notranslate"><span class="pre">simulationcell.bconds!=</span> <span class="pre">n</span> <span class="pre">n</span> <span class="pre">n</span></code>. The default
+value is recommended.</p></li>
+<li><p><strong>physical</strong>: If <code class="docutils literal notranslate"><span class="pre">physical==yes</span></code>, this pair potential is included
+in the Hamiltonian and will factor into the <code class="docutils literal notranslate"><span class="pre">LocalEnergy</span></code> reported
+by QMCPACK and also in the DMC branching weight. If <code class="docutils literal notranslate"><span class="pre">physical==no</span></code>,
+then the pair potential is treated as a passive observable but not as
+part of the Hamiltonian itself. As such it does not contribute to the
+outputted <code class="docutils literal notranslate"><span class="pre">LocalEnergy</span></code>. Regardless of the value of <code class="docutils literal notranslate"><span class="pre">physical</span></code>
+output data will appear in <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> in a column headed by
+<code class="docutils literal notranslate"><span class="pre">name</span></code>.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-16">
+<div class="code-block-caption"><span class="caption-number">Listing 16 </span><span class="caption-text">QMCPXML element for Coulomb interaction between electrons.</span><a class="headerlink" href="#listing-16" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ElecElec&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-17">
+<div class="code-block-caption"><span class="caption-number">Listing 17 </span><span class="caption-text">QMCPXML element for Coulomb interaction between electrons and ions (all-electron only).</span><a class="headerlink" href="#listing-17" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ElecIon&quot;</span>  <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-18">
+<div class="code-block-caption"><span class="caption-number">Listing 18 </span><span class="caption-text">QMCPXML element for Coulomb interaction between ions.</span><a class="headerlink" href="#listing-18" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;IonIon&quot;</span>   <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;coulomb&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pseudopotentials">
+<span id="nlpp"></span><h3>Pseudopotentials<a class="headerlink" href="#pseudopotentials" title="Permalink to this headline">¶</a></h3>
+<p>QMCPACK supports pseudopotentials in semilocal form, which is local in the
+radial coordinate and nonlocal in angular coordinates. When all angular
+momentum channels above a certain threshold (<span class="math notranslate nohighlight">\(\ell_{max}\)</span>) are
+well approximated by the same potential
+(<span class="math notranslate nohighlight">\(V_{\bar{\ell}}\equiv V_{loc}\)</span>), the pseudopotential separates
+into a fully local channel and an angularly nonlocal component:</p>
+<div class="math notranslate nohighlight" id="equation-eq31">
+<span class="eqno">(31)<a class="headerlink" href="#equation-eq31" title="Permalink to this equation">¶</a></span>\[V^{PP} = \sum_{ij}\Big(V_{\bar{\ell}}(\left|{r_i-\tilde{r}_j}\right|) + \sum_{\ell\ne\bar{\ell}}^{\ell_{max}}\sum_{m=-\ell}^\ell |{Y_{\ell m}}\rangle{\big[V_\ell(\left|{r_i-\tilde{r}_j}\right|) - V_{\bar{\ell}}(\left|{r_i-\tilde{r}_j}\right|) \big]}\langle{Y_{\ell m}}| \Big)\:.\]</div>
+<p>Here the electron/ion index is <span class="math notranslate nohighlight">\(i/j\)</span>, and only one type of ion is
+shown for simplicity.</p>
+<p>Evaluation of the localized pseudopotential energy
+<span class="math notranslate nohighlight">\(\Psi_T^{-1}V^{PP}\Psi_T\)</span> requires additional angular integrals.
+These integrals are evaluated on a randomly shifted angular grid. The
+size of this grid is determined by <span class="math notranslate nohighlight">\(\ell_{max}\)</span>. See
+<span class="bibtex" id="id2">[Mitas1991]</span> for further detail.</p>
+<p>uses the FSAtom pseudopotential file format associated with the “Free
+Software Project for Atomic-scale Simulations” initiated in 2002. See
+<a class="reference external" href="http://www.tddft.org/fsatom/manifest.php">http://www.tddft.org/fsatom/manifest.php</a> for more information. The
+FSAtom format uses XML for structured data. Files in this format do not
+use a specific identifying file extension; instead they are simply
+suffixed with “<code class="docutils literal notranslate"><span class="pre">.xml</span></code>.” The tabular data format of CASINO is also
+supported.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=pseudo</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pseudo</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 10%" />
+<col style="width: 17%" />
+<col style="width: 18%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>pseudo</strong></p></td>
+<td></td>
+<td><p>Must be pseudo</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name/id</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>PseudoPot</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p>i</p></td>
+<td><p>Ion <code class="docutils literal notranslate"><span class="pre">particleset</span></code> name</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Electron <code class="docutils literal notranslate"><span class="pre">particleset</span></code> name</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pbc</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes*</p></td>
+<td><p>Use Ewald summation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forces</span></code></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p><em>Deprecated</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">wavefunction</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wavefunction.name</span></code></p></td>
+<td><p>invalid</p></td>
+<td><p>Identify wavefunction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">format</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>xml/table</p></td>
+<td><p>table</p></td>
+<td><p>Select file format</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">algorithm</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>batched/default</p></td>
+<td><p>default</p></td>
+<td><p>Choose NLPP algorithm</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DLA</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Use determinant localization approximation</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>type/source/target</strong> See description for the generic <code class="docutils literal notranslate"><span class="pre">pairpot</span></code>
+factory element.</p></li>
+<li><p><strong>name:</strong> Ignored. Instead, default names will be present in
+<code class="docutils literal notranslate"><span class="pre">*scalar.dat</span></code> output files when pseudopotentials are used. The
+field <code class="docutils literal notranslate"><span class="pre">LocalECP</span></code> refers to the local part of the pseudopotential.
+If nonlocal channels are present, a <code class="docutils literal notranslate"><span class="pre">NonLocalECP</span></code> field will be
+added that contains the nonlocal energy summed over all angular
+momentum channels.</p></li>
+<li><p><strong>pbc:</strong> Ewald summation will not be performed if
+<code class="docutils literal notranslate"><span class="pre">simulationcell.bconds==</span> <span class="pre">n</span> <span class="pre">n</span> <span class="pre">n</span></code>, regardless of the value of
+<code class="docutils literal notranslate"><span class="pre">pbc</span></code>. Similarly, the <code class="docutils literal notranslate"><span class="pre">pbc</span></code> attribute can only be used to turn
+off Ewald summation if <code class="docutils literal notranslate"><span class="pre">simulationcell.bconds!=</span> <span class="pre">n</span> <span class="pre">n</span> <span class="pre">n</span></code>.</p></li>
+<li><p><strong>format:</strong> If <code class="docutils literal notranslate"><span class="pre">format</span></code>==table, QMCPACK looks for <code class="docutils literal notranslate"><span class="pre">*.psf</span></code> files
+containing pseudopotential data in a tabular format. The files must
+be named after the ionic species provided in <code class="docutils literal notranslate"><span class="pre">particleset</span></code> (e.g.,
+<code class="docutils literal notranslate"><span class="pre">Li.psf</span></code> and <code class="docutils literal notranslate"><span class="pre">H.psf</span></code>). If <code class="docutils literal notranslate"><span class="pre">format</span></code>==xml, additional
+<code class="docutils literal notranslate"><span class="pre">pseudo</span></code> child XML elements must be provided (see the following).
+These elements specify individual file names and formats (both the
+FSAtom XML and CASINO tabular data formats are supported).</p></li>
+<li><p><strong>algorithm</strong> The default algorithm evaluates the ratios of
+wavefunction components together for each quadrature point and then
+one point after another. The batched algorithm evaluates the ratios
+of quadrature points together for each wavefunction component and
+then one component after another. Internally, it uses
+<code class="docutils literal notranslate"><span class="pre">VirtualParticleSet</span></code> for quadrature points. Hybrid orbital
+representation has an extra optimization enabled when using the
+batched algorithm.</p></li>
+<li><p><strong>DLA</strong> Determinant localization approximation
+(DLA) <span class="bibtex" id="id3">[Zen2019DLA]</span> uses only the fermionic part of
+the wavefunction when calculating NLPP.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-19">
+<div class="code-block-caption"><span class="caption-number">Listing 19 </span><span class="caption-text">QMCPXML element for pseudopotential electron-ion interaction (psf files).</span><a class="headerlink" href="#listing-19" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PseudoPot&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;pseudo&quot;</span>  <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">wavefunction</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;psf&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-20">
+<div class="code-block-caption"><span class="caption-number">Listing 20 </span><span class="caption-text">QMCPXML element for pseudopotential electron-ion interaction (xml files).</span><a class="headerlink" href="#listing-20" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PseudoPot&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;pseudo&quot;</span>  <span class="n">source</span><span class="o">=</span><span class="s2">&quot;i&quot;</span> <span class="n">wavefunction</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;Li.xml&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;H&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;H.xml&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">pairpot</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>Details of <code class="docutils literal notranslate"><span class="pre">&lt;pseudo/&gt;</span></code> input elements are shown in the following. It
+is possible to include (or construct) a full pseudopotential directly in
+the input file without providing an external file via <code class="docutils literal notranslate"><span class="pre">href</span></code>. The full
+XML format for pseudopotentials is not yet covered.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pseudo</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 62%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=pseudo</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">header</span> <span class="pre">local</span> <span class="pre">grid</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 13%" />
+<col style="width: 16%" />
+<col style="width: 12%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">elementType/symbol</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">groupe.name</span></code></p></td>
+<td><p>none</p></td>
+<td><p>Identify ionic species</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">href</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>filepath</em></p></td>
+<td><p>none</p></td>
+<td><p>Pseudopotential file path</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">format</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>xml/casino</p></td>
+<td><p>xml</p></td>
+<td><p>Specify file format</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cutoff</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td></td>
+<td></td>
+<td><p>Nonlocal cutoff radius</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lmax</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td></td>
+<td></td>
+<td><p>Largest angular momentum</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nrule</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td></td>
+<td></td>
+<td><p>Integration grid order</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="intro_wavefunction.html" class="btn btn-neutral float-left" title="Trial wavefunction specificaion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, John Batson
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
