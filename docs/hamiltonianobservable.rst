@@ -174,7 +174,7 @@ When periodic boundary conditions are selected, Ewald summation is used automati
 
   V_c^{pbc} = \sum_{i<j}\frac{q_iq_j}{\left|{r_i-r_j}\right|} + \frac{1}{2}\sum_{L\ne0}\sum_{i,j}\frac{q_iq_j}{\left|{r_i-r_j+L}\right|}\:.
 
-The sum indexed by $L$ is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see :cite:`Natoli1995`) for details.
+The sum indexed by :math:`L` is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see :cite:`Natoli1995`) for details.
 
 For information on how to set the boundary conditions, consult :ref:`simulationcell`.
 
@@ -688,7 +688,7 @@ attributes:
   +=======================+==============+=================+=============+===============================+
   | ``type``:math:`^r`    | text         | **spindensity** |             | Must be spindensity           |
   +-----------------------+--------------+-----------------+-------------+-------------------------------+
-  | ``name`:math:`^r`     | text         | *anything*      | any         | Unique name for estimator     |
+  | ``name``:math:`^r`    | text         | *anything*      | any         | Unique name for estimator     |
   +-----------------------+--------------+-----------------+-------------+-------------------------------+
   | ``report``:math:`^o`  | boolean      | yes/no          | no          | Write setup details to stdout |
   +-----------------------+--------------+-----------------+-------------+-------------------------------+
@@ -945,3 +945,224 @@ Additional information:
 
 Static structure factor, ``SkAll``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In order to compute the finite size correction to the potential energy,
+records of :math:`\rho(\mathbf{k})` is required. What sets ``SkAll``
+apart from ``sk`` is that ``SkAll`` records :math:`\rho(\mathbf{k})` in
+addition to :math:`s(\mathbf{k})`.
+
+``estimator type=SkAll`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | **Name**                   | **Datatype** | **Values**                | **Default** | **Description**                                                                                 |
+  +============================+==============+===========================+=============+=================================================================================================+
+  | ``type``:math:`^r`         | text         | sk                        |             | Must be sk                                                                                      |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``name``:math:`^r`         | text         | *anything*                | any         | Unique name for estimator                                                                       |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``source``:math:`^r`       | text         | Ion ParticleSet name      | None        | `-`                                                                                             |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``target``:math:`^r`       | text         | Electron ParticleSet name | None        | `-`                                                                                             |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``hdf5``:math:`^o`         | boolean      | yes/no                    | no          | Output to ``stat.h5`` (yes) or ``scalar.dat`` (no)                                              |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``writeionion``:math:`^o`  | boolean      | yes/no                    | no          | Writes file rhok\_IonIon.dat containing :math:`s(\mathbf{k})` for the ions                      |
+  +----------------------------+--------------+---------------------------+-------------+-------------------------------------------------------------------------------------------------+
+
+Additional information:
+
+-  ``name:`` This is the unique name for estimator instance. A data
+   structure of the same name will appear in ``stat.h5`` output files.
+
+-  ``hdf5:`` If ``hdf5==yes``, output data is directed to the
+   ``stat.h5`` file (recommended usage). If ``hdf5==no``, the data is
+   instead routed to the ``scalar.dat`` file, resulting in many columns
+   of data with headings prefixed by ``rhok`` and postfixed by the
+   k-point index.
+
+-  This estimator only works in periodic boundary conditions. Its
+   presence in the input file is ignored otherwise.
+
+-  This is not a species-resolved structure factor. Additionally, for
+   :math:`\mathbf{k}` vectors commensurate with the unit cell,
+   :math:`S(\mathbf{k})` will include contributions from the static
+   electronic density, thus meaning it wil not accurately measure the
+   electron-electron density response.
+
+.. code-block::
+  :caption: SkAll estimator element.
+  :name: Listing 30
+
+    <estimator type="skall" name="SkAll" source="ion0" target="e" hdf5="yes"/>
+
+Species kinetic energy
+~~~~~~~~~~~~~~~~~~~~~~
+
+Record species-resolved kinetic energy instead of the total kinetic
+energy in the ``Kinetic`` column of scalar.dat. ``SpeciesKineticEnergy``
+is arguably the simplest estimator in QMCPACK. The implementation of
+this estimator is detailed in
+``manual/estimator/estimator_implementation.pdf``.
+
+``estimator type=specieskinetic`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +---------------------+--------------+----------------+-------------+-----------------------------+
+  | **Name**            | **Datatype** | **Values**     | **Default** | **Description**             |
+  +=====================+==============+================+=============+=============================+
+  | ``type``:math:`^r`  | text         | specieskinetic |             | Must be specieskinetic      |
+  +---------------------+--------------+----------------+-------------+-----------------------------+
+  | ``name``:math:`^r`  | text         | *anything*     | any         | Unique name for estimator   |
+  +---------------------+--------------+----------------+-------------+-----------------------------+
+  | ``hdf5``:math:`^o`  | boolean      | yes/no         | no          | Output to ``stat.h5`` (yes) |
+  +---------------------+--------------+----------------+-------------+-----------------------------+
+
+.. code-block::
+  :caption: Species kinetic energy estimator element.
+  :name: Listing 31
+
+    <estimator type="specieskinetic" name="skinetic" hdf5="no"/>
+
+Lattice deviation estimator
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Record deviation of a group of particles in one particle set (target) from a group of particles in another particle set (source).
+
+``estimator type=latticedeviation`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | **Name**                | **Datatype** | **Values**       | **Default** | **Description**              |
+  +=========================+==============+==================+=============+==============================+
+  | ``type``:math:`^r`      | text         | latticedeviation |             | Must be latticedeviation     |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``name``:math:`^r`      | text         | *anything*       | any         | Unique name for estimator    |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``hdf5``:math:`^o`      | boolean      | yes/no           | no          | Output to ``stat.h5`` (yes)  |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``per_xyz``:math:`^o`   | boolean      | yes/no           | no          | Directionally resolved (yes) |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``source``:math:`^r`    | text         | e/ion0/...       | no          | source particleset           |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``sgroup``:math:`^r`    | text         | u/d/...          | no          | source particle group        |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``target``:math:`^r`    | text         | e/ion0/...       | no          | target particleset           |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+  | ``tgroup``:math:`^r`    | text         | u/d/...          | no          | target particle group        |
+  +-------------------------+--------------+------------------+-------------+------------------------------+
+
+Additional information:
+
+-  ``source``: The “reference” particleset to measure distances from;
+   actual reference points are determined together with ``sgroup``.
+
+-  ``sgroup``: The “reference” particle group to measure distances from.
+
+-  ``source``: The “target” particleset to measure distances to.
+
+-  ``sgroup``: The “target” particle group to measure distances to. For
+   example, in :ref:`Listing 32 <Listing 32>` the distance from the up
+   electron (“u”) to the origin of the coordinate system is recorded.
+
+-  ``per_xyz``: Used to record direction-resolved distance. In
+   :ref:`Listing 32 <Listing 32>`, the x,y,z coordinates of the up electron
+   will be recorded separately if ``per_xyz=yes``.
+
+-  ``hdf5``: Used to record particle-resolved distances in the h5 file
+   if ``gdf5=yes``.
+
+.. code-block::
+  :caption: Lattice deviation estimator element.
+  :name: Listing 32
+
+  <particleset name="e" random="yes">
+    <group name="u" size="1" mass="1.0">
+       <parameter name="charge"              >    -1                    </parameter>
+       <parameter name="mass"                >    1.0                   </parameter>
+    </group>
+    <group name="d" size="1" mass="1.0">
+       <parameter name="charge"              >    -1                    </parameter>
+       <parameter name="mass"                >    1.0                   </parameter>
+    </group>
+  </particleset>
+
+  <particleset name="wf_center">
+    <group name="origin" size="1">
+      <attrib name="position" datatype="posArray" condition="0">
+               0.00000000        0.00000000        0.00000000
+      </attrib>
+    </group>
+  </particleset>
+
+  <estimator type="latticedeviation" name="latdev" hdf5="yes" per_xyz="yes"
+    source="wf_center" sgroup="origin" target="e" tgroup="u"/>
+
+Energy density estimator
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+An energy density operator, :math:`\hat{\mathcal{E}}_r`, satisfies
+
+.. math::
+  :label: eq37
+
+  \int dr \hat{\mathcal{E}}_r = \hat{H},
+
+where the integral is over all space and :math:`\hat{H}` is the
+Hamiltonian. In QMCPACK, the energy density is split into kinetic and potential
+components
+
+.. math::
+  :label: eq38
+
+  \hat{\mathcal{E}}_r = \hat{\mathcal{T}}_r + \hat{\mathcal{V}}_r\:,
+
+with each component given by
+
+.. math::
+  :label: eq39
+
+  \begin{aligned}
+      \hat{\mathcal{T}}_r &=  \frac{1}{2}\sum_i\delta(r-r_i)\hat{p}_i^2 \\
+      \hat{\mathcal{V}}_r &=  \sum_{i<j}\frac{\delta(r-r_i)+\delta(r-r_j)}{2}\hat{v}^{ee}(r_i,r_j)
+                 + \sum_{i\ell}\frac{\delta(r-r_i)+\delta(r-\tilde{r}_\ell)}{2}\hat{v}^{eI}(r_i,\tilde{r}_\ell) \nonumber\\
+       &\qquad   + \sum_{\ell< m}\frac{\delta(r-\tilde{r}_\ell)+\delta(r-\tilde{r}_m)}{2}\hat{v}^{II}(\tilde{r}_\ell,\tilde{r}_m)\:.\nonumber\end{aligned}
+
+Here, :math:`r_i` and :math:`\tilde{r}_\ell` represent electron and ion
+positions, respectively; :math:`\hat{p}_i` is a single electron momentum
+operator; and :math:`\hat{v}^{ee}(r_i,r_j)`,
+:math:`\hat{v}^{eI}(r_i,\tilde{r}_\ell)`, and
+:math:`\hat{v}^{II}(\tilde{r}_\ell,\tilde{r}_m)` are the
+electron-electron, electron-ion, and ion-ion pair potential operators
+(including nonlocal pseudopotentials, if present). This form of the
+energy density is size consistent; that is, the partially integrated
+energy density operators of well-separated atoms gives the isolated
+Hamiltonians of the respective atoms. For periodic systems with
+twist-averaged boundary conditions, the energy density is formally
+correct only for either a set of supercell k-points that correspond to
+real-valued wavefunctions or a k-point set that has inversion symmetry
+around a k-point having a real-valued wavefunction. For more information
+about the energy density, see :cite:`Krogel2013`.
+
+In QMCPACK, the energy density can be accumulated on piecewise uniform 3D grids in generalized Cartesian, cylindrical, or spherical coordinates.  The energy density integrated within Voronoi volumes centered on ion positions is also available.  The total particle number density is also accumulated on the same grids by the energy density estimator for convenience so that related quantities, such as the regional energy per particle, can be computed easily.
