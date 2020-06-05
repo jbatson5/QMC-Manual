@@ -95,6 +95,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#pair-potentials">Pair potentials</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#coulomb-potentials">Coulomb potentials</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pseudopotentials">Pseudopotentials</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mpc-interaction-correction">MPC Interaction/correction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#general-estimators">General estimators</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#chiesa-ceperley-martin-holzmann-kinetic-energy-correction">Chiesa-Ceperley-Martin-Holzmann kinetic energy correction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#density-estimator">Density estimator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spin-density-estimator">Spin density estimator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pair-correlation-function-g-r">Pair correlation function, <span class="math notranslate nohighlight">\(g(r)\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-structure-factor-s-k">Static structure factor, <span class="math notranslate nohighlight">\(S(k)\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#static-structure-factor-skall">Static structure factor, <code class="docutils literal notranslate"><span class="pre">SkAll</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -796,6 +806,917 @@ XML format for pseudopotentials is not yet covered.</p>
 </tbody>
 </table>
 </div></blockquote>
+<div class="literal-block-wrapper docutils container" id="listing-21">
+<div class="code-block-caption"><span class="caption-number">Listing 21 </span><span class="caption-text">QMCPXML element for pseudopotential of single ionic species.</span><a class="headerlink" href="#listing-21" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;Li.xml&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="mpc-interaction-correction">
+<h3>MPC Interaction/correction<a class="headerlink" href="#mpc-interaction-correction" title="Permalink to this headline">¶</a></h3>
+<p>The MPC interaction is an alternative to direct Ewald summation. The MPC
+corrects the exchange correlation hole to more closely match its
+thermodynamic limit. Because of this, the MPC exhibits smaller
+finite-size errors than the bare Ewald interaction, though a few
+alternative and competitive finite-size correction schemes now exist.
+The MPC is itself often used just as a finite-size correction in
+post-processing (set <code class="docutils literal notranslate"><span class="pre">physical=false</span></code> in the input).</p>
+<p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=mpc</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 12%" />
+<col style="width: 19%" />
+<col style="width: 20%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>mpc</strong></p></td>
+<td></td>
+<td><p>Must be MPC</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name/id</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>MPC</p></td>
+<td><p>Unique name for interaction</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Identify interacting particles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">physical</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Hamiltonian(yes)/observable(no)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cutoff</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>30.0</p></td>
+<td><p>Kinetic energy cutoff</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Remarks:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">physical</span></code>: Typically set to <code class="docutils literal notranslate"><span class="pre">no</span></code>, meaning the standard Ewald
+interaction will be used during sampling and MPC will be measured as
+an observable for finite-size post-correction. If <code class="docutils literal notranslate"><span class="pre">physical</span></code> is
+<code class="docutils literal notranslate"><span class="pre">yes</span></code>, the MPC interaction will be used during sampling. In this
+case an electron-electron Coulomb <code class="docutils literal notranslate"><span class="pre">pairpot</span></code> element should not be
+supplied.</p></li>
+<li><p><strong>Developer note:</strong> Currently the <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute for the MPC
+interaction is ignored. The name is always reset to <code class="docutils literal notranslate"><span class="pre">MPC</span></code>.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-22">
+<div class="code-block-caption"><span class="caption-number">Listing 22 </span><span class="caption-text">MPC for finite-size postcorrection.</span><a class="headerlink" href="#listing-22" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">pairpot</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;MPC&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MPC&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">ecut</span><span class="o">=</span><span class="s2">&quot;60.0&quot;</span> <span class="n">physical</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="general-estimators">
+<h2>General estimators<a class="headerlink" href="#general-estimators" title="Permalink to this headline">¶</a></h2>
+<p>A broad range of estimators for physical observables are available in QMCPACK.
+The following sections contain input details for the total number
+density (<code class="docutils literal notranslate"><span class="pre">density</span></code>), number density resolved by particle spin
+(<code class="docutils literal notranslate"><span class="pre">spindensity</span></code>), spherically averaged pair correlation function
+(<code class="docutils literal notranslate"><span class="pre">gofr</span></code>), static structure factor (<code class="docutils literal notranslate"><span class="pre">sk</span></code>), static structure factor
+(<code class="docutils literal notranslate"><span class="pre">skall</span></code>), energy density (<code class="docutils literal notranslate"><span class="pre">energydensity</span></code>), one body reduced
+density matrix (<code class="docutils literal notranslate"><span class="pre">dm1b</span></code>), <span class="math notranslate nohighlight">\(S(k)\)</span> based kinetic energy correction
+(<code class="docutils literal notranslate"><span class="pre">chiesa</span></code>), forward walking (<code class="docutils literal notranslate"><span class="pre">ForwardWalking</span></code>), and force
+(<code class="docutils literal notranslate"><span class="pre">Force</span></code>) estimators. Other estimators are not yet covered.</p>
+<p>When an <code class="docutils literal notranslate"><span class="pre">&lt;estimator/&gt;</span></code> element appears in <code class="docutils literal notranslate"><span class="pre">&lt;hamiltonian/&gt;</span></code>, it is
+evaluated for all applicable chained QMC runs (e.g.,
+VMC<span class="math notranslate nohighlight">\(\rightarrow\)</span>DMC<span class="math notranslate nohighlight">\(\rightarrow\)</span>DMC). Estimators are
+generally not accumulated during wavefunction optimization sections. If
+an <code class="docutils literal notranslate"><span class="pre">&lt;estimator/&gt;</span></code> element is instead provided in a particular
+<code class="docutils literal notranslate"><span class="pre">&lt;qmc/&gt;</span></code> element, that estimator is only evaluated for that specific
+section (e.g., during VMC only).</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span></code> factory element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>type selector:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">type</span></code> attribute</p></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 19%" />
+<col style="width: 62%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>type options</strong></p></td>
+<td><p>density</p></td>
+<td><p>Density on a grid</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>spindensity</p></td>
+<td><p>Spin density on a grid</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>gofr</p></td>
+<td><p>Pair correlation function (quantum species)</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>sk</p></td>
+<td><p>Static structure factor</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>SkAll</p></td>
+<td><p>Static structure factor needed for finite size correction</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>structurefactor</p></td>
+<td><p>Species resolved structure factor</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>species kinetic</p></td>
+<td><p>Species resolved kinetic energy</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>latticedeviation</p></td>
+<td><p>Spatial deviation between two particlesets</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>momentum</p></td>
+<td><p>Momentum distribution</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>energydensity</p></td>
+<td><p>Energy density on uniform or Voronoi grid</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>dm1b</p></td>
+<td><p>One body density matrix in arbitrary basis</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>chiesa</p></td>
+<td><p>Chiesa-Ceperley-Martin-Holzmann kinetic energy correction</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>Force</p></td>
+<td><p>Family of “force” estimators (see <span class="xref std std-ref">force-est</span></p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>ForwardWalking</p></td>
+<td><p>Forward walking values for existing estimators</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>orbitalimages</p></td>
+<td><p>Create image files for orbitals, then exit</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>flux</p></td>
+<td><p>Checks sampling of kinetic energy</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>localmoment</p></td>
+<td><p>Atomic spin polarization within cutoff radius</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Pressure</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>shared attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 15%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>See above</em></p></td>
+<td><p>0</p></td>
+<td><p>Select estimator type</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for this estimator</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="section" id="chiesa-ceperley-martin-holzmann-kinetic-energy-correction">
+<h3>Chiesa-Ceperley-Martin-Holzmann kinetic energy correction<a class="headerlink" href="#chiesa-ceperley-martin-holzmann-kinetic-energy-correction" title="Permalink to this headline">¶</a></h3>
+<p>This estimator calculates a finite-size correction to the kinetic energy following the formalism laid out in <span class="bibtex" id="id4">[Chiesa2006]</span>.  The total energy can be corrected for finite-size effects by using this estimator in conjunction with the MPC correction.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=chiesa</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 14%" />
+<col style="width: 24%" />
+<col style="width: 13%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>chiesa</strong></p></td>
+<td></td>
+<td><p>Must be chiesa</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>KEcorr</p></td>
+<td><p>Always reset to KEcorr</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">source</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p>e</p></td>
+<td><p>Identify quantum particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">wavefunction.name</span></code></p></td>
+<td><p>psi0</p></td>
+<td><p>Identify wavefunction</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="literal-block-wrapper docutils container" id="listing-23">
+<div class="code-block-caption"><span class="caption-number">Listing 23 </span><span class="caption-text">“Chiesa” kinetic energy finite-size postcorrection.</span><a class="headerlink" href="#listing-23" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="o">&lt;</span><span class="n">estimator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;KEcorr&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;chiesa&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">psi</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="density-estimator">
+<h3>Density estimator<a class="headerlink" href="#density-estimator" title="Permalink to this headline">¶</a></h3>
+<p>The particle number density operator is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq32">
+<span class="eqno">(32)<a class="headerlink" href="#equation-eq32" title="Permalink to this equation">¶</a></span>\[\hat{n}_r = \sum_i\delta(r-r_i)\:.\]</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">density</span></code> estimator accumulates the number density on a uniform
+histogram grid over the simulation cell. The value obtained for a grid
+cell <span class="math notranslate nohighlight">\(c\)</span> with volume <span class="math notranslate nohighlight">\(\Omega_c\)</span> is then the average number
+of particles in that cell:</p>
+<div class="math notranslate nohighlight" id="equation-eq33">
+<span class="eqno">(33)<a class="headerlink" href="#equation-eq33" title="Permalink to this equation">¶</a></span>\[n_c = \int dR \left|{\Psi}\right|^2 \int_{\Omega_c}dr \sum_i\delta(r-r_i)\:.\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=density</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 9%" />
+<col style="width: 26%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>density</strong></p></td>
+<td></td>
+<td><p>Must be density</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delta</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array(3)</p></td>
+<td><p><span class="math notranslate nohighlight">\(0\le v_i \le 1\)</span></p></td>
+<td><p>0.1 0.1 0.1</p></td>
+<td><p>Grid cell spacing, unit coords</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">x_min</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Grid starting point in x (Bohr)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x_max</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(|\)</span> <code class="docutils literal notranslate"><span class="pre">lattice[0]</span></code> <span class="math notranslate nohighlight">\(|\)</span></p></td>
+<td><p>Grid ending point in x (Bohr)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">y_min</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Grid starting point in y (Bohr)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">y_max</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(|\)</span> <code class="docutils literal notranslate"><span class="pre">lattice[1]</span></code> <span class="math notranslate nohighlight">\(|\)</span></p></td>
+<td><p>Grid ending point in y (Bohr)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">z_min</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Grid starting point in z (Bohr)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">z_max</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(|\)</span> <code class="docutils literal notranslate"><span class="pre">lattice[2]</span></code> <span class="math notranslate nohighlight">\(|\)</span></p></td>
+<td><p>Grid ending point in z (Bohr)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">potential</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Accumulate local potential, <em>deprecated</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">debug</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name provided will be used as a label in the
+<code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file for the blocked output data. Postprocessing tools
+expect <code class="docutils literal notranslate"><span class="pre">name=&quot;Density.&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delta</span></code>: This sets the histogram grid size used to accumulate the
+density:
+<code class="docutils literal notranslate"><span class="pre">delta=&quot;0.1</span> <span class="pre">0.1</span> <span class="pre">0.05&quot;</span></code><span class="math notranslate nohighlight">\(\rightarrow 10\times 10\times 20\)</span>
+grid,
+<code class="docutils literal notranslate"><span class="pre">delta=&quot;0.01</span> <span class="pre">0.01</span> <span class="pre">0.01&quot;</span></code><span class="math notranslate nohighlight">\(\rightarrow 100\times 100\times 100\)</span>
+grid. The density grid is written to a <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file at the end of
+each MC block. If you request many <span class="math notranslate nohighlight">\(blocks\)</span> in a <code class="docutils literal notranslate"><span class="pre">&lt;qmc/&gt;</span></code>
+element, or select a large grid, the resulting <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file could
+be many gigabytes in size.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*_min/*_max</span></code>: Can be used to select a subset of the simulation
+cell for the density histogram grid. For example if a (cubic)
+simulation cell is 20 Bohr on a side, setting <code class="docutils literal notranslate"><span class="pre">*_min=5.0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">*_max=15.0</span></code> will result in a density histogram grid spanning a
+<span class="math notranslate nohighlight">\(10\times 10\times 10\)</span> Bohr cube about the center of the box.
+Use of <code class="docutils literal notranslate"><span class="pre">x_min,</span> <span class="pre">x_max,</span> <span class="pre">y_min,</span> <span class="pre">y_max,</span> <span class="pre">z_min,</span> <span class="pre">z_max</span></code> is only
+appropriate for orthorhombic simulation cells with open boundary
+conditions.</p></li>
+<li><p>When open boundary conditions are used, a <code class="docutils literal notranslate"><span class="pre">&lt;simulationcell/&gt;</span></code>
+element must be explicitly provided as the first subelement of
+<code class="docutils literal notranslate"><span class="pre">&lt;qmcsystem/&gt;</span></code> for the density estimator to work. In this case the
+molecule should be centered around the middle of the simulation cell
+(<span class="math notranslate nohighlight">\(L/2\)</span>) and not the origin (<span class="math notranslate nohighlight">\(0\)</span> since the space within
+the cell, and hence the density grid, is defined from <span class="math notranslate nohighlight">\(0\)</span> to
+<span class="math notranslate nohighlight">\(L\)</span>).</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-24">
+<div class="code-block-caption"><span class="caption-number">Listing 24 </span><span class="caption-text">QMCPXML,caption=Density estimator (uniform grid).</span><a class="headerlink" href="#listing-24" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="o">&lt;</span><span class="n">estimator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Density&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;density&quot;</span> <span class="n">delta</span><span class="o">=</span><span class="s2">&quot;0.05 0.05 0.05&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="spin-density-estimator">
+<h3>Spin density estimator<a class="headerlink" href="#spin-density-estimator" title="Permalink to this headline">¶</a></h3>
+<p>The spin density is similar to the total density described previously.  In this case, the sum over particles is performed independently for each spin component.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=spindensity</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 14%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>spindensity</strong></p></td>
+<td></td>
+<td><p>Must be spindensity</p></td>
+</tr>
+<tr class="row-odd"><td><p><a href="#id5"><span class="problematic" id="id6">``</span></a>name`:math:<cite>^r</cite></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">report</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Write setup details to stdout</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>parameters:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 16%" />
+<col style="width: 19%" />
+<col style="width: 11%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grid</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer array(3)</p></td>
+<td><p><span class="math notranslate nohighlight">\(v_i&gt;\)</span></p></td>
+<td></td>
+<td><p>Grid cell count</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dr</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array(3)</p></td>
+<td><p><span class="math notranslate nohighlight">\(v_i&gt;\)</span></p></td>
+<td></td>
+<td><p>Grid cell spacing (Bohr)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cell</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array(3,3)</p></td>
+<td><p><em>anything</em></p></td>
+<td></td>
+<td><p>Volume grid exists in</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">corner</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array(3)</p></td>
+<td><p><em>anything</em></p></td>
+<td></td>
+<td><p>Volume corner location</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">center</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array (3)</p></td>
+<td><p><em>anything</em></p></td>
+<td></td>
+<td><p>Volume center/origin location</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">voronoi</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td></td>
+<td><p><em>Under development</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_moves</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;=0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Test estimator with random moves</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name provided will be used as a label in the
+<code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file for the blocked output data. Postprocessing tools
+expect <code class="docutils literal notranslate"><span class="pre">name=&quot;SpinDensity.&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grid</span></code>: The grid sets the dimension of the histogram grid. Input
+like <code class="docutils literal notranslate"><span class="pre">&lt;parameter</span> <span class="pre">name=&quot;grid&quot;&gt;</span> <span class="pre">40</span> <span class="pre">40</span> <span class="pre">40</span> <span class="pre">&lt;/parameter&gt;</span></code> requests a
+<span class="math notranslate nohighlight">\(40 \times 40\times 40\)</span> grid. The shape of individual grid
+cells is commensurate with the supercell shape.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dr</span></code>: The <code class="docutils literal notranslate"><span class="pre">dr</span></code> sets the real-space dimensions of grid cell edges
+(Bohr units). Input like
+<code class="docutils literal notranslate"><span class="pre">&lt;parameter</span> <span class="pre">name=&quot;dr&quot;&gt;</span> <span class="pre">0.5</span> <span class="pre">0.5</span> <span class="pre">0.5</span> <span class="pre">&lt;/parameter&gt;</span></code> in a supercell
+with axes of length 10 Bohr each (but of arbitrary shape) will
+produce a <span class="math notranslate nohighlight">\(20\times 20\times 20\)</span> grid. The inputted <code class="docutils literal notranslate"><span class="pre">dr</span></code>
+values are rounded to produce an integer number of grid cells along
+each supercell axis. Either <code class="docutils literal notranslate"><span class="pre">grid</span></code> or <code class="docutils literal notranslate"><span class="pre">dr</span></code> must be provided, but
+not both.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell</span></code>: When <code class="docutils literal notranslate"><span class="pre">cell</span></code> is provided, a user-defined grid volume is
+used instead of the global supercell. This must be provided if open
+boundary conditions are used. Additionally, if <code class="docutils literal notranslate"><span class="pre">cell</span></code> is provided,
+the user must specify where the volume is located in space in
+addition to its size/shape (<code class="docutils literal notranslate"><span class="pre">cell</span></code>) using either the <code class="docutils literal notranslate"><span class="pre">corner</span></code> or
+<code class="docutils literal notranslate"><span class="pre">center</span></code> parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">corner</span></code>: The grid volume is defined as
+<span class="math notranslate nohighlight">\(corner+\sum_{d=1}^3u_dcell_d\)</span> with <span class="math notranslate nohighlight">\(0&lt;u_d&lt;1\)</span> (“cell”
+refers to either the supercell or user-provided cell).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">center</span></code>: The grid volume is defined as
+<span class="math notranslate nohighlight">\(center+\sum_{d=1}^3u_dcell_d\)</span> with <span class="math notranslate nohighlight">\(-1/2&lt;u_d&lt;1/2\)</span>
+(“cell” refers to either the supercell or user-provided cell).
+<code class="docutils literal notranslate"><span class="pre">corner/center</span></code> can be used to shift the grid even if <code class="docutils literal notranslate"><span class="pre">cell</span></code> is
+not specified. Simultaneous use of <code class="docutils literal notranslate"><span class="pre">corner</span></code> and <code class="docutils literal notranslate"><span class="pre">center</span></code> will
+cause QMCPACK to abort.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-25">
+<div class="code-block-caption"><span class="caption-number">Listing 25 </span><span class="caption-text">Spin density estimator (uniform grid).</span><a class="headerlink" href="#listing-25" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;spindensity&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SpinDensity&quot;</span> <span class="n">report</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="o">&gt;</span> <span class="mi">40</span> <span class="mi">40</span> <span class="mi">40</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-26">
+<div class="code-block-caption"><span class="caption-number">Listing 26 </span><span class="caption-text">Spin density estimator (uniform grid centered about origin).</span><a class="headerlink" href="#listing-26" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;spindensity&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;SpinDensity&quot;</span> <span class="n">report</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="o">&gt;</span>
+    <span class="mi">20</span> <span class="mi">20</span> <span class="mi">20</span>
+  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="o">&gt;</span>
+    <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span>
+  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cell&quot;</span><span class="o">&gt;</span>
+    <span class="mf">10.0</span>  <span class="mf">0.0</span>  <span class="mf">0.0</span>
+     <span class="mf">0.0</span> <span class="mf">10.0</span>  <span class="mf">0.0</span>
+     <span class="mf">0.0</span>  <span class="mf">0.0</span> <span class="mf">10.0</span>
+  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="pair-correlation-function-g-r">
+<h3>Pair correlation function, <span class="math notranslate nohighlight">\(g(r)\)</span><a class="headerlink" href="#pair-correlation-function-g-r" title="Permalink to this headline">¶</a></h3>
+<p>The functional form of the species-resolved radial pair correlation function operator is</p>
+<div class="math notranslate nohighlight" id="equation-eq34">
+<span class="eqno">(34)<a class="headerlink" href="#equation-eq34" title="Permalink to this equation">¶</a></span>\[g_{ss'}(r) = \frac{V}{4\pi r^2N_sN_{s'}}\sum_{i_s=1}^{N_s}\sum_{j_{s'}=1}^{N_{s'}}\delta(r-|r_{i_s}-r_{j_{s'}}|)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_s\)</span> is the number of particles of species <span class="math notranslate nohighlight">\(s\)</span> and
+<span class="math notranslate nohighlight">\(V\)</span> is the supercell volume. If <span class="math notranslate nohighlight">\(s=s'\)</span>, then the sum is
+restricted so that <span class="math notranslate nohighlight">\(i_s\ne j_s\)</span>.</p>
+<p>In QMCPACK, an estimate of <span class="math notranslate nohighlight">\(g_{ss'}(r)\)</span> is obtained as a radial
+histogram with a set of <span class="math notranslate nohighlight">\(N_b\)</span> uniform bins of width
+<span class="math notranslate nohighlight">\(\delta r\)</span>. This can be expressed analytically as</p>
+<div class="math notranslate nohighlight" id="equation-eq35">
+<span class="eqno">(35)<a class="headerlink" href="#equation-eq35" title="Permalink to this equation">¶</a></span>\[\tilde{g}_{ss'}(r) = \frac{V}{4\pi r^2N_sN_{s'}}\sum_{i=1}^{N_s}\sum_{j=1}^{N_{s'}}\frac{1}{\delta r}\int_{r-\delta r/2}^{r+\delta r/2}dr'\delta(r'-|r_{si}-r_{s'j}|)\:,\]</div>
+<p>where the radial coordinate <span class="math notranslate nohighlight">\(r\)</span> is restricted to reside at the bin
+centers, <span class="math notranslate nohighlight">\(\delta r/2, 3 \delta r/2, 5 \delta r/2, \ldots\)</span>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=gofr</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 12%" />
+<col style="width: 19%" />
+<col style="width: 21%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>gofr</strong></p></td>
+<td></td>
+<td><p>Must be gofr</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">num_bin</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;1\)</span></p></td>
+<td><p>20</p></td>
+<td><p># of histogram bins</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rmax</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>10</p></td>
+<td><p>Histogram extent (Bohr)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dr</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(0\)</span></p></td>
+<td><p>0.5</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">debug</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p><em>No current function</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Quantum particles</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source/sources</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text array</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian.target</span></code></p></td>
+<td><p>Classical particles</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">num_bin:</span></code> This is the number of bins in each species pair radial
+histogram.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rmax:</span></code> This is the maximum pair distance included in the
+histogram. The uniform bin width is
+<span class="math notranslate nohighlight">\(\delta r=\texttt{rmax/num\_bin}\)</span>. If periodic boundary
+conditions are used for any dimension of the simulation cell, then
+the default value of <code class="docutils literal notranslate"><span class="pre">rmax</span></code> is the simulation cell radius instead
+of 10 Bohr. For open boundary conditions, the volume (<span class="math notranslate nohighlight">\(V\)</span>) used
+is 1.0 Bohr<span class="math notranslate nohighlight">\(^3\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source/sources:</span></code> If unspecified, only pair correlations between
+each species of quantum particle will be measured. For each classical
+particleset specified by <code class="docutils literal notranslate"><span class="pre">source/sources</span></code>, additional pair
+correlations between each quantum and classical species will be
+measured. Typically there is only one classical particleset (e.g.,
+<code class="docutils literal notranslate"><span class="pre">source=&quot;ion0&quot;</span></code>), but there can be several in principle (e.g.,
+<code class="docutils literal notranslate"><span class="pre">sources=&quot;ion0</span> <span class="pre">ion1</span> <span class="pre">ion2&quot;</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target:</span></code> The default value is the preferred usage (i.e.,
+<code class="docutils literal notranslate"><span class="pre">target</span></code> does not need to be provided).</p></li>
+<li><p>Data is output to the <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> for each QMC subrun. Individual
+histograms are named according to the quantum particleset and index
+of the pair. For example, if the quantum particleset is named “e” and
+there are two species (up and down electrons, say), then there will
+be three sets of histogram data in each <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file named
+<code class="docutils literal notranslate"><span class="pre">gofr_e_0_0</span></code>, <code class="docutils literal notranslate"><span class="pre">gofr_e_0_1</span></code>, and <code class="docutils literal notranslate"><span class="pre">gofr_e_1_1</span></code> for up-up,
+up-down, and down-down correlations, respectively.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-27">
+<div class="code-block-caption"><span class="caption-number">Listing 27 </span><span class="caption-text">Pair correlation function estimator element.</span><a class="headerlink" href="#listing-27" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;gofr&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;gofr&quot;</span> <span class="n">num_bin</span><span class="o">=</span><span class="s2">&quot;200&quot;</span> <span class="n">rmax</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-28">
+<div class="code-block-caption"><span class="caption-number">Listing 28 </span><span class="caption-text">Pair correlation function estimator element with additional electron-ion correlations.</span><a class="headerlink" href="#listing-28" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;gofr&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;gofr&quot;</span> <span class="n">num_bin</span><span class="o">=</span><span class="s2">&quot;200&quot;</span> <span class="n">rmax</span><span class="o">=</span><span class="s2">&quot;3.0&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span> <span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="static-structure-factor-s-k">
+<h3>Static structure factor, <span class="math notranslate nohighlight">\(S(k)\)</span><a class="headerlink" href="#static-structure-factor-s-k" title="Permalink to this headline">¶</a></h3>
+<p>Let
+<span class="math notranslate nohighlight">\(\rho^e_{\mathbf{k}}=\sum_j e^{i \mathbf{k}\cdot\mathbf{r}_j^e}\)</span>
+be the Fourier space electron density, with <span class="math notranslate nohighlight">\(\mathbf{r}^e_j\)</span> being
+the coordinate of the j-th electron. <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> is a wavevector
+commensurate with the simulation cell. QMCPACK allows the user to
+accumulate the static electron structure factor <span class="math notranslate nohighlight">\(S(\mathbf{k})\)</span> at
+all commensurate <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> such that
+<span class="math notranslate nohighlight">\(|\mathbf{k}| \leq (LR\_DIM\_CUTOFF) r_c\)</span>. <span class="math notranslate nohighlight">\(N^e\)</span> is the
+number of electrons, <code class="docutils literal notranslate"><span class="pre">LR_DIM_CUTOFF</span></code> is the optimized breakup
+parameter, and <span class="math notranslate nohighlight">\(r_c\)</span> is the Wigner-Seitz radius. It is defined as
+follows:</p>
+<div class="math notranslate nohighlight" id="equation-eq36">
+<span class="eqno">(36)<a class="headerlink" href="#equation-eq36" title="Permalink to this equation">¶</a></span>\[S(\mathbf{k}) = \frac{1}{N^e}\langle \rho^e_{-\mathbf{k}} \rho^e_{\mathbf{k}} \rangle\:.\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=sk</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 12%" />
+<col style="width: 11%" />
+<col style="width: 12%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>sk</p></td>
+<td></td>
+<td><p>Must sk</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hdf5</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Output to <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> (yes) or <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> (no)</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name:</span></code> This is the unique name for estimator instance. A data
+structure of the same name will appear in <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> output files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hdf5:</span></code> If <code class="docutils literal notranslate"><span class="pre">hdf5==yes</span></code>, output data for <span class="math notranslate nohighlight">\(S(k)\)</span> is directed
+to the <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> file (recommended usage). If <code class="docutils literal notranslate"><span class="pre">hdf5==no</span></code>, the
+data is instead routed to the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file, resulting in many
+columns of data with headings prefixed by <code class="docutils literal notranslate"><span class="pre">name</span></code> and postfixed by
+the k-point index (e.g., <code class="docutils literal notranslate"><span class="pre">sk_0</span> <span class="pre">sk_1</span> <span class="pre">…sk_1037</span> <span class="pre">…</span></code>).</p></li>
+<li><p>This estimator only works in periodic boundary conditions. Its
+presence in the input file is ignored otherwise.</p></li>
+<li><p>This is not a species-resolved structure factor. Additionally, for
+<span class="math notranslate nohighlight">\(\mathbf{k}\)</span> vectors commensurate with the unit cell,
+<span class="math notranslate nohighlight">\(S(\mathbf{k})\)</span> will include contributions from the static
+electronic density, thus meaning it will not accurately measure the
+electron-electron density response.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-29">
+<div class="code-block-caption"><span class="caption-number">Listing 29 </span><span class="caption-text">Static structure factor estimator element.</span><a class="headerlink" href="#listing-29" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;sk&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sk&quot;</span> <span class="n">hdf5</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="static-structure-factor-skall">
+<h3>Static structure factor, <code class="docutils literal notranslate"><span class="pre">SkAll</span></code><a class="headerlink" href="#static-structure-factor-skall" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>

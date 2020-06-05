@@ -406,5 +406,542 @@ attributes:
   :caption: QMCPXML element for pseudopotential of single ionic species.
   :name: Listing 21
 
+    <pseudo elementType="Li" href="Li.xml"/>
+
 MPC Interaction/correction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The MPC interaction is an alternative to direct Ewald summation. The MPC
+corrects the exchange correlation hole to more closely match its
+thermodynamic limit. Because of this, the MPC exhibits smaller
+finite-size errors than the bare Ewald interaction, though a few
+alternative and competitive finite-size correction schemes now exist.
+The MPC is itself often used just as a finite-size correction in
+post-processing (set ``physical=false`` in the input).
+
+``pairpot type=mpc`` element:
+
+  +------------------+-----------------+
+  | parent elements: | ``hamiltonian`` |
+  +------------------+-----------------+
+  | child elements:  | *None*          |
+  +------------------+-----------------+
+
+attributes:
+
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | **Name**                | **Datatype** | **Values**           | **Default**            | **Description**                 |
+  +=========================+==============+======================+========================+=================================+
+  | ``type``:math:`^r`      | text         | **mpc**              |                        | Must be MPC                     |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | ``name/id``:math:`^r`   | text         | *anything*           | MPC                    | Unique name for interaction     |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | ``source``:math:`^r`    | text         | ``particleset.name`` | ``hamiltonian.target`` | Identify interacting particles  |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | ``target``:math:`^r`    | text         | ``particleset.name`` | ``hamiltonian.target`` | Identify interacting particles  |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | ``physical``:math:`^o`  | boolean      | yes/no               | no                     | Hamiltonian(yes)/observable(no) |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+  | ``cutoff``              | real         | :math:`>0`           | 30.0                   | Kinetic energy cutoff           |
+  +-------------------------+--------------+----------------------+------------------------+---------------------------------+
+
+Remarks:
+
+-  ``physical``: Typically set to ``no``, meaning the standard Ewald
+   interaction will be used during sampling and MPC will be measured as
+   an observable for finite-size post-correction. If ``physical`` is
+   ``yes``, the MPC interaction will be used during sampling. In this
+   case an electron-electron Coulomb ``pairpot`` element should not be
+   supplied.
+
+-  **Developer note:** Currently the ``name`` attribute for the MPC
+   interaction is ignored. The name is always reset to ``MPC``.
+
+.. code-block::
+  :caption: MPC for finite-size postcorrection.
+  :name: Listing 22
+
+    <pairpot type="MPC" name="MPC" source="e" target="e" ecut="60.0" physical="no"/>
+
+General estimators
+------------------
+
+A broad range of estimators for physical observables are available in QMCPACK.
+The following sections contain input details for the total number
+density (``density``), number density resolved by particle spin
+(``spindensity``), spherically averaged pair correlation function
+(``gofr``), static structure factor (``sk``), static structure factor
+(``skall``), energy density (``energydensity``), one body reduced
+density matrix (``dm1b``), :math:`S(k)` based kinetic energy correction
+(``chiesa``), forward walking (``ForwardWalking``), and force
+(``Force``) estimators. Other estimators are not yet covered.
+
+When an ``<estimator/>`` element appears in ``<hamiltonian/>``, it is
+evaluated for all applicable chained QMC runs (e.g.,
+VMC\ :math:`\rightarrow`\ DMC\ :math:`\rightarrow`\ DMC). Estimators are
+generally not accumulated during wavefunction optimization sections. If
+an ``<estimator/>`` element is instead provided in a particular
+``<qmc/>`` element, that estimator is only evaluated for that specific
+section (e.g., during VMC only).
+
+``estimator`` factory element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | type selector:   | ``type`` attribute   |
+  +------------------+----------------------+
+
+  +------------------+------------------+-----------------------------------------------------------+
+  | **type options** | density          | Density on a grid                                         |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | spindensity      | Spin density on a grid                                    |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | gofr             | Pair correlation function (quantum species)               |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | sk               | Static structure factor                                   |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | SkAll            | Static structure factor needed for finite size correction |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | structurefactor  | Species resolved structure factor                         |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | species kinetic  | Species resolved kinetic energy                           |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | latticedeviation | Spatial deviation between two particlesets                |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | momentum         | Momentum distribution                                     |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | energydensity    | Energy density on uniform or Voronoi grid                 |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | dm1b             | One body density matrix in arbitrary basis                |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | chiesa           | Chiesa-Ceperley-Martin-Holzmann kinetic energy correction |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | Force            | Family of "force" estimators (see :ref:`force-est`        |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | ForwardWalking   | Forward walking values for existing estimators            |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | orbitalimages    | Create image files for orbitals, then exit                |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | flux             | Checks sampling of kinetic energy                         |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | localmoment      | Atomic spin polarization within cutoff radius             |
+  +------------------+------------------+-----------------------------------------------------------+
+  |                  | Pressure         | *No current function*                                     |
+  +------------------+------------------+-----------------------------------------------------------+
+
+shared attributes:
+
+  +---------------------+--------------+-------------+-------------+--------------------------------+
+  | **Name**            | **Datatype** | **Values**  | **Default** | **Description**                |
+  +=====================+==============+=============+=============+================================+
+  | ``type``:math:`^r`  | text         | *See above* | 0           | Select estimator type          |
+  +---------------------+--------------+-------------+-------------+--------------------------------+
+  | ``name``:math:`^r`  | text         | *anything*  | any         | Unique name for this estimator |
+  +---------------------+--------------+-------------+-------------+--------------------------------+
+
+Chiesa-Ceperley-Martin-Holzmann kinetic energy correction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This estimator calculates a finite-size correction to the kinetic energy following the formalism laid out in :cite:`Chiesa2006`.  The total energy can be corrected for finite-size effects by using this estimator in conjunction with the MPC correction.
+
+``estimator type=chiesa`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +-----------------------+--------------+------------------------+-------------+----------------------------+
+  | **Name**              | **Datatype** | **Values**             | **Default** | **Description**            |
+  +=======================+==============+========================+=============+============================+
+  | ``type``:math:`^r`    | text         | **chiesa**             |             | Must be chiesa             |
+  +-----------------------+--------------+------------------------+-------------+----------------------------+
+  | ``name``:math:`^o`    | text         | *anything*             | KEcorr      | Always reset to KEcorr     |
+  +-----------------------+--------------+------------------------+-------------+----------------------------+
+  | ``source``:math:`^o`  | text         | ``particleset.name``   | e           | Identify quantum particles |
+  +-----------------------+--------------+------------------------+-------------+----------------------------+
+  | ``psi``:math:`^o`     | text         | ``wavefunction.name``  | psi0        | Identify wavefunction      |
+  +-----------------------+--------------+------------------------+-------------+----------------------------+
+
+.. code-block::
+  :caption: "Chiesa" kinetic energy finite-size postcorrection.
+  :name: Listing 23
+
+     <estimator name="KEcorr" type="chiesa" source="e" psi="psi0"/>
+
+Density estimator
+~~~~~~~~~~~~~~~~~
+
+The particle number density operator is given by
+
+.. math::
+  :label: eq32
+
+  \hat{n}_r = \sum_i\delta(r-r_i)\:.
+
+The ``density`` estimator accumulates the number density on a uniform
+histogram grid over the simulation cell. The value obtained for a grid
+cell :math:`c` with volume :math:`\Omega_c` is then the average number
+of particles in that cell:
+
+.. math::
+  :label: eq33
+
+  n_c = \int dR \left|{\Psi}\right|^2 \int_{\Omega_c}dr \sum_i\delta(r-r_i)\:.
+
+``estimator type=density`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | **Name**                 | **Datatype**  | **Values**                                | **Default**                              | **Description**                          |
+  +==========================+===============+===========================================+==========================================+==========================================+
+  | ``type``:math:`^r`       | text          | **density**                               |                                          | Must be density                          |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``name``:math:`^r`       | text          | *anything*                                | any                                      | Unique name for estimator                |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``delta``:math:`^o`      | real array(3) | :math:`0\le v_i \le 1`                    | 0.1 0.1 0.1                              | Grid cell spacing, unit coords           |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``x_min``:math:`^o`      | real          | :math:`>0`                                | 0                                        | Grid starting point in x (Bohr)          |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``x_max``:math:`^o`      | real          | :math:`>0`                                | :math:`|` ``lattice[0]`` :math:`|`       | Grid ending point in x (Bohr)            |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``y_min``:math:`^o`      | real          | :math:`>0`                                | 0                                        | Grid starting point in y (Bohr)          |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``y_max``:math:`^o`      | real          | :math:`>0`                                | :math:`|` ``lattice[1]`` :math:`|`       | Grid ending point in y (Bohr)            |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``z_min``:math:`^o`      | real          | :math:`>0`                                | 0                                        | Grid starting point in z (Bohr)          |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``z_max``:math:`^o`      | real          | :math:`>0`                                | :math:`|` ``lattice[2]`` :math:`|`       | Grid ending point in z (Bohr)            |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``potential``:math:`^o`  | boolean       | yes/no                                    | no                                       | Accumulate local potential, *deprecated* |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+  | ``debug``:math:`^o`      | boolean       | yes/no                                    | no                                       | *No current function*                    |
+  +--------------------------+---------------+-------------------------------------------+------------------------------------------+------------------------------------------+
+
+Additional information:
+
+-  ``name``: The name provided will be used as a label in the
+   ``stat.h5`` file for the blocked output data. Postprocessing tools
+   expect ``name="Density."``
+
+-  ``delta``: This sets the histogram grid size used to accumulate the
+   density:
+   ``delta="0.1 0.1 0.05"``\ :math:`\rightarrow 10\times 10\times 20`
+   grid,
+   ``delta="0.01 0.01 0.01"``\ :math:`\rightarrow 100\times 100\times 100`
+   grid. The density grid is written to a ``stat.h5`` file at the end of
+   each MC block. If you request many :math:`blocks` in a ``<qmc/>``
+   element, or select a large grid, the resulting ``stat.h5`` file could
+   be many gigabytes in size.
+
+-  ``*_min/*_max``: Can be used to select a subset of the simulation
+   cell for the density histogram grid. For example if a (cubic)
+   simulation cell is 20 Bohr on a side, setting ``*_min=5.0`` and
+   ``*_max=15.0`` will result in a density histogram grid spanning a
+   :math:`10\times 10\times 10` Bohr cube about the center of the box.
+   Use of ``x_min, x_max, y_min, y_max, z_min, z_max`` is only
+   appropriate for orthorhombic simulation cells with open boundary
+   conditions.
+
+-  When open boundary conditions are used, a ``<simulationcell/>``
+   element must be explicitly provided as the first subelement of
+   ``<qmcsystem/>`` for the density estimator to work. In this case the
+   molecule should be centered around the middle of the simulation cell
+   (:math:`L/2`) and not the origin (:math:`0` since the space within
+   the cell, and hence the density grid, is defined from :math:`0` to
+   :math:`L`).
+
+.. code-block::
+  :caption: QMCPXML,caption=Density estimator (uniform grid).
+  :name: Listing 24
+
+     <estimator name="Density" type="density" delta="0.05 0.05 0.05"/>
+
+Spin density estimator
+~~~~~~~~~~~~~~~~~~~~~~
+
+The spin density is similar to the total density described previously.  In this case, the sum over particles is performed independently for each spin component.
+
+``estimator type=spindensity`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +-----------------------+--------------+-----------------+-------------+-------------------------------+
+  | **Name**              | **Datatype** | **Values**      | **Default** | **Description**               |
+  +=======================+==============+=================+=============+===============================+
+  | ``type``:math:`^r`    | text         | **spindensity** |             | Must be spindensity           |
+  +-----------------------+--------------+-----------------+-------------+-------------------------------+
+  | ``name`:math:`^r`     | text         | *anything*      | any         | Unique name for estimator     |
+  +-----------------------+--------------+-----------------+-------------+-------------------------------+
+  | ``report``:math:`^o`  | boolean      | yes/no          | no          | Write setup details to stdout |
+  +-----------------------+--------------+-----------------+-------------+-------------------------------+
+
+parameters:
+
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | **Name**                   | **Datatype**     | **Values**           | **Default** | **Description**                  |
+  +============================+==================+======================+=============+==================================+
+  | ``grid``:math:`^o`         | integer array(3) | :math:`v_i>`         |             | Grid cell count                  |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``dr``:math:`^o`           | real array(3)    | :math:`v_i>`         |             | Grid cell spacing (Bohr)         |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``cell``:math:`^o`         | real array(3,3)  | *anything*           |             | Volume grid exists in            |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``corner``:math:`^o`       | real array(3)    | *anything*           |             | Volume corner location           |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``center``:math:`^o`       | real array (3)   | *anything*           |             | Volume center/origin location    |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``voronoi``:math:`^o`      | text             | ``particleset.name`` |             | *Under development*              |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+  | ``test_moves``:math:`^o`   | integer          | :math:`>=0`          | 0           | Test estimator with random moves |
+  +----------------------------+------------------+----------------------+-------------+----------------------------------+
+
+Additional information:
+
+-  ``name``: The name provided will be used as a label in the
+   ``stat.h5`` file for the blocked output data. Postprocessing tools
+   expect ``name="SpinDensity."``
+
+-  ``grid``: The grid sets the dimension of the histogram grid. Input
+   like ``<parameter name="grid"> 40 40 40 </parameter>`` requests a
+   :math:`40 \times 40\times 40` grid. The shape of individual grid
+   cells is commensurate with the supercell shape.
+
+-  ``dr``: The ``dr`` sets the real-space dimensions of grid cell edges
+   (Bohr units). Input like
+   ``<parameter name="dr"> 0.5 0.5 0.5 </parameter>`` in a supercell
+   with axes of length 10 Bohr each (but of arbitrary shape) will
+   produce a :math:`20\times 20\times 20` grid. The inputted ``dr``
+   values are rounded to produce an integer number of grid cells along
+   each supercell axis. Either ``grid`` or ``dr`` must be provided, but
+   not both.
+
+-  ``cell``: When ``cell`` is provided, a user-defined grid volume is
+   used instead of the global supercell. This must be provided if open
+   boundary conditions are used. Additionally, if ``cell`` is provided,
+   the user must specify where the volume is located in space in
+   addition to its size/shape (``cell``) using either the ``corner`` or
+   ``center`` parameters.
+
+-  ``corner``: The grid volume is defined as
+   :math:`corner+\sum_{d=1}^3u_dcell_d` with :math:`0<u_d<1` (“cell”
+   refers to either the supercell or user-provided cell).
+
+-  ``center``: The grid volume is defined as
+   :math:`center+\sum_{d=1}^3u_dcell_d` with :math:`-1/2<u_d<1/2`
+   (“cell” refers to either the supercell or user-provided cell).
+   ``corner/center`` can be used to shift the grid even if ``cell`` is
+   not specified. Simultaneous use of ``corner`` and ``center`` will
+   cause QMCPACK to abort.
+
+.. code-block::
+  :caption: Spin density estimator (uniform grid).
+  :name: Listing 25
+
+  <estimator type="spindensity" name="SpinDensity" report="yes">
+    <parameter name="grid"> 40 40 40 </parameter>
+  </estimator>
+
+.. code-block::
+  :caption: Spin density estimator (uniform grid centered about origin).
+  :name: Listing 26
+
+  <estimator type="spindensity" name="SpinDensity" report="yes">
+    <parameter name="grid">
+      20 20 20
+    </parameter>
+    <parameter name="center">
+      0.0 0.0 0.0
+    </parameter>
+    <parameter name="cell">
+      10.0  0.0  0.0
+       0.0 10.0  0.0
+       0.0  0.0 10.0
+    </parameter>
+  </estimator>
+
+Pair correlation function, :math:`g(r)`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The functional form of the species-resolved radial pair correlation function operator is
+
+.. math::
+  :label: eq34
+
+  g_{ss'}(r) = \frac{V}{4\pi r^2N_sN_{s'}}\sum_{i_s=1}^{N_s}\sum_{j_{s'}=1}^{N_{s'}}\delta(r-|r_{i_s}-r_{j_{s'}}|)\:,
+
+where :math:`N_s` is the number of particles of species :math:`s` and
+:math:`V` is the supercell volume. If :math:`s=s'`, then the sum is
+restricted so that :math:`i_s\ne j_s`.
+
+In QMCPACK, an estimate of :math:`g_{ss'}(r)` is obtained as a radial
+histogram with a set of :math:`N_b` uniform bins of width
+:math:`\delta r`. This can be expressed analytically as
+
+.. math::
+  :label: eq35
+
+  \tilde{g}_{ss'}(r) = \frac{V}{4\pi r^2N_sN_{s'}}\sum_{i=1}^{N_s}\sum_{j=1}^{N_{s'}}\frac{1}{\delta r}\int_{r-\delta r/2}^{r+\delta r/2}dr'\delta(r'-|r_{si}-r_{s'j}|)\:,
+
+where the radial coordinate :math:`r` is restricted to reside at the bin
+centers, :math:`\delta r/2, 3 \delta r/2, 5 \delta r/2, \ldots`.
+
+``estimator type=gofr`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | **Name**                      | **Datatype** | **Values**           | **Default**            | **Description**         |
+  +===============================+==============+======================+========================+=========================+
+  | ``type``:math:`^r`            | text         | **gofr**             |                        | Must be gofr            |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``name``:math:`^o`            | text         | *anything*           | any                    | *No current function*   |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``num_bin``:math:`^r`         | integer      | :math:`>1`           | 20                     | # of histogram bins     |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``rmax``:math:`^o`            | real         | :math:`>0`           | 10                     | Histogram extent (Bohr) |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``dr``:math:`^o`              | real         | :math:`0`            | 0.5                    | *No current function*   |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``debug``:math:`^o`           | boolean      | yes/no               | no                     | *No current function*   |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``target``:math:`^o`          | text         | ``particleset.name`` | ``hamiltonian.target`` | Quantum particles       |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+  | ``source/sources``:math:`^o`  | text array   | ``particleset.name`` | ``hamiltonian.target`` | Classical particles     |
+  +-------------------------------+--------------+----------------------+------------------------+-------------------------+
+
+Additional information:
+
+-  ``num_bin:`` This is the number of bins in each species pair radial
+   histogram.
+
+-  ``rmax:`` This is the maximum pair distance included in the
+   histogram. The uniform bin width is
+   :math:`\delta r=\texttt{rmax/num\_bin}`. If periodic boundary
+   conditions are used for any dimension of the simulation cell, then
+   the default value of ``rmax`` is the simulation cell radius instead
+   of 10 Bohr. For open boundary conditions, the volume (:math:`V`) used
+   is 1.0 Bohr\ :math:`^3`.
+
+-  ``source/sources:`` If unspecified, only pair correlations between
+   each species of quantum particle will be measured. For each classical
+   particleset specified by ``source/sources``, additional pair
+   correlations between each quantum and classical species will be
+   measured. Typically there is only one classical particleset (e.g.,
+   ``source="ion0"``), but there can be several in principle (e.g.,
+   ``sources="ion0 ion1 ion2"``).
+
+-  ``target:`` The default value is the preferred usage (i.e.,
+   ``target`` does not need to be provided).
+
+-  Data is output to the ``stat.h5`` for each QMC subrun. Individual
+   histograms are named according to the quantum particleset and index
+   of the pair. For example, if the quantum particleset is named “e" and
+   there are two species (up and down electrons, say), then there will
+   be three sets of histogram data in each ``stat.h5`` file named
+   ``gofr_e_0_0``, ``gofr_e_0_1``, and ``gofr_e_1_1`` for up-up,
+   up-down, and down-down correlations, respectively.
+
+.. code-block::
+  :caption: Pair correlation function estimator element.
+  :name: Listing 27
+
+  <estimator type="gofr" name="gofr" num_bin="200" rmax="3.0" />
+
+.. code-block::
+  :caption: Pair correlation function estimator element with additional electron-ion correlations.
+  :name: Listing 28
+
+  <estimator type="gofr" name="gofr" num_bin="200" rmax="3.0" source="ion0" />
+
+Static structure factor, :math:`S(k)`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let
+:math:`\rho^e_{\mathbf{k}}=\sum_j e^{i \mathbf{k}\cdot\mathbf{r}_j^e}`
+be the Fourier space electron density, with :math:`\mathbf{r}^e_j` being
+the coordinate of the j-th electron. :math:`\mathbf{k}` is a wavevector
+commensurate with the simulation cell. QMCPACK allows the user to
+accumulate the static electron structure factor :math:`S(\mathbf{k})` at
+all commensurate :math:`\mathbf{k}` such that
+:math:`|\mathbf{k}| \leq (LR\_DIM\_CUTOFF) r_c`. :math:`N^e` is the
+number of electrons, ``LR_DIM_CUTOFF`` is the optimized breakup
+parameter, and :math:`r_c` is the Wigner-Seitz radius. It is defined as
+follows:
+
+.. math::
+  :label: eq36
+
+  S(\mathbf{k}) = \frac{1}{N^e}\langle \rho^e_{-\mathbf{k}} \rho^e_{\mathbf{k}} \rangle\:.
+
+``estimator type=sk`` element:
+
+  +------------------+----------------------+
+  | parent elements: | ``hamiltonian, qmc`` |
+  +------------------+----------------------+
+  | child elements:  | *None*               |
+  +------------------+----------------------+
+
+attributes:
+
+  +---------------------+--------------+------------+-------------+-----------------------------------------------------+
+  | **Name**            | **Datatype** | **Values** | **Default** | **Description**                                     |
+  +=====================+==============+============+=============+=====================================================+
+  | ``type``:math:`^r`  | text         | sk         |             | Must sk                                             |
+  +---------------------+--------------+------------+-------------+-----------------------------------------------------+
+  | ``name``:math:`^r`  | text         | *anything* | any         | Unique name for estimator                           |
+  +---------------------+--------------+------------+-------------+-----------------------------------------------------+
+  | ``hdf5``:math:`^o`  | boolean      | yes/no     | no          |  Output to ``stat.h5`` (yes) or ``scalar.dat`` (no) |
+  +---------------------+--------------+------------+-------------+-----------------------------------------------------+
+
+Additional information:
+
+-  ``name:`` This is the unique name for estimator instance. A data
+   structure of the same name will appear in ``stat.h5`` output files.
+
+-  ``hdf5:`` If ``hdf5==yes``, output data for :math:`S(k)` is directed
+   to the ``stat.h5`` file (recommended usage). If ``hdf5==no``, the
+   data is instead routed to the ``scalar.dat`` file, resulting in many
+   columns of data with headings prefixed by ``name`` and postfixed by
+   the k-point index (e.g., ``sk_0 sk_1 …sk_1037 …``).
+
+-  This estimator only works in periodic boundary conditions. Its
+   presence in the input file is ignored otherwise.
+
+-  This is not a species-resolved structure factor. Additionally, for
+   :math:`\mathbf{k}` vectors commensurate with the unit cell,
+   :math:`S(\mathbf{k})` will include contributions from the static
+   electronic density, thus meaning it will not accurately measure the
+   electron-electron density response.
+
+.. code-block::
+  :caption: Static structure factor estimator element.
+  :name: Listing 29
+
+    <estimator type="sk" name="sk" hdf5="yes"/>
+
+Static structure factor, ``SkAll``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
