@@ -164,6 +164,7 @@
 <li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
 </ul>
 
             
@@ -252,7 +253,7 @@ adds the pw2qmcpack utility
 <li><p>Run the cmake configure step and build with make
 (<a class="reference internal" href="#cmake"><span class="std std-ref">Building with CMake</span></a> and <a class="reference internal" href="#cmakequick"><span class="std std-ref">Quick build instructions (try first)</span></a>). Examples for
 common systems are given in
-<span class="xref std std-ref">installexamples</span>.</p></li>
+<a class="reference internal" href="#installexamples"><span class="std std-ref">Installation instructions for common workstations and supercomputers</span></a>.</p></li>
 <li><p>Run the tests to verify QMCPACK
 (<a class="reference internal" href="#testing"><span class="std std-ref">Testing and validation of QMCPACK</span></a>).</p></li>
 <li><p>Build the ppconvert utility in QMCPACK
@@ -430,7 +431,7 @@ your system. For example, with OpenMPI use</p>
 such that you should check that the autoconfiguration system has made
 good choices and picked optimized libraries and compiler settings
 before doing significant production. That is, check the following details. We
-give examples for a number of common systems in <span class="xref std std-ref">installexamples</span>.</p>
+give examples for a number of common systems in <a class="reference internal" href="#installexamples"><span class="std std-ref">Installation instructions for common workstations and supercomputers</span></a>.</p>
 </div>
 <div class="section" id="environment-variables">
 <span id="envvar"></span><h3>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
@@ -745,7 +746,7 @@ appropriate programming environment should be sufficient.</p>
 </div>
 </div>
 <div class="section" id="installation-instructions-for-common-workstations-and-supercomputers">
-<h2>Installation instructions for common workstations and supercomputers<a class="headerlink" href="#installation-instructions-for-common-workstations-and-supercomputers" title="Permalink to this headline">¶</a></h2>
+<span id="installexamples"></span><h2>Installation instructions for common workstations and supercomputers<a class="headerlink" href="#installation-instructions-for-common-workstations-and-supercomputers" title="Permalink to this headline">¶</a></h2>
 <p>This section describes how to build QMCPACK on various common systems
 including multiple Linux distributions, Apple OS X, and various
 supercomputers. The examples should serve as good starting points for
@@ -756,7 +757,7 @@ to these recipes. See <a class="reference internal" href="#buildperformance"><sp
 points to check to obtain highest performance and
 <a class="reference internal" href="#troubleshoot"><span class="std std-ref">Troubleshooting the installation</span></a> for troubleshooting hints.</p>
 <div class="section" id="installing-on-ubuntu-linux-or-other-apt-get-based-distributions">
-<h3>Installing on Ubuntu Linux or other apt-get–based distributions<a class="headerlink" href="#installing-on-ubuntu-linux-or-other-apt-get-based-distributions" title="Permalink to this headline">¶</a></h3>
+<span id="buildubuntu"></span><h3>Installing on Ubuntu Linux or other apt-get–based distributions<a class="headerlink" href="#installing-on-ubuntu-linux-or-other-apt-get-based-distributions" title="Permalink to this headline">¶</a></h3>
 <p>The following is designed to obtain a working QMCPACK build on, for example, a
 student laptop, starting from a basic Linux installation with none of
 the developer tools installed. Fortunately, all the required packages
@@ -1092,7 +1093,7 @@ software versions were present:</p>
 <div class="section" id="installing-on-windows">
 <h3>Installing on Windows<a class="headerlink" href="#installing-on-windows" title="Permalink to this headline">¶</a></h3>
 <p>Install the Windows Subsystem for Linux and Bash on Windows.
-Open a bash shell and follow the install directions for Ubuntu in <span class="xref std std-ref">buildubuntu</span>.</p>
+Open a bash shell and follow the install directions for Ubuntu in <a class="reference internal" href="#buildubuntu"><span class="std std-ref">Installing on Ubuntu Linux or other apt-get–based distributions</span></a>.</p>
 </div>
 </div>
 <div class="section" id="installing-via-spack">
@@ -1543,7 +1544,7 @@ calculations. For example, although the calculations might fit in cache,
 there will be essentially no vectorization because of the small electron
 counts. <strong>These tests should therefore not be used for any benchmarking or
 performance analysis</strong>. Example runs that can be used for testing performance are described in
-<span class="xref std std-ref">perftests</span>.</p>
+<a class="reference internal" href="#perftests"><span class="std std-ref">Performance tests</span></a>.</p>
 <div class="section" id="deterministic-and-unit-tests">
 <h3>Deterministic and unit tests<a class="headerlink" href="#deterministic-and-unit-tests" title="Permalink to this headline">¶</a></h3>
 <p>QMCPACK has a set of deterministic tests, predominantly unit tests.
@@ -1594,7 +1595,7 @@ You can test the whole <code class="docutils literal notranslate"><span class="p
 toolchain for plane wave–generated wavefunctions.</p>
 </div>
 <div class="section" id="performance-tests">
-<h3>Performance tests<a class="headerlink" href="#performance-tests" title="Permalink to this headline">¶</a></h3>
+<span id="perftests"></span><h3>Performance tests<a class="headerlink" href="#performance-tests" title="Permalink to this headline">¶</a></h3>
 <p>Performance tests representative of real research runs are included in the
 tests/performance directory. They can be used for benchmarking, comparing machine
 performance, or assessing optimizations. This is in
@@ -1864,7 +1865,7 @@ details, or contact a developer.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, John Batson
+        &copy; Copyright 2020, QMCPACK Developers
 
     </p>
   </div>

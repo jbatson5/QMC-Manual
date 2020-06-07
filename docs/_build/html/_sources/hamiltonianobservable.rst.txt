@@ -518,7 +518,7 @@ section (e.g., during VMC only).
   +------------------+------------------+-----------------------------------------------------------+
   |                  | chiesa           | Chiesa-Ceperley-Martin-Holzmann kinetic energy correction |
   +------------------+------------------+-----------------------------------------------------------+
-  |                  | Force            | Family of "force" estimators (see :ref:`force-est`        |
+  |                  | Force            | Family of "force" estimators (see :ref:`force-est`)       |
   +------------------+------------------+-----------------------------------------------------------+
   |                  | ForwardWalking   | Forward walking values for existing estimators            |
   +------------------+------------------+-----------------------------------------------------------+

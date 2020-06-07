@@ -437,7 +437,7 @@ are not covered.</p></li>
 <p>When periodic boundary conditions are selected, Ewald summation is used automatically:</p>
 <div class="math notranslate nohighlight" id="equation-eq30">
 <span class="eqno">(30)<a class="headerlink" href="#equation-eq30" title="Permalink to this equation">¶</a></span>\[V_c^{pbc} = \sum_{i&lt;j}\frac{q_iq_j}{\left|{r_i-r_j}\right|} + \frac{1}{2}\sum_{L\ne0}\sum_{i,j}\frac{q_iq_j}{\left|{r_i-r_j+L}\right|}\:.\]</div>
-<p>The sum indexed by <span class="math notranslate nohighlight">\(L\)</span> is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see <a class="bibtex reference internal" href="#natoli1995" id="id1">[NC95]</a>) for details.</p>
+<p>The sum indexed by <span class="math notranslate nohighlight">\(L\)</span> is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see <a class="bibtex reference internal" href="simulationcell.html#natoli1995" id="id1">[NC95]</a>) for details.</p>
 <p>For information on how to set the boundary conditions, consult <a class="reference internal" href="simulationcell.html#simulationcell"><span class="std std-ref">Specifying the system to be simulated</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=coulomb</span></code> element:</p>
 <blockquote>
@@ -1013,7 +1013,7 @@ section (e.g., during VMC only).</p>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p>Force</p></td>
-<td><p>Family of “force” estimators (see <a class="reference internal" href="#force-est"><span class="std std-ref">“Force” estimators</span></a></p></td>
+<td><p>Family of “force” estimators (see <a class="reference internal" href="#force-est"><span class="std std-ref">“Force” estimators</span></a>)</p></td>
 </tr>
 <tr class="row-even"><td></td>
 <td><p>ForwardWalking</p></td>
@@ -3253,7 +3253,7 @@ smaller biases and larger variances.</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, John Batson
+        &copy; Copyright 2020, QMCPACK Developers
 
     </p>
   </div>

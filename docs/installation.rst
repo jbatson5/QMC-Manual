@@ -606,7 +606,7 @@ architecture. Using ``make VERBOSE=1`` is a useful way to check the
 final compilation options.  If on a Cray machine, selection of the
 appropriate programming environment should be sufficient.
 
-.. _installexamples
+.. _installexamples:
 
 Installation instructions for common workstations and supercomputers
 --------------------------------------------------------------------
@@ -621,7 +621,7 @@ to these recipes. See :ref:`buildperformance` for key
 points to check to obtain highest performance and
 :ref:`troubleshoot` for troubleshooting hints.
 
-.. _buildubuntu
+.. _buildubuntu:
 
 Installing on Ubuntu Linux or other apt-get--based distributions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1597,7 +1597,7 @@ You can test the whole ``pw > pw2qmcpack > qmcpack`` workflow by
 This provides a very solid test of the entire QMC
 toolchain for plane wave--generated wavefunctions.
 
-.. _perftests
+.. _perftests:
 
 Performance tests
 ~~~~~~~~~~~~~~~~~
