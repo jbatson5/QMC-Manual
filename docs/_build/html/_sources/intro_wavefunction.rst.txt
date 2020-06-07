@@ -424,7 +424,7 @@ Attribute:
 
 ``basicGroup`` element:
 
-.. _table7
+.. _table7:
 .. table::
 
   +-----------------+-------------------+
@@ -445,7 +445,7 @@ Attribute:
 | ``n/l/m/s`` | Integer      | *Any*      | 0           | Quantum numbers of basisGroup |
 +-------------+--------------+------------+-------------+-------------------------------+
 
-.. centered:: Table 7 Options for the ``basisGroup`` xml-block.
+.. centered:: :numref:`table7` Options for the ``basisGroup`` xml-block.
 
 .. code-block::
   :caption: Basic input block for ``slaterdeterminant`` with an atom-centered ``sposet``.

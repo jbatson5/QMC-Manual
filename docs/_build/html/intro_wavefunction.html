@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Hamiltonian and Observables" href="hamiltonianobservable.html" />
     <link rel="prev" title="Specifying the system to be simulated" href="simulationcell.html" /> 
 </head>
 
@@ -146,6 +147,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
 </ul>
 
             
@@ -309,7 +311,7 @@ The input xml block for <code class="docutils literal notranslate"><span class="
 <li><p><code class="docutils literal notranslate"><span class="pre">delay_rank</span></code> This option enables delayed updates of the Slater matrix inverse when particle-by-particle move is used.
 By default or if <code class="docutils literal notranslate"><span class="pre">delay_rank=0</span></code> given in the input file, QMCPACK sets 1 for Slater matrices with a leading dimension <span class="math notranslate nohighlight">\(&lt;192\)</span> and 32 otherwise.
 <code class="docutils literal notranslate"><span class="pre">delay_rank=1</span></code> uses the Fahy’s variant <a class="bibtex reference internal" href="#fahy1990" id="id1">[FWL90]</a> of the Sherman-Morrison rank-1 update, which is mostly using memory bandwidth-bound BLAS-2 calls.
-With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <a class="bibtex reference internal" href="running.html#luo2018delayedupdate" id="id2">[LK18]</a><a class="bibtex reference internal" href="running.html#mcdaniel2017" id="id3">[MDAzevedoL+17]</a> turns most of the computation to compute bound BLAS-3 calls.
+With <code class="docutils literal notranslate"><span class="pre">delay_rank&gt;1</span></code>, the delayed update algorithm <span class="bibtex" id="id2">[Luo2018delayedupdate]</span><span class="bibtex" id="id3">[McDaniel2017]</span> turns most of the computation to compute bound BLAS-3 calls.
 Tuning this parameter is highly recommended to gain the best performance on medium-to-large problem sizes (<span class="math notranslate nohighlight">\(&gt;200\)</span> electrons).
 We have seen up to an order of magnitude speedup on large problem sizes.
 When studying the performance of QMCPACK, a scan of this parameter is required and we recommend starting from 32.
@@ -781,7 +783,7 @@ A list of options for <code class="docutils literal notranslate"><span class="pr
 </table>
 <p class="centered">
 <strong>Table 6 Options for the <code class="docutils literal notranslate"><span class="pre">atomicBasisSet</span></code> xml-block.</strong></p><p><code class="docutils literal notranslate"><span class="pre">basicGroup</span></code> element:</p>
-<table class="docutils align-default">
+<table class="docutils align-default" id="table7">
 <colgroup>
 <col style="width: 47%" />
 <col style="width: 53%" />
@@ -834,7 +836,7 @@ A list of options for <code class="docutils literal notranslate"><span class="pr
 </tbody>
 </table>
 <p class="centered">
-<strong>Table 7 Options for the <code class="docutils literal notranslate"><span class="pre">basisGroup</span></code> xml-block.</strong></p><div class="literal-block-wrapper docutils container" id="listing-5">
+<strong><a class="reference internal" href="#table7"><span class="std std-numref">Table 7</span></a> Options for the <code class="docutils literal notranslate"><span class="pre">basisGroup</span></code> xml-block.</strong></p><div class="literal-block-wrapper docutils container" id="listing-5">
 <div class="code-block-caption"><span class="caption-number">Listing 5 </span><span class="caption-text">Basic input block for <code class="docutils literal notranslate"><span class="pre">slaterdeterminant</span></code> with an atom-centered <code class="docutils literal notranslate"><span class="pre">sposet</span></code>.</span><a class="headerlink" href="#listing-5" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="o">&lt;</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
   <span class="o">&lt;/</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
@@ -1083,7 +1085,7 @@ In practice, we have seen that using a meshfactor=0.5 is often possible and achi
 <li><p><code class="docutils literal notranslate"><span class="pre">spline_radius}</span> <span class="pre">and</span> <span class="pre">``spline_npoints</span></code> are optional. By default, they are calculated based on <code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code> and a grid displacement 0.02 bohr.
 If users prefer inputing them, it is required that <code class="docutils literal notranslate"><span class="pre">cutoff_radius</span></code> &lt;=  <code class="docutils literal notranslate"><span class="pre">spline_radius</span></code> <span class="math notranslate nohighlight">\(-\)</span> 2 <span class="math notranslate nohighlight">\(\times\)</span> <code class="docutils literal notranslate"><span class="pre">spline_radius</span></code>/(<code class="docutils literal notranslate"><span class="pre">spline_npoints</span></code> <span class="math notranslate nohighlight">\(-\)</span> 1).</p></li>
 </ul>
-<p>In addition, the hybrid orbital representation allows extra optimization to speed up the nonlocal pseudopotential evaluation using the batched algorithm listed in <span class="xref std std-ref">nlpp</span>.</p>
+<p>In addition, the hybrid orbital representation allows extra optimization to speed up the nonlocal pseudopotential evaluation using the batched algorithm listed in <a class="reference internal" href="hamiltonianobservable.html#nlpp"><span class="std std-ref">Pseudopotentials</span></a>.</p>
 </div>
 <div class="section" id="plane-wave-basis-sets">
 <span id="pwbasis"></span><h3>Plane-wave basis sets<a class="headerlink" href="#plane-wave-basis-sets" title="Permalink to this headline">¶</a></h3>
@@ -3163,6 +3165,8 @@ examples in “tests/models/sho.”</p></li>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hamiltonianobservable.html" class="btn btn-neutral float-right" title="Hamiltonian and Observables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="simulationcell.html" class="btn btn-neutral float-left" title="Specifying the system to be simulated" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

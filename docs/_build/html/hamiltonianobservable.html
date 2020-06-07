@@ -108,8 +108,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#species-kinetic-energy">Species kinetic energy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lattice-deviation-estimator">Lattice deviation estimator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#energy-density-estimator">Energy density estimator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#one-body-density-matrix">One body density matrix</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#forward-walking-estimators">Forward-Walking Estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#force-estimators">“Force” estimators</a></li>
 </ul>
 </li>
 </ul>
@@ -434,7 +437,7 @@ are not covered.</p></li>
 <p>When periodic boundary conditions are selected, Ewald summation is used automatically:</p>
 <div class="math notranslate nohighlight" id="equation-eq30">
 <span class="eqno">(30)<a class="headerlink" href="#equation-eq30" title="Permalink to this equation">¶</a></span>\[V_c^{pbc} = \sum_{i&lt;j}\frac{q_iq_j}{\left|{r_i-r_j}\right|} + \frac{1}{2}\sum_{L\ne0}\sum_{i,j}\frac{q_iq_j}{\left|{r_i-r_j+L}\right|}\:.\]</div>
-<p>The sum indexed by <span class="math notranslate nohighlight">\(L\)</span> is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see <a class="bibtex reference internal" href="simulationcell.html#natoli1995" id="id1">[NC95]</a>) for details.</p>
+<p>The sum indexed by <span class="math notranslate nohighlight">\(L\)</span> is over all nonzero simulation cell lattice vectors.  In practice, the Ewald sum is broken into short- and long-range parts in a manner optimized for efficiency (see <a class="bibtex reference internal" href="#natoli1995" id="id1">[NC95]</a>) for details.</p>
 <p>For information on how to set the boundary conditions, consult <a class="reference internal" href="simulationcell.html#simulationcell"><span class="std std-ref">Specifying the system to be simulated</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pairpot</span> <span class="pre">type=coulomb</span></code> element:</p>
 <blockquote>
@@ -575,7 +578,7 @@ shown for simplicity.</p>
 <span class="math notranslate nohighlight">\(\Psi_T^{-1}V^{PP}\Psi_T\)</span> requires additional angular integrals.
 These integrals are evaluated on a randomly shifted angular grid. The
 size of this grid is determined by <span class="math notranslate nohighlight">\(\ell_{max}\)</span>. See
-<span class="bibtex" id="id2">[Mitas1991]</span> for further detail.</p>
+<a class="bibtex reference internal" href="#mitas1991" id="id2">[MSC91]</a> for further detail.</p>
 <p>uses the FSAtom pseudopotential file format associated with the “Free
 Software Project for Atomic-scale Simulations” initiated in 2002. See
 <a class="reference external" href="http://www.tddft.org/fsatom/manifest.php">http://www.tddft.org/fsatom/manifest.php</a> for more information. The
@@ -712,7 +715,7 @@ then one component after another. Internally, it uses
 representation has an extra optimization enabled when using the
 batched algorithm.</p></li>
 <li><p><strong>DLA</strong> Determinant localization approximation
-(DLA) <span class="bibtex" id="id3">[Zen2019DLA]</span> uses only the fermionic part of
+(DLA) <a class="bibtex reference internal" href="#zen2019dla" id="id3">[ZBMAlfe19]</a> uses only the fermionic part of
 the wavefunction when calculating NLPP.</p></li>
 </ul>
 <div class="literal-block-wrapper docutils container" id="listing-19">
@@ -1010,7 +1013,7 @@ section (e.g., during VMC only).</p>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p>Force</p></td>
-<td><p>Family of “force” estimators (see <span class="xref std std-ref">force-est</span></p></td>
+<td><p>Family of “force” estimators (see <a class="reference internal" href="#force-est"><span class="std std-ref">“Force” estimators</span></a></p></td>
 </tr>
 <tr class="row-even"><td></td>
 <td><p>ForwardWalking</p></td>
@@ -1071,7 +1074,7 @@ section (e.g., during VMC only).</p>
 </div></blockquote>
 <div class="section" id="chiesa-ceperley-martin-holzmann-kinetic-energy-correction">
 <h3>Chiesa-Ceperley-Martin-Holzmann kinetic energy correction<a class="headerlink" href="#chiesa-ceperley-martin-holzmann-kinetic-energy-correction" title="Permalink to this headline">¶</a></h3>
-<p>This estimator calculates a finite-size correction to the kinetic energy following the formalism laid out in <span class="bibtex" id="id4">[Chiesa2006]</span>.  The total energy can be corrected for finite-size effects by using this estimator in conjunction with the MPC correction.</p>
+<p>This estimator calculates a finite-size correction to the kinetic energy following the formalism laid out in <a class="bibtex reference internal" href="#chiesa2006" id="id4">[CCMH06]</a>.  The total energy can be corrected for finite-size effects by using this estimator in conjunction with the MPC correction.</p>
 <p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=chiesa</span></code> element:</p>
 <blockquote>
 <div><table class="docutils align-default">
@@ -2057,9 +2060,1178 @@ twist-averaged boundary conditions, the energy density is formally
 correct only for either a set of supercell k-points that correspond to
 real-valued wavefunctions or a k-point set that has inversion symmetry
 around a k-point having a real-valued wavefunction. For more information
-about the energy density, see <span class="bibtex" id="id5">[Krogel2013]</span>.</p>
+about the energy density, see <a class="bibtex reference internal" href="#krogel2013" id="id5">[KYKC13]</a>.</p>
 <p>In QMCPACK, the energy density can be accumulated on piecewise uniform 3D grids in generalized Cartesian, cylindrical, or spherical coordinates.  The energy density integrated within Voronoi volumes centered on ion positions is also available.  The total particle number density is also accumulated on the same grids by the energy density estimator for convenience so that related quantities, such as the regional energy per particle, can be computed easily.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=EnergyDensity</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">reference_points,</span> <span class="pre">spacegrid</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 14%" />
+<col style="width: 22%" />
+<col style="width: 13%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>EnergyDensity</strong></p></td>
+<td></td>
+<td><p>Must be EnergyDensity</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dynamic</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td></td>
+<td><p>Identify electrons</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">static</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">particleset.name</span></code></p></td>
+<td></td>
+<td><p>Identify ions</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name:</span></code> Must be unique. A dataset with blocked statistical data for
+the energy density will appear in the <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> files labeled as
+<code class="docutils literal notranslate"><span class="pre">name</span></code>.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-33">
+<div class="code-block-caption"><span class="caption-number">Listing 33 </span><span class="caption-text">Energy density estimator accumulated on a <span class="math notranslate nohighlight">\(20 \times  10 \times 10\)</span> grid over the simulation cell.</span><a class="headerlink" href="#listing-33" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;EnergyDensity&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;EDcell&quot;</span> <span class="n">dynamic</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">static</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">spacegrid</span> <span class="n">coord</span><span class="o">=</span><span class="s2">&quot;cartesian&quot;</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">origin</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;zero&quot;</span><span class="o">/&gt;</span>
+     <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;a1&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;.5&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;x&quot;</span> <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;-1 (.05) 1&quot;</span><span class="o">/&gt;</span>
+     <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;a2&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;.5&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;y&quot;</span> <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;-1 (.1) 1&quot;</span><span class="o">/&gt;</span>
+     <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;a3&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;.5&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;z&quot;</span> <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;-1 (.1) 1&quot;</span><span class="o">/&gt;</span>
+   <span class="o">&lt;/</span><span class="n">spacegrid</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
 </div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-34">
+<div class="code-block-caption"><span class="caption-number">Listing 34 </span><span class="caption-text">Energy density estimator accumulated within spheres of radius 6.9 Bohr centered on the first and second atoms in the ion0 particleset.</span><a class="headerlink" href="#listing-34" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;EnergyDensity&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;EDatom&quot;</span> <span class="n">dynamic</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">static</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">reference_points</span> <span class="n">coord</span><span class="o">=</span><span class="s2">&quot;cartesian&quot;</span><span class="o">&gt;</span>
+    <span class="n">r1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+    <span class="n">r2</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span>
+    <span class="n">r3</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span>
+  <span class="o">&lt;/</span><span class="n">reference_points</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">spacegrid</span> <span class="n">coord</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">origin</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;ion01&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;r&quot;</span>     <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r2&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;phi&quot;</span>   <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r3&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;theta&quot;</span> <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">spacegrid</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">spacegrid</span> <span class="n">coord</span><span class="o">=</span><span class="s2">&quot;spherical&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">origin</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;ion02&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;r&quot;</span>     <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r2&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;phi&quot;</span>   <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="n">axis</span> <span class="n">p1</span><span class="o">=</span><span class="s2">&quot;r3&quot;</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;6.9&quot;</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;theta&quot;</span> <span class="n">grid</span><span class="o">=</span><span class="s2">&quot;0 1&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">spacegrid</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-35">
+<div class="code-block-caption"><span class="caption-number">Listing 35 </span><span class="caption-text">Energy density estimator accumulated within Voronoi polyhedra centered on the ions.</span><a class="headerlink" href="#listing-35" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;EnergyDensity&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;EDvoronoi&quot;</span> <span class="n">dynamic</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">static</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">spacegrid</span> <span class="n">coord</span><span class="o">=</span><span class="s2">&quot;voronoi&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;reference_points/&gt;</span></code> element provides a set of points for later
+use in specifying the origin and coordinate axes needed to construct a
+spatial histogramming grid. Several reference points on the surface of
+the simulation cell (see <a class="reference internal" href="#table8"><span class="std std-numref">Table 8</span></a>), as well as the
+positions of the ions (see the <code class="docutils literal notranslate"><span class="pre">energydensity.static</span></code> attribute), are
+made available by default. The reference points can be used, for
+example, to construct a cylindrical grid along a bond with the origin on
+the bond center.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">reference_points</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=EnergyDensity</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 15%" />
+<col style="width: 17%" />
+<col style="width: 14%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">coord</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>Cartesian/cell</p></td>
+<td></td>
+<td><p>Specify coordinate system</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>body text: The body text is a line formatted list of points with labels</p>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">coord:</span></code> If <code class="docutils literal notranslate"><span class="pre">coord=cartesian</span></code>, labeled points are in Cartesian
+(x,y,z) format in units of Bohr. If <code class="docutils literal notranslate"><span class="pre">coord=cell</span></code>, then labeled
+points are in units of the simulation cell axes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">body</span> <span class="pre">text:</span></code> The list of points provided in the body text are line
+formatted, with four entries per line (<em>label</em> <em>coor1</em> <em>coor2</em>
+<em>coor3</em>). A set of points referenced to the simulation cell is
+available by default (see <a class="reference internal" href="#table8"><span class="std std-numref">Table 8</span></a>). If
+<code class="docutils literal notranslate"><span class="pre">energydensity.static</span></code> is provided, the location of each individual
+ion is also available (e.g., if <code class="docutils literal notranslate"><span class="pre">energydensity.static=ion0</span></code>, then
+the location of the first atom is available with label ion01, the
+second with ion02, etc.). All points can be used by label when
+constructing spatial histogramming grids (see the following
+<code class="docutils literal notranslate"><span class="pre">spacegrid</span></code> element) used to collect energy densities.</p></li>
+</ul>
+<table class="docutils align-default" id="table8">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 48%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">label</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">point</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">description</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zero</span></code></p></td>
+<td><p>0 0 0</p></td>
+<td><p>Cell center</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a1</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_1\)</span></p></td>
+<td><p>Cell axis 1</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a2</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_2\)</span></p></td>
+<td><p>Cell axis 2</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a3</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_3\)</span></p></td>
+<td><p>Cell axis 3</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f1p</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_1\)</span>/2</p></td>
+<td><p>Cell face 1+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">f1m</span></code></p></td>
+<td><p>-<span class="math notranslate nohighlight">\(a_1\)</span>/2</p></td>
+<td><p>Cell face 1-</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f2p</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_2\)</span>/2</p></td>
+<td><p>Cell face 2+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">f2m</span></code></p></td>
+<td><p>-<span class="math notranslate nohighlight">\(a_2\)</span>/2</p></td>
+<td><p>Cell face 2-</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">f3p</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(a_3\)</span>/2</p></td>
+<td><p>Cell face 3+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">f3m</span></code></p></td>
+<td><p>-<span class="math notranslate nohighlight">\(a_3\)</span>/2</p></td>
+<td><p>Cell face 3-</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cppp</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((a_1+a_2+a_3)/2\)</span></p></td>
+<td><p>Cell corner +,+,+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cppm</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((a_1+a_2-a_3)/2\)</span></p></td>
+<td><p>Cell corner +,+,-</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cpmp</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((a_1-a_2+a_3)/2\)</span></p></td>
+<td><p>Cell corner +,-,+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmpp</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((-a_1+a_2+a_3)/2\)</span></p></td>
+<td><p>Cell corner -,+,+</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cpmm</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((a_1-a_2-a_3)/2\)</span></p></td>
+<td><p>Cell corner +,-,-</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmpm</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((-a_1+a_2-a_3)/2\)</span></p></td>
+<td><p>Cell corner -,+,-</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmmp</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((-a_1-a_2+a_3)/2\)</span></p></td>
+<td><p>Cell corner -,-,+</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmmm</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\((-a_1-a_2-a_3)/2\)</span></p></td>
+<td><p>Cell corner -,-,-</p></td>
+</tr>
+</tbody>
+</table>
+<p class="centered">
+<strong>Table 8 Reference points available by default. Vectors <span class="math notranslate nohighlight">\(a_1\)</span>, <span class="math notranslate nohighlight">\(a_2\)</span>, and <span class="math notranslate nohighlight">\(a_3\)</span> refer to the simulation cell axes. The representation of the cell is centered around <code class="docutils literal notranslate"><span class="pre">zero</span></code>.</strong></p><p>The <code class="docutils literal notranslate"><span class="pre">&lt;spacegrid/&gt;</span></code> element is used to specify a spatial histogramming
+grid for the energy density. Grids are constructed based on a set of,
+potentially nonorthogonal, user-provided coordinate axes. The axes are
+based on information available from <code class="docutils literal notranslate"><span class="pre">reference_points</span></code>. Voronoi grids
+are based only on nearest neighbor distances between electrons and ions.
+Any number of space grids can be provided to a single energy density
+estimator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">spacegrid</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=EnergyDensity</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">origin,</span> <span class="pre">axis</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">coord</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>Cartesian</p></td>
+<td></td>
+<td><p>Specify coordinate system</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>cylindrical</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td></td>
+<td><p>spherical</p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td></td>
+<td><p>Voronoi</p></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;origin/&gt;</span></code> element gives the location of the origin for a
+non-Voronoi grid.</p>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">p1/p2/fraction:</span></code> The location of the origin is set to
+<code class="docutils literal notranslate"><span class="pre">p1+fraction*(p2-p1)</span></code>. If only <code class="docutils literal notranslate"><span class="pre">p1</span></code> is provided, the origin is at
+<code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">origin</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spacegrid</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 13%" />
+<col style="width: 27%" />
+<col style="width: 13%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">p1</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">reference_point.label</span></code></p></td>
+<td></td>
+<td><p>Select end point</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">p2</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">reference_point.label</span></code></p></td>
+<td></td>
+<td><p>Select end point</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fraction</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td></td>
+<td><p>0</p></td>
+<td><p>Interpolation fraction</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">&lt;axis/&gt;</span></code> element represents a coordinate axis used to construct the, possibly curved, coordinate system for the histogramming grid.  Three <code class="docutils literal notranslate"><span class="pre">&lt;axis/&gt;</span></code> elements must be provided to a non-Voronoi <code class="docutils literal notranslate"><span class="pre">&lt;spacegrid/&gt;</span></code> element.</p>
+<p><code class="docutils literal notranslate"><span class="pre">axis</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">spacegrid</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 14%" />
+<col style="width: 28%" />
+<col style="width: 13%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">label</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>See below</em></p></td>
+<td></td>
+<td><p>Axis/dimension label</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">grid</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td><p>“0 1”</p></td>
+<td><p>Grid ranges/intervals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">p1</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">reference_point.label</span></code></p></td>
+<td></td>
+<td><p>Select end point</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">p2</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">reference_point.label</span></code></p></td>
+<td></td>
+<td><p>Select end point</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td></td>
+<td></td>
+<td><p>Interpolation fraction</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">label:</span></code> The allowed set of axis labels depends on the coordinate
+system (i.e., <code class="docutils literal notranslate"><span class="pre">spacegrid.coord</span></code>). Labels are <code class="docutils literal notranslate"><span class="pre">x/y/z</span></code> for
+<code class="docutils literal notranslate"><span class="pre">coord=cartesian</span></code>, <code class="docutils literal notranslate"><span class="pre">r/phi/z</span></code> for <code class="docutils literal notranslate"><span class="pre">coord=cylindrical</span></code>,
+<code class="docutils literal notranslate"><span class="pre">r/phi/theta</span></code> for <code class="docutils literal notranslate"><span class="pre">coord=spherical</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p1/p2/scale:</span></code> The axis vector is set to <code class="docutils literal notranslate"><span class="pre">p1+scale*(p2-p1)</span></code>. If
+only <code class="docutils literal notranslate"><span class="pre">p1</span></code> is provided, the axis vector is <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">grid:</span></code> The grid specifies the histogram grid along the direction
+specified by <code class="docutils literal notranslate"><span class="pre">label</span></code>. The allowed grid points fall in the range
+[-1,1] for <code class="docutils literal notranslate"><span class="pre">label=x/y/z</span></code> or [0,1] for <code class="docutils literal notranslate"><span class="pre">r/phi/theta</span></code>. A grid of 10
+evenly spaced points between 0 and 1 can be requested equivalently by
+<code class="docutils literal notranslate"><span class="pre">grid=&quot;0</span> <span class="pre">(0.1)</span> <span class="pre">1&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">grid=&quot;0</span> <span class="pre">(10)</span> <span class="pre">1.&quot;</span></code> Piecewise uniform grids
+covering portions of the range are supported, e.g.,
+<code class="docutils literal notranslate"><span class="pre">grid=&quot;-0.7</span> <span class="pre">(10)</span> <span class="pre">0.0</span> <span class="pre">(20)</span> <span class="pre">0.5.&quot;</span></code></p></li>
+<li><p>Note that <code class="docutils literal notranslate"><span class="pre">grid</span></code> specifies the histogram grid along the (curved)
+coordinate given by <code class="docutils literal notranslate"><span class="pre">label</span></code>. The axis specified by <code class="docutils literal notranslate"><span class="pre">p1/p2/scale</span></code>
+does not correspond one-to-one with <code class="docutils literal notranslate"><span class="pre">label</span></code> unless <code class="docutils literal notranslate"><span class="pre">label=x/y/z</span></code>,
+but the full set of axes provided defines the (sheared) space on top
+of which the curved (e.g., spherical) coordinate system is built.</p></li>
+</ul>
+</div>
+<div class="section" id="one-body-density-matrix">
+<h3>One body density matrix<a class="headerlink" href="#one-body-density-matrix" title="Permalink to this headline">¶</a></h3>
+<p>The N-body density matrix in DMC is
+<span class="math notranslate nohighlight">\(\hat{\rho}_N=\left|{\Psi_{T}}\rangle{}\langle{\Psi_{FN}}\right|\)</span> (for VMC,
+substitute <span class="math notranslate nohighlight">\(\Psi_T\)</span> for <span class="math notranslate nohighlight">\(\Psi_{FN}\)</span>). The one body reduced
+density matrix (1RDM) is obtained by tracing out all particle
+coordinates but one:</p>
+<div class="math notranslate nohighlight" id="equation-eq40">
+<span class="eqno">(40)<a class="headerlink" href="#equation-eq40" title="Permalink to this equation">¶</a></span>\[\hat{n}_1 = \sum_nTr_{R_n}\left|{\Psi_{T}}\rangle{}\langle{\Psi_{FN}}\right|\]</div>
+<p>In this formula, the sum is over all electron indices and
+<span class="math notranslate nohighlight">\(Tr_{R_n}(*)\equiv\int dR_n\langle{R_n}\left|{*}\right|{R_n}\rangle\)</span> with
+<span class="math notranslate nohighlight">\(R_n=[r_1,...,r_{n-1},r_{n+1},...,r_N]\)</span>. When the sum is
+restricted over spin-up or spin-down electrons, one obtains a density
+matrix for each spin species. The 1RDM computed by is partitioned in
+this way.</p>
+<p>In real space, the matrix elements of the 1RDM are</p>
+<div class="math notranslate nohighlight" id="equation-eq41">
+<span class="eqno">(41)<a class="headerlink" href="#equation-eq41" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+   n_1(r,r') &amp;= \langle{r}\left|{\hat{n}_1}\right|{r'}\rangle = \sum_n\int dR_n \Psi_T(r,R_n)\Psi_{FN}^*(r',R_n)\:. \end{aligned}\]</div>
+<p>A more efficient and compact representation of the 1RDM is obtained by
+expanding in the SPOs obtained from a Hartree-Fock or DFT calculation,
+<span class="math notranslate nohighlight">\(\{\phi_i\}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq42">
+<span class="eqno">(42)<a class="headerlink" href="#equation-eq42" title="Permalink to this equation">¶</a></span>\[\begin{split}n_1(i,j) &amp;= \langle{\phi_i}\left|{\hat{n}_1}\right|{\phi_j}\rangle \nonumber \\
+         &amp;= \int dR \Psi_{FN}^*(R)\Psi_{T}(R) \sum_n\int dr'_n \frac{\Psi_T(r_n',R_n)}{\Psi_T(r_n,R_n)}\phi_i(r_n')^* \phi_j(r_n)\:.\end{split}\]</div>
+<p>The integration over <span class="math notranslate nohighlight">\(r'\)</span> in <a class="reference internal" href="#equation-eq42">(42)</a> is inefficient when one is also interested in obtaining matrices involving energetic quantities, such as the energy density matrix of <a class="bibtex reference internal" href="#krogel2014" id="id6">[KKR14]</a> or the related (and more well known) generalized Fock matrix.  For this reason, an approximation is introduced as follows:</p>
+<div class="math notranslate nohighlight" id="equation-eq43">
+<span class="eqno">(43)<a class="headerlink" href="#equation-eq43" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+    n_1(i,j) \approx \int dR \Psi_{FN}(R)^*\Psi_T(R)  \sum_n \int dr_n' \frac{\Psi_T(r_n',R_n)^*}{\Psi_T(r_n,R_n)^*}\phi_i(r_n)^* \phi_j(r_n')\:. \end{aligned}\]</div>
+<p>For VMC, FN-DMC, FP-DMC, and RN-DMC this formula represents an exact
+sampling of the 1RDM corresponding to <span class="math notranslate nohighlight">\(\hat{\rho}_N^\dagger\)</span> (see
+appendix A of <a class="bibtex reference internal" href="#krogel2014" id="id7">[KKR14]</a> for more detail).</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimtor</span> <span class="pre">type=dm1b</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 15%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>dm1b</strong></p></td>
+<td></td>
+<td><p>Must be dm1b</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>parameters:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 12%" />
+<col style="width: 25%" />
+<col style="width: 12%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">basis</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text array</p></td>
+<td><p>sposet.name(s)</p></td>
+<td></td>
+<td><p>Orbital basis</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">integrator</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>uniform_grid uniform density</p></td>
+<td><p>uniform_grid</p></td>
+<td><p>Integration method</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">evaluator</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>loop/matrix</p></td>
+<td><p>loop</p></td>
+<td><p>Evaluation method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scale</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(0&lt;scale&lt;1\)</span></p></td>
+<td><p>1.0</p></td>
+<td><p>Scale integration cell</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">center</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real array(3)</p></td>
+<td><p><em>any point</em></p></td>
+<td></td>
+<td><p>Center of cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">points</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>10</p></td>
+<td><p>Grid points in each dim</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">samples</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>10</p></td>
+<td><p>MC samples</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">warmup</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>30</p></td>
+<td><p>MC warmup</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timestep</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>0.5</p></td>
+<td><p>MC time step</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">use_drift</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Use drift in VMC</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">check_overlap</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Print overlap matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">check_derivatives</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Check density derivatives</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">acceptance_ratio</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Print accept ratio</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rstats</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Print spatial stats</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">normalized</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">basis</span></code> comes norm’ed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">volume_normed</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">basis</span></code> norm is volume</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">energy_matrix</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Energy density matrix</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name:</span></code> Density matrix results appear in <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> files labeled
+according to <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">basis:</span></code> List <code class="docutils literal notranslate"><span class="pre">sposet.name</span></code>’s. The total set of orbitals
+contained in all <code class="docutils literal notranslate"><span class="pre">sposet</span></code>’s comprises the basis (subspace) onto
+which the one body density matrix is projected. This set of orbitals
+generally includes many virtual orbitals that are not occupied in a
+single reference Slater determinant.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">integrator:</span></code> Select the method used to perform the additional
+single particle integration. Options are <code class="docutils literal notranslate"><span class="pre">uniform_grid</span></code> (uniform
+grid of points over the cell), <code class="docutils literal notranslate"><span class="pre">uniform</span></code> (uniform random sampling
+over the cell), and <code class="docutils literal notranslate"><span class="pre">density</span></code> (Metropolis sampling of approximate
+density, <span class="math notranslate nohighlight">\(\sum_{b\in \texttt{basis}}\left|{\phi_b}\right|^2\)</span>, is not
+well tested, please check results carefully!). Depending on the
+integrator selected, different subsets of the other input parameters
+are active.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">evaluator:</span></code> Select for-loop or matrix multiply implementations.
+Matrix is preferred for speed. Both implementations should give the
+same results, but please check as this has not been exhaustively
+tested.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scale:</span></code> Resize the simulation cell by scale for use as an
+integration volume (active for <code class="docutils literal notranslate"><span class="pre">integrator=uniform/uniform_grid</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">center:</span></code> Translate the integration volume to center at this point
+(active for <code class="docutils literal notranslate"><span class="pre">integrator=uniform/</span> <span class="pre">uniform_grid</span></code>). If <code class="docutils literal notranslate"><span class="pre">center</span></code> is
+not provided, the scaled simulation cell is used as is.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">points:</span></code> Number of grid points in each dimension for
+<code class="docutils literal notranslate"><span class="pre">integrator=uniform_grid</span></code>. For example, <code class="docutils literal notranslate"><span class="pre">points=10</span></code> results in a
+uniform <span class="math notranslate nohighlight">\(10 \times 10 \times 10\)</span> grid over the cell.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">samples:</span></code> Sets the number of MC samples collected for each step
+(active for <code class="docutils literal notranslate"><span class="pre">integrator=uniform/</span> <span class="pre">density</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warmup:</span></code> Number of warmup Metropolis steps at the start of the run
+before data collection (active for <code class="docutils literal notranslate"><span class="pre">integrator=density</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestep:</span></code> Drift-diffusion time step used in Metropolis sampling
+(active for <code class="docutils literal notranslate"><span class="pre">integrator=density</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_drift:</span></code> Enable drift in Metropolis sampling (active for
+<code class="docutils literal notranslate"><span class="pre">integrator=density</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_overlap:</span></code> Print the overlap matrix (computed via simple
+Riemann sums) to the log, then abort. Note that subsequent analysis
+based on the 1RDM is simplest if the input orbitals are orthogonal.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_derivatives:</span></code> Print analytic and numerical derivatives of
+the approximate (sampled) density for several sample points, then
+abort.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">acceptance_ratio:</span></code> Print the acceptance ratio of the density
+sampling to the log for each step.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rstats:</span></code> Print statistical information about the spatial motion of
+the sampled points to the log for each step.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalized:</span></code> Declare whether the inputted orbitals are normalized
+or not. If <code class="docutils literal notranslate"><span class="pre">normalized=no</span></code>, direct Riemann integration over a
+<span class="math notranslate nohighlight">\(200 \times 200 \times 200\)</span> grid will be used to compute the
+normalizations before use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">volume_normed:</span></code> Declare whether the inputted orbitals are
+normalized to the cell volume (default) or not (a norm of 1.0 is
+assumed in this case). Currently, B-spline orbitals coming from QE
+and HEG planewave orbitals native to QMCPACK are known to be volume
+normalized.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">energy_matrix:</span></code> Accumulate the one body reduced energy density
+matrix, and write it to <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code>. This matrix is not covered in
+any detail here; the interested reader is referred to
+<a class="bibtex reference internal" href="#krogel2014" id="id8">[KKR14]</a>.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-36">
+<div class="code-block-caption"><span class="caption-number">Listing 36 </span><span class="caption-text">One body density matrix with uniform grid integration.</span><a class="headerlink" href="#listing-36" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;dm1b&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DensityMatrices&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span>        <span class="o">&gt;</span>  <span class="n">spo_u</span> <span class="n">spo_uv</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;evaluator&quot;</span>    <span class="o">&gt;</span>  <span class="n">matrix</span>        <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;integrator&quot;</span>   <span class="o">&gt;</span>  <span class="n">uniform_grid</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;points&quot;</span>       <span class="o">&gt;</span>  <span class="mi">4</span>             <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span>        <span class="o">&gt;</span>  <span class="mf">1.0</span>           <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>       <span class="o">&gt;</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>         <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-37">
+<div class="code-block-caption"><span class="caption-number">Listing 37 </span><span class="caption-text">One body density matrix with uniform sampling.</span><a class="headerlink" href="#listing-37" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;dm1b&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DensityMatrices&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span>        <span class="o">&gt;</span>  <span class="n">spo_u</span> <span class="n">spo_uv</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;evaluator&quot;</span>    <span class="o">&gt;</span>  <span class="n">matrix</span>        <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;integrator&quot;</span>   <span class="o">&gt;</span>  <span class="n">uniform</span>       <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span>      <span class="o">&gt;</span>  <span class="mi">64</span>            <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span>        <span class="o">&gt;</span>  <span class="mf">1.0</span>           <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;center&quot;</span>       <span class="o">&gt;</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>         <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-38">
+<div class="code-block-caption"><span class="caption-number">Listing 38 </span><span class="caption-text">One body density matrix with density sampling.</span><a class="headerlink" href="#listing-38" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">estimator</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;dm1b&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;DensityMatrices&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;basis&quot;</span>        <span class="o">&gt;</span>  <span class="n">spo_u</span> <span class="n">spo_uv</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;evaluator&quot;</span>    <span class="o">&gt;</span>  <span class="n">matrix</span>        <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;integrator&quot;</span>   <span class="o">&gt;</span>  <span class="n">density</span>       <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span>      <span class="o">&gt;</span>  <span class="mi">64</span>            <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span>     <span class="o">&gt;</span>  <span class="mf">0.5</span>           <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;use_drift&quot;</span>    <span class="o">&gt;</span>  <span class="n">no</span>            <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-39">
+<div class="code-block-caption"><span class="caption-number">Listing 39 </span><span class="caption-text">Example <code class="docutils literal notranslate"><span class="pre">sposet</span></code> initialization for density matrix use.  Occupied and virtual orbital sets are created separately, then joined (<code class="docutils literal notranslate"><span class="pre">basis=&quot;spo\_u</span> <span class="pre">spo\_uv&quot;</span></code>).</span><a class="headerlink" href="#listing-39" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">sposet_builder</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;../dft/pwscf_output/pwscf.pwscf.h5&quot;</span> <span class="n">tilematrix</span><span class="o">=</span><span class="s2">&quot;1 0 0 0 1 0 0 0 1&quot;</span> <span class="n">twistnum</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">meshfactor</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;no&quot;</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_u&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_d&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_uv&quot;</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">index_min</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="n">index_max</span><span class="o">=</span><span class="s2">&quot;10&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">sposet_builder</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-40">
+<div class="code-block-caption"><span class="caption-number">Listing 40 </span><span class="caption-text">Example <code class="docutils literal notranslate"><span class="pre">sposet</span></code> initialization for density matrix use. Density matrix orbital basis created separately (<code class="docutils literal notranslate"><span class="pre">basis=&quot;dm_basis&quot;</span></code>).</span><a class="headerlink" href="#listing-40" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">sposet_builder</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;../dft/pwscf_output/pwscf.pwscf.h5&quot;</span> <span class="n">tilematrix</span><span class="o">=</span><span class="s2">&quot;1 0 0 0 1 0 0 0 1&quot;</span> <span class="n">twistnum</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">meshfactor</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;no&quot;</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_u&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_d&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dm_basis&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;50&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">sposet_builder</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="forward-walking-estimators">
+<span id="forward-walking"></span><h2>Forward-Walking Estimators<a class="headerlink" href="#forward-walking-estimators" title="Permalink to this headline">¶</a></h2>
+<p>Forward walking is a method for sampling the pure fixed-node
+distribution <span class="math notranslate nohighlight">\(\langle \Phi_0 | \Phi_0\rangle\)</span>. Specifically, one
+multiplies each walker’s DMC mixed estimate for the observable
+<span class="math notranslate nohighlight">\(\mathcal{O}\)</span>,
+<span class="math notranslate nohighlight">\(\frac{\mathcal{O}(\mathbf{R})\Psi_T(\mathbf{R})}{\Psi_T(\mathbf{R})}\)</span>,
+by the weighting factor
+<span class="math notranslate nohighlight">\(\frac{\Phi_0(\mathbf{R})}{\Psi_T(\mathbf{R})}\)</span>. As it turns out,
+this weighting factor for any walker <span class="math notranslate nohighlight">\(\mathbf{R}\)</span> is proportional
+to the total number of descendants the walker will have after a
+sufficiently long projection time <span class="math notranslate nohighlight">\(\beta\)</span>.</p>
+<p>To forward walk on an observable, declare a generic forward-walking
+estimator within a <code class="docutils literal notranslate"><span class="pre">&lt;hamiltonian&gt;</span></code> block, and then specify the
+observables to forward walk on and the forward-walking parameters. Here
+is a summary.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=ForwardWalking</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Observable</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 15%" />
+<col style="width: 21%" />
+<col style="width: 14%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><strong>ForwardWalking</strong></p></td>
+<td></td>
+<td><p>Must be “ForwardWalking”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Unique name for estimator</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">Observable</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">estimator,</span> <span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><em>None</em></p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 9%" />
+<col style="width: 10%" />
+<col style="width: 9%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>anything</em></p></td>
+<td><p>any</p></td>
+<td><p>Registered name of existing estimator on which to forward walk</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td></td>
+<td><p>Maximum projection time in steps (<code class="docutils literal notranslate"><span class="pre">max</span></code><span class="math notranslate nohighlight">\(=\beta/\tau\)</span>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">frequency</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 1\)</span></p></td>
+<td></td>
+<td><p>Dump data only for every <code class="docutils literal notranslate"><span class="pre">frequency</span></code>-th to <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>Cost</strong>: Because histories of observables up to <code class="docutils literal notranslate"><span class="pre">max</span></code> time steps
+have to be stored, the memory cost of storing the nonforward-walked
+observables variables should be multiplied by <span class="math notranslate nohighlight">\(\texttt{max}\)</span>.
+Although this is not an issue for items such as potential energy, it
+could be prohibitive for observables such as density, forces, etc.</p></li>
+<li><p><strong>Naming Convention</strong>: Forward-walked observables are automatically
+named <code class="docutils literal notranslate"><span class="pre">FWE_name_i</span></code>, where <code class="docutils literal notranslate"><span class="pre">i</span></code> is the forward-walked expectation
+value at time step <code class="docutils literal notranslate"><span class="pre">i</span></code>, and <code class="docutils literal notranslate"><span class="pre">name</span></code> is whatever name appears in
+the <code class="docutils literal notranslate"><span class="pre">&lt;Observable&gt;</span></code> block. This is also how it will appear in the
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file.</p></li>
+</ul>
+<p>In the following example case, QMCPACK forward walks on the potential
+energy for 300 time steps and dumps the forward-walked value at every
+time step.</p>
+<div class="literal-block-wrapper docutils container" id="listing-41">
+<div class="code-block-caption"><span class="caption-number">Listing 41 </span><span class="caption-text">Forward-walking estimator element.</span><a class="headerlink" href="#listing-41" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;estimator name=&quot;fw&quot; type=&quot;ForwardWalking&quot;&gt;
+    &lt;Observable name=&quot;LocalPotential&quot; max=&quot;300&quot; frequency=&quot;1&quot;/&gt;
+     &lt;!--- Additional Observable blocks go here --&gt;
+ &lt;/estimator&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="force-estimators">
+<span id="force-est"></span><h2>“Force” estimators<a class="headerlink" href="#force-estimators" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK supports force estimation by use of the Chiesa-Ceperly-Zhang
+(CCZ) estimator. Currently, open and periodic boundary conditions are
+supported but for all-electron calculations only.</p>
+<p>Without loss of generality, the CCZ estimator for the z-component of the
+force on an ion centered at the origin is given by the following
+expression:</p>
+<div class="math notranslate nohighlight" id="equation-eq44">
+<span class="eqno">(44)<a class="headerlink" href="#equation-eq44" title="Permalink to this equation">¶</a></span>\[F_z = -Z \sum_{i=1}^{N_e}\frac{z_i}{r_i^3}[\theta(r_i-\mathcal{R}) + \theta(\mathcal{R}-r_i)\sum_{\ell=1}^{M}c_\ell r_i^\ell]\:.\]</div>
+<p>Z is the ionic charge, <span class="math notranslate nohighlight">\(M\)</span> is the degree of the smoothing
+polynomial, <span class="math notranslate nohighlight">\(\mathcal{R}\)</span> is a real-space cutoff of the sphere
+within which the bare-force estimator is smoothed, and <span class="math notranslate nohighlight">\(c_\ell\)</span>
+are predetermined coefficients. These coefficients are chosen to
+minimize the weighted mean square error between the bare force estimate
+and the s-wave filtered estimator. Specifically,</p>
+<div class="math notranslate nohighlight" id="equation-eq45">
+<span class="eqno">(45)<a class="headerlink" href="#equation-eq45" title="Permalink to this equation">¶</a></span>\[\chi^2 = \int_0^\mathcal{R}dr\,r^m\,[f_z(r) - \tilde{f}_z(r)]^2\:.\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(m\)</span> is the weighting exponent, <span class="math notranslate nohighlight">\(f_z(r)\)</span> is the
+unfiltered radial force density for the z force component, and
+<span class="math notranslate nohighlight">\(\tilde{f}_z(r)\)</span> is the smoothed polynomial function for the same
+force density. The reader is invited to refer to the original paper for
+a more thorough explanation of the methodology, but with the notation in
+hand, QMCPACK takes the following parameters.</p>
+<p><code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=Force</span></code> element:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hamiltonian,</span> <span class="pre">qmc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">parameter</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>attributes:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 11%" />
+<col style="width: 13%" />
+<col style="width: 10%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mode</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>See above</em></p></td>
+<td><p>bare</p></td>
+<td><p>Select estimator type</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lrmethod</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p>ewald or srcoul</p></td>
+<td><p>ewald</p></td>
+<td><p>Select long-range potential breakup method</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td><p>Force</p></td>
+<td></td>
+<td><p>Must be “Force”</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>text</p></td>
+<td><p><em>Anything</em></p></td>
+<td><p>ForceBase</p></td>
+<td><p>Unique name for this estimator</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pbc</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>yes</p></td>
+<td><p>Using periodic BCs or not</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">addionion</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>boolean</p></td>
+<td><p>yes/no</p></td>
+<td><p>no</p></td>
+<td><p>Add the ion-ion force contribution to output force estimate</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>parameters:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 11%" />
+<col style="width: 10%" />
+<col style="width: 11%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rcut</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>1.0</p></td>
+<td><p>Real-space cutoff <span class="math notranslate nohighlight">\(\mathcal{R}\)</span> in bohr</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nbasis</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>2</p></td>
+<td><p>Degree of smoothing polynomial <span class="math notranslate nohighlight">\(M\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">weightexp</span></code><span class="math notranslate nohighlight">\(^o\)</span></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt;0\)</span></p></td>
+<td><p>2</p></td>
+<td><p><span class="math notranslate nohighlight">\(\chi^2\)</span> weighting exponent :math`m`</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><strong>Naming Convention</strong>: The unique identifier <code class="docutils literal notranslate"><span class="pre">name</span></code> is appended
+with <code class="docutils literal notranslate"><span class="pre">name_X_Y</span></code> in the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file, where <code class="docutils literal notranslate"><span class="pre">X</span></code> is the ion
+ID number and <code class="docutils literal notranslate"><span class="pre">Y</span></code> is the component ID (an integer with x=0, y=1,
+z=2). All force components for all ions are computed and dumped to
+the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file.</p></li>
+<li><p><strong>Long-range breakup</strong>: With periodic boundary conditions, it is
+important to converge the lattice sum when calculating Coulomb
+contribution to the forces. As a quick test, increase the
+<code class="docutils literal notranslate"><span class="pre">LR_dim_cutoff</span></code> parameter until ion-ion forces are converged. The
+Ewald method (<code class="docutils literal notranslate"><span class="pre">lrmethod</span></code>=”ewald”) converges more slowly than
+optimized method (<code class="docutils literal notranslate"><span class="pre">lrmethod</span></code>=”srcoul”).</p></li>
+<li><p><strong>Miscellaneous</strong>: Usually, the default choice of <code class="docutils literal notranslate"><span class="pre">weightexp</span></code> is
+sufficient. Different combinations of <code class="docutils literal notranslate"><span class="pre">rcut</span></code> and <code class="docutils literal notranslate"><span class="pre">nbasis</span></code> should
+be tested though to minimize variance and bias. There is, of course,
+a tradeoff, with larger <code class="docutils literal notranslate"><span class="pre">nbasis</span></code> and smaller <code class="docutils literal notranslate"><span class="pre">rcut</span></code> leading to
+smaller biases and larger variances.</p></li>
+</ul>
+<p>The following is an example use case.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">simulationcell</span><span class="o">&gt;</span>
+  <span class="o">...</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LR\_dim\_cutoff&quot;</span><span class="o">&gt;</span>  <span class="mi">20</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">simulationcell</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">estimator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;myforce&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Force&quot;</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;cep&quot;</span> <span class="n">addionion</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">lrmethod</span><span class="o">=</span><span class="s2">&quot;srcoul&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rcut&quot;</span><span class="o">&gt;</span><span class="mf">0.1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nbasis&quot;</span><span class="o">&gt;</span><span class="mi">4</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;weightexp&quot;</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">estimator</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p id="bibtex-bibliography-hamiltonianobservable-0"><dl class="citation">
+<dt class="bibtex label" id="chiesa2006"><span class="brackets"><a class="fn-backref" href="#id4">CCMH06</a></span></dt>
+<dd><p>Simone Chiesa, David M. Ceperley, Richard M. Martin, and Markus Holzmann. Finite-size error in many-body simulations with long-range interactions. <em>Phys. Rev. Lett.</em>, 97:076404, August 2006. <a class="reference external" href="https://doi.org/10.1103/PhysRevLett.97.076404">doi:10.1103/PhysRevLett.97.076404</a>.</p>
+</dd>
+<dt class="bibtex label" id="krogel2014"><span class="brackets">KKR14</span><span class="fn-backref">(<a href="#id6">1</a>,<a href="#id7">2</a>,<a href="#id8">3</a>)</span></dt>
+<dd><p>Jaron T. Krogel, Jeongnim Kim, and Fernando A. Reboredo. Energy density matrix formalism for interacting quantum systems: quantum monte carlo study. <em>Phys. Rev. B</em>, 90:035125, July 2014. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.90.035125">doi:10.1103/PhysRevB.90.035125</a>.</p>
+</dd>
+<dt class="bibtex label" id="krogel2013"><span class="brackets"><a class="fn-backref" href="#id5">KYKC13</a></span></dt>
+<dd><p>Jaron T. Krogel, Min Yu, Jeongnim Kim, and David M. Ceperley. Quantum energy density: improved efficiency for quantum monte carlo calculations. <em>Phys. Rev. B</em>, 88:035137, July 2013. <a class="reference external" href="https://doi.org/10.1103/PhysRevB.88.035137">doi:10.1103/PhysRevB.88.035137</a>.</p>
+</dd>
+<dt class="bibtex label" id="mitas1991"><span class="brackets"><a class="fn-backref" href="#id2">MSC91</a></span></dt>
+<dd><p>Lubos Mitas, Eric L. Shirley, and David M. Ceperley. Nonlocal pseudopotentials and diffusion monte carlo. <em>The Journal of Chemical Physics</em>, 95(5):3467–3475, 1991. <a class="reference external" href="https://doi.org/10.1063/1.460849">doi:10.1063/1.460849</a>.</p>
+</dd>
+<dt class="bibtex label" id="natoli1995"><span class="brackets"><a class="fn-backref" href="#id1">NC95</a></span></dt>
+<dd><p>Vincent Natoli and David M. Ceperley. An optimized method for treating long-range potentials. <em>Journal of Computational Physics</em>, 117(1):171–178, 1995. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0021999185710546">http://www.sciencedirect.com/science/article/pii/S0021999185710546</a>, <a class="reference external" href="https://doi.org/10.1006/jcph.1995.1054">doi:10.1006/jcph.1995.1054</a>.</p>
+</dd>
+<dt class="bibtex label" id="zen2019dla"><span class="brackets"><a class="fn-backref" href="#id3">ZBMAlfe19</a></span></dt>
+<dd><p>Andrea Zen, Jan Gerit Brandenburg, Angelos Michaelides, and Dario Alfè. A new scheme for fixed node diffusion quantum monte carlo with pseudopotentials: improving reproducibility and reducing the trial-wave-function bias. <em>The Journal of Chemical Physics</em>, 151(13):134105, October 2019. <a class="reference external" href="https://doi.org/10.1063/1.5119729">doi:10.1063/1.5119729</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 
