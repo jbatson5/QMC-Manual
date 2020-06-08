@@ -1,0 +1,69 @@
+.. _qmcmethods:
+
+Quantum Monte Carlo Methods
+===========================
+
+``qmc`` factory element:
+
+  +-----------------+----------------------+
+  | Parent elements | ``simulation. loop`` |
+  +-----------------+----------------------+
+  | type selector   | ``method`` attribute |
+  +-----------------+----------------------+
+
+  type options:
+
+  +--------+-----------------------------------------------+
+  | vmc    | Variational Monte Carlo                       |
+  +--------+-----------------------------------------------+
+  | linear | Wavefunction optimization with linear method  |
+  +--------+-----------------------------------------------+
+  | dmc    | Diffusion Monte Carlo                         |
+  +--------+-----------------------------------------------+
+  | rmc    | Reptation Monte Carlo                         |
+  +--------+-----------------------------------------------+
+
+  shared attributes:
+
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | **Name**       | **Datatype** | **Values**   | **Default** | **Description**                 |
+  +================+==============+==============+=============+=================================+
+  | ``method``     | text         | listed above | invalid     | QMC driver                      |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``move``       | text         | pbyp, alle   | pbyp        | Method used to move electrons   |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``gpu``        | text         | yes/no       | dep.        | Use the GPU                     |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``trace``      | text         |              | no          | ???                             |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``checkpoint`` | integer      | -1, 0, n     | -1          | Checkpoint frequency            |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``record``     | integer      | n            | 0           | Save configuration ever n steps |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``target``     | text         |              |             | ???                             |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``completed``  | text         |              |             | ???                             |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+  | ``append``     | text         | yes/no       | no          | ???                             |
+  +----------------+--------------+--------------+-------------+---------------------------------+
+
+Additional information:
+
+-  ``move``: There are two ways to move electrons. The more used method
+   is the particle-by-particle move. In this method, only one electron
+   is moved for acceptance or rejection. The other method is the
+   all-electron move; namely, all the electrons are moved once for
+   testing acceptance or rejection.
+
+-  ``gpu``: When the executable is compiled with CUDA, the target
+   computing device can be chosen by this switch. With a regular
+   CPU-only compilation, this option is not effective.
+
+-  ``checkpoint``: This enables and disables checkpointing and
+   specifying the frequency of output. Possible values are:
+
+   - **[-1]** No checkpoint (default setting).
+
+   - **[0]** Dump after the completion of a QMC section.
+
+   - **[n]** Dump after every :math:`n` blocks.  Also dump at the end of the run.

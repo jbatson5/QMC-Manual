@@ -1574,7 +1574,7 @@ The output should look similar to the following:
 Individual unit test executables can be found in ``build/tests/bin``.
 The source for the unit tests is located in the ``tests`` directory under each directory in ``src`` (e.g. ``src/QMCWavefunctions/tests``).
 
-See :ref:`unit_testing` for more details about unit tests.
+See :ref:`unit-testing` for more details about unit tests.
 
 .. _integtestqe:
 
@@ -1713,7 +1713,7 @@ atomic orbitals to be recomputed via a numerical density functional
 calculation if they need to be reconstructed for use in an
 electronic structure calculation.
 
-.. _fig2
+.. _fig2:
 .. figure:: QMCPACK_CDash_CTest_Results_20160129.png
   :width: 80%
   :align: center
