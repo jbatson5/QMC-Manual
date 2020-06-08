@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quantum Monte Carlo Methods" href="methods.html" />
     <link rel="prev" title="Trial wavefunction specificaion" href="intro_wavefunction.html" /> 
 </head>
 
@@ -115,6 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#force-estimators">“Force” estimators</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
 </ul>
 
             
@@ -2871,7 +2873,7 @@ any detail here; the interested reader is referred to
 </div>
 </div>
 <div class="literal-block-wrapper docutils container" id="listing-39">
-<div class="code-block-caption"><span class="caption-number">Listing 39 </span><span class="caption-text">Example <code class="docutils literal notranslate"><span class="pre">sposet</span></code> initialization for density matrix use.  Occupied and virtual orbital sets are created separately, then joined (<code class="docutils literal notranslate"><span class="pre">basis=&quot;spo\_u</span> <span class="pre">spo\_uv&quot;</span></code>).</span><a class="headerlink" href="#listing-39" title="Permalink to this code">¶</a></div>
+<div class="code-block-caption"><span class="caption-number">Listing 39 </span><span class="caption-text">Example <code class="docutils literal notranslate"><span class="pre">sposet</span></code> initialization for density matrix use.  Occupied and virtual orbital sets are created separately, then joined (<code class="docutils literal notranslate"><span class="pre">basis=&quot;spo_u</span> <span class="pre">spo_uv&quot;</span></code>).</span><a class="headerlink" href="#listing-39" title="Permalink to this code">¶</a></div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">sposet_builder</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;../dft/pwscf_output/pwscf.pwscf.h5&quot;</span> <span class="n">tilematrix</span><span class="o">=</span><span class="s2">&quot;1 0 0 0 1 0 0 0 1&quot;</span> <span class="n">twistnum</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">meshfactor</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;no&quot;</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;single&quot;</span><span class="o">&gt;</span>
   <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_u&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">/&gt;</span>
   <span class="o">&lt;</span><span class="n">sposet</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bspline&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;spo_d&quot;</span>  <span class="n">group</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
@@ -3242,6 +3244,8 @@ smaller biases and larger variances.</p></li>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="methods.html" class="btn btn-neutral float-right" title="Quantum Monte Carlo Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="intro_wavefunction.html" class="btn btn-neutral float-left" title="Trial wavefunction specificaion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

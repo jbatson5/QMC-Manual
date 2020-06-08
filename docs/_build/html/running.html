@@ -109,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
 </ul>
 
             
@@ -198,11 +199,11 @@ of the Jastrow, for example.</p></li>
 </div>
 <div class="section" id="input-files">
 <span id="inputs"></span><h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
-<p>The input is one or more XML file(s), documented in <span class="xref std std-ref">input_overview</span>.</p>
+<p>The input is one or more XML file(s), documented in <a class="reference internal" href="input_overview.html#input-overview"><span class="std std-ref">Input file overview</span></a>.</p>
 </div>
 <div class="section" id="output-files">
 <h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
-<p>QMCPACK generates multiple files documented in <span class="xref std std-ref">output_overview</span>.</p>
+<p>QMCPACK generates multiple files documented in <span class="xref std std-ref">output-overview</span>.</p>
 </div>
 <div class="section" id="running-in-parallel-with-mpi">
 <span id="parallelrunning"></span><h2>Running in parallel with MPI<a class="headerlink" href="#running-in-parallel-with-mpi" title="Permalink to this headline">¶</a></h2>
@@ -237,7 +238,7 @@ performed by the CPU.</p>
 <p>Nested threading is an advanced feature requiring experienced users to finely tune runtime parameters to reach the best performance.</p>
 <p>For small-to-medium problem sizes, using one thread per walker or for multiple walkers is most efficient. This is the default in QMCPACK and achieves the shortest time to solution.</p>
 <p>For large problems of at least 1,000 electrons, use of nested OpenMP threading can be enabled to reduce the time to solution further, although at some loss of efficiency. In this scheme multiple threads are used in the computations of each walker. This capability is implemented for some of the key computational kernels: the 3D spline orbital evaluation, certain portions of the distance tables, and implicitly the BLAS calls in the determinant update. Use of the batched nonlocal pseudopotential evaluation is also recommended.</p>
-<p>Nested threading is enabled by setting <code class="docutils literal notranslate"><span class="pre">OMP\_NUM\_THREADS=AA,BB</span></code>, <code class="docutils literal notranslate"><span class="pre">OMP\_MAX\_ACTIVE\_LEVELS=2</span></code> and <code class="docutils literal notranslate"><span class="pre">OMP\_NESTED=TRUE</span></code> where the additional <code class="docutils literal notranslate"><span class="pre">BB</span></code> is the number of second-level threads.  Choosing the thread affinity is critical to the performance.
+<p>Nested threading is enabled by setting <code class="docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=AA,BB</span></code>, <code class="docutils literal notranslate"><span class="pre">OMP_MAX_ACTIVE_LEVELS=2</span></code> and <code class="docutils literal notranslate"><span class="pre">OMP_NESTED=TRUE</span></code> where the additional <code class="docutils literal notranslate"><span class="pre">BB</span></code> is the number of second-level threads.  Choosing the thread affinity is critical to the performance.
 QMCPACK provides a tool qmc-check-affinity (source file src/QMCTools/check-affinity.cpp for details), which might help users investigate the affinity. Knowledge of how the operating system logical CPU cores (/prco/cpuinfo) are bound to the hardware is also needed.</p>
 <p>For example, on Blue Gene/Q with a Clang compiler, the best way to fully use the 16 cores each with 4 hardware threads is</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OMP_NESTED</span><span class="o">=</span><span class="n">TRUE</span>

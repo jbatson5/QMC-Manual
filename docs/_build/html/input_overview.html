@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
 <li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
 </ul>
 
             
@@ -188,7 +189,7 @@
 <span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>XML elements start with <code class="docutils literal notranslate"><span class="pre">&lt;element\_name&gt;</span></code>, end with <code class="docutils literal notranslate"><span class="pre">&lt;/element\_name&gt;}</span></code>, and can be nested within each other to denote substructure (the trial wavefunction is composed of a Slater determinant and a Jastrow factor, which are each further composed of <span class="math notranslate nohighlight">\(...\)</span>).  <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">series</span></code> are attributes of the <code class="docutils literal notranslate"><span class="pre">&lt;project/&gt;</span></code> element.  XML attributes are generally used to represent simple values, like names, integers, or real values.  Similar functionality is also commonly provided by <code class="docutils literal notranslate"><span class="pre">&lt;parameter/&gt;</span></code> elements like those previously shown.</p>
+<p>XML elements start with <code class="docutils literal notranslate"><span class="pre">&lt;element_name&gt;</span></code>, end with <code class="docutils literal notranslate"><span class="pre">&lt;/element_name&gt;}</span></code>, and can be nested within each other to denote substructure (the trial wavefunction is composed of a Slater determinant and a Jastrow factor, which are each further composed of <span class="math notranslate nohighlight">\(...\)</span>).  <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">series</span></code> are attributes of the <code class="docutils literal notranslate"><span class="pre">&lt;project/&gt;</span></code> element.  XML attributes are generally used to represent simple values, like names, integers, or real values.  Similar functionality is also commonly provided by <code class="docutils literal notranslate"><span class="pre">&lt;parameter/&gt;</span></code> elements like those previously shown.</p>
 <p>The overall structure of the input file reflects different aspects of the QMC simulation: the simulation cell, particles, trial wavefunction, Hamiltonian, and QMC run parameters.  A condensed version of the actual input file is shown as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;simulation&gt;
@@ -267,7 +268,7 @@ If there were another <code class="docutils literal notranslate"><span class="pr
 Entries in this offset list of prime numbers are then used as the seed for the random generator on each thread and process.</p>
 <p>If checkpointing is enabled, the random number state is written to an HDF file at the end of each block (suffix: <code class="docutils literal notranslate"><span class="pre">.random.h5</span></code>).
 This file will be read if the <code class="docutils literal notranslate"><span class="pre">mcwalkerset</span></code> tag is present to perform a restart.
-For more information, see the <code class="docutils literal notranslate"><span class="pre">checkpoint</span></code> element in the QMC methods <a class="reference internal" href="methods.html#qmcmethods"><span class="std std-ref">Quantum Monte Carlo Methods</span></a> and <span class="xref std std-ref">checkpoint_files</span> on checkpoint and restart files.</p>
+For more information, see the <code class="docutils literal notranslate"><span class="pre">checkpoint</span></code> element in the QMC methods <a class="reference internal" href="methods.html#qmcmethods"><span class="std std-ref">Quantum Monte Carlo Methods</span></a> and <span class="xref std std-ref">checkpoint-files</span> on checkpoint and restart files.</p>
 </div>
 </div>
 
