@@ -99,6 +99,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#optimizers">Optimizers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#oneshiftonly-optimizer">OneShiftOnly Optimizer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adaptive-organizer">Adaptive Organizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#descent-optimizer">Descent Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hybrid-optimizer">Hybrid Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quartic-optimizer">Quartic Optimizer</a></li>
 </ul>
 </li>
 </ul>
@@ -791,6 +794,521 @@ within those blocks will be most important for constructing
 <span class="math notranslate nohighlight">\(\vec{c}_{opt}\)</span>, which is then obtained by solving a smaller, more
 memory-efficient eigenproblem in the basis of these supposedly important
 block-wise directions.</p>
+<p><code class="docutils literal notranslate"><span class="pre">linear</span></code> method:</p>
+<blockquote>
+<div><p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 8%" />
+<col style="width: 14%" />
+<col style="width: 7%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">max_relative_change</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>10.0</p></td>
+<td><p>Allowed change in cost function</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max_param_change</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.3</p></td>
+<td><p>Allowed change in wavefunction parameter</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">shift_i</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.01</p></td>
+<td><p>Initial diagonal stabilizer added to the Hamiltonian matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shift_s</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>1.00</p></td>
+<td><p>Initial overlap-based stabilizer added to the Hamiltonian matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">target_shift_i</span></code></p></td>
+<td><p>real</p></td>
+<td><p>any</p></td>
+<td><p>-1.0</p></td>
+<td><p>Diagonal stabilizer value aimed for during adaptive method (disabled if <span class="math notranslate nohighlight">\(\leq 0\)</span>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cost_increase_tol</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>0.0</p></td>
+<td><p>Tolerance for cost function increases</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chase_lowest</span></code></p></td>
+<td><p>text</p></td>
+<td><p>yes, no</p></td>
+<td><p>yes</p></td>
+<td><p>Chase the lowest eigenvector in iterative solver</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">chase_closest</span></code></p></td>
+<td><p>text</p></td>
+<td><p>yes, no</p></td>
+<td><p>no</p></td>
+<td><p>Chase the eigenvector closest to initial guess</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">block_lm</span></code></p></td>
+<td><p>text</p></td>
+<td><p>yes, no</p></td>
+<td><p>no</p></td>
+<td><p>Use BLM</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blocks</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td></td>
+<td><p>Number of blocks in BLM</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nolds</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td></td>
+<td><p>Number of old update vectors used in BLM</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nkept</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td></td>
+<td><p>Number of eigenvectors to keep per block in BLM</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shift_i</span></code> This is the initial coefficient used to scale the diagonal
+stabilizer. More stable but slower optimization is expected with a
+large value. The adaptive method will automatically adjust this value
+after each linear method iteration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shift_s</span></code> This is the initial coefficient used to scale the overlap-based
+stabilizer. More stable but slower optimization is expected with a
+large value. The adaptive method will automatically adjust this value
+after each linear method iteration.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_shift_i</span></code> If set greater than zero, the adaptive method will choose the
+update whose shift_i value is closest to this target value so long as
+the associated cost is within cost_increase_tol of the lowest cost.
+Disable this behavior by setting target_shift_i to a negative number.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cost_increase_tol</span></code> Tolerance for cost function increases when selecting the best
+shift.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nblocks</span></code> This is the number of blocks used in BLM. The amount of memory
+required to store LM matrices decreases as the number of blocks
+increases. But the error introduced by BLM would increase as the
+number of blocks increases.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nolds</span></code> In BLM, the interblock correlation is accounted for by including a
+small number of wavefunction update vectors outside the block. Larger
+would include more interblock correlation and more accurate results
+but also higher memory requirements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nkept</span></code> This is the number of update directions retained from each block in
+the BLM. If all directions are retained in each block, then the BLM
+becomes equivalent to the standard LM. Retaining five or fewer
+directions per block is often sufficient.</p></li>
+</ul>
+<p>Recommendations:</p>
+<ul class="simple">
+<li><p>Default <code class="docutils literal notranslate"><span class="pre">shift_i</span></code>, <code class="docutils literal notranslate"><span class="pre">shift_s</span></code> should be fine.</p></li>
+<li><p>When there are fewer than about 5,000 variables being optimized, the
+traditional LM is preferred because it has a lower overhead than the
+BLM when the number of variables is small.</p></li>
+<li><p>Initial experience with the BLM suggests that a few hundred blocks
+and a handful of and often provide a good balance between memory use
+and accuracy. In general, using fewer blocks should be more accurate
+but would require more memory.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;loop max=&quot;15&quot;&gt;
+ &lt;qmc method=&quot;linear&quot; move=&quot;pbyp&quot;&gt;
+   &lt;!-- Specify the VMC options --&gt;
+   &lt;parameter name=&quot;walkers&quot;&gt;                1 &lt;/parameter&gt;
+   &lt;parameter name=&quot;samples&quot;&gt;            20000 &lt;/parameter&gt;
+   &lt;parameter name=&quot;stepsbetweensamples&quot;&gt;    1 &lt;/parameter&gt;
+   &lt;parameter name=&quot;substeps&quot;&gt;               5 &lt;/parameter&gt;
+   &lt;parameter name=&quot;warmupSteps&quot;&gt;            5 &lt;/parameter&gt;
+   &lt;parameter name=&quot;blocks&quot;&gt;                50 &lt;/parameter&gt;
+   &lt;parameter name=&quot;timestep&quot;&gt;             1.0 &lt;/parameter&gt;
+   &lt;parameter name=&quot;usedrift&quot;&gt;              no &lt;/parameter&gt;
+   &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+   &lt;!-- Specify the correlated sampling options and define the cost function --&gt;
+        &lt;cost name=&quot;energy&quot;&gt;               1.00 &lt;/cost&gt;
+        &lt;cost name=&quot;unreweightedvariance&quot;&gt; 0.00 &lt;/cost&gt;
+        &lt;cost name=&quot;reweightedvariance&quot;&gt;   0.00 &lt;/cost&gt;
+   &lt;!-- Specify the optimizer options --&gt;
+   &lt;parameter name=&quot;MinMethod&quot;&gt;adaptive&lt;/parameter&gt;
+   &lt;parameter name=&quot;max_relative_cost_change&quot;&gt;10.0&lt;/parameter&gt;
+   &lt;parameter name=&quot;shift_i&quot;&gt; 1.00 &lt;/parameter&gt;
+   &lt;parameter name=&quot;shift_s&quot;&gt; 1.00 &lt;/parameter&gt;
+   &lt;parameter name=&quot;max_param_change&quot;&gt; 0.3 &lt;/parameter&gt;
+   &lt;parameter name=&quot;chase_lowest&quot;&gt; yes &lt;/parameter&gt;
+   &lt;parameter name=&quot;chase_closest&quot;&gt; yes &lt;/parameter&gt;
+   &lt;parameter name=&quot;block_lm&quot;&gt; no &lt;/parameter&gt;
+   &lt;!-- Specify the BLM specific options if needed
+     &lt;parameter name=&quot;nblocks&quot;&gt; 100 &lt;/parameter&gt;
+     &lt;parameter name=&quot;nolds&quot;&gt; 5 &lt;/parameter&gt;
+     &lt;parameter name=&quot;nkept&quot;&gt; 3 &lt;/parameter&gt;
+   --&gt;
+ &lt;/qmc&gt;
+&lt;/loop&gt;
+</pre></div>
+</div>
+<p>The adaptive optimizer is also able to optimize individual excited states directly. <span class="bibtex" id="id2">[Zhao:2016:dir_tar]</span>
+In this case, it tries to minimize the following function:</p>
+<div class="math notranslate nohighlight">
+\[\Omega[\Psi]=\frac{\left&lt;\Psi|\omega-H|\Psi\right&gt;}{\left&lt;\Psi|{\left(\omega-H\right)}^2|\Psi\right&gt;}\:.\]</div>
+<p>The global minimum of this function corresponds to the state whose
+energy lies immediately above the shift parameter <span class="math notranslate nohighlight">\(\omega\)</span> in the
+energy spectrum. For example, if <span class="math notranslate nohighlight">\(\omega\)</span> were placed in between
+the ground state energy and the first excited state energy and the
+wavefunction ansatz was capable of a good description for the first
+excited state, then the wavefunction would be optimized for the first
+excited state. Note that if the ansatz is not capable of a good
+description of the excited state in question, the optimization could
+converge to a different state, as is known to occur in some
+circumstances for traditional ground state optimizations. Note also that
+the ground state can be targeted by this method by choosing
+<span class="math notranslate nohighlight">\(\omega\)</span> to be below the ground state energy, although we should
+stress that this is not the same thing as a traditional ground state
+optimization and will in general give a slightly different wavefunction.
+Excited state targeting requires two additional parameters, as shown in
+the following table.</p>
+<p>Excited state targeting:</p>
+<blockquote>
+<div><p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 11%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">targetExcited</span></code></p></td>
+<td><p>text</p></td>
+<td><p>yes, no</p></td>
+<td><p>no</p></td>
+<td><p>Whether to use the excited state targeting optimization</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code></p></td>
+<td><p>real</p></td>
+<td><p>real numbers</p></td>
+<td><p>none</p></td>
+<td><p>Energy shift used to target different excited states</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Excited state recommendations:</p>
+<ul class="simple">
+<li><p>Because of the finite variance in any approximate wavefunction, we
+recommended setting <span class="math notranslate nohighlight">\(\omega=\omega_0-\sigma\)</span>, where
+<span class="math notranslate nohighlight">\(\omega_0\)</span> is placed just below the energy of the targeted
+state and <span class="math notranslate nohighlight">\(\sigma^2\)</span> is the energy variance.</p></li>
+<li><p>To obtain an unbiased excitation energy, the ground state should be
+optimized with the excited state variational principle as well by
+setting <code class="docutils literal notranslate"><span class="pre">omega</span></code> below the ground state energy. Note that using the ground
+state variational principle for the ground state and the excited
+state variational principle for the excited state creates a bias in
+favor of the ground state.</p></li>
+</ul>
+</div>
+<div class="section" id="descent-optimizer">
+<h3>Descent Optimizer<a class="headerlink" href="#descent-optimizer" title="Permalink to this headline">¶</a></h3>
+<p>Gradient descent algorithms are an alternative set of optimization methods to the OneShiftOnly and adaptive optimizers based on the linear method.
+These methods use only first derivatives to optimize trial wave functions and convergence can be accelerated by retaining a memory of previous derivative values.
+Multiple flavors of accelerated descent methods are available. They differ in details such as the schemes for adaptive adjustment of step sizes. <span class="bibtex" id="id3">[Otis2019]</span>
+Descent algorithms avoid the construction of matrices that occurs in the linear method and consequently can be applied to larger sets of
+optimizable parameters.
+Currently, descent optimization is only available for ground state calculations.
+Parameters for descent are shown in the table below.</p>
+<p><code class="docutils literal notranslate"><span class="pre">descent</span></code> method:</p>
+<blockquote>
+<div><p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 10%" />
+<col style="width: 22%" />
+<col style="width: 9%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">flavor</span></code></p></td>
+<td><p>text</p></td>
+<td><p>RMSprop, Random, ADAM, AMSGrad</p></td>
+<td><p>RMSprop</p></td>
+<td><p>Particular type of descent method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Ramp_eta</span></code></p></td>
+<td><p>text</p></td>
+<td><p>yes, no</p></td>
+<td><p>no</p></td>
+<td><p>Whether to gradually ramp up step sizes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Ramp_num</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>30</p></td>
+<td><p>Number of steps over which to ramp up step size</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TJF_2Body_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.01</p></td>
+<td><p>Step size for two body Jastrow parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">TJF_1Body_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.01</p></td>
+<td><p>Step size for one body Jastrow parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">F_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.001</p></td>
+<td><p>Step size for number counting Jastrow F matrix parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Gauss_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.001</p></td>
+<td><p>Step size for number counting Jastrow gaussian basis parameters</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CI_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.01</p></td>
+<td><p>Step size for CI parameters</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Orb_eta</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.001</p></td>
+<td><p>Step size for orbital parameters</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information and recommendations:</p>
+<ul class="simple">
+<li><p>It is generally advantageous to set different step sizes for
+different types of parameters. More nonlinear parameters such as
+those for number counting Jastrow factors or orbitals typically
+require smaller steps sizes than those for CI coefficients or
+traditional Jastrow parameters. There are defaults for several
+parameter types and a default of .001 has been chosen for all other
+parameters.</p></li>
+<li><p>The ability to gradually ramp up step sizes to their input values is
+useful for avoiding spikes in the average local energy during early
+iterations of descent optimization. This initial rise in the energy
+occurs as a memory of past gradients is being built up and it may be
+possible for the energy to recover without ramping if there are
+enough iterations in the optimization.</p></li>
+<li><p>The step sizes chosen can have a substantial influence on the quality
+of the optimization and the final variational energy achieved. Larger
+step sizes may be helpful if there is reason to think the descent
+optimization is not reaching the minimum energy. There are also
+additional hyperparameters in the descent algorithms with default
+values. <span class="bibtex" id="id4">[Otis2019]</span> They seem to have limited
+influence on the effectiveness of the optimization compared to step
+sizes, but users can adjust them within the source code of the
+descent engine if they wish.</p></li>
+<li><p>The sampling effort for individual descent steps can be small
+compared that for linear method iterations as shown in the example
+input below. Something in the range of 10,000 to 30,000 seems
+sufficient for molecules with tens of electrons. However, descent
+optimizations may require anywhere from a few hundred to a few
+thousand iterations.</p></li>
+<li><p>In cases where a descent optimization struggles to reach the minimum
+and a linear method optimization is not possible or unsatisfactory,
+it may be useful to try the hybrid optimization approach described in
+the next subsection.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;loop max=&quot;100&quot;&gt;
+   &lt;qmc method=&quot;linear&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot; gpu=&quot;no&quot;&gt;
+
+   &lt;!-- VMC inputs --&gt;
+    &lt;parameter name=&quot;blocks&quot;&gt;2000&lt;/parameter&gt;
+    &lt;parameter name=&quot;steps&quot;&gt;1&lt;/parameter&gt;
+    &lt;parameter name=&quot;samples&quot;&gt;20000&lt;/parameter&gt;
+    &lt;parameter name=&quot;warmupsteps&quot;&gt;100&lt;/parameter&gt;
+    &lt;parameter name=&quot;timestep&quot;&gt;0.05&lt;/parameter&gt;
+
+    &lt;parameter name=&quot;MinMethod&quot;&gt;descent&lt;/parameter&gt;
+    &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+    &lt;parameter name=&quot;usebuffer&quot;&gt;yes&lt;/parameter&gt;
+
+    &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+
+    &lt;!-- Descent Inputs --&gt;
+      &lt;parameter name=&quot;flavor&quot;&gt;RMSprop&lt;/parameter&gt;
+
+      &lt;parameter name=&quot;Ramp_eta&quot;&gt;no&lt;/parameter&gt;
+      &lt;parameter name=&quot;Ramp_num&quot;&gt;30&lt;/parameter&gt;
+
+     &lt;parameter name=&quot;TJF_2Body_eta&quot;&gt;.02&lt;/parameter&gt;
+      &lt;parameter name=&quot;TJF_1Body_eta&quot;&gt;.02&lt;/parameter&gt;
+     &lt;parameter name=&quot;F_eta&quot;&gt;.001&lt;/parameter&gt;
+     &lt;parameter name=&quot;Gauss_eta&quot;&gt;.001&lt;/parameter&gt;
+     &lt;parameter name=&quot;CI_eta&quot;&gt;.1&lt;/parameter&gt;
+     &lt;parameter name=&quot;Orb_eta&quot;&gt;.0001&lt;/parameter&gt;
+
+
+   &lt;/qmc&gt;
+&lt;/loop&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="hybrid-optimizer">
+<h3>Hybrid Optimizer<a class="headerlink" href="#hybrid-optimizer" title="Permalink to this headline">¶</a></h3>
+<p>Another optimization option is to use a hybrid combination of accelerated descent and blocked linear method.
+It provides a means to retain the advantages of both individual methods while scaling to large numbers of parameters beyond the traditional 10,000 parameter limit of the linear method. <span class="bibtex" id="id5">[Otis2019]</span>
+In a hybrid optimization, alternating sections of descent and BLM optimization are used.
+Gradient descent is used to identify the previous important directions in parameter space used by the BLM, the number of which is set by the <code class="docutils literal notranslate"><span class="pre">nold</span></code> input for the BLM.
+Over the course of a section of descent, vectors of parameter differences are stored and then passed to the linear method engine after the optimization changes to the BLM.
+One motivation for including sections of descent is to counteract noise in linear method updates due to uncertainties in its step direction and allow for a smoother movement to the minimum.
+There are two additional parameters used in the hybrid optimization and it requires a slightly different format of input to specify the constituent methods as shown below in the example.</p>
+<p><code class="docutils literal notranslate"><span class="pre">descent</span></code> method:</p>
+<blockquote>
+<div><p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 14%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">num_updates</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td></td>
+<td><p>Number of steps for a method</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Stored_Vectors</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>5</p></td>
+<td><p>Number of vectors to transfer to BLM</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">loop</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;203&quot;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;pbyp&quot;</span> <span class="n">checkpoint</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Minmethod&quot;</span><span class="o">&gt;</span> <span class="n">hybrid</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+ <span class="o">&lt;</span><span class="n">optimizer</span> <span class="n">num_updates</span><span class="o">=</span><span class="s2">&quot;100&quot;</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span><span class="o">&gt;</span><span class="mi">1000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="o">&gt;</span><span class="mi">20000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;warmupsteps&quot;</span><span class="o">&gt;</span><span class="mi">1000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.05</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">estimator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LocalEnergy&quot;</span> <span class="n">hdf5</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">/&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Minmethod&quot;</span><span class="o">&gt;</span> <span class="n">descent</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Stored_Vectors&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;flavor&quot;</span><span class="o">&gt;</span><span class="n">RMSprop</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;TJF_2Body_eta&quot;</span><span class="o">&gt;.</span><span class="mi">01</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;TJF_1Body_eta&quot;</span><span class="o">&gt;.</span><span class="mi">01</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;CI_eta&quot;</span><span class="o">&gt;.</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ramp_eta&quot;</span><span class="o">&gt;</span><span class="n">no</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Ramp_num&quot;</span><span class="o">&gt;</span><span class="mi">10</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+ <span class="o">&lt;/</span><span class="n">optimizer</span><span class="o">&gt;</span>
+
+ <span class="o">&lt;</span><span class="n">optimizer</span> <span class="n">num_updates</span><span class="o">=</span><span class="s2">&quot;3&quot;</span><span class="o">&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span><span class="o">&gt;</span><span class="mi">2000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="o">&gt;</span><span class="mi">1000000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;warmupsteps&quot;</span><span class="o">&gt;</span><span class="mi">1000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.05</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">estimator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LocalEnergy&quot;</span> <span class="n">hdf5</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">/&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Minmethod&quot;</span><span class="o">&gt;</span> <span class="n">adaptive</span> <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;max_relative_cost_change&quot;</span><span class="o">&gt;</span><span class="mf">10.0</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;max_param_change&quot;</span><span class="o">&gt;</span><span class="mi">3</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;shift_i&quot;</span><span class="o">&gt;</span><span class="mf">0.01</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;shift_s&quot;</span><span class="o">&gt;</span><span class="mf">1.00</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;block_lm&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nblocks&quot;</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nolds&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nkept&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+
+ <span class="o">&lt;/</span><span class="n">optimizer</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">loop</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Additional information and recommendations:</p>
+<ul class="simple">
+<li><p>In the example above, the input for <code class="docutils literal notranslate"><span class="pre">loop</span></code> gives the total number
+of steps for the full optimization while the inputs for
+<code class="docutils literal notranslate"><span class="pre">num_updates</span></code> specify the number of steps in the constituent
+methods. For this case, the optimization would begin with 100 steps
+of descent using the parameters in the first <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> block and
+then switch to the BLM for 3 steps before switching back to descent
+for the final 100 iterations of the total of 203.</p></li>
+<li><p>The design of the hybrid method allows for more than two
+<code class="docutils literal notranslate"><span class="pre">optimizer</span></code> blocks to be used and the optimization will cycle
+through the individual methods. However, the effectiveness of this in
+terms of the quality of optimization results is unexplored.</p></li>
+<li><p>As the descent algorithms are currently only implemented for ground
+state optimizations, this hybrid combination of them with the BLM is
+also restricted to the ground state for now.</p></li>
+<li><p>It can be useful to follow a hybrid optimization with a section of
+pure descent optimization and take an average energy over the last
+few hundred iterations as the final variational energy. This approach
+can achieve a lower statistical uncertainty on the energy for less
+overall sampling effort compared to what a pure linear method
+optimization would require.</p></li>
+</ul>
+</div>
+<div class="section" id="quartic-optimizer">
+<h3>Quartic Optimizer<a class="headerlink" href="#quartic-optimizer" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>

@@ -500,3 +500,383 @@ within those blocks will be most important for constructing
 :math:`\vec{c}_{opt}`, which is then obtained by solving a smaller, more
 memory-efficient eigenproblem in the basis of these supposedly important
 block-wise directions.
+
+``linear`` method:
+
+  parameters:
+
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | **Name**                  | **Datatype** | **Values**              | **Default** | **Description**                                                                                 |
+  +===========================+==============+=========================+=============+=================================================================================================+
+  | ``max_relative_change``   | real         | :math:`> 0`             | 10.0        | Allowed change in cost function                                                                 |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``max_param_change``      | real         | :math:`> 0`             | 0.3         | Allowed change in wavefunction parameter                                                        |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``shift_i``               | real         | :math:`> 0`             | 0.01        | Initial diagonal stabilizer added to the Hamiltonian matrix                                     |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``shift_s``               | real         | :math:`> 0`             | 1.00        | Initial overlap-based stabilizer added to the Hamiltonian matrix                                |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``target_shift_i``        | real         | any                     | -1.0        | Diagonal stabilizer value aimed for during adaptive method (disabled if :math:`\leq 0`)         |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``cost_increase_tol``     | real         | :math:`\geq 0`          | 0.0         |  Tolerance for cost function increases                                                          |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``chase_lowest``          | text         | yes, no                 | yes         | Chase the lowest eigenvector in iterative solver                                                |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``chase_closest``         | text         | yes, no                 | no          | Chase the eigenvector closest to initial guess                                                  |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``block_lm``              | text         | yes, no                 | no          | Use BLM                                                                                         |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``blocks``                | integer      | :math:`> 0`             |             | Number of blocks in BLM                                                                         |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``nolds``                 | integer      | :math:`> 0`             |             | Number of old update vectors used in BLM                                                        |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+  | ``nkept``                 | integer      | :math:`> 0`             |             | Number of eigenvectors to keep per block in BLM                                                 |
+  +---------------------------+--------------+-------------------------+-------------+-------------------------------------------------------------------------------------------------+
+
+Additional information:
+
+-  ``shift_i`` This is the initial coefficient used to scale the diagonal
+   stabilizer. More stable but slower optimization is expected with a
+   large value. The adaptive method will automatically adjust this value
+   after each linear method iteration.
+
+-  ``shift_s`` This is the initial coefficient used to scale the overlap-based
+   stabilizer. More stable but slower optimization is expected with a
+   large value. The adaptive method will automatically adjust this value
+   after each linear method iteration.
+
+-  ``target_shift_i`` If set greater than zero, the adaptive method will choose the
+   update whose shift_i value is closest to this target value so long as
+   the associated cost is within cost_increase_tol of the lowest cost.
+   Disable this behavior by setting target_shift_i to a negative number.
+
+-  ``cost_increase_tol`` Tolerance for cost function increases when selecting the best
+   shift.
+
+-  ``nblocks`` This is the number of blocks used in BLM. The amount of memory
+   required to store LM matrices decreases as the number of blocks
+   increases. But the error introduced by BLM would increase as the
+   number of blocks increases.
+
+-  ``nolds`` In BLM, the interblock correlation is accounted for by including a
+   small number of wavefunction update vectors outside the block. Larger
+   would include more interblock correlation and more accurate results
+   but also higher memory requirements.
+
+-  ``nkept`` This is the number of update directions retained from each block in
+   the BLM. If all directions are retained in each block, then the BLM
+   becomes equivalent to the standard LM. Retaining five or fewer
+   directions per block is often sufficient.
+
+Recommendations:
+
+-  Default ``shift_i``, ``shift_s`` should be fine.
+
+-  When there are fewer than about 5,000 variables being optimized, the
+   traditional LM is preferred because it has a lower overhead than the
+   BLM when the number of variables is small.
+
+-  Initial experience with the BLM suggests that a few hundred blocks
+   and a handful of and often provide a good balance between memory use
+   and accuracy. In general, using fewer blocks should be more accurate
+   but would require more memory.
+
+::
+
+  <loop max="15">
+   <qmc method="linear" move="pbyp">
+     <!-- Specify the VMC options -->
+     <parameter name="walkers">                1 </parameter>
+     <parameter name="samples">            20000 </parameter>
+     <parameter name="stepsbetweensamples">    1 </parameter>
+     <parameter name="substeps">               5 </parameter>
+     <parameter name="warmupSteps">            5 </parameter>
+     <parameter name="blocks">                50 </parameter>
+     <parameter name="timestep">             1.0 </parameter>
+     <parameter name="usedrift">              no </parameter>
+     <estimator name="LocalEnergy" hdf5="no"/>
+     <!-- Specify the correlated sampling options and define the cost function -->
+          <cost name="energy">               1.00 </cost>
+          <cost name="unreweightedvariance"> 0.00 </cost>
+          <cost name="reweightedvariance">   0.00 </cost>
+     <!-- Specify the optimizer options -->
+     <parameter name="MinMethod">adaptive</parameter>
+     <parameter name="max_relative_cost_change">10.0</parameter>
+     <parameter name="shift_i"> 1.00 </parameter>
+     <parameter name="shift_s"> 1.00 </parameter>
+     <parameter name="max_param_change"> 0.3 </parameter>
+     <parameter name="chase_lowest"> yes </parameter>
+     <parameter name="chase_closest"> yes </parameter>
+     <parameter name="block_lm"> no </parameter>
+     <!-- Specify the BLM specific options if needed
+       <parameter name="nblocks"> 100 </parameter>
+       <parameter name="nolds"> 5 </parameter>
+       <parameter name="nkept"> 3 </parameter>
+     -->
+   </qmc>
+  </loop>
+
+The adaptive optimizer is also able to optimize individual excited states directly. :cite:`Zhao:2016:dir_tar`
+In this case, it tries to minimize the following function:
+
+.. math:: \Omega[\Psi]=\frac{\left<\Psi|\omega-H|\Psi\right>}{\left<\Psi|{\left(\omega-H\right)}^2|\Psi\right>}\:.
+
+The global minimum of this function corresponds to the state whose
+energy lies immediately above the shift parameter :math:`\omega` in the
+energy spectrum. For example, if :math:`\omega` were placed in between
+the ground state energy and the first excited state energy and the
+wavefunction ansatz was capable of a good description for the first
+excited state, then the wavefunction would be optimized for the first
+excited state. Note that if the ansatz is not capable of a good
+description of the excited state in question, the optimization could
+converge to a different state, as is known to occur in some
+circumstances for traditional ground state optimizations. Note also that
+the ground state can be targeted by this method by choosing
+:math:`\omega` to be below the ground state energy, although we should
+stress that this is not the same thing as a traditional ground state
+optimization and will in general give a slightly different wavefunction.
+Excited state targeting requires two additional parameters, as shown in
+the following table.
+
+Excited state targeting:
+
+  parameters:
+
+  +-------------------+--------------+--------------+-------------+---------------------------------------------------------+
+  | **Name**          | **Datatype** | **Values**   | **Default** | **Description**                                         |
+  +===================+==============+==============+=============+=========================================================+
+  | ``targetExcited`` | text         | yes, no      | no          | Whether to use the excited state targeting optimization |
+  +-------------------+--------------+--------------+-------------+---------------------------------------------------------+
+  | ``omega``         | real         | real numbers | none        | Energy shift used to target different excited states    |
+  +-------------------+--------------+--------------+-------------+---------------------------------------------------------+
+
+Excited state recommendations:
+
+-  Because of the finite variance in any approximate wavefunction, we
+   recommended setting :math:`\omega=\omega_0-\sigma`, where
+   :math:`\omega_0` is placed just below the energy of the targeted
+   state and :math:`\sigma^2` is the energy variance.
+
+-  To obtain an unbiased excitation energy, the ground state should be
+   optimized with the excited state variational principle as well by
+   setting ``omega`` below the ground state energy. Note that using the ground
+   state variational principle for the ground state and the excited
+   state variational principle for the excited state creates a bias in
+   favor of the ground state.
+
+Descent Optimizer
+~~~~~~~~~~~~~~~~~
+
+Gradient descent algorithms are an alternative set of optimization methods to the OneShiftOnly and adaptive optimizers based on the linear method.
+These methods use only first derivatives to optimize trial wave functions and convergence can be accelerated by retaining a memory of previous derivative values.
+Multiple flavors of accelerated descent methods are available. They differ in details such as the schemes for adaptive adjustment of step sizes. :cite:`Otis2019`
+Descent algorithms avoid the construction of matrices that occurs in the linear method and consequently can be applied to larger sets of
+optimizable parameters.
+Currently, descent optimization is only available for ground state calculations.
+Parameters for descent are shown in the table below.
+
+``descent`` method:
+
+  parameters:
+
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | **Name**            | **Datatype** | **Values**                     | **Default** | **Description**                                                 |
+  +=====================+==============+================================+=============+=================================================================+
+  | ``flavor``          | text         | RMSprop, Random, ADAM, AMSGrad | RMSprop     | Particular type of descent method                               |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``Ramp_eta``        | text         | yes, no                        | no          | Whether to gradually ramp up step sizes                         |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``Ramp_num``        | integer      | :math:`> 0`                    | 30          | Number of steps over which to ramp up step size                 |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``TJF_2Body_eta``   | real         | :math:`> 0`                    | 0.01        | Step size for two body Jastrow parameters                       |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``TJF_1Body_eta``   | real         | :math:`> 0`                    | 0.01        | Step size for one body Jastrow parameters                       |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``F_eta``           | real         | :math:`> 0`                    | 0.001       | Step size for number counting Jastrow F matrix parameters       |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``Gauss_eta``       | real         | :math:`> 0`                    | 0.001       | Step size for number counting Jastrow gaussian basis parameters |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``CI_eta``          | real         | :math:`> 0`                    | 0.01        | Step size for CI parameters                                     |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+  | ``Orb_eta``         | real         | :math:`> 0`                    | 0.001       | Step size for orbital parameters                                |
+  +---------------------+--------------+--------------------------------+-------------+-----------------------------------------------------------------+
+
+Additional information and recommendations:
+
+-  It is generally advantageous to set different step sizes for
+   different types of parameters. More nonlinear parameters such as
+   those for number counting Jastrow factors or orbitals typically
+   require smaller steps sizes than those for CI coefficients or
+   traditional Jastrow parameters. There are defaults for several
+   parameter types and a default of .001 has been chosen for all other
+   parameters.
+
+-  The ability to gradually ramp up step sizes to their input values is
+   useful for avoiding spikes in the average local energy during early
+   iterations of descent optimization. This initial rise in the energy
+   occurs as a memory of past gradients is being built up and it may be
+   possible for the energy to recover without ramping if there are
+   enough iterations in the optimization.
+
+-  The step sizes chosen can have a substantial influence on the quality
+   of the optimization and the final variational energy achieved. Larger
+   step sizes may be helpful if there is reason to think the descent
+   optimization is not reaching the minimum energy. There are also
+   additional hyperparameters in the descent algorithms with default
+   values. :cite:`Otis2019` They seem to have limited
+   influence on the effectiveness of the optimization compared to step
+   sizes, but users can adjust them within the source code of the
+   descent engine if they wish.
+
+-  The sampling effort for individual descent steps can be small
+   compared that for linear method iterations as shown in the example
+   input below. Something in the range of 10,000 to 30,000 seems
+   sufficient for molecules with tens of electrons. However, descent
+   optimizations may require anywhere from a few hundred to a few
+   thousand iterations.
+
+-  In cases where a descent optimization struggles to reach the minimum
+   and a linear method optimization is not possible or unsatisfactory,
+   it may be useful to try the hybrid optimization approach described in
+   the next subsection.
+
+::
+
+
+  <loop max="100">
+     <qmc method="linear" move="pbyp" checkpoint="-1" gpu="no">
+
+     <!-- VMC inputs -->
+      <parameter name="blocks">2000</parameter>
+      <parameter name="steps">1</parameter>
+      <parameter name="samples">20000</parameter>
+      <parameter name="warmupsteps">100</parameter>
+      <parameter name="timestep">0.05</parameter>
+
+      <parameter name="MinMethod">descent</parameter>
+      <estimator name="LocalEnergy" hdf5="no"/>
+      <parameter name="usebuffer">yes</parameter>
+
+      <estimator name="LocalEnergy" hdf5="no"/>
+
+      <!-- Descent Inputs -->
+        <parameter name="flavor">RMSprop</parameter>
+
+        <parameter name="Ramp_eta">no</parameter>
+        <parameter name="Ramp_num">30</parameter>
+
+       <parameter name="TJF_2Body_eta">.02</parameter>
+        <parameter name="TJF_1Body_eta">.02</parameter>
+       <parameter name="F_eta">.001</parameter>
+       <parameter name="Gauss_eta">.001</parameter>
+       <parameter name="CI_eta">.1</parameter>
+       <parameter name="Orb_eta">.0001</parameter>
+
+
+     </qmc>
+  </loop>
+
+Hybrid Optimizer
+~~~~~~~~~~~~~~~~
+
+Another optimization option is to use a hybrid combination of accelerated descent and blocked linear method.
+It provides a means to retain the advantages of both individual methods while scaling to large numbers of parameters beyond the traditional 10,000 parameter limit of the linear method. :cite:`Otis2019`
+In a hybrid optimization, alternating sections of descent and BLM optimization are used.
+Gradient descent is used to identify the previous important directions in parameter space used by the BLM, the number of which is set by the ``nold`` input for the BLM.
+Over the course of a section of descent, vectors of parameter differences are stored and then passed to the linear method engine after the optimization changes to the BLM.
+One motivation for including sections of descent is to counteract noise in linear method updates due to uncertainties in its step direction and allow for a smoother movement to the minimum.
+There are two additional parameters used in the hybrid optimization and it requires a slightly different format of input to specify the constituent methods as shown below in the example.
+
+``descent`` method:
+
+  parameters:
+
+  +---------------------+--------------+-------------+-------------+--------------------------------------+
+  | **Name**            | **Datatype** | **Values**  | **Default** | **Description**                      |
+  +=====================+==============+=============+=============+======================================+
+  | ``num_updates``     | integer      | :math:`> 0` |             | Number of steps for a method         |
+  +---------------------+--------------+-------------+-------------+--------------------------------------+
+  | ``Stored_Vectors``  | integer      | :math:`> 0` | 5           | Number of vectors to transfer to BLM |
+  +---------------------+--------------+-------------+-------------+--------------------------------------+
+
+::
+
+
+  <loop max="203">
+  <qmc method="linear" move="pbyp" checkpoint="-1" gpu="no">
+   <parameter name="Minmethod"> hybrid </parameter>
+
+   <optimizer num_updates="100">
+
+  <parameter name="blocks">1000</parameter>
+       <parameter name="steps">1</parameter>
+       <parameter name="samples">20000</parameter>
+       <parameter name="warmupsteps">1000</parameter>
+       <parameter name="timestep">0.05</parameter>
+
+       <estimator name="LocalEnergy" hdf5="no"/>
+
+       <parameter name="Minmethod"> descent </parameter>
+       <parameter name="Stored_Vectors">5</parameter>
+       <parameter name="flavor">RMSprop</parameter>
+       <parameter name="TJF_2Body_eta">.01</parameter>
+       <parameter name="TJF_1Body_eta">.01</parameter>
+       <parameter name="CI_eta">.1</parameter>
+
+       <parameter name="Ramp_eta">no</parameter>
+       <parameter name="Ramp_num">10</parameter>
+   </optimizer>
+
+   <optimizer num_updates="3">
+
+       <parameter name="blocks">2000</parameter>
+       <parameter name="steps">1</parameter>
+       <parameter name="samples">1000000</parameter>
+       <parameter name="warmupsteps">1000</parameter>
+       <parameter name="timestep">0.05</parameter>
+
+       <estimator name="LocalEnergy" hdf5="no"/>
+
+       <parameter name="Minmethod"> adaptive </parameter>
+       <parameter name="max_relative_cost_change">10.0</parameter>
+       <parameter name="max_param_change">3</parameter>
+       <parameter name="shift_i">0.01</parameter>
+       <parameter name="shift_s">1.00</parameter>
+
+       <parameter name="block_lm">yes</parameter>
+       <parameter name="nblocks">2</parameter>
+       <parameter name="nolds">5</parameter>
+       <parameter name="nkept">5</parameter>
+
+   </optimizer>
+  </qmc>
+  </loop>
+
+Additional information and recommendations:
+
+-  In the example above, the input for ``loop`` gives the total number
+   of steps for the full optimization while the inputs for
+   ``num_updates`` specify the number of steps in the constituent
+   methods. For this case, the optimization would begin with 100 steps
+   of descent using the parameters in the first ``optimizer`` block and
+   then switch to the BLM for 3 steps before switching back to descent
+   for the final 100 iterations of the total of 203.
+
+-  The design of the hybrid method allows for more than two
+   ``optimizer`` blocks to be used and the optimization will cycle
+   through the individual methods. However, the effectiveness of this in
+   terms of the quality of optimization results is unexplored.
+
+-  As the descent algorithms are currently only implemented for ground
+   state optimizations, this hybrid combination of them with the BLM is
+   also restricted to the ground state for now.
+
+-  It can be useful to follow a hybrid optimization with a section of
+   pure descent optimization and take an average energy over the last
+   few hundred iterations as the final variational energy. This approach
+   can achieve a lower statistical uncertainty on the energy for less
+   overall sampling effort compared to what a pure linear method
+   optimization would require.
+
+Quartic Optimizer
+~~~~~~~~~~~~~~~~~
