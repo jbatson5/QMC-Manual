@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Output Overview &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Quantum Monte Carlo Methods" href="methods.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-scalar-dat-file">The .scalar.dat file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-opt-xml-file">The .opt.xml file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-qmc-xml-file">The .qmc.xml file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-dmc-dat-file">The .dmc.dat file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-bandinfo-dat-file">The .bandinfo.dat file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checkpoint-and-restart-files">Checkpoint and restart files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-cont-xml-file">The .cont.xml file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-config-h5-file">The .config.h5 file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-random-h5-file">The .random.h5 file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Output Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/output_overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="output-overview">
+<span id="id1"></span><h1>Output Overview<a class="headerlink" href="#output-overview" title="Permalink to this headline">¶</a></h1>
+<p>QMCPACK writes several output files that report information about the simulation (e.g., the physical properties such as the energy), as well as information about the computational aspects of the simulation, checkpoints, and restarts.
+The types of output files generated depend on the details of a calculation. The following list is not meant to be exhaustive but rather to highlight some salient features of the more common file types. Further details can be found in the description of the estimator of interest.</p>
+<div class="section" id="the-scalar-dat-file">
+<span id="scalardat-file"></span><h2>The .scalar.dat file<a class="headerlink" href="#the-scalar-dat-file" title="Permalink to this headline">¶</a></h2>
+<p>The most important output file is the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file. This file contains the
+output of block-averaged properties of the system such as the local
+energy and other estimators. Each line corresponds to an average over
+<span class="math notranslate nohighlight">\(N_{walkers}*N_{steps}\)</span> samples. By default, the quantities
+reported in the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file include the following:</p>
+<dl class="simple">
+<dt>LocalEnergy</dt><dd><p>The local energy.</p>
+</dd>
+<dt>LocalEnergy_sq</dt><dd><p>The local energy squared.</p>
+</dd>
+<dt>LocalPotential</dt><dd><p>The local potential energy.</p>
+</dd>
+<dt>Kinetic</dt><dd><p>The kinetic energy.</p>
+</dd>
+<dt>ElecElec</dt><dd><p>The electron-electron potential energy.</p>
+</dd>
+<dt>IonIon</dt><dd><p>The ion-ion potential energy.</p>
+</dd>
+<dt>LocalECP</dt><dd><p>The energy due to the pseudopotential/effective core potential.</p>
+</dd>
+<dt>NonLocalECP</dt><dd><p>The nonlocal energy due to the pseudopotential/effective core
+potential.</p>
+</dd>
+<dt>MPC</dt><dd><p>The modified periodic Coulomb potential energy.</p>
+</dd>
+<dt>BlockWeight</dt><dd><p>The number of MC samples in the block.</p>
+</dd>
+<dt>BlockCPU</dt><dd><p>The number of seconds to compute the block.</p>
+</dd>
+<dt>AcceptRatio</dt><dd><p>The acceptance ratio.</p>
+</dd>
+</dl>
+<p>QMCPACK includes a python utility, <code class="docutils literal notranslate"><span class="pre">qmca</span></code>, that can be used to process these files. Details and examples are given in <span class="xref std std-ref">analyzing</span>.</p>
+</div>
+<div class="section" id="the-opt-xml-file">
+<span id="optxml-file"></span><h2>The .opt.xml file<a class="headerlink" href="#the-opt-xml-file" title="Permalink to this headline">¶</a></h2>
+<p>This file is generated after a VMC wavefunction optimization and contains the part of the input file that lists the optimized Jastrow factors.
+Conveniently, this file is already formatted such that it can easily be incorporated into a DMC input file.</p>
+</div>
+<div class="section" id="the-qmc-xml-file">
+<span id="qmc-file"></span><h2>The .qmc.xml file<a class="headerlink" href="#the-qmc-xml-file" title="Permalink to this headline">¶</a></h2>
+<p>This file contains information about the computational aspects of the simulation, for example, which parts of the code are being executed when. This file is generated only during an ensemble run in which QMCPACK runs multiple input files.</p>
+</div>
+<div class="section" id="the-dmc-dat-file">
+<span id="dmc-file"></span><h2>The .dmc.dat file<a class="headerlink" href="#the-dmc-dat-file" title="Permalink to this headline">¶</a></h2>
+<p>This file contains information similar to the <code class="docutils literal notranslate"><span class="pre">.scalar.dat</span></code> file but also includes extra information about the details of a DMC calculation, for example, information about the walker population.</p>
+<dl class="simple">
+<dt>Index</dt><dd><p>The block number.</p>
+</dd>
+<dt>LocalEnergy</dt><dd><p>The local energy.</p>
+</dd>
+<dt>Variance</dt><dd><p>The variance.</p>
+</dd>
+<dt>Weight</dt><dd><p>The number of samples in the block.</p>
+</dd>
+<dt>NumOfWalkers</dt><dd><p>The number of walkers times the number of steps.</p>
+</dd>
+<dt>AvgSentWalkers</dt><dd><p>The average number of walkers sent. During a DMC simulation, walkers
+might be created or destroyed. At every step, QMCPACK will do some
+load balancing to ensure that the walkers are evenly distributed
+across nodes.</p>
+</dd>
+<dt>TrialEnergy</dt><dd><p>The trial energy. See <a class="reference internal" href="methods.html#dmc"><span class="std std-ref">Diffusion Monte Carlo</span></a> for an explanation of
+trial energy.</p>
+</dd>
+<dt>DiffEff</dt><dd><p>The diffusion efficiency.</p>
+</dd>
+<dt>LivingFraction</dt><dd><p>The fraction of the walker population from the previous step that
+survived to the current step.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="the-bandinfo-dat-file">
+<span id="bandinfo-file"></span><h2>The .bandinfo.dat file<a class="headerlink" href="#the-bandinfo-dat-file" title="Permalink to this headline">¶</a></h2>
+<p>This file contains information from the trial wavefunction about the band structure of the system,
+including the available <span class="math notranslate nohighlight">\(k\)</span>-points. This can
+be helpful in constructing trial wavefunctions.</p>
+</div>
+<div class="section" id="checkpoint-and-restart-files">
+<span id="checkpoint-files"></span><h2>Checkpoint and restart files<a class="headerlink" href="#checkpoint-and-restart-files" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="the-cont-xml-file">
+<h3>The .cont.xml file<a class="headerlink" href="#the-cont-xml-file" title="Permalink to this headline">¶</a></h3>
+<p>This file enables continuation of the run.  It is mostly a copy of the input XML file with the series number incremented and the <code class="docutils literal notranslate"><span class="pre">mcwalkerset</span></code> element added to read the walkers from a config file.   The <code class="docutils literal notranslate"><span class="pre">.cont.xml</span></code> file is always created, but other files it depends on are  present only if checkpointing is enabled.</p>
+</div>
+<div class="section" id="the-config-h5-file">
+<h3>The .config.h5 file<a class="headerlink" href="#the-config-h5-file" title="Permalink to this headline">¶</a></h3>
+<p>This file contains stored walker configurations.</p>
+</div>
+<div class="section" id="the-random-h5-file">
+<h3>The .random.h5 file<a class="headerlink" href="#the-random-h5-file" title="Permalink to this headline">¶</a></h3>
+<p>This file contains the state of the random number generator to allow restarts.
+(Older versions used an XML file with a suffix of <code class="docutils literal notranslate"><span class="pre">.random.xml</span></code>).</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="methods.html" class="btn btn-neutral float-left" title="Quantum Monte Carlo Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
