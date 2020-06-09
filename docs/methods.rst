@@ -880,3 +880,148 @@ Additional information and recommendations:
 
 Quartic Optimizer
 ~~~~~~~~~~~~~~~~~
+
+*This is an older optimizer method retained for compatibility. We
+recommend starting with the newest OneShiftOnly or adaptive optimizers.*
+The quartic optimizer fits a quartic polynomial to 7 values of the cost
+function obtained using reweighting along the chosen direction and
+determines the optimal move. This optimizer is very robust but is a bit
+conservative when accepting new steps, especially when large parameters
+changes are proposed.
+
+``linear`` method:
+
+  parameters:
+
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | **Name**              | **Datatype** | **Values**  | **Default** | **Description**                                  |
+  +=======================+==============+=============+=============+==================================================+
+  | ``bigchange``         | real         | :math:`> 0` | 50.0        | Largest parameter change allowed                 |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | ``alloweddifference`` | real         | :math:`> 0` | 1e-4        | Allowed increase in energy                       |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | ``exp0``              | real         | any value   | -16.0       | Initial value for stabilizer                     |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | ``stabilizerscale``   | real         | :math:`> 0` | 2.0         | Increase in value of ``exp0`` between iterations |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | ``nstabilizers``      | integer      | :math:`> 0` | 3           | Number of stabilizers to try                     |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+  | ``max_its``           | integer      | :math:`> 0` | 1           | Number of inner loops with same samples          |
+  +-----------------------+--------------+-------------+-------------+--------------------------------------------------+
+
+Additional information:
+
+-  ``exp0`` This is the initial value for stabilizer (shift to diagonal of H).
+   The actual value of stabilizer is :math:`10^{\textrm{exp0}}`.
+
+Recommendations:
+
+-  For hard cases (e.g., simultaneous optimization of long MSD and
+   3-Body J), set ``exp0`` to 0 and do a single inner iteration (max its=1) per
+   sample of configurations.
+
+::
+
+  <!-- Specify the optimizer options -->
+  <parameter name="MinMethod">quartic</parameter>
+  <parameter name="exp0">-6</parameter>
+  <parameter name="alloweddifference"> 1.0e-4 </parameter>
+  <parameter name="nstabilizers"> 1 </parameter>
+  <parameter name="bigchange">15.0</parameter>
+
+General Recommendations
+~~~~~~~~~~~~~~~~~~~~~~~
+
+-  All electron wavefunctions are typically more difficult to optimize
+   than pseudopotential wavefunctions because of the importance of the
+   wavefunction near the nucleus.
+
+-  Two-body Jastrow contributes the largest portion of correlation
+   energy from bare Slater determinants. Consequently, the recommended
+   order for optimizing wavefunction components is two-body, one-body,
+   three-body Jastrow factors and MSD coefficients.
+
+-  For two-body spline Jastrows, always start from a reasonable one. The
+   lack of physically motivated constraints in the functional form at
+   large distances can cause slow convergence if starting from zero.
+
+-  One-body spline Jastrow from old calculations can be a good starting
+   point.
+
+-  Three-body polynomial Jastrow can start from zero. It is beneficial
+   to first optimize one-body and two-body Jastrow factors without
+   adding three-body terms in the calculation and then add the
+   three-body Jastrow and optimize all the three components together.
+
+Optimization of CI coefficients
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When storing a CI wavefunction in HDF5 format, the CI coefficients and
+the :math:`\alpha` and :math:`\beta` components of each CI are not in
+the XML input file. When optimizing the CI coefficients, they will be
+stored in HDF5 format. The optimization header block will have to
+specify that the new CI coefficients will be saved to HDF5 format. If
+the tag is not added coefficients will not be saved.
+
+::
+
+  <qmc method="linear" move="pbyp" gpu="no" hdf5="yes">
+
+  The rest of the optimization block remains the same.
+
+When running the optimization, the new coefficients will be stored in a *.sXXX.opt.h5 file,  where XXX coressponds to the series number. The H5 file contains only the optimized coefficients. The corresponding *.sXXX.opt.xml  will be updated for each optimization block as follows:
+
+::
+
+  <detlist size="1487" type="DETS" nca="0" ncb="0" nea="2" neb="2" nstates="85" cutoff="1e-2" href="../LiH.orbs.h5" opt_coeffs="LiH.s001.opt.h5"/>
+
+The opt_coeffs tag will then reference where the new CI coefficients are
+stored.
+
+When restarting the run with the new optimized coeffs, you need to
+specify the previous hdf5 containing the basis set, orbitals, and MSD,
+as well as the new optimized coefficients. The code will read the
+previous data but will rewrite the coefficients that were optimized with
+the values found in the \*.sXXX.opt.h5 file. Be careful to keep the pair
+of optimized CI coefficients and Jastrow coefficients together to avoid
+inconsistencies.
+
+.. _dmc:
+
+Diffusion Monte Carlo
+---------------------
+
+Main input parameters are given in :numref:`table9`, additional in :numref:`table10`.
+
+``dmc`` method:
+
+parameters:
+
+.. _table9:
+.. table::
+
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | **Name**                       | **Datatype** | **Values**              | **Default** | **Description**                     |
+  +================================+==============+=========================+=============+=====================================+
+  | ``targetwalkers``              | integer      | :math:`> 0`             | dep.        | Overall total number of walkers     |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``blocks``                     | integer      | :math:`\geq 0`          | 1           | Number of blocks                    |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``steps``                      | integer      | :math:`\geq 0`          | 1           | Number of steps per block           |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``warmupsteps``                | integer      | :math:`\geq 0`          | 0           | Number of steps for warming up      |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``timestep``                   | real         | :math:`> 0`             | 0.1         | Time step for each electron move    |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``nonlocalmoves``              | string       | yes, no, v0, v1, v3     | no          | Run with T-moves                    |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``branching_cutoff_scheme``    |              |                         |             |                                     |
+  |                                |              |                         |             |                                     |
+  |                                | string       | classic/DRV/ZSGMA/YL    | classic     | Branch cutoff scheme                |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``maxcpusecs``                 | real         | :math:`\geq 0`          | 3.6e5       | Maximum allowed walltime in seconds |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+  | ``blocks_between_recompute``   | integer      | :math:`\geq 0`          | dep.        | Wavefunction recompute frequency    |
+  +--------------------------------+--------------+-------------------------+-------------+-------------------------------------+
+
+.. centered:: Table 9 Main DMC input parameters.

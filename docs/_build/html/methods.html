@@ -102,8 +102,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#descent-optimizer">Descent Optimizer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#hybrid-optimizer">Hybrid Optimizer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#quartic-optimizer">Quartic Optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#general-recommendations">General Recommendations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#optimization-of-ci-coefficients">Optimization of CI coefficients</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#diffusion-monte-carlo">Diffusion Monte Carlo</a></li>
 </ul>
 </li>
 </ul>
@@ -1309,8 +1314,221 @@ optimization would require.</p></li>
 </div>
 <div class="section" id="quartic-optimizer">
 <h3>Quartic Optimizer<a class="headerlink" href="#quartic-optimizer" title="Permalink to this headline">¶</a></h3>
+<p><em>This is an older optimizer method retained for compatibility. We
+recommend starting with the newest OneShiftOnly or adaptive optimizers.</em>
+The quartic optimizer fits a quartic polynomial to 7 values of the cost
+function obtained using reweighting along the chosen direction and
+determines the optimal move. This optimizer is very robust but is a bit
+conservative when accepting new steps, especially when large parameters
+changes are proposed.</p>
+<p><code class="docutils literal notranslate"><span class="pre">linear</span></code> method:</p>
+<blockquote>
+<div><p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 44%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bigchange</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>50.0</p></td>
+<td><p>Largest parameter change allowed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alloweddifference</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>1e-4</p></td>
+<td><p>Allowed increase in energy</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exp0</span></code></p></td>
+<td><p>real</p></td>
+<td><p>any value</p></td>
+<td><p>-16.0</p></td>
+<td><p>Initial value for stabilizer</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">stabilizerscale</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>2.0</p></td>
+<td><p>Increase in value of <code class="docutils literal notranslate"><span class="pre">exp0</span></code> between iterations</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nstabilizers</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>3</p></td>
+<td><p>Number of stabilizers to try</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">max_its</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>1</p></td>
+<td><p>Number of inner loops with same samples</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Additional information:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exp0</span></code> This is the initial value for stabilizer (shift to diagonal of H).
+The actual value of stabilizer is <span class="math notranslate nohighlight">\(10^{\textrm{exp0}}\)</span>.</p></li>
+</ul>
+<p>Recommendations:</p>
+<ul class="simple">
+<li><p>For hard cases (e.g., simultaneous optimization of long MSD and
+3-Body J), set <code class="docutils literal notranslate"><span class="pre">exp0</span></code> to 0 and do a single inner iteration (max its=1) per
+sample of configurations.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!-- Specify the optimizer options --&gt;
+&lt;parameter name=&quot;MinMethod&quot;&gt;quartic&lt;/parameter&gt;
+&lt;parameter name=&quot;exp0&quot;&gt;-6&lt;/parameter&gt;
+&lt;parameter name=&quot;alloweddifference&quot;&gt; 1.0e-4 &lt;/parameter&gt;
+&lt;parameter name=&quot;nstabilizers&quot;&gt; 1 &lt;/parameter&gt;
+&lt;parameter name=&quot;bigchange&quot;&gt;15.0&lt;/parameter&gt;
+</pre></div>
 </div>
 </div>
+<div class="section" id="general-recommendations">
+<h3>General Recommendations<a class="headerlink" href="#general-recommendations" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>All electron wavefunctions are typically more difficult to optimize
+than pseudopotential wavefunctions because of the importance of the
+wavefunction near the nucleus.</p></li>
+<li><p>Two-body Jastrow contributes the largest portion of correlation
+energy from bare Slater determinants. Consequently, the recommended
+order for optimizing wavefunction components is two-body, one-body,
+three-body Jastrow factors and MSD coefficients.</p></li>
+<li><p>For two-body spline Jastrows, always start from a reasonable one. The
+lack of physically motivated constraints in the functional form at
+large distances can cause slow convergence if starting from zero.</p></li>
+<li><p>One-body spline Jastrow from old calculations can be a good starting
+point.</p></li>
+<li><p>Three-body polynomial Jastrow can start from zero. It is beneficial
+to first optimize one-body and two-body Jastrow factors without
+adding three-body terms in the calculation and then add the
+three-body Jastrow and optimize all the three components together.</p></li>
+</ul>
+<div class="section" id="optimization-of-ci-coefficients">
+<h4>Optimization of CI coefficients<a class="headerlink" href="#optimization-of-ci-coefficients" title="Permalink to this headline">¶</a></h4>
+<p>When storing a CI wavefunction in HDF5 format, the CI coefficients and
+the <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> components of each CI are not in
+the XML input file. When optimizing the CI coefficients, they will be
+stored in HDF5 format. The optimization header block will have to
+specify that the new CI coefficients will be saved to HDF5 format. If
+the tag is not added coefficients will not be saved.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;pbyp&quot;</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;no&quot;</span> <span class="n">hdf5</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+
+<span class="n">The</span> <span class="n">rest</span> <span class="n">of</span> <span class="n">the</span> <span class="n">optimization</span> <span class="n">block</span> <span class="n">remains</span> <span class="n">the</span> <span class="n">same</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>When running the optimization, the new coefficients will be stored in a <a href="#id6"><span class="problematic" id="id7">*</span></a>.sXXX.opt.h5 file,  where XXX coressponds to the series number. The H5 file contains only the optimized coefficients. The corresponding <a href="#id8"><span class="problematic" id="id9">*</span></a>.sXXX.opt.xml  will be updated for each optimization block as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">detlist</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;1487&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;DETS&quot;</span> <span class="n">nca</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">ncb</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">nea</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">neb</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">nstates</span><span class="o">=</span><span class="s2">&quot;85&quot;</span> <span class="n">cutoff</span><span class="o">=</span><span class="s2">&quot;1e-2&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;../LiH.orbs.h5&quot;</span> <span class="n">opt_coeffs</span><span class="o">=</span><span class="s2">&quot;LiH.s001.opt.h5&quot;</span><span class="o">/&gt;</span>
+</pre></div>
+</div>
+<p>The opt_coeffs tag will then reference where the new CI coefficients are
+stored.</p>
+<p>When restarting the run with the new optimized coeffs, you need to
+specify the previous hdf5 containing the basis set, orbitals, and MSD,
+as well as the new optimized coefficients. The code will read the
+previous data but will rewrite the coefficients that were optimized with
+the values found in the *.sXXX.opt.h5 file. Be careful to keep the pair
+of optimized CI coefficients and Jastrow coefficients together to avoid
+inconsistencies.</p>
+</div>
+</div>
+</div>
+<div class="section" id="diffusion-monte-carlo">
+<span id="dmc"></span><h2>Diffusion Monte Carlo<a class="headerlink" href="#diffusion-monte-carlo" title="Permalink to this headline">¶</a></h2>
+<p>Main input parameters are given in <a class="reference internal" href="#table9"><span class="std std-numref">Table 9</span></a>, additional in <code class="xref std std-numref docutils literal notranslate"><span class="pre">table10</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dmc</span></code> method:</p>
+<p>parameters:</p>
+<table class="docutils align-default" id="table9">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 12%" />
+<col style="width: 21%" />
+<col style="width: 11%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">targetwalkers</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>dep.</p></td>
+<td><p>Overall total number of walkers</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">blocks</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>1</p></td>
+<td><p>Number of blocks</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">steps</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>1</p></td>
+<td><p>Number of steps per block</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">warmupsteps</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>0</p></td>
+<td><p>Number of steps for warming up</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timestep</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(&gt; 0\)</span></p></td>
+<td><p>0.1</p></td>
+<td><p>Time step for each electron move</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nonlocalmoves</span></code></p></td>
+<td><p>string</p></td>
+<td><p>yes, no, v0, v1, v3</p></td>
+<td><p>no</p></td>
+<td><p>Run with T-moves</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">branching_cutoff_scheme</span></code></p></td>
+<td><p>string</p></td>
+<td><p>classic/DRV/ZSGMA/YL</p></td>
+<td><p>classic</p></td>
+<td><p>Branch cutoff scheme</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">maxcpusecs</span></code></p></td>
+<td><p>real</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>3.6e5</p></td>
+<td><p>Maximum allowed walltime in seconds</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">blocks_between_recompute</span></code></p></td>
+<td><p>integer</p></td>
+<td><p><span class="math notranslate nohighlight">\(\geq 0\)</span></p></td>
+<td><p>dep.</p></td>
+<td><p>Wavefunction recompute frequency</p></td>
+</tr>
+</tbody>
+</table>
+<p class="centered">
+<strong>Table 9 Main DMC input parameters.</strong></p></div>
 </div>
 
 
