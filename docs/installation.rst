@@ -1714,7 +1714,7 @@ calculation if they need to be reconstructed for use in an
 electronic structure calculation.
 
 .. _fig2:
-.. figure:: QMCPACK_CDash_CTest_Results_20160129.png
+.. figure:: /figs/QMCPACK_CDash_CTest_Results_20160129.png
   :width: 80%
   :align: center
 
