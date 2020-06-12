@@ -96,6 +96,11 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analyzing QMCPACK data</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#using-the-qmca-tool-to-obtain-total-energies-and-related-quantities">Using the qmca tool to obtain total energies and related quantities</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#obtaining-a-statistically-correct-mean-and-error-bar">Obtaining a statistically correct mean and error bar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#judging-wavefunction-optimization">Judging wavefunction optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#judging-diffusion-monte-carlo-runs">Judging diffusion Monte Carlo runs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#obtaining-other-quantities">Obtaining other quantities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#processing-multiple-files">Processing multiple files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#twist-averaging">Twist averaging</a></li>
 </ul>
 </li>
 </ul>
@@ -259,11 +264,541 @@ following way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
 </pre></div>
 </div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">0</span></code> part indicates that we do not want any data
+to be initially excluded from the calculation of averages.  The resulting
+plot is shown in <a class="reference internal" href="#fig4"><span class="std std-numref">Fig. 4</span></a>.  The unphysical
+equilibration period is visible on the left side of the plot.</p>
 <div class="figure align-center" id="id1">
-<span id="fig4"></span><a class="reference internal image-reference" href="_images/qmca_mean_error_trace.pdf"><img alt="_images/qmca_mean_error_trace.pdf" src="_images/qmca_mean_error_trace.pdf" style="width: 400px;" /></a>
+<span id="fig4"></span><a class="reference internal image-reference" href="_images/qmca_mean_error_trace.png"><img alt="_images/qmca_mean_error_trace.png" src="_images/qmca_mean_error_trace.png" style="width: 400px;" /></a>
 <p class="caption"><span class="caption-number">Fig. 4 </span><span class="caption-text">Trace of the VMC local energy for an 8-atom cell of diamond generated
 with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>. The x-axis (“samples”) refers to the VMC block index in
 this case.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>Most of the data fluctuates around a well-defined mean (consistent
+variations around a flat line).  This property is important to verify
+by plotting the trace for each QMC run.</p>
+<p>If we exclude none of the equilibration data points, we get an
+erroneous estimate of $-45.870(2)$~Ha for the local energy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">45.870071</span> <span class="o">+/-</span> <span class="mf">0.018072</span>
+</pre></div>
+</div>
+<p>The equilibration period is typically estimated by eye, though a few conservative values should be checked to ensure that the mean remains
+unaffected.  In this dataset, the equilibration appears to have been
+reached after 100 or so samples.  After excluding the first 100
+VMC blocks from the analysis we get</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">100</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">45.877363</span> <span class="o">+/-</span> <span class="mf">0.017432</span>
+</pre></div>
+</div>
+<p>This estimate (<span class="math notranslate nohighlight">\(-45.877(2)\)</span> Ha) differs significantly from the
+<span class="math notranslate nohighlight">\(-45.870(2)\)</span> Ha figure obtained from the full set of data, but it
+agrees with the rough estimate of <span class="math notranslate nohighlight">\(-45.876(2)\)</span> Ha obtained with
+the abbreviated command (<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">qmc.s000.scalar.dat</span></code>). This is
+because <code class="docutils literal notranslate"><span class="pre">qmca</span></code> makes a heuristic guess at the equilibration period and
+got it reasonably correct in this case. In many cases, the heuristic
+guess fails and should not be relied on for quality results.</p>
+<p>We have so far obtained a statistically correct mean. To obtain a
+statistically correct error bar, it is best to include <span class="math notranslate nohighlight">\(\sim\)</span>100
+or more statistically independent samples. An estimate of the number of
+independent samples can be obtained by considering the autocorrelation
+time, which is essentially a measure of the number of samples that must
+be traversed before an uncorrelated/independent sample is reached. We
+can get an estimate of the autocorrelation time in the following way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">100</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span> <span class="o">--</span><span class="n">sac</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">45.877363</span> <span class="o">+/-</span> <span class="mf">0.017432</span>    <span class="mf">4.8</span>
+</pre></div>
+</div>
+<p>The flag <code class="docutils literal notranslate"><span class="pre">–sac</span></code> stands for (s)how (a)uto(c)orrelation. In this case,
+the autocorrelation estimate is <span class="math notranslate nohighlight">\(4.8\approx 5\)</span> samples. Since the
+total run contained 800 samples and we have excluded 100 of them, we can
+estimate the number of independent samples as <span class="math notranslate nohighlight">\((800-100)/5=140\)</span>.
+In this case, the error bar is expected to be estimated reasonably well.</p>
+<div class="figure align-center" id="id2">
+<span id="fig5"></span><a class="reference internal image-reference" href="_images/qmca_judge_opt.png"><img alt="_images/qmca_judge_opt.png" src="_images/qmca_judge_opt.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 5 </span><span class="caption-text">Trace of the local energy during one- and two-body Jastrow optimizations
+for an 8-atom cell of diamond generated with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>. Data for each
+optimization cycle (QMCPACK series) is separated by a vertical black
+line.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>Keep in mind that the error bar represents the expected range of the
+mean with a certainty of only <span class="math notranslate nohighlight">\(\sim 70\%\)</span>; i.e., it is a one sigma
+error bar. The actual mean value will lie outside the range indicated by
+the error bar in 1 out of every 3 runs, and in a set of 20 runs 1 value
+can be expected to deviate from its estimate by twice the error bar.</p>
+</div>
+<div class="section" id="judging-wavefunction-optimization">
+<h3>Judging wavefunction optimization<a class="headerlink" href="#judging-wavefunction-optimization" title="Permalink to this headline">¶</a></h3>
+<p>Wavefunction optimization is a highly nonlinear and sometimes
+sensitive process.  As such, there is a risk that systematic
+errors encountered at this stage of the QMC process can be propagated
+into subsequent (expensive) DMC runs unless they are guarded against
+with vigilance.</p>
+<p>In this section we again consider an 8-atom cell of diamond but now in
+the context of Jastrow optimization (one- and two-body terms). In
+optimization runs it is often preferable to use a large number of
+<code class="docutils literal notranslate"><span class="pre">warmupsteps</span></code> (<span class="math notranslate nohighlight">\(\sim 100\)</span>) so that equilibration bias does not
+propagate into the optimization process. We can check that the added
+warm-up has had its intended effect by again checking the local energy
+trace:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>The resulting plot can be found in <a class="reference internal" href="#fig5"><span class="std std-numref">Fig. 5</span></a>. In
+this case sufficient <code class="docutils literal notranslate"><span class="pre">warmupsteps</span></code> were used to exit the equilibration
+period before samples were collected and we can proceed without using
+the <code class="docutils literal notranslate"><span class="pre">-e</span></code> option with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</p>
+<p>After inspecting the trace, we should inspect the text output from
+<code class="docutils literal notranslate"><span class="pre">qmca</span></code>, now including the total energy and its variance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="n">opt</span><span class="o">*</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">44.823616</span> <span class="o">+/-</span> <span class="mf">0.007430</span>   <span class="mf">7.054219</span> <span class="o">+/-</span> <span class="mf">0.041998</span>   <span class="mf">0.1574</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="o">-</span><span class="mf">45.877643</span> <span class="o">+/-</span> <span class="mf">0.003329</span>   <span class="mf">1.095362</span> <span class="o">+/-</span> <span class="mf">0.041154</span>   <span class="mf">0.0239</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.883191</span> <span class="o">+/-</span> <span class="mf">0.004149</span>   <span class="mf">1.077942</span> <span class="o">+/-</span> <span class="mf">0.021555</span>   <span class="mf">0.0235</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">3</span>  <span class="o">-</span><span class="mf">45.877524</span> <span class="o">+/-</span> <span class="mf">0.003094</span>   <span class="mf">1.074047</span> <span class="o">+/-</span> <span class="mf">0.010491</span>   <span class="mf">0.0234</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">4</span>  <span class="o">-</span><span class="mf">45.886062</span> <span class="o">+/-</span> <span class="mf">0.003750</span>   <span class="mf">1.061707</span> <span class="o">+/-</span> <span class="mf">0.014459</span>   <span class="mf">0.0231</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">5</span>  <span class="o">-</span><span class="mf">45.877668</span> <span class="o">+/-</span> <span class="mf">0.003475</span>   <span class="mf">1.091585</span> <span class="o">+/-</span> <span class="mf">0.021637</span>   <span class="mf">0.0238</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">6</span>  <span class="o">-</span><span class="mf">45.877109</span> <span class="o">+/-</span> <span class="mf">0.003586</span>   <span class="mf">1.069205</span> <span class="o">+/-</span> <span class="mf">0.009387</span>   <span class="mf">0.0233</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">7</span>  <span class="o">-</span><span class="mf">45.882563</span> <span class="o">+/-</span> <span class="mf">0.004324</span>   <span class="mf">1.058771</span> <span class="o">+/-</span> <span class="mf">0.008651</span>   <span class="mf">0.0231</span>
+</pre></div>
+</div>
+<p>The flags <code class="docutils literal notranslate"><span class="pre">-q</span> <span class="pre">ev</span></code> requested the energy (<code class="docutils literal notranslate"><span class="pre">e</span></code>) and the variance
+(<code class="docutils literal notranslate"><span class="pre">v</span></code>). For this combination of quantities, a third column (<code class="docutils literal notranslate"><span class="pre">ratio</span></code>)
+is printed containing the ratio of the variance and the absolute value
+of the local energy. The variance/energy ratio is an intensive quantity
+and is useful to inspect regardless of the system under study.
+Successful optimization of molecules and solids of any size generally
+result in comparable values for the variance/energy ratio.</p>
+<p>The first line of the output (<code class="docutils literal notranslate"><span class="pre">series</span> <span class="pre">0</span></code>) corresponds to the local
+energy and variance of the system without a Jastrow factor (all Jastrow
+coefficients were initialized to zero in this case), reflecting the
+quality of the orbitals alone. For pseudopotential systems, a
+variance/energy ratio <span class="math notranslate nohighlight">\(&gt;0.20\)</span> Ha generally indicates there is a
+problem with the input orbitals that needs to be resolved before
+performing wavefunction optimization.</p>
+<p>The subsequent lines correspond to energies and variances of
+intermediate parameterizations of the trial wavefunction during the
+optimization process. The output line containing <code class="docutils literal notranslate"><span class="pre">opt</span> <span class="pre">series</span> <span class="pre">1</span></code>, for
+example, corresponds to the trial wavefunction parameterized during the
+<code class="docutils literal notranslate"><span class="pre">series</span> <span class="pre">0</span></code> step (the parameters of this wavefunction would be found in
+an output file matching <code class="docutils literal notranslate"><span class="pre">*s000*opt.xml</span></code>). The first thing to check
+about the resulting optimization is again the variance/energy ratio. For
+pseudopotential systems, a variance/energy ratio <span class="math notranslate nohighlight">\(&lt;0.03\)</span> Ha is
+consistent with a trial wavefunction of production quality, and values
+of <span class="math notranslate nohighlight">\(0.01\)</span> Ha are rarely obtainable for standard Slater-Jastrow
+wavefunctions. By this metric, all parameterizations obtained for
+optimizations performed in series 0-6 are of comparable quality (note
+that the quality of the wavefunction obtained during optimization series
+7 is effectively unknown).</p>
+<p>A good way to further discriminate among the parameterizations is to
+plot the energy and variance as a function of series with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">p</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="n">opt</span><span class="o">*</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-p</span></code> option results in plots of means plus error bars
+vs. series for all requested quantities.
+The resulting plots for the local energy and variance are shown
+in <a class="reference internal" href="#fig6"><span class="std std-numref">Fig. 6</span></a>.  In this case, the resulting energies
+and variances are statistically indistinguishable for all optimization
+cycles.</p>
+<p>A good way to choose the optimal wavefunction for use in DMC is to
+select the one with the lowest statistically significant energy within
+the set of optimized wavefunctions with reasonable variance (e.g., among
+those with a variance/energy ratio <span class="math notranslate nohighlight">\(&lt;0.03\)</span> Ha). For
+pseudopotential calculations, minimizing according to the total energy
+is recommended to reduce locality errors in DMC.</p>
+<a class="reference internal image-reference" href="_images/qmca_opt_energy.png"><img alt="_images/qmca_opt_energy.png" class="align-center" src="_images/qmca_opt_energy.png" style="width: 400px;" /></a>
+<div class="figure align-center" id="id3">
+<span id="fig6"></span><a class="reference internal image-reference" href="_images/qmca_opt_variance.png"><img alt="_images/qmca_opt_variance.png" src="_images/qmca_opt_variance.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">Energy and variance vs. optimization series for an 8-atom cell of
+diamond as plotted by <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="judging-diffusion-monte-carlo-runs">
+<span id="qmca-judge-dmc"></span><h3>Judging diffusion Monte Carlo runs<a class="headerlink" href="#judging-diffusion-monte-carlo-runs" title="Permalink to this headline">¶</a></h3>
+<p>Judging the quality of the DMC projection process requires more
+care than is needed in VMC. To reduce bias, a small
+time step is required in the approximate projector but this also
+leads to slow equilibration and long autocorrelation times.
+Systematic errors in the projection process can also arise from
+statistical fluctuations due to pseudopotentials or from trial
+wavefunctions with larger-than-necessary variance.</p>
+<p>To illustrate the problems that can arise with respect to slow
+equilibration and long autocorrelation times, we consider the 8-atom
+diamond system with VMC (<span class="math notranslate nohighlight">\(200\)</span> blocks of <span class="math notranslate nohighlight">\(160\)</span> steps)
+followed by DMC (<span class="math notranslate nohighlight">\(400\)</span> blocks of <span class="math notranslate nohighlight">\(5\)</span> steps) with a small
+time step (<span class="math notranslate nohighlight">\(0.002\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>). A good first step in
+assessing the quality of any DMC run is to plot the trace of the local
+energy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id4">
+<span id="fig7"></span><a class="reference internal image-reference" href="_images/qmca_short_dmc.png"><img alt="_images/qmca_short_dmc.png" src="_images/qmca_short_dmc.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 7 </span><span class="caption-text">Trace of the local energy for VMC followed by DMC with a small time step
+(<span class="math notranslate nohighlight">\(0.002\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) for an 8-atom cell of diamond
+generated with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>The resulting trace plot is shown in <a class="reference internal" href="#fig7"><span class="std std-numref">Fig. 7</span></a>. As
+always, the DMC local energy decreases exponentially away from the VMC
+value, but in this case it takes a long time to do so. At least half of
+the DMC run is inefficiently consumed by equilibration. If we are not
+careful to inspect and remove the transient, the estimated DMC energy
+will be strongly biased by the transient as shown by the horizontal red
+line (estimated mean) in the figure. The autocorrelation time is also
+large (<span class="math notranslate nohighlight">\(\sim 12\)</span> blocks):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">200</span> <span class="o">--</span><span class="n">sac</span> <span class="o">*</span><span class="n">s001</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">46.045720</span> <span class="o">+/-</span> <span class="mf">0.004813</span>   <span class="mf">11.6</span>
+</pre></div>
+</div>
+<p>Of the included 200 blocks, fewer than 20 contribute to the estimated error
+bar, indicating that we cannot trust the reported error bar.
+This can also be demonstrated directly from the data.  If we halve the number
+of included samples to 100, we expect from Gaussian statistics
+that the error bar will grow by a factor of $sqrt{2}$, but instead we
+get</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">300</span> <span class="o">*</span><span class="n">s001</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">46.048537</span> <span class="o">+/-</span> <span class="mf">0.009280</span>
+</pre></div>
+</div>
+<p>which erroneously shows an estimated increase in the error bar by a
+factor of about 2. Overall, this run is simply too short to gain
+meaningful information.</p>
+<p>Consider the case in which we are interested in the cohesive energy of
+diamond, and, after having performed a time step study of the cohesive
+energy, we have found that the energy difference between bulk diamond
+and atomic carbon converges to our required accuracy with a larger time
+step of <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>. In a production setting, a small
+cell could be used to determine the appropriate time step, while a
+larger cell would subsequently be used to obtain a converged cohesive
+energy, though for purposes of demonstration we still proceed here with
+the 8-atom cell. The new time step of <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>
+will result in a shorter autocorrelation time than the smaller time step
+used previously, but we would like to shorten the equilibration time
+further still. This can be achieved by using a larger time step (say
+<span class="math notranslate nohighlight">\(0.02\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) in a short intermediate DMC run used to
+walk down the transient. The rapidly achieved equilibrium with the
+<span class="math notranslate nohighlight">\(0.02\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> time step projector will be much nearer
+to the <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> time step we seek than the
+original VMC equilibrium, so we can expect a shortened secondary
+equilibration time in the production <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> time
+step run. Note that this procedure is fully general, even if having to
+deal with an even shorter time step (e.g., <span class="math notranslate nohighlight">\(0.002\)</span>
+Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) for a particular problem.</p>
+<p>We now rerun the previous example but with an intermediate DMC
+calculation using <span class="math notranslate nohighlight">\(40\)</span> blocks of <span class="math notranslate nohighlight">\(5\)</span> steps with a time step
+of <span class="math notranslate nohighlight">\(0.02\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>, followed by a production DMC
+calculation using <span class="math notranslate nohighlight">\(400\)</span> blocks of <span class="math notranslate nohighlight">\(10\)</span> steps with a time
+step of <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>. We again plot the local energy
+trace using <code class="docutils literal notranslate"><span class="pre">qmca</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>with the result shown in <a class="reference internal" href="#fig8"><span class="std std-numref">Fig. 8</span></a>.
+The projection transient has been effectively contained in the
+short DMC run with a larger time step.  As expected, the
+production run contains only a short equilibration period.
+Removing the first 20 blocks as a precaution, we obtain an estimate
+of the total energy in VMC and DMC:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="o">--</span><span class="n">sac</span> <span class="n">qmc</span><span class="o">.*.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">45.881042</span> <span class="o">+/-</span> <span class="mf">0.001283</span>    <span class="mf">1.0</span>   <span class="mf">1.076726</span> <span class="o">+/-</span> <span class="mf">0.007013</span>    <span class="mf">1.0</span>   <span class="mf">0.0235</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="o">-</span><span class="mf">46.040814</span> <span class="o">+/-</span> <span class="mf">0.005046</span>    <span class="mf">3.9</span>   <span class="mf">1.011303</span> <span class="o">+/-</span> <span class="mf">0.016807</span>    <span class="mf">1.1</span>   <span class="mf">0.0220</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.032960</span> <span class="o">+/-</span> <span class="mf">0.002077</span>    <span class="mf">5.2</span>   <span class="mf">1.014940</span> <span class="o">+/-</span> <span class="mf">0.002547</span>    <span class="mf">1.0</span>   <span class="mf">0.0220</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id5">
+<span id="fig8"></span><a class="reference internal image-reference" href="_images/qmca_accel_dmc.png"><img alt="_images/qmca_accel_dmc.png" src="_images/qmca_accel_dmc.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 8 </span><span class="caption-text">Trace of the local energy for VMC followed by a short intermediate DMC
+with a large time step (<span class="math notranslate nohighlight">\(0.02\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>) and finally a
+production DMC run with a time step of <span class="math notranslate nohighlight">\(0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>.
+Calculations were performed in an 8-atom cell of diamond.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<p>Notice that the variance/energy ratio in DMC (<span class="math notranslate nohighlight">\(0.220\)</span> Ha) is
+similar to but slightly smaller than that obtained with VMC
+(<span class="math notranslate nohighlight">\(0.235\)</span> Ha). If the DMC variance/energy ratio is ever
+significantly larger than with VMC, this is cause to be concerned about
+the correctness of the DMC run. Also notice the estimated
+autocorrelation time (<span class="math notranslate nohighlight">\(\sim 5\)</span> blocks). This leaves us with an
+estimated <span class="math notranslate nohighlight">\(\sim 76\)</span> independent samples, though we should recall
+that the autocorrelation time is also a statistical estimate that can be
+improved with more data. We can gain a better estimate of the
+autocorrelation time by using the <code class="docutils literal notranslate"><span class="pre">*.dmc.dat</span></code> files, which contain
+output data resolved per step rather than per block (there are
+<span class="math notranslate nohighlight">\(10\times\)</span> more steps than blocks in this example case):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">200</span> <span class="o">--</span><span class="n">sac</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">dmc</span><span class="o">.</span><span class="n">dat</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.032909</span> <span class="o">+/-</span> <span class="mf">0.002068</span>   <span class="mf">31.2</span>   <span class="mf">1.015781</span> <span class="o">+/-</span> <span class="mf">0.002536</span>    <span class="mf">1.4</span>   <span class="mf">0.0221</span>
+</pre></div>
+</div>
+<p>This results in an estimated autocorrelation time of <span class="math notranslate nohighlight">\(\sim 31\)</span>
+steps, or <span class="math notranslate nohighlight">\(\sim 3\)</span> blocks, indicating that we actually have
+<span class="math notranslate nohighlight">\(\sim 122\)</span> independent samples, which should be sufficient to
+obtain a trustworthy error bar. Our final DMC total energy is estimated
+to be <span class="math notranslate nohighlight">\(-46.0329(2)\)</span> Ha.</p>
+<p>Another simulation property that should be explicitly monitored
+is the behavior of the DMC walker population.  Data regarding the
+walker population is contained in the <code class="docutils literal notranslate"><span class="pre">*.dmc.dat</span></code> files.
+In <a class="reference internal" href="#fig9"><span class="std std-numref">Fig. 9</span></a> we show the trace of the DMC
+walker population for the current run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">nw</span> <span class="o">*</span><span class="n">dmc</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="n">NumOfWalkers</span>          <span class="o">=</span>  <span class="mf">2056.905405</span> <span class="o">+/-</span> <span class="mf">8.775527</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">NumOfWalkers</span>          <span class="o">=</span>  <span class="mf">2050.164160</span> <span class="o">+/-</span> <span class="mf">4.954850</span>
+</pre></div>
+</div>
+<p>Following a DMC run, the walker population should be checked for two
+qualities: (1) that the population is sufficiently large (a number
+<span class="math notranslate nohighlight">\(&gt;2,000\)</span> is generally sufficient to reduce population control
+bias) and (2) that the population fluctuates benignly around its
+intended target value. In this case the target walker count (provided in
+the input file) was <span class="math notranslate nohighlight">\(2,048\)</span> and we can confirm from the plot that
+the population is simply fluctuating around this value. Also, from the
+text output we have a dynamic population estimate of 2,050(5) walkers.
+Rapid population reductions or increases—population explosions—are
+indicative of problems with a run. These issues sometimes result from
+using a considerably poor wavefunction (see comments regarding
+variance/energy ratio in the preceding subsections). QMCPACK has
+internal guards in place that prevent the population from exceeding
+certain maximum and minimum bounds, so in particularly faulty runs one
+might see the population “stabilize” to a constant value much larger or
+smaller than the target. In such cases the cause(s) for the divergent
+population behavior needs to be investigated and resolved before
+proceeding further.</p>
+<div class="figure align-center" id="id6">
+<span id="fig9"></span><a class="reference internal image-reference" href="_images/qmca_pop_trace.png"><img alt="_images/qmca_pop_trace.png" src="_images/qmca_pop_trace.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 9 </span><span class="caption-text">Trace of the DMC walker population for an 8-atom cell of diamond
+obtained with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="obtaining-other-quantities">
+<span id="qmca-other-quantities"></span><h3>Obtaining other quantities<a class="headerlink" href="#obtaining-other-quantities" title="Permalink to this headline">¶</a></h3>
+<p>A number of other scalar-valued quantities are available with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.
+To obtain text output for all quantities available, simply exclude the
+<code class="docutils literal notranslate"><span class="pre">-q</span></code> option used in previous examples. The following example shows
+output for a DMC calculation of the 8-atom diamond system from the
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">46.0330</span> <span class="o">+/-</span>           <span class="mf">0.0021</span>
+  <span class="n">Variance</span>              <span class="o">=</span>            <span class="mf">1.0149</span> <span class="o">+/-</span>           <span class="mf">0.0025</span>
+  <span class="n">Kinetic</span>               <span class="o">=</span>            <span class="mf">33.851</span> <span class="o">+/-</span>            <span class="mf">0.019</span>
+  <span class="n">LocalPotential</span>        <span class="o">=</span>           <span class="o">-</span><span class="mf">79.884</span> <span class="o">+/-</span>            <span class="mf">0.020</span>
+  <span class="n">ElecElec</span>              <span class="o">=</span>          <span class="o">-</span><span class="mf">11.4483</span> <span class="o">+/-</span>           <span class="mf">0.0083</span>
+  <span class="n">LocalECP</span>              <span class="o">=</span>           <span class="o">-</span><span class="mf">22.615</span> <span class="o">+/-</span>            <span class="mf">0.029</span>
+  <span class="n">NonLocalECP</span>           <span class="o">=</span>            <span class="mf">5.2815</span> <span class="o">+/-</span>           <span class="mf">0.0079</span>
+  <span class="n">IonIon</span>                <span class="o">=</span>            <span class="o">-</span><span class="mf">51.10</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+  <span class="n">LocalEnergy_sq</span>        <span class="o">=</span>           <span class="mf">2120.05</span> <span class="o">+/-</span>             <span class="mf">0.19</span>
+  <span class="n">BlockWeight</span>           <span class="o">=</span>          <span class="mf">20514.27</span> <span class="o">+/-</span>            <span class="mf">48.38</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>            <span class="mf">1.4890</span> <span class="o">+/-</span>           <span class="mf">0.0038</span>
+  <span class="n">AcceptRatio</span>           <span class="o">=</span>         <span class="mf">0.9963954</span> <span class="o">+/-</span>        <span class="mf">0.0000055</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>             <span class="mf">71.88</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+  <span class="n">TotalTime</span>             <span class="o">=</span>            <span class="mf">565.80</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+  <span class="n">TotalSamples</span>          <span class="o">=</span>           <span class="mi">7795421</span> <span class="o">+/-</span>                <span class="mi">0</span>
+</pre></div>
+</div>
+<p>Similarly, for the <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> file we get</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">dmc</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">46.0329</span> <span class="o">+/-</span>           <span class="mf">0.0020</span>
+  <span class="n">Variance</span>              <span class="o">=</span>            <span class="mf">1.0162</span> <span class="o">+/-</span>           <span class="mf">0.0025</span>
+  <span class="n">TotalSamples</span>          <span class="o">=</span>           <span class="mi">8201275</span> <span class="o">+/-</span>                <span class="mi">0</span>
+  <span class="n">TrialEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">46.0343</span> <span class="o">+/-</span>           <span class="mf">0.0023</span>
+  <span class="n">DiffEff</span>               <span class="o">=</span>         <span class="mf">0.9939150</span> <span class="o">+/-</span>        <span class="mf">0.0000088</span>
+  <span class="n">Weight</span>                <span class="o">=</span>           <span class="mf">2050.23</span> <span class="o">+/-</span>             <span class="mf">4.82</span>
+  <span class="n">NumOfWalkers</span>          <span class="o">=</span>              <span class="mi">2050</span> <span class="o">+/-</span>                <span class="mi">5</span>
+  <span class="n">LivingFraction</span>        <span class="o">=</span>          <span class="mf">0.996427</span> <span class="o">+/-</span>         <span class="mf">0.000021</span>
+  <span class="n">AvgSentWalkers</span>        <span class="o">=</span>            <span class="mf">0.2625</span> <span class="o">+/-</span>           <span class="mf">0.0011</span>
+</pre></div>
+</div>
+<p>Any subset of desired quantities can be obtained by using the <code class="docutils literal notranslate"><span class="pre">-q</span></code>
+option with either the full names of the quantities just listed</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="s1">&#39;LocalEnergy Kinetic LocalPotential&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">46.0330</span> <span class="o">+/-</span>           <span class="mf">0.0021</span>
+  <span class="n">Kinetic</span>               <span class="o">=</span>            <span class="mf">33.851</span> <span class="o">+/-</span>            <span class="mf">0.019</span>
+  <span class="n">LocalPotential</span>        <span class="o">=</span>           <span class="o">-</span><span class="mf">79.884</span> <span class="o">+/-</span>            <span class="mf">0.020</span>
+</pre></div>
+</div>
+<p>or with their corresponding abbreviations.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ekp</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">46.0330</span> <span class="o">+/-</span>           <span class="mf">0.0021</span>
+  <span class="n">Kinetic</span>               <span class="o">=</span>            <span class="mf">33.851</span> <span class="o">+/-</span>            <span class="mf">0.019</span>
+  <span class="n">LocalPotential</span>        <span class="o">=</span>           <span class="o">-</span><span class="mf">79.884</span> <span class="o">+/-</span>            <span class="mf">0.020</span>
+</pre></div>
+</div>
+<p>Abbreviations for each quantity can be found by typing <code class="docutils literal notranslate"><span class="pre">qmca</span></code> at the
+command line with no other input. This following is a current list:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Abbreviations</span> <span class="ow">and</span> <span class="n">full</span> <span class="n">names</span> <span class="k">for</span> <span class="n">quantities</span><span class="p">:</span>
+    <span class="n">ar</span>              <span class="o">=</span> <span class="n">AcceptRatio</span>
+    <span class="n">bc</span>              <span class="o">=</span> <span class="n">BlockCPU</span>
+    <span class="n">bw</span>              <span class="o">=</span> <span class="n">BlockWeight</span>
+    <span class="n">ce</span>              <span class="o">=</span> <span class="n">CorrectedEnergy</span>
+    <span class="n">de</span>              <span class="o">=</span> <span class="n">DiffEff</span>
+    <span class="n">e</span>               <span class="o">=</span> <span class="n">LocalEnergy</span>
+    <span class="n">ee</span>              <span class="o">=</span> <span class="n">ElecElec</span>
+    <span class="n">eff</span>             <span class="o">=</span> <span class="n">Efficiency</span>
+    <span class="n">ii</span>              <span class="o">=</span> <span class="n">IonIon</span>
+    <span class="n">k</span>               <span class="o">=</span> <span class="n">Kinetic</span>
+    <span class="n">kc</span>              <span class="o">=</span> <span class="n">KEcorr</span>
+    <span class="n">l</span>               <span class="o">=</span> <span class="n">LocalECP</span>
+    <span class="n">le2</span>             <span class="o">=</span> <span class="n">LocalEnergy_sq</span>
+    <span class="n">mpc</span>             <span class="o">=</span> <span class="n">MPC</span>
+    <span class="n">n</span>               <span class="o">=</span> <span class="n">NonLocalECP</span>
+    <span class="n">nw</span>              <span class="o">=</span> <span class="n">NumOfWalkers</span>
+    <span class="n">p</span>               <span class="o">=</span> <span class="n">LocalPotential</span>
+    <span class="n">sw</span>              <span class="o">=</span> <span class="n">AvgSentWalkers</span>
+    <span class="n">te</span>              <span class="o">=</span> <span class="n">TrialEnergy</span>
+    <span class="n">ts</span>              <span class="o">=</span> <span class="n">TotalSamples</span>
+    <span class="n">tt</span>              <span class="o">=</span> <span class="n">TotalTime</span>
+    <span class="n">v</span>               <span class="o">=</span> <span class="n">Variance</span>
+    <span class="n">w</span>               <span class="o">=</span> <span class="n">Weight</span>
+</pre></div>
+</div>
+<p>See the output overview for <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code>
+(<a class="reference internal" href="output_overview.html#scalardat-file"><span class="std std-ref">The .scalar.dat file</span></a>) and <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code>
+(<a class="reference internal" href="output_overview.html#dmc-file"><span class="std std-ref">The .dmc.dat file</span></a>) for more information about
+these quantities.  The data analysis aspects for these
+quantities are essentially the same as for the local
+energy as covered in the preceding subsections.
+Quantities that do not belong to an equilibrium distribution
+(e.g., <code class="docutils literal notranslate"><span class="pre">BlockCPU</span></code>) are somewhat different, though they
+still exhibit statistical fluctuations.</p>
+</div>
+<div class="section" id="processing-multiple-files">
+<span id="qmca-multiple-files"></span><h3>Processing multiple files<a class="headerlink" href="#processing-multiple-files" title="Permalink to this headline">¶</a></h3>
+<p>Batch file processing is a common use case for <code class="docutils literal notranslate"><span class="pre">qmca</span></code>. If we consider
+an “equation-of-state” calculation involving the 8-atom diamond cell we
+have used so far, we might be interested in the total energy for the
+various supercell volumes along the trajectory from compression to
+expansion. After checking the traces
+(<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">scale_/vmc/*scalar*</span></code>) to settle on a sensible
+equilibration cutoff as discussed in the preceding subsections, we can
+obtain the total energies all at once:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="n">scale_</span><span class="o">*/</span><span class="n">vmc</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">80</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">44.670984</span> <span class="o">+/-</span> <span class="mf">0.006051</span>  <span class="mf">2.542384</span> <span class="o">+/-</span> <span class="mf">0.019902</span>  <span class="mf">0.0569</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">82</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">44.982818</span> <span class="o">+/-</span> <span class="mf">0.005757</span>  <span class="mf">2.413011</span> <span class="o">+/-</span> <span class="mf">0.022626</span>  <span class="mf">0.0536</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">84</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.228257</span> <span class="o">+/-</span> <span class="mf">0.005374</span>  <span class="mf">2.258577</span> <span class="o">+/-</span> <span class="mf">0.019322</span>  <span class="mf">0.0499</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">86</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.415842</span> <span class="o">+/-</span> <span class="mf">0.005532</span>  <span class="mf">2.204980</span> <span class="o">+/-</span> <span class="mf">0.052978</span>  <span class="mf">0.0486</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">88</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.570215</span> <span class="o">+/-</span> <span class="mf">0.004651</span>  <span class="mf">2.061374</span> <span class="o">+/-</span> <span class="mf">0.014359</span>  <span class="mf">0.0452</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">90</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.683684</span> <span class="o">+/-</span> <span class="mf">0.005009</span>  <span class="mf">1.988539</span> <span class="o">+/-</span> <span class="mf">0.018267</span>  <span class="mf">0.0435</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">92</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.751359</span> <span class="o">+/-</span> <span class="mf">0.004928</span>  <span class="mf">1.913282</span> <span class="o">+/-</span> <span class="mf">0.013998</span>  <span class="mf">0.0418</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">94</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.791622</span> <span class="o">+/-</span> <span class="mf">0.005026</span>  <span class="mf">1.843704</span> <span class="o">+/-</span> <span class="mf">0.014460</span>  <span class="mf">0.0403</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">96</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.809256</span> <span class="o">+/-</span> <span class="mf">0.005053</span>  <span class="mf">1.829103</span> <span class="o">+/-</span> <span class="mf">0.014536</span>  <span class="mf">0.0399</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">98</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.806235</span> <span class="o">+/-</span> <span class="mf">0.004963</span>  <span class="mf">1.775391</span> <span class="o">+/-</span> <span class="mf">0.015199</span>  <span class="mf">0.0388</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">00</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.783481</span> <span class="o">+/-</span> <span class="mf">0.005293</span>  <span class="mf">1.726869</span> <span class="o">+/-</span> <span class="mf">0.012001</span>  <span class="mf">0.0377</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">02</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.741655</span> <span class="o">+/-</span> <span class="mf">0.005627</span>  <span class="mf">1.681776</span> <span class="o">+/-</span> <span class="mf">0.011496</span>  <span class="mf">0.0368</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">04</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.685101</span> <span class="o">+/-</span> <span class="mf">0.005353</span>  <span class="mf">1.682608</span> <span class="o">+/-</span> <span class="mf">0.015423</span>  <span class="mf">0.0368</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">06</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.615164</span> <span class="o">+/-</span> <span class="mf">0.005978</span>  <span class="mf">1.652155</span> <span class="o">+/-</span> <span class="mf">0.010945</span>  <span class="mf">0.0362</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">08</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.543037</span> <span class="o">+/-</span> <span class="mf">0.005191</span>  <span class="mf">1.646375</span> <span class="o">+/-</span> <span class="mf">0.013446</span>  <span class="mf">0.0361</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">10</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.450976</span> <span class="o">+/-</span> <span class="mf">0.004794</span>  <span class="mf">1.707649</span> <span class="o">+/-</span> <span class="mf">0.048186</span>  <span class="mf">0.0376</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">12</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.371851</span> <span class="o">+/-</span> <span class="mf">0.005103</span>  <span class="mf">1.686997</span> <span class="o">+/-</span> <span class="mf">0.035920</span>  <span class="mf">0.0372</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">14</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.265490</span> <span class="o">+/-</span> <span class="mf">0.005311</span>  <span class="mf">1.631614</span> <span class="o">+/-</span> <span class="mf">0.012381</span>  <span class="mf">0.0360</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">16</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.161961</span> <span class="o">+/-</span> <span class="mf">0.004868</span>  <span class="mf">1.656586</span> <span class="o">+/-</span> <span class="mf">0.014788</span>  <span class="mf">0.0367</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">18</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">45.062579</span> <span class="o">+/-</span> <span class="mf">0.005971</span>  <span class="mf">1.671998</span> <span class="o">+/-</span> <span class="mf">0.019942</span>  <span class="mf">0.0371</span>
+<span class="n">scale_1</span><span class="o">.</span><span class="mi">20</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">44.960477</span> <span class="o">+/-</span> <span class="mf">0.004888</span>  <span class="mf">1.651864</span> <span class="o">+/-</span> <span class="mf">0.009756</span>  <span class="mf">0.0367</span>
+</pre></div>
+</div>
+<p>In this case, we are using a Jastrow factor optimized only at the
+equilibrium geometry (<code class="docutils literal notranslate"><span class="pre">scale_1.00</span></code>) but with radial cutoffs restricted
+to the Wigner-Seitz radius of the most compressed supercell
+(<code class="docutils literal notranslate"><span class="pre">scale_0.80</span></code>) to avoid introducing wavefunction cusps at the cell
+boundary (had we tried, QMCPACK would have aborted with a warning in
+this case). It is clear that this restricted Jastrow factor is not an
+optimal choice because it yields variance/energy ratios between
+<span class="math notranslate nohighlight">\(0.036\)</span> and <span class="math notranslate nohighlight">\(0.057\)</span> Ha. This issue is largely a result of
+our undersized (8-atom) supercell; larger cells should always be used in
+real production calculations.</p>
+<p>Batch processing is also possible for multiple quantities.  If multiple
+quantities are requested, an additional line is inserted to separate
+results from different runs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="s1">&#39;e bc eff&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="n">scale_</span><span class="o">*/</span><span class="n">vmc</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span>
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">80</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">44.6710</span> <span class="o">+/-</span>           <span class="mf">0.0061</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02986</span> <span class="o">+/-</span>          <span class="mf">0.00038</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">38104.00</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">82</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">44.9828</span> <span class="o">+/-</span>           <span class="mf">0.0058</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02826</span> <span class="o">+/-</span>          <span class="mf">0.00013</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">44483.91</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">84</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">45.2283</span> <span class="o">+/-</span>           <span class="mf">0.0054</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02747</span> <span class="o">+/-</span>          <span class="mf">0.00030</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">52525.12</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">86</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">45.4158</span> <span class="o">+/-</span>           <span class="mf">0.0055</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02679</span> <span class="o">+/-</span>          <span class="mf">0.00013</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">50811.55</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">88</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">45.5702</span> <span class="o">+/-</span>           <span class="mf">0.0047</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02598</span> <span class="o">+/-</span>          <span class="mf">0.00015</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">74148.79</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="n">scale_0</span><span class="o">.</span><span class="mi">90</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>
+  <span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">45.6837</span> <span class="o">+/-</span>           <span class="mf">0.0050</span>
+  <span class="n">BlockCPU</span>              <span class="o">=</span>           <span class="mf">0.02527</span> <span class="o">+/-</span>          <span class="mf">0.00011</span>
+  <span class="n">Efficiency</span>            <span class="o">=</span>          <span class="mf">65714.98</span> <span class="o">+/-</span>             <span class="mf">0.00</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="twist-averaging">
+<span id="qmca-twist-average"></span><h3>Twist averaging<a class="headerlink" href="#twist-averaging" title="Permalink to this headline">¶</a></h3>
+<p>Twist averaging can be performed straightforwardly for any output
+quantity listed in <a class="reference internal" href="#qmca-other-quantities"><span class="std std-ref">Obtaining other quantities</span></a> with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.
+We illustrate these capabilities by repeating the 8-atom diamond DMC
+runs performed in Section <a class="reference internal" href="#qmca-judge-dmc"><span class="std std-ref">Judging diffusion Monte Carlo runs</span></a> at 8 real-valued
+supercell twist angles (a <span class="math notranslate nohighlight">\(2\times 2\times 2\)</span> Monkhorst-Pack grid
+centered at the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point). Data traces for each twist can be
+overlapped on the same plot:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">to</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;30 20 30&#39;</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span> <span class="o">--</span><span class="n">legend</span> <span class="n">outside</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-o</span></code> option requests the plots to be overlapped; otherwise,
+8 separate plots would be generated.  The
+equilibration input <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">'30</span> <span class="pre">20</span> <span class="pre">30'</span></code> cuts out from
+the analyzed data the first 30 blocks for series 0 (VMC),
+20 blocks for series 1 (intermediate DMC), and 30 blocks for
+series 2 (production DMC).  The resulting plot is shown in
+<a class="reference internal" href="#fig10"><span class="std std-numref">Fig. 10</span></a>.</p>
+<div class="figure align-center" id="id7">
+<span id="fig10"></span><a class="reference internal image-reference" href="_images/qmca_twist_trace_overlap.png"><img alt="_images/qmca_twist_trace_overlap.png" src="_images/qmca_twist_trace_overlap.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 10 </span><span class="caption-text">Overlapped energy traces from VMC to DMC for an 8-supercell diamond
+obtained with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>. Data for each twist appears in a different
+color.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+<p>Twist averaging is performed by providing the <code class="docutils literal notranslate"><span class="pre">-a</span></code>
+option.  If provided on its own, uniform weights are applied
+to each twist angle.  To obtain a trace plot with twist averaging
+enforced, use a command similar to the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;30 20 30&#39;</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>The resulting plot is shown in <a class="reference internal" href="#fig11"><span class="std std-numref">Fig. 11</span></a>. As
+can be seen from the trace plot, the chosen equilibration lengths are
+appropriate, and we proceed to obtain the twist-averaged total energy
+from the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> files</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">--</span><span class="n">sac</span> <span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">avg</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.873369</span> <span class="o">+/-</span> <span class="mf">0.000753</span>    <span class="mf">5.3</span>   <span class="mf">1.028751</span> <span class="o">+/-</span> <span class="mf">0.001056</span>    <span class="mf">1.3</span>   <span class="mf">0.0224</span>
+</pre></div>
+</div>
+<p>and also from the <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> files</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">300</span> <span class="o">--</span><span class="n">sac</span> <span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">dmc</span><span class="o">*</span>
+                          <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">avg</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.873371</span> <span class="o">+/-</span> <span class="mf">0.000741</span>   <span class="mf">30.5</span>   <span class="mf">1.028843</span> <span class="o">+/-</span> <span class="mf">0.000972</span>    <span class="mf">1.6</span>   <span class="mf">0.0224</span>
+</pre></div>
+</div>
+<p>yielding a twist-averaged total energy of <span class="math notranslate nohighlight">\(-45.8733(8)\)</span> Ha.</p>
+<div class="figure align-center" id="id8">
+<span id="fig11"></span><a class="reference internal image-reference" href="_images/qmca_twist_average_trace.png"><img alt="_images/qmca_twist_average_trace.png" src="_images/qmca_twist_average_trace.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 11 </span><span class="caption-text">Twist-averaged energy trace from VMC to DMC for an 8-supercell diamond obtained with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 </div>
