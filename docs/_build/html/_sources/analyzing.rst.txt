@@ -760,3 +760,595 @@ yielding a twist-averaged total energy of :math:`-45.8733(8)` Ha.
   :align: center
 
   Twist-averaged energy trace from VMC to DMC for an 8-supercell diamond obtained with ``qmca``.
+
+As can be seen from :numref:`fig10`, some of the twist
+angles are degenerate. This is seen more clearly in the text output
+
+::
+
+  >qmca -q ev -e 30 *s002.scalar*
+                              LocalEnergy               Variance           ratio
+  qmc.g000  series 2  -45.264510 +/- 0.001942   1.057065 +/- 0.002318   0.0234
+  qmc.g001  series 2  -46.035511 +/- 0.001806   1.015992 +/- 0.002836   0.0221
+  qmc.g002  series 2  -46.035410 +/- 0.001538   1.015039 +/- 0.002661   0.0220
+  qmc.g003  series 2  -46.047285 +/- 0.001898   1.018219 +/- 0.002588   0.0221
+  qmc.g004  series 2  -46.034225 +/- 0.002539   1.013420 +/- 0.002835   0.0220
+  qmc.g005  series 2  -46.046731 +/- 0.002963   1.018337 +/- 0.004109   0.0221
+  qmc.g006  series 2  -46.047133 +/- 0.001958   1.021483 +/- 0.003082   0.0222
+  qmc.g007  series 2  -45.476146 +/- 0.002065   1.070456 +/- 0.003133   0.0235
+
+The degenerate twists grouped by set are :math:`\{0\}`,
+:math:`\{1,2,4\}`, :math:`\{3,5,6\}`, and :math:`\{7\}`.
+
+Alternatively, the run could have been performed at the four
+unique (irreducible) twist angles *only*.  We will emulate this situation by
+analyzing data for twists 0, 1, 3, and 7 only.  In a production setting
+with irreducibly weighted twists, the run would be performed on these twists
+alone; we reuse the uniform twist data for illustration purposes only.
+
+We can use ``qmca`` to perform twist averaging with different
+weights applied to each twist:
+
+::
+
+  >qmca -a -w '1 3 3 1' -q ev -e 30 *g000*2*sc* *g001*2*sc* *g003*2*sc* *g007*2*sc*
+                              LocalEnergy               Variance           ratio
+  avg  series 2  -45.873631 +/- 0.001044   1.028769 +/- 0.001520   0.0224
+
+yielding a total energy value of :math:`-45.874(1)` Ha, in agreement with the
+uniform weighted twist average performed previously.
+
+The decision of whether or not to perform irreducible weighted twist
+averaging should be made on the basis of efficiency.  The relative
+efficiency of irreducible vs. uniform weighted twist averaging
+depends on the irreducible weights and the ratio of the lengths of
+the available sampling and equilibration periods.  A formula for
+the relative efficiency of these two cases is derived and discussed
+in more detail in :ref:`appendix-a`.
+
+.. _qmca-output-units:
+
+Setting output units
+~~~~~~~~~~~~~~~~~~~~
+
+Estimates outputted by ``qmca`` are in Hartree units by default. The
+output units for energetic quantities can be changed by using the ``-u``
+option.
+
+Energy in Hartrees:
+
+::
+
+  >qmca -q e -u Ha -e 20 qmc.s002.scalar.dat
+  qmc  series 2  LocalEnergy           =  -46.032960 +/- 0.002077
+
+Energy in electron volts:
+
+::
+
+  >qmca -q e -u eV -e 20 qmc.s002.scalar.dat
+  qmc  series 2  LocalEnergy           =  -1252.620565 +/- 0.056521
+
+Energy in Rydbergs:
+
+::
+
+  >qmca -q e -u rydberg -e 20 qmc.s002.scalar.dat
+  qmc  series 2  LocalEnergy           =  -92.065919 +/- 0.004154
+
+Energy in kilojoules per mole:
+
+::
+
+  >qmca -q e -u kj_mol -e 20 qmc.s002.scalar.dat
+  qmc  series 2  LocalEnergy           =  -120859.512998 +/- 5.453431
+
+.. _qmca-fast-trace-plot:
+
+Speeding up trace plotting
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When working with many files or files with many entries, ``qmca`` might
+take a long time to produce plots. The time delay is actually due to the
+autocorrelation time estimate used to calculate error bars. The
+calculation time for the autocorrelation scales as
+:math:`\mathcal{O}(M^2)`, with :math:`M` being the number of statistical
+samples. If you are interested only in plotting traces and not in the
+estimated error bars, the autocorrelation time estimation can be turned
+off with the ``–noac`` option:
+
+::
+
+  >qmca -t -q e -e 20 --noac qmc.s002.scalar.dat
+
+Note that the resulting error bars printed to the console will be
+underestimated and are not meaningful. Do *not* use ``–noac`` in
+conjunction with the ``-p`` plotting option as these plots are of no use
+without meaningful error bars.
+
+.. _qmca-short-example:
+
+Short usage examples
+~~~~~~~~~~~~~~~~~~~~
+
+Plotting a trace of the local energy:
+
+::
+
+  >qmca -t -q e *scalar*
+
+Applying an equilibration cutoff to VMC data (series 0):
+
+::
+
+  >qmca -q e -e 30 *s000.scalar*
+
+Applying the same equilibration cutoff to VMC and DMC data (series 0, 1, 2):
+
+::
+
+  >qmca -q e -e 20 *scalar*
+
+Applying different equilibration cutoffs to VMC and DMC data (series 0, 1, 2):
+
+::
+
+  >qmca -q e -e '30 20 40' *scalar*
+
+Obtaining the energy, variance, and variance/energy ratio for all series:
+
+::
+
+  >qmca -q ev -e 30 *scalar*
+
+Overlaying plots of mean + error bar for energy and variance for separate
+two- and three-body Jastrow optimization runs:
+
+::
+
+  >qmca -po -q ev ./optJ2/*scalar* ./optJ3/*scalar*
+
+Obtaining the acceptance ratio:
+
+::
+
+  >qmca -q ar -e 30 *scalar*
+
+Obtaining the average DMC walker population:
+
+::
+
+  >qmca -q nw -e 400 *s002.dmc.dat
+
+Obtaining the MC efficiency:
+
+::
+
+  >qmca -q eff -e 30 *scalar*
+
+Obtaining the total wall clock time per series:
+
+::
+
+  >qmca -q tt -e 0 *scalar*
+
+Obtaining the average wall clock time spent per block:
+
+::
+
+  >qmca -q bc -e 0 *scalar*
+
+Obtaining a subset of desired quantities:
+
+::
+
+  >qmca -q 'e v ar eff' -e 30 *scalar*
+
+Obtaining all available quantities:
+
+::
+
+  >qmca -e 30 *scalar*
+
+Obtaining the twist-averaged total energy with uniform weights:
+
+::
+
+  >qmca -a -q e -e 40 *g*s002.scalar.dat
+
+Obtaining the twist-averaged total energy with specific weights:
+
+::
+
+  >qmca -a -w '1 3 3 1' -q e -e 40 *g*s002.scalar.dat
+
+Obtaining the local, kinetic, and potential energies in eV:
+
+::
+
+  >qmca -q ekp -e 30 -u eV *scalar*
+
+.. _qmca-production-checklist:
+
+Production quality checklist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+#. Inspect the trace plots (``-t`` option) for any oddities in the data.
+   Typical behavior is a short equilibration period followed by benign
+   fluctuations around a clear mean value. There should not be any large
+   spikes in the data. This applies to *all* runs (VMC, optimization,
+   DMC, etc.).
+
+#. Remove all equilibration steps (``-e`` option) from the data by
+   inspecting the trace plot.
+
+#. Check the quality of the orbitals (standalone Jastrow-less VMC or
+   sometimes the first ``scalar`` file produced during optimization) by
+   inspecting the variance/energy ratio ``qmca -q ev *scalar*``. For
+   pseudopotential systems without a Jastrow, the variance/energy ratio
+   should not exceed :math:`0.2` Ha; otherwise, there is a problem with
+   the orbitals.
+
+#. Check the quality of the optimized Jastrow factor by inspecting the
+   variance/energy ratio. For pseudopotential systems with a Jastrow,
+   the variance/energy ratio should not exceed :math:`0.04` Ha for
+   pseudopotential systems. A good Jastrow is indicated by a
+   variance/energy ratio in the range of :math:`0.01-0.03` Ha. A value
+   less than :math:`0.01` Ha is difficult to achieve.
+
+#. Confirm that the optimization has converged by plotting the energy
+   and variance vs. optimization series (``qmca -p -q ev *scalar*``). Do
+   not assume that optimization has converged in only a few cycles. Use
+   at least 10 cycles with about 100,000 samples unless you already have
+   experience with the system in question.
+
+#. Optimize Jastrow factors according to energy minimization to reduce
+   locality errors arising from the use of nonlocal pseudopotentials in
+   DMC. A good approach is to optimize with a few cycles of variance
+   minimization followed by several cycles of energy minimization.
+
+#. Occasionally try optimizing with more samples and/or cycles to see if
+   improved results are obtained.
+
+#. If using a B-spline representation of the orbitals, converge the VMC
+   energy and variance with respect to the mesh size (controlled via
+   meshfactor). This is best done in the presence of any Jastrow factor
+   to reduce noise. Consider using the hybrid LMTO representation of the
+   orbitals as this can reduce both the VMC/DMC variance and the DMC
+   time step error, in addition to saving memory.
+
+#. Check the variance/energy ratio of all production VMC and DMC
+   calculations. In all cases, the DMC ratio should be slightly less
+   than the VMC ratio and both should abide the preceding guidelines,
+   i.e., the ratio should be less than :math:`0.04` Ha for
+   pseudopotential systems. The production ratio should also be
+   consistent with what is observed during wavefunction optimization.
+
+
+#. Be aware of population control bias in DMC. Run with a population of
+   :math:`\sim 2,000` or greater. Occasionally repeat a run using a
+   larger population to explicitly confirm that population control bias
+   is small.
+
+#. Check the stability of the DMC walker population by plotting the
+   trace of the population size (``qmca -t -q nw *dmc.dat``). Verify
+   that the average walker population is consistent with the requested
+   value provided in the input.
+
+#. In DMC, perform a time step study to obtain either (1) extrapolated
+   results or (2) a time step for future production where an energy
+   difference shows convergence (e.g., a band gap or defect formation
+   energy). For pseudopotential systems, converged time steps for many
+   systems are in the range of :math:`0.002-0.01` Ha\ :math:`^{-1}`, but
+   the actual converged time step must be explicitly checked.
+
+#. In periodic systems, converge the total energy with respect to the
+   size of the twist/k-point grid. Results for smaller systems can
+   easily be transferred to larger ones (e.g., a
+   :math:`2 \times 2 \times 2` twist grid in a
+   :math:`2 \times 2 \times 2` tiled cell is equivalent to a
+   :math:`1 \times 1 \times 1` twist grid in a
+   :math:`4 \times 4 \times 4` tiled cell).
+
+#. In periodic systems, perform finite-size extrapolation including two
+   body corrections (needed for cohesive energy/phase stability studies)
+   unless it can be shown that finite-size effects cancel for the energy
+   difference in question (e.g., some defect formation energies).
+
+.. _qmcfit:
+
+Using the qmc-fit tool for statistical time step extrapolation and curve fitting
+--------------------------------------------------------------------------------
+
+The ``qmc-fit`` tool is used to provide statistical estimates of
+curve-fitting parameters based on QMCPACK data. Although ``qmc-fit``
+will eventually support many types of fitted curves (e.g., Morse
+potential binding curves and various equation-of-state fitting curves),
+it is currently limited to estimating fitting parameters related to time
+step extrapolation.
+
+The jackknife statistical technique
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``qmc-fit`` tool obtains estimates of fitting parameter means and
+associated error bars via the “jack-knife” technique. This technique is
+a powerful and general tool to obtain meaningful error bars for any
+quantity that is related in a nonlinear fashion to an underlying set of
+statistical data. For this reason, we give a brief overview of the
+jackknife technique before proceeding with usage instructions for the
+``qmc-fit`` tool.
+
+Consider :math:`N` statistical variables :math:`\{x_n\}_{n=1}^N` that
+have been outputted by one or more simulation runs. If we have :math:`M`
+samples of each of the :math:`N` variables, then the mean values of each
+these variables can be estimated in the standard way, that is,
+:math:`\bar{x}_n\approx \tfrac{1}{M}\sum_{m=1}^Mx_{nm}`.
+
+Suppose we are interested in :math:`P` statistical quantities
+:math:`\{y_p\}_{p=1}^P` that are related to the original :math:`N`
+variables by a known multidimensional function :math:`F`:
+
+.. math::
+  :label: eq46
+
+  \begin{aligned}
+     y_1,y_2,\ldots,y_P &= F(x_1,x_2,\ldots,x_N)\quad \textrm{or} \nonumber \\
+     \vec{y} &= F(\vec{x})\:.\end{aligned}
+
+The relationship implied by :math:`F` is completely general. For
+example, the :math:`\{x_n\}` might be elements of a matrix with
+:math:`\{y_p\}` being the eigenvalues, or :math:`F` might be a fitting
+procedure for :math:`N` energies at different time steps with :math:`P`
+fitting parameters. An approximate guess at the mean value of
+:math:`\vec{y}` can be obtained by evaluating :math:`F` at the mean
+value of :math:`\vec{x}` (i.e. :math:`F(\bar{x}_1\ldots\bar{x}_N)`), but
+with this approach we have no way to estimate the statistical error bar
+of any :math:`\bar{y}_p`.
+
+In the jackknife procedure, the statistical variability intrinsic to the
+underlying data :math:`\{x_n\}` is used to obtain estimates of the mean
+and error bar of :math:`\{y_p\}`. We first construct a new set of
+:math:`x` statistical data by taking the average over all samples but
+one:
+
+.. math::
+  :label: eq47
+
+  \tilde{x}_{nm} = \frac{1}{N-1}(N\bar{x}_n-x_{nm})\qquad m\in [1,M]\:.
+
+The result is a distribution of approximate :math:`x` mean values. These
+are used to construct a distribution of approximate means for :math:`y`:
+
+.. math::
+  :label: eq48
+
+  \tilde{y}_{1m},\ldots,\tilde{y}_{Pm} = F(\tilde{x}_{1m},\ldots,\tilde{x}_{Nm}) \qquad m\in [1,M]\:.
+
+Estimates for the mean and error bar of the quantities of
+interest can finally be obtained using the following formulas:
+
+.. math::
+  :label: eq49
+
+  \begin{aligned}
+     \bar{y}_p &= \frac{1}{M}\sum_{m=1}^M\tilde{y}_{pm}\:.  \\
+     \sigma_{y_p} &= \sqrt{\frac{M-1}{M}\left(\sum_{m=1}^M\tilde{y}_{pm}^2-M\bar{y}_p^2\right)}\:.\end{aligned}
+
+Performing time step extrapolation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this section, we use a 32-atom supercell of MnO as an example system
+for time step extrapolation. Data for this system has been collected in
+DMC using the following sequence of time steps:
+:math:`0.04,~0.02,~0.01,~0.005,~0.0025,~0.00125` Ha\ :math:`^{-1}`. For
+a typical production pseudopotential study, time steps in the range of
+:math:`0.02-0.002` Ha\ :math:`^{-1}` are usually sufficient and it is
+recommended to increase the number of steps/blocks by a factor of two
+when the time step is halved. To perform accurate statistical fitting,
+we must first understand the equilibration and autocorrelation
+properties of the inputted local energy data. After plotting the local
+energy traces (``qmca -t -q e -e 0 ./qmc*/*scalar*``), it is clear that
+an equilibration period of :math:`30` blocks is reasonable. Approximate
+autocorrelation lengths are also obtained with ``qmca``:
+
+::
+
+  >qmca -e 30 -q e --sac ./qmc*/qmc.g000.s002.scalar.dat
+  ./qmc_tm_0.00125/qmc.g000 series 2 LocalEnergy = -3848.234513 +/- 0.055754  1.7
+  ./qmc_tm_0.00250/qmc.g000 series 2 LocalEnergy = -3848.237614 +/- 0.055432  2.2
+  ./qmc_tm_0.00500/qmc.g000 series 2 LocalEnergy = -3848.349741 +/- 0.069729  2.8
+  ./qmc_tm_0.01000/qmc.g000 series 2 LocalEnergy = -3848.274596 +/- 0.126407  3.9
+  ./qmc_tm_0.02000/qmc.g000 series 2 LocalEnergy = -3848.539017 +/- 0.075740  2.4
+  ./qmc_tm_0.04000/qmc.g000 series 2 LocalEnergy = -3848.976424 +/- 0.075305  1.8
+
+The autocorrelation must be removed from the data before jackknifing, so
+we will reblock the data by a factor of 4.
+
+The ``qmc-fit`` tool can be used in the following way to obtain a linear
+time step fit of the data:
+
+::
+
+  >qmc-fit ts -e 30 -b 4 -s 2 -t '0.00125 0.0025 0.005 0.01 0.02 0.04' ./qmc*/*scalar*
+  fit function  : linear
+  fitted formula: (-3848.193 +/- 0.037) + (-18.95 +/- 1.95)*t
+  intercept     : -3848.193 +/- 0.037  Ha
+
+The input arguments are as follows: ``ts`` indicates we are performing a
+time step fit, ``-e 30`` is the equilibration period removed from each
+set of scalar data, ``-b 4`` indicates the data will be reblocked by a
+factor of 4 (e.g., a file containing 400 entries will be block averaged
+into a new set of 100 before jackknife fitting), ``-s 2`` indicates that
+the time step data begins with series 2 (scalar files matching
+``*s000*`` or ``*s001*`` are to be excluded), and ``-t`` ‘0.00125 0.0025
+0.005 0.01 0.02 0.04’ provides a list of time step values corresponding
+to the inputted scalar files. The ``-e`` and ``-b`` options can receive
+a list of file-specific values (same format as ``-t``) if desired. As
+can be seen from the text output, the parameters for the linear fit are
+printed with error bars obtained with jackknife resampling and the zero
+time step “intercept” is :math:`-3848.19(4)` Ha. In addition to text
+output, the previous command will result in a plot of the fit with the
+zero time step value shown as a red dot, as shown in the top panel of
+:numref:`fig12`.
+
+Different fitting functions are supported via the ``-f`` option.
+Currently supported options include ``linear`` (:math:`a+bt`),
+``quadratic`` (:math:`a+bt+ct^2`), and ``sqrt``
+(:math:`a+b\sqrt{t}+ct`). Results for a quadratic fit are shown
+subsequently and in the bottom panel of :numref:`fig12`.
+
+::
+
+  >qmc-fit ts -f quadratic -e30 -b4 -s2 -t '0.00125 0.0025 0.005 0.01 0.02 0.04' ./qmc*/*scalar*
+  fit function  : quadratic
+  fitted formula: (-3848.245 +/- 0.047) + (-7.25 +/- 8.33)*t + (-285.00 +/- 202.39)*t^2
+  intercept     : -3848.245 +/- 0.047  Ha
+
+In this case, we find a zero time step estimate of :math:`-3848.25(5)`
+Ha\ :math:`^{-1}`. A time step of :math:`0.04` Ha\ :math:`^{-1}` might
+be on the large side to include in time step extrapolation, and it is
+likely to have an outsize influence in the case of linear extrapolation.
+Upon excluding this point, linear extrapolation yields a zero timestep
+value of :math:`-3848.22(4)` Ha\ :math:`^{-1}`. Note that quadratic
+extrapolation can result in intrinsically larger uncertainty in the
+extrapolated value. For example, when the :math:`0.04` Ha\ :math:`^{-1}`
+point is excluded, the uncertainty grows by 50% and we obtain an
+estimated value of :math:`-3848.28(7)` instead.
+
+.. image:: /figs/qmcfit_timestep_linear.png
+  :width: 400
+  :align: center
+
+.. _fig12:
+.. figure:: /figs/qmcfit_timestep_quadratic.png
+  :width: 400
+  :align: center
+
+  Linear (top) and quadratic (bottom) time step fits to DMC data for a 32-atom supercell of MnO obtained with ``qmc-fit``.  Zero time step estimates are indicated by the red data point on the left side of either panel.
+
+.. _qdens:
+
+Using the qdens tool to obtain electron densities
+-------------------------------------------------
+
+The ``qdens`` tool is provided to post-process the heavy density data
+produced by QMCPACK and output the mean density (with and without
+errorbars) in file formats viewable with, e.g., XCrysDen or VESTA. The
+tool currently works only with the ``SpinDensity`` estimator in QMCPACK.
+
+Note: this tool is provisional and may be changed or replaced at any
+time. The planned successor to this tool (``qstat``) will expand access
+to other observables and will retain at least the non-plotting
+capabilities of ``qdens``.
+
+To use ``qdens``, Nexus must be installed along with NumPy and H5Py. A
+short list of example use cases are covered in the next section. Current
+input flags are:
+
+::
+
+  >qdens
+
+  Usage: qdens [options] [file(s)]
+
+  Options:
+    --version             show program's version number and exit
+    -h, --help            Print help information and exit (default=False).
+    -v, --verbose         Print detailed information (default=False).
+    -f FORMATS, --formats=FORMATS
+                          Format or list of formats for density file output.
+                          Options: dat, xsf, chgcar (default=None).
+    -e EQUILIBRATION, --equilibration=EQUILIBRATION
+                          Equilibration length in blocks (default=0).
+    -r REBLOCK, --reblock=REBLOCK
+                          Block coarsening factor; use estimated autocorrelation
+                          length (default=None).
+    -a, --average         Average over files in each series (default=False).
+    -w WEIGHTS, --weights=WEIGHTS
+                          List of weights for averaging (default=None).
+    -i INPUT, --input=INPUT
+                          QMCPACK input file containing structure and grid
+                          information (default=None).
+    -s STRUCTURE, --structure=STRUCTURE
+                          File containing atomic structure (default=None).
+    -g GRID, --grid=GRID  Density grid dimensions (default=None).
+    -c CELL, --cell=CELL  Simulation cell axes (default=None).
+    --lineplot=LINEPLOT   Produce a line plot along the selected dimension: 0,
+                          1, or 2 (default=None).
+    --noplot              Do not show plots interactively (default=False).
+
+Usage examples
+~~~~~~~~~~~~~~
+
+Process a single file, excluding the first 40 blocks, and produce XSF files:
+
+::
+
+  qdens -v -e 40 -f xsf -i qmc.in.xml qmc.s000.stat.h5
+
+Process files for all available series:
+
+::
+
+  qdens -v -e 40 -f xsf -i qmc.in.xml *stat.h5
+
+Combine groups of 10 adjacent statistical blocks together (appropriate if the
+estimated autocorrelation time is about 10 blocks):
+
+::
+
+  qdens -v -e 40 -r 10 -f xsf -i qmc.in.xml qmc.s000.stat.h5
+
+Apply different equilibration lengths and reblocking factors to each
+series (below is appropriate if there are three series, e.g. ``s000``,
+``s001``, and ``s002``):
+
+::
+
+  qdens -v -e '20 20 40' -r '4 4 8' -f xsf -i qmc.in.xml *stat.h5
+
+Produce twist averaged densities (also works with multiple series and reblocking):
+
+::
+
+  qdens -v -a -e 40 -f xsf -i qmc.g000.twistnum_0.in.xml qmc.g*.s000.stat.h5
+
+Twist averaging with arbitrary weights can be performed via the ``-w``
+option in a fashion identical to ``qmca``.
+
+Files produced
+~~~~~~~~~~~~~~
+
+Look for files with names and extensions similar to:
+
+::
+
+  qmc.s000.SpinDensity_u.xsf
+  qmc.s000.SpinDensity_u-err.xsf
+  qmc.s000.SpinDensity_u+err.xsf
+
+  qmc.s000.SpinDensity_d.xsf
+  qmc.s000.SpinDensity_d-err.xsf
+  qmc.s000.SpinDensity_d+err.xsf
+
+  qmc.s000.SpinDensity_u+d.xsf
+  qmc.s000.SpinDensity_u+d-err.xsf
+  qmc.s000.SpinDensity_u+d+err.xsf
+
+  qmc.s000.SpinDensity_u-d.xsf
+  qmc.s000.SpinDensity_u-d-err.xsf
+  qmc.s000.SpinDensity_u-d+err.xsf
+
+Files postfixed with ``u`` relate to the up electron density, ``d`` to
+down, ``u+d`` to the total charge density, and ``u-d`` to the difference
+between up and down electron densities.
+
+Files without ``err`` in the name contain only the mean, whereas files
+with ``+err``/``-err`` in the name contain the mean plus/minus the
+estimated error bar. Please use caution in interpreting the error bars
+as their accuracy depends crucially on a correct estimation of the
+autocorrelation time by the user (see ``-r`` option) and having a
+sufficient number of blocks remaining following any reblocking.
+
+When twist averaging, the group tag (e.g. ``g000`` or similar) will be
+replaced with ``avg`` in the names of the outputted files.

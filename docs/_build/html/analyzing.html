@@ -101,6 +101,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#obtaining-other-quantities">Obtaining other quantities</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#processing-multiple-files">Processing multiple files</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#twist-averaging">Twist averaging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-output-units">Setting output units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#speeding-up-trace-plotting">Speeding up trace plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#short-usage-examples">Short usage examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#production-quality-checklist">Production quality checklist</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-qmc-fit-tool-for-statistical-time-step-extrapolation-and-curve-fitting">Using the qmc-fit tool for statistical time step extrapolation and curve fitting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-jackknife-statistical-technique">The jackknife statistical technique</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performing-time-step-extrapolation">Performing time step extrapolation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-qdens-tool-to-obtain-electron-densities">Using the qdens tool to obtain electron densities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usage-examples">Usage examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#files-produced">Files produced</a></li>
 </ul>
 </li>
 </ul>
@@ -800,6 +814,466 @@ from the <code class="docutils literal notranslate"><span class="pre">scalar.dat
 <span id="fig11"></span><a class="reference internal image-reference" href="_images/qmca_twist_average_trace.png"><img alt="_images/qmca_twist_average_trace.png" src="_images/qmca_twist_average_trace.png" style="width: 400px;" /></a>
 <p class="caption"><span class="caption-number">Fig. 11 </span><span class="caption-text">Twist-averaged energy trace from VMC to DMC for an 8-supercell diamond obtained with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
+<p>As can be seen from <a class="reference internal" href="#fig10"><span class="std std-numref">Fig. 10</span></a>, some of the twist
+angles are degenerate. This is seen more clearly in the text output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g000</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.264510</span> <span class="o">+/-</span> <span class="mf">0.001942</span>   <span class="mf">1.057065</span> <span class="o">+/-</span> <span class="mf">0.002318</span>   <span class="mf">0.0234</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g001</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.035511</span> <span class="o">+/-</span> <span class="mf">0.001806</span>   <span class="mf">1.015992</span> <span class="o">+/-</span> <span class="mf">0.002836</span>   <span class="mf">0.0221</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g002</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.035410</span> <span class="o">+/-</span> <span class="mf">0.001538</span>   <span class="mf">1.015039</span> <span class="o">+/-</span> <span class="mf">0.002661</span>   <span class="mf">0.0220</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g003</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.047285</span> <span class="o">+/-</span> <span class="mf">0.001898</span>   <span class="mf">1.018219</span> <span class="o">+/-</span> <span class="mf">0.002588</span>   <span class="mf">0.0221</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g004</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.034225</span> <span class="o">+/-</span> <span class="mf">0.002539</span>   <span class="mf">1.013420</span> <span class="o">+/-</span> <span class="mf">0.002835</span>   <span class="mf">0.0220</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g005</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.046731</span> <span class="o">+/-</span> <span class="mf">0.002963</span>   <span class="mf">1.018337</span> <span class="o">+/-</span> <span class="mf">0.004109</span>   <span class="mf">0.0221</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g006</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">46.047133</span> <span class="o">+/-</span> <span class="mf">0.001958</span>   <span class="mf">1.021483</span> <span class="o">+/-</span> <span class="mf">0.003082</span>   <span class="mf">0.0222</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">g007</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.476146</span> <span class="o">+/-</span> <span class="mf">0.002065</span>   <span class="mf">1.070456</span> <span class="o">+/-</span> <span class="mf">0.003133</span>   <span class="mf">0.0235</span>
+</pre></div>
+</div>
+<p>The degenerate twists grouped by set are <span class="math notranslate nohighlight">\(\{0\}\)</span>,
+<span class="math notranslate nohighlight">\(\{1,2,4\}\)</span>, <span class="math notranslate nohighlight">\(\{3,5,6\}\)</span>, and <span class="math notranslate nohighlight">\(\{7\}\)</span>.</p>
+<p>Alternatively, the run could have been performed at the four
+unique (irreducible) twist angles <em>only</em>.  We will emulate this situation by
+analyzing data for twists 0, 1, 3, and 7 only.  In a production setting
+with irreducibly weighted twists, the run would be performed on these twists
+alone; we reuse the uniform twist data for illustration purposes only.</p>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">qmca</span></code> to perform twist averaging with different
+weights applied to each twist:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="s1">&#39;1 3 3 1&#39;</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">g000</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span> <span class="o">*</span><span class="n">g001</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span> <span class="o">*</span><span class="n">g003</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span> <span class="o">*</span><span class="n">g007</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">sc</span><span class="o">*</span>
+                            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">avg</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">45.873631</span> <span class="o">+/-</span> <span class="mf">0.001044</span>   <span class="mf">1.028769</span> <span class="o">+/-</span> <span class="mf">0.001520</span>   <span class="mf">0.0224</span>
+</pre></div>
+</div>
+<p>yielding a total energy value of <span class="math notranslate nohighlight">\(-45.874(1)\)</span> Ha, in agreement with the
+uniform weighted twist average performed previously.</p>
+<p>The decision of whether or not to perform irreducible weighted twist
+averaging should be made on the basis of efficiency.  The relative
+efficiency of irreducible vs. uniform weighted twist averaging
+depends on the irreducible weights and the ratio of the lengths of
+the available sampling and equilibration periods.  A formula for
+the relative efficiency of these two cases is derived and discussed
+in more detail in <span class="xref std std-ref">appendix-a</span>.</p>
+</div>
+<div class="section" id="setting-output-units">
+<span id="qmca-output-units"></span><h3>Setting output units<a class="headerlink" href="#setting-output-units" title="Permalink to this headline">¶</a></h3>
+<p>Estimates outputted by <code class="docutils literal notranslate"><span class="pre">qmca</span></code> are in Hartree units by default. The
+output units for energetic quantities can be changed by using the <code class="docutils literal notranslate"><span class="pre">-u</span></code>
+option.</p>
+<p>Energy in Hartrees:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">u</span> <span class="n">Ha</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">46.032960</span> <span class="o">+/-</span> <span class="mf">0.002077</span>
+</pre></div>
+</div>
+<p>Energy in electron volts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">u</span> <span class="n">eV</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">1252.620565</span> <span class="o">+/-</span> <span class="mf">0.056521</span>
+</pre></div>
+</div>
+<p>Energy in Rydbergs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">u</span> <span class="n">rydberg</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">92.065919</span> <span class="o">+/-</span> <span class="mf">0.004154</span>
+</pre></div>
+</div>
+<p>Energy in kilojoules per mole:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">u</span> <span class="n">kj_mol</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="n">qmc</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">120859.512998</span> <span class="o">+/-</span> <span class="mf">5.453431</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="speeding-up-trace-plotting">
+<span id="qmca-fast-trace-plot"></span><h3>Speeding up trace plotting<a class="headerlink" href="#speeding-up-trace-plotting" title="Permalink to this headline">¶</a></h3>
+<p>When working with many files or files with many entries, <code class="docutils literal notranslate"><span class="pre">qmca</span></code> might
+take a long time to produce plots. The time delay is actually due to the
+autocorrelation time estimate used to calculate error bars. The
+calculation time for the autocorrelation scales as
+<span class="math notranslate nohighlight">\(\mathcal{O}(M^2)\)</span>, with <span class="math notranslate nohighlight">\(M\)</span> being the number of statistical
+samples. If you are interested only in plotting traces and not in the
+estimated error bars, the autocorrelation time estimation can be turned
+off with the <code class="docutils literal notranslate"><span class="pre">–noac</span></code> option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="o">--</span><span class="n">noac</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Note that the resulting error bars printed to the console will be
+underestimated and are not meaningful. Do <em>not</em> use <code class="docutils literal notranslate"><span class="pre">–noac</span></code> in
+conjunction with the <code class="docutils literal notranslate"><span class="pre">-p</span></code> plotting option as these plots are of no use
+without meaningful error bars.</p>
+</div>
+<div class="section" id="short-usage-examples">
+<span id="qmca-short-example"></span><h3>Short usage examples<a class="headerlink" href="#short-usage-examples" title="Permalink to this headline">¶</a></h3>
+<p>Plotting a trace of the local energy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">t</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Applying an equilibration cutoff to VMC data (series 0):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Applying the same equilibration cutoff to VMC and DMC data (series 0, 1, 2):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">20</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Applying different equilibration cutoffs to VMC and DMC data (series 0, 1, 2):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;30 20 40&#39;</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the energy, variance, and variance/energy ratio for all series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Overlaying plots of mean + error bar for energy and variance for separate
+two- and three-body Jastrow optimization runs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">po</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">./</span><span class="n">optJ2</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span> <span class="o">./</span><span class="n">optJ3</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the acceptance ratio:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ar</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the average DMC walker population:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">nw</span> <span class="o">-</span><span class="n">e</span> <span class="mi">400</span> <span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">dmc</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Obtaining the MC efficiency:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">eff</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the total wall clock time per series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">tt</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the average wall clock time spent per block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">bc</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining a subset of desired quantities:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="s1">&#39;e v ar eff&#39;</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining all available quantities:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>Obtaining the twist-averaged total energy with uniform weights:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">*</span><span class="n">g</span><span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Obtaining the twist-averaged total energy with specific weights:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">w</span> <span class="s1">&#39;1 3 3 1&#39;</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">*</span><span class="n">g</span><span class="o">*</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>Obtaining the local, kinetic, and potential energies in eV:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ekp</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">-</span><span class="n">u</span> <span class="n">eV</span> <span class="o">*</span><span class="n">scalar</span><span class="o">*</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="production-quality-checklist">
+<span id="qmca-production-checklist"></span><h3>Production quality checklist<a class="headerlink" href="#production-quality-checklist" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Inspect the trace plots (<code class="docutils literal notranslate"><span class="pre">-t</span></code> option) for any oddities in the data.
+Typical behavior is a short equilibration period followed by benign
+fluctuations around a clear mean value. There should not be any large
+spikes in the data. This applies to <em>all</em> runs (VMC, optimization,
+DMC, etc.).</p></li>
+<li><p>Remove all equilibration steps (<code class="docutils literal notranslate"><span class="pre">-e</span></code> option) from the data by
+inspecting the trace plot.</p></li>
+<li><p>Check the quality of the orbitals (standalone Jastrow-less VMC or
+sometimes the first <code class="docutils literal notranslate"><span class="pre">scalar</span></code> file produced during optimization) by
+inspecting the variance/energy ratio <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">*scalar*</span></code>. For
+pseudopotential systems without a Jastrow, the variance/energy ratio
+should not exceed <span class="math notranslate nohighlight">\(0.2\)</span> Ha; otherwise, there is a problem with
+the orbitals.</p></li>
+<li><p>Check the quality of the optimized Jastrow factor by inspecting the
+variance/energy ratio. For pseudopotential systems with a Jastrow,
+the variance/energy ratio should not exceed <span class="math notranslate nohighlight">\(0.04\)</span> Ha for
+pseudopotential systems. A good Jastrow is indicated by a
+variance/energy ratio in the range of <span class="math notranslate nohighlight">\(0.01-0.03\)</span> Ha. A value
+less than <span class="math notranslate nohighlight">\(0.01\)</span> Ha is difficult to achieve.</p></li>
+<li><p>Confirm that the optimization has converged by plotting the energy
+and variance vs. optimization series (<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-p</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">*scalar*</span></code>). Do
+not assume that optimization has converged in only a few cycles. Use
+at least 10 cycles with about 100,000 samples unless you already have
+experience with the system in question.</p></li>
+<li><p>Optimize Jastrow factors according to energy minimization to reduce
+locality errors arising from the use of nonlocal pseudopotentials in
+DMC. A good approach is to optimize with a few cycles of variance
+minimization followed by several cycles of energy minimization.</p></li>
+<li><p>Occasionally try optimizing with more samples and/or cycles to see if
+improved results are obtained.</p></li>
+<li><p>If using a B-spline representation of the orbitals, converge the VMC
+energy and variance with respect to the mesh size (controlled via
+meshfactor). This is best done in the presence of any Jastrow factor
+to reduce noise. Consider using the hybrid LMTO representation of the
+orbitals as this can reduce both the VMC/DMC variance and the DMC
+time step error, in addition to saving memory.</p></li>
+<li><p>Check the variance/energy ratio of all production VMC and DMC
+calculations. In all cases, the DMC ratio should be slightly less
+than the VMC ratio and both should abide the preceding guidelines,
+i.e., the ratio should be less than <span class="math notranslate nohighlight">\(0.04\)</span> Ha for
+pseudopotential systems. The production ratio should also be
+consistent with what is observed during wavefunction optimization.</p></li>
+<li><p>Be aware of population control bias in DMC. Run with a population of
+<span class="math notranslate nohighlight">\(\sim 2,000\)</span> or greater. Occasionally repeat a run using a
+larger population to explicitly confirm that population control bias
+is small.</p></li>
+<li><p>Check the stability of the DMC walker population by plotting the
+trace of the population size (<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">nw</span> <span class="pre">*dmc.dat</span></code>). Verify
+that the average walker population is consistent with the requested
+value provided in the input.</p></li>
+<li><p>In DMC, perform a time step study to obtain either (1) extrapolated
+results or (2) a time step for future production where an energy
+difference shows convergence (e.g., a band gap or defect formation
+energy). For pseudopotential systems, converged time steps for many
+systems are in the range of <span class="math notranslate nohighlight">\(0.002-0.01\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>, but
+the actual converged time step must be explicitly checked.</p></li>
+<li><p>In periodic systems, converge the total energy with respect to the
+size of the twist/k-point grid. Results for smaller systems can
+easily be transferred to larger ones (e.g., a
+<span class="math notranslate nohighlight">\(2 \times 2 \times 2\)</span> twist grid in a
+<span class="math notranslate nohighlight">\(2 \times 2 \times 2\)</span> tiled cell is equivalent to a
+<span class="math notranslate nohighlight">\(1 \times 1 \times 1\)</span> twist grid in a
+<span class="math notranslate nohighlight">\(4 \times 4 \times 4\)</span> tiled cell).</p></li>
+<li><p>In periodic systems, perform finite-size extrapolation including two
+body corrections (needed for cohesive energy/phase stability studies)
+unless it can be shown that finite-size effects cancel for the energy
+difference in question (e.g., some defect formation energies).</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="using-the-qmc-fit-tool-for-statistical-time-step-extrapolation-and-curve-fitting">
+<span id="qmcfit"></span><h2>Using the qmc-fit tool for statistical time step extrapolation and curve fitting<a class="headerlink" href="#using-the-qmc-fit-tool-for-statistical-time-step-extrapolation-and-curve-fitting" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code> tool is used to provide statistical estimates of
+curve-fitting parameters based on QMCPACK data. Although <code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code>
+will eventually support many types of fitted curves (e.g., Morse
+potential binding curves and various equation-of-state fitting curves),
+it is currently limited to estimating fitting parameters related to time
+step extrapolation.</p>
+<div class="section" id="the-jackknife-statistical-technique">
+<h3>The jackknife statistical technique<a class="headerlink" href="#the-jackknife-statistical-technique" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code> tool obtains estimates of fitting parameter means and
+associated error bars via the “jack-knife” technique. This technique is
+a powerful and general tool to obtain meaningful error bars for any
+quantity that is related in a nonlinear fashion to an underlying set of
+statistical data. For this reason, we give a brief overview of the
+jackknife technique before proceeding with usage instructions for the
+<code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code> tool.</p>
+<p>Consider <span class="math notranslate nohighlight">\(N\)</span> statistical variables <span class="math notranslate nohighlight">\(\{x_n\}_{n=1}^N\)</span> that
+have been outputted by one or more simulation runs. If we have <span class="math notranslate nohighlight">\(M\)</span>
+samples of each of the <span class="math notranslate nohighlight">\(N\)</span> variables, then the mean values of each
+these variables can be estimated in the standard way, that is,
+<span class="math notranslate nohighlight">\(\bar{x}_n\approx \tfrac{1}{M}\sum_{m=1}^Mx_{nm}\)</span>.</p>
+<p>Suppose we are interested in <span class="math notranslate nohighlight">\(P\)</span> statistical quantities
+<span class="math notranslate nohighlight">\(\{y_p\}_{p=1}^P\)</span> that are related to the original <span class="math notranslate nohighlight">\(N\)</span>
+variables by a known multidimensional function <span class="math notranslate nohighlight">\(F\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq46">
+<span class="eqno">(46)<a class="headerlink" href="#equation-eq46" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+   y_1,y_2,\ldots,y_P &amp;= F(x_1,x_2,\ldots,x_N)\quad \textrm{or} \nonumber \\
+   \vec{y} &amp;= F(\vec{x})\:.\end{aligned}\end{split}\]</div>
+<p>The relationship implied by <span class="math notranslate nohighlight">\(F\)</span> is completely general. For
+example, the <span class="math notranslate nohighlight">\(\{x_n\}\)</span> might be elements of a matrix with
+<span class="math notranslate nohighlight">\(\{y_p\}\)</span> being the eigenvalues, or <span class="math notranslate nohighlight">\(F\)</span> might be a fitting
+procedure for <span class="math notranslate nohighlight">\(N\)</span> energies at different time steps with <span class="math notranslate nohighlight">\(P\)</span>
+fitting parameters. An approximate guess at the mean value of
+<span class="math notranslate nohighlight">\(\vec{y}\)</span> can be obtained by evaluating <span class="math notranslate nohighlight">\(F\)</span> at the mean
+value of <span class="math notranslate nohighlight">\(\vec{x}\)</span> (i.e. <span class="math notranslate nohighlight">\(F(\bar{x}_1\ldots\bar{x}_N)\)</span>), but
+with this approach we have no way to estimate the statistical error bar
+of any <span class="math notranslate nohighlight">\(\bar{y}_p\)</span>.</p>
+<p>In the jackknife procedure, the statistical variability intrinsic to the
+underlying data <span class="math notranslate nohighlight">\(\{x_n\}\)</span> is used to obtain estimates of the mean
+and error bar of <span class="math notranslate nohighlight">\(\{y_p\}\)</span>. We first construct a new set of
+<span class="math notranslate nohighlight">\(x\)</span> statistical data by taking the average over all samples but
+one:</p>
+<div class="math notranslate nohighlight" id="equation-eq47">
+<span class="eqno">(47)<a class="headerlink" href="#equation-eq47" title="Permalink to this equation">¶</a></span>\[\tilde{x}_{nm} = \frac{1}{N-1}(N\bar{x}_n-x_{nm})\qquad m\in [1,M]\:.\]</div>
+<p>The result is a distribution of approximate <span class="math notranslate nohighlight">\(x\)</span> mean values. These
+are used to construct a distribution of approximate means for <span class="math notranslate nohighlight">\(y\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq48">
+<span class="eqno">(48)<a class="headerlink" href="#equation-eq48" title="Permalink to this equation">¶</a></span>\[\tilde{y}_{1m},\ldots,\tilde{y}_{Pm} = F(\tilde{x}_{1m},\ldots,\tilde{x}_{Nm}) \qquad m\in [1,M]\:.\]</div>
+<p>Estimates for the mean and error bar of the quantities of
+interest can finally be obtained using the following formulas:</p>
+<div class="math notranslate nohighlight" id="equation-eq49">
+<span class="eqno">(49)<a class="headerlink" href="#equation-eq49" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+   \bar{y}_p &amp;= \frac{1}{M}\sum_{m=1}^M\tilde{y}_{pm}\:.  \\
+   \sigma_{y_p} &amp;= \sqrt{\frac{M-1}{M}\left(\sum_{m=1}^M\tilde{y}_{pm}^2-M\bar{y}_p^2\right)}\:.\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="performing-time-step-extrapolation">
+<h3>Performing time step extrapolation<a class="headerlink" href="#performing-time-step-extrapolation" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we use a 32-atom supercell of MnO as an example system
+for time step extrapolation. Data for this system has been collected in
+DMC using the following sequence of time steps:
+<span class="math notranslate nohighlight">\(0.04,~0.02,~0.01,~0.005,~0.0025,~0.00125\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>. For
+a typical production pseudopotential study, time steps in the range of
+<span class="math notranslate nohighlight">\(0.02-0.002\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> are usually sufficient and it is
+recommended to increase the number of steps/blocks by a factor of two
+when the time step is halved. To perform accurate statistical fitting,
+we must first understand the equilibration and autocorrelation
+properties of the inputted local energy data. After plotting the local
+energy traces (<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">-e</span> <span class="pre">0</span> <span class="pre">./qmc*/*scalar*</span></code>), it is clear that
+an equilibration period of <span class="math notranslate nohighlight">\(30\)</span> blocks is reasonable. Approximate
+autocorrelation lengths are also obtained with <code class="docutils literal notranslate"><span class="pre">qmca</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">--</span><span class="n">sac</span> <span class="o">./</span><span class="n">qmc</span><span class="o">*/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span><span class="o">.</span><span class="n">s002</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">00125</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.234513</span> <span class="o">+/-</span> <span class="mf">0.055754</span>  <span class="mf">1.7</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">00250</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.237614</span> <span class="o">+/-</span> <span class="mf">0.055432</span>  <span class="mf">2.2</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">00500</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.349741</span> <span class="o">+/-</span> <span class="mf">0.069729</span>  <span class="mf">2.8</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">01000</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.274596</span> <span class="o">+/-</span> <span class="mf">0.126407</span>  <span class="mf">3.9</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">02000</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.539017</span> <span class="o">+/-</span> <span class="mf">0.075740</span>  <span class="mf">2.4</span>
+<span class="o">./</span><span class="n">qmc_tm_0</span><span class="o">.</span><span class="mi">04000</span><span class="o">/</span><span class="n">qmc</span><span class="o">.</span><span class="n">g000</span> <span class="n">series</span> <span class="mi">2</span> <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3848.976424</span> <span class="o">+/-</span> <span class="mf">0.075305</span>  <span class="mf">1.8</span>
+</pre></div>
+</div>
+<p>The autocorrelation must be removed from the data before jackknifing, so
+we will reblock the data by a factor of 4.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code> tool can be used in the following way to obtain a linear
+time step fit of the data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmc</span><span class="o">-</span><span class="n">fit</span> <span class="n">ts</span> <span class="o">-</span><span class="n">e</span> <span class="mi">30</span> <span class="o">-</span><span class="n">b</span> <span class="mi">4</span> <span class="o">-</span><span class="n">s</span> <span class="mi">2</span> <span class="o">-</span><span class="n">t</span> <span class="s1">&#39;0.00125 0.0025 0.005 0.01 0.02 0.04&#39;</span> <span class="o">./</span><span class="n">qmc</span><span class="o">*/*</span><span class="n">scalar</span><span class="o">*</span>
+<span class="n">fit</span> <span class="n">function</span>  <span class="p">:</span> <span class="n">linear</span>
+<span class="n">fitted</span> <span class="n">formula</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">3848.193</span> <span class="o">+/-</span> <span class="mf">0.037</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">18.95</span> <span class="o">+/-</span> <span class="mf">1.95</span><span class="p">)</span><span class="o">*</span><span class="n">t</span>
+<span class="n">intercept</span>     <span class="p">:</span> <span class="o">-</span><span class="mf">3848.193</span> <span class="o">+/-</span> <span class="mf">0.037</span>  <span class="n">Ha</span>
+</pre></div>
+</div>
+<p>The input arguments are as follows: <code class="docutils literal notranslate"><span class="pre">ts</span></code> indicates we are performing a
+time step fit, <code class="docutils literal notranslate"><span class="pre">-e</span> <span class="pre">30</span></code> is the equilibration period removed from each
+set of scalar data, <code class="docutils literal notranslate"><span class="pre">-b</span> <span class="pre">4</span></code> indicates the data will be reblocked by a
+factor of 4 (e.g., a file containing 400 entries will be block averaged
+into a new set of 100 before jackknife fitting), <code class="docutils literal notranslate"><span class="pre">-s</span> <span class="pre">2</span></code> indicates that
+the time step data begins with series 2 (scalar files matching
+<code class="docutils literal notranslate"><span class="pre">*s000*</span></code> or <code class="docutils literal notranslate"><span class="pre">*s001*</span></code> are to be excluded), and <code class="docutils literal notranslate"><span class="pre">-t</span></code> ‘0.00125 0.0025
+0.005 0.01 0.02 0.04’ provides a list of time step values corresponding
+to the inputted scalar files. The <code class="docutils literal notranslate"><span class="pre">-e</span></code> and <code class="docutils literal notranslate"><span class="pre">-b</span></code> options can receive
+a list of file-specific values (same format as <code class="docutils literal notranslate"><span class="pre">-t</span></code>) if desired. As
+can be seen from the text output, the parameters for the linear fit are
+printed with error bars obtained with jackknife resampling and the zero
+time step “intercept” is <span class="math notranslate nohighlight">\(-3848.19(4)\)</span> Ha. In addition to text
+output, the previous command will result in a plot of the fit with the
+zero time step value shown as a red dot, as shown in the top panel of
+<a class="reference internal" href="#fig12"><span class="std std-numref">Fig. 12</span></a>.</p>
+<p>Different fitting functions are supported via the <code class="docutils literal notranslate"><span class="pre">-f</span></code> option.
+Currently supported options include <code class="docutils literal notranslate"><span class="pre">linear</span></code> (<span class="math notranslate nohighlight">\(a+bt\)</span>),
+<code class="docutils literal notranslate"><span class="pre">quadratic</span></code> (<span class="math notranslate nohighlight">\(a+bt+ct^2\)</span>), and <code class="docutils literal notranslate"><span class="pre">sqrt</span></code>
+(<span class="math notranslate nohighlight">\(a+b\sqrt{t}+ct\)</span>). Results for a quadratic fit are shown
+subsequently and in the bottom panel of <a class="reference internal" href="#fig12"><span class="std std-numref">Fig. 12</span></a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmc</span><span class="o">-</span><span class="n">fit</span> <span class="n">ts</span> <span class="o">-</span><span class="n">f</span> <span class="n">quadratic</span> <span class="o">-</span><span class="n">e30</span> <span class="o">-</span><span class="n">b4</span> <span class="o">-</span><span class="n">s2</span> <span class="o">-</span><span class="n">t</span> <span class="s1">&#39;0.00125 0.0025 0.005 0.01 0.02 0.04&#39;</span> <span class="o">./</span><span class="n">qmc</span><span class="o">*/*</span><span class="n">scalar</span><span class="o">*</span>
+<span class="n">fit</span> <span class="n">function</span>  <span class="p">:</span> <span class="n">quadratic</span>
+<span class="n">fitted</span> <span class="n">formula</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">3848.245</span> <span class="o">+/-</span> <span class="mf">0.047</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">7.25</span> <span class="o">+/-</span> <span class="mf">8.33</span><span class="p">)</span><span class="o">*</span><span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">285.00</span> <span class="o">+/-</span> <span class="mf">202.39</span><span class="p">)</span><span class="o">*</span><span class="n">t</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">intercept</span>     <span class="p">:</span> <span class="o">-</span><span class="mf">3848.245</span> <span class="o">+/-</span> <span class="mf">0.047</span>  <span class="n">Ha</span>
+</pre></div>
+</div>
+<p>In this case, we find a zero time step estimate of <span class="math notranslate nohighlight">\(-3848.25(5)\)</span>
+Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>. A time step of <span class="math notranslate nohighlight">\(0.04\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> might
+be on the large side to include in time step extrapolation, and it is
+likely to have an outsize influence in the case of linear extrapolation.
+Upon excluding this point, linear extrapolation yields a zero timestep
+value of <span class="math notranslate nohighlight">\(-3848.22(4)\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>. Note that quadratic
+extrapolation can result in intrinsically larger uncertainty in the
+extrapolated value. For example, when the <span class="math notranslate nohighlight">\(0.04\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span>
+point is excluded, the uncertainty grows by 50% and we obtain an
+estimated value of <span class="math notranslate nohighlight">\(-3848.28(7)\)</span> instead.</p>
+<a class="reference internal image-reference" href="_images/qmcfit_timestep_linear.png"><img alt="_images/qmcfit_timestep_linear.png" class="align-center" src="_images/qmcfit_timestep_linear.png" style="width: 400px;" /></a>
+<div class="figure align-center" id="id9">
+<span id="fig12"></span><a class="reference internal image-reference" href="_images/qmcfit_timestep_quadratic.png"><img alt="_images/qmcfit_timestep_quadratic.png" src="_images/qmcfit_timestep_quadratic.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 12 </span><span class="caption-text">Linear (top) and quadratic (bottom) time step fits to DMC data for a 32-atom supercell of MnO obtained with <code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code>.  Zero time step estimates are indicated by the red data point on the left side of either panel.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="using-the-qdens-tool-to-obtain-electron-densities">
+<span id="qdens"></span><h2>Using the qdens tool to obtain electron densities<a class="headerlink" href="#using-the-qdens-tool-to-obtain-electron-densities" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">qdens</span></code> tool is provided to post-process the heavy density data
+produced by QMCPACK and output the mean density (with and without
+errorbars) in file formats viewable with, e.g., XCrysDen or VESTA. The
+tool currently works only with the <code class="docutils literal notranslate"><span class="pre">SpinDensity</span></code> estimator in QMCPACK.</p>
+<p>Note: this tool is provisional and may be changed or replaced at any
+time. The planned successor to this tool (<code class="docutils literal notranslate"><span class="pre">qstat</span></code>) will expand access
+to other observables and will retain at least the non-plotting
+capabilities of <code class="docutils literal notranslate"><span class="pre">qdens</span></code>.</p>
+<p>To use <code class="docutils literal notranslate"><span class="pre">qdens</span></code>, Nexus must be installed along with NumPy and H5Py. A
+short list of example use cases are covered in the next section. Current
+input flags are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qdens</span>
+
+<span class="n">Usage</span><span class="p">:</span> <span class="n">qdens</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[</span><span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+
+<span class="n">Options</span><span class="p">:</span>
+  <span class="o">--</span><span class="n">version</span>             <span class="n">show</span> <span class="n">program</span><span class="s1">&#39;s version number and exit</span>
+  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">Print</span> <span class="n">help</span> <span class="n">information</span> <span class="ow">and</span> <span class="n">exit</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">verbose</span>         <span class="n">Print</span> <span class="n">detailed</span> <span class="n">information</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">f</span> <span class="n">FORMATS</span><span class="p">,</span> <span class="o">--</span><span class="n">formats</span><span class="o">=</span><span class="n">FORMATS</span>
+                        <span class="n">Format</span> <span class="ow">or</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">formats</span> <span class="k">for</span> <span class="n">density</span> <span class="n">file</span> <span class="n">output</span><span class="o">.</span>
+                        <span class="n">Options</span><span class="p">:</span> <span class="n">dat</span><span class="p">,</span> <span class="n">xsf</span><span class="p">,</span> <span class="n">chgcar</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">e</span> <span class="n">EQUILIBRATION</span><span class="p">,</span> <span class="o">--</span><span class="n">equilibration</span><span class="o">=</span><span class="n">EQUILIBRATION</span>
+                        <span class="n">Equilibration</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">blocks</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">r</span> <span class="n">REBLOCK</span><span class="p">,</span> <span class="o">--</span><span class="n">reblock</span><span class="o">=</span><span class="n">REBLOCK</span>
+                        <span class="n">Block</span> <span class="n">coarsening</span> <span class="n">factor</span><span class="p">;</span> <span class="n">use</span> <span class="n">estimated</span> <span class="n">autocorrelation</span>
+                        <span class="n">length</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">a</span><span class="p">,</span> <span class="o">--</span><span class="n">average</span>         <span class="n">Average</span> <span class="n">over</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">each</span> <span class="n">series</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">w</span> <span class="n">WEIGHTS</span><span class="p">,</span> <span class="o">--</span><span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span>
+                        <span class="n">List</span> <span class="n">of</span> <span class="n">weights</span> <span class="k">for</span> <span class="n">averaging</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span><span class="p">,</span> <span class="o">--</span><span class="nb">input</span><span class="o">=</span><span class="n">INPUT</span>
+                        <span class="n">QMCPACK</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">containing</span> <span class="n">structure</span> <span class="ow">and</span> <span class="n">grid</span>
+                        <span class="n">information</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">s</span> <span class="n">STRUCTURE</span><span class="p">,</span> <span class="o">--</span><span class="n">structure</span><span class="o">=</span><span class="n">STRUCTURE</span>
+                        <span class="n">File</span> <span class="n">containing</span> <span class="n">atomic</span> <span class="n">structure</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">g</span> <span class="n">GRID</span><span class="p">,</span> <span class="o">--</span><span class="n">grid</span><span class="o">=</span><span class="n">GRID</span>  <span class="n">Density</span> <span class="n">grid</span> <span class="n">dimensions</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">-</span><span class="n">c</span> <span class="n">CELL</span><span class="p">,</span> <span class="o">--</span><span class="n">cell</span><span class="o">=</span><span class="n">CELL</span>  <span class="n">Simulation</span> <span class="n">cell</span> <span class="n">axes</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">lineplot</span><span class="o">=</span><span class="n">LINEPLOT</span>   <span class="n">Produce</span> <span class="n">a</span> <span class="n">line</span> <span class="n">plot</span> <span class="n">along</span> <span class="n">the</span> <span class="n">selected</span> <span class="n">dimension</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                        <span class="mi">1</span><span class="p">,</span> <span class="ow">or</span> <span class="mi">2</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
+  <span class="o">--</span><span class="n">noplot</span>              <span class="n">Do</span> <span class="ow">not</span> <span class="n">show</span> <span class="n">plots</span> <span class="n">interactively</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
+</pre></div>
+</div>
+<div class="section" id="usage-examples">
+<h3>Usage examples<a class="headerlink" href="#usage-examples" title="Permalink to this headline">¶</a></h3>
+<p>Process a single file, excluding the first 40 blocks, and produce XSF files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qdens</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">-</span><span class="n">f</span> <span class="n">xsf</span> <span class="o">-</span><span class="n">i</span> <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Process files for all available series:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qdens</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">-</span><span class="n">f</span> <span class="n">xsf</span> <span class="o">-</span><span class="n">i</span> <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="o">*</span><span class="n">stat</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Combine groups of 10 adjacent statistical blocks together (appropriate if the
+estimated autocorrelation time is about 10 blocks):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qdens</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">-</span><span class="n">r</span> <span class="mi">10</span> <span class="o">-</span><span class="n">f</span> <span class="n">xsf</span> <span class="o">-</span><span class="n">i</span> <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Apply different equilibration lengths and reblocking factors to each
+series (below is appropriate if there are three series, e.g. <code class="docutils literal notranslate"><span class="pre">s000</span></code>,
+<code class="docutils literal notranslate"><span class="pre">s001</span></code>, and <code class="docutils literal notranslate"><span class="pre">s002</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qdens</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;20 20 40&#39;</span> <span class="o">-</span><span class="n">r</span> <span class="s1">&#39;4 4 8&#39;</span> <span class="o">-</span><span class="n">f</span> <span class="n">xsf</span> <span class="o">-</span><span class="n">i</span> <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="o">*</span><span class="n">stat</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Produce twist averaged densities (also works with multiple series and reblocking):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qdens</span> <span class="o">-</span><span class="n">v</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="o">-</span><span class="n">f</span> <span class="n">xsf</span> <span class="o">-</span><span class="n">i</span> <span class="n">qmc</span><span class="o">.</span><span class="n">g000</span><span class="o">.</span><span class="n">twistnum_0</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="n">qmc</span><span class="o">.</span><span class="n">g</span><span class="o">*.</span><span class="n">s000</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Twist averaging with arbitrary weights can be performed via the <code class="docutils literal notranslate"><span class="pre">-w</span></code>
+option in a fashion identical to <code class="docutils literal notranslate"><span class="pre">qmca</span></code>.</p>
+</div>
+<div class="section" id="files-produced">
+<h3>Files produced<a class="headerlink" href="#files-produced" title="Permalink to this headline">¶</a></h3>
+<p>Look for files with names and extensions similar to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">-</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">+</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_d</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_d</span><span class="o">-</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_d</span><span class="o">+</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">+</span><span class="n">d</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">+</span><span class="n">d</span><span class="o">-</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">+</span><span class="n">d</span><span class="o">+</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">-</span><span class="n">d</span><span class="o">-</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+<span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">SpinDensity_u</span><span class="o">-</span><span class="n">d</span><span class="o">+</span><span class="n">err</span><span class="o">.</span><span class="n">xsf</span>
+</pre></div>
+</div>
+<p>Files postfixed with <code class="docutils literal notranslate"><span class="pre">u</span></code> relate to the up electron density, <code class="docutils literal notranslate"><span class="pre">d</span></code> to
+down, <code class="docutils literal notranslate"><span class="pre">u+d</span></code> to the total charge density, and <code class="docutils literal notranslate"><span class="pre">u-d</span></code> to the difference
+between up and down electron densities.</p>
+<p>Files without <code class="docutils literal notranslate"><span class="pre">err</span></code> in the name contain only the mean, whereas files
+with <code class="docutils literal notranslate"><span class="pre">+err</span></code>/<code class="docutils literal notranslate"><span class="pre">-err</span></code> in the name contain the mean plus/minus the
+estimated error bar. Please use caution in interpreting the error bars
+as their accuracy depends crucially on a correct estimation of the
+autocorrelation time by the user (see <code class="docutils literal notranslate"><span class="pre">-r</span></code> option) and having a
+sufficient number of blocks remaining following any reblocking.</p>
+<p>When twist averaging, the group tag (e.g. <code class="docutils literal notranslate"><span class="pre">g000</span></code> or similar) will be
+replaced with <code class="docutils literal notranslate"><span class="pre">avg</span></code> in the names of the outputted files.</p>
 </div>
 </div>
 </div>
