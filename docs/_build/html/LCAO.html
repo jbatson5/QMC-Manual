@@ -1,0 +1,489 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Periodic LCAO for Solids &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Analyzing QMCPACK data" href="analyzing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Periodic LCAO for Solids</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-and-using-periodic-gaussian-type-wavefunctions-using-pyscf">Generating and using periodic Gaussian-type wavefunctions using PySCF</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Periodic LCAO for Solids</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/LCAO.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="periodic-lcao-for-solids">
+<span id="lcao"></span><h1>Periodic LCAO for Solids<a class="headerlink" href="#periodic-lcao-for-solids" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK implements the linear combination of atomic orbitals (LCAO) and Gaussian
+basis sets in periodic boundary conditions. This method uses orders of
+magnitude less memory than the real-space spline wavefunction. Although
+the spline scheme enables very fast evaluation of the wavefunction, it might
+require too much on-node memory for a large complex cell. The periodic
+Gaussian evaluation provides a fallback that will definitely fit in
+available memory but at significantly increased computational
+expense. Well-designed Gaussian basis sets should be used to accurately
+represent the wavefunction, typically
+including both diffuse and high angular momentum functions.</p>
+<p>The current implementation is not highly optimized for efficiency but can handle real and complex trial wavefunctions generated by PySCF <a class="bibtex reference internal" href="#sun2018" id="id1">[SBB+18]</a>, but other codes such as
+Crystal can be interfaced on request. Supercell tiling is handled outside QMCPACK through a proper PySCF input generated by Nexus and the Supercell geometry and coefficients of the molecular orbotals are constructed in the converter provided by QMCPACK. This is different from the plane wave/spline route where the tiling is provided in QMCPACK.</p>
+<p>LCAO schemes use physical considerations to construct a highly
+efficient basis set compared with plane waves. Typically only a few tens
+of basis functions per atom are required compared with thousands of
+plane waves. Many forms of LCAO schemes exist and are being
+implemented in QMCPACK. The details of the already-implemented methods
+are described in the following section.</p>
+<p><strong>GTOs</strong>: The Gaussian basis functions follow a radial-angular decomposition of</p>
+<div class="math notranslate nohighlight" id="equation-eq50">
+<span class="eqno">(50)<a class="headerlink" href="#equation-eq50" title="Permalink to this equation">¶</a></span>\[   \phi (\mathbf{r} )=R_{l}(r)Y_{lm}(\theta ,\phi )\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(Y_{{lm}}(\theta ,\phi )\)</span> is a spherical harmonic, <span class="math notranslate nohighlight">\(l\)</span>
+and <span class="math notranslate nohighlight">\(m\)</span> are the angular momentum and its <span class="math notranslate nohighlight">\(z\)</span> component, and
+<span class="math notranslate nohighlight">\(r, \theta, \phi\)</span> are spherical coordinates. In practice, they are
+atom centered and the <span class="math notranslate nohighlight">\(l\)</span> expansion typically includes 1–3
+additional channels compared with the formally occupied states of the
+atom (e.g., 4–6 for a nickel atom with occupied <span class="math notranslate nohighlight">\(s\)</span>, <span class="math notranslate nohighlight">\(p\)</span>,
+and <span class="math notranslate nohighlight">\(d\)</span> electron shells.</p>
+<p>The evaluation of GTOs within PBC differs slightly from evaluating GTOs
+in open boundary conditions (OBCs). The orbitals are evaluated at a
+distance <span class="math notranslate nohighlight">\(r\)</span> in the primitive cell (similar to OBC), and then the
+contributions of the periodic images are added by evaluating the orbital
+at a distance <span class="math notranslate nohighlight">\(r+T\)</span>, where T is a translation of the cell lattice
+vector. This requires loops over the periodic images until the
+contributions are orbitals <span class="math notranslate nohighlight">\(\Phi\)</span>. In the current implementation,
+the number of periodic images is an input parameter named <code class="docutils literal notranslate"><span class="pre">PBCimages</span></code>,
+which takes three integers corresponding to the number of periodic
+images along the supercell axes (X, Y and Z axes for a cubic cell). By
+default these parameters are set to <code class="docutils literal notranslate"><span class="pre">PBCimages=</span> <span class="pre">5</span> <span class="pre">5</span> <span class="pre">5</span></code>, but they
+<strong>require manual convergence checks</strong>. Convergence checks can be
+performed by checking the total energy convergence with respect to
+<code class="docutils literal notranslate"><span class="pre">PBCimages</span></code>, similar to checks performed for plane wave cutoff energy
+and B-spline grids. Use of diffuse Gaussians might require these
+parameters to be increased, while sharply localized Gaussians might
+permit a decrease. The cost of evaluating the wavefunction increases
+sharply as <code class="docutils literal notranslate"><span class="pre">PBCimages</span></code> is increased. This input parameter will be
+replaced by a tolerance factor and numerical screening in the future.</p>
+</div>
+<div class="section" id="generating-and-using-periodic-gaussian-type-wavefunctions-using-pyscf">
+<h2>Generating and using periodic Gaussian-type wavefunctions using PySCF<a class="headerlink" href="#generating-and-using-periodic-gaussian-type-wavefunctions-using-pyscf" title="Permalink to this headline">¶</a></h2>
+<p>Similar to any QMC calculation, using periodic GTOs requires the
+generation of a periodic trial wavefunction. QMCPACK is currently
+interfaced to PySCF, which is a multipurpose electronic structure
+written mainly in Python with key numerical functionality implemented
+via optimized C and C++ libraries <a class="bibtex reference internal" href="#sun2018" id="id2">[SBB+18]</a>. Such a
+wavefunction can be generated according to the following example for a
+<span class="math notranslate nohighlight">\(2 \times 1 \times 1\)</span> supercell using tiling (kpoints) and a
+supertwist shifted away from <span class="math notranslate nohighlight">\(\Gamma\)</span>, leading to a complex
+wavefunction.</p>
+<div class="literal-block-wrapper docutils container" id="listing-48">
+<div class="code-block-caption"><span class="caption-number">Listing 48 </span><span class="caption-text">Example PySCF input for single k-point calculation for a <span class="math notranslate nohighlight">\(2 \times 1 \times 1\)</span> carbon supercell.</span><a class="headerlink" href="#listing-48" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python3</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">from</span> <span class="nn">pyscf.pbc</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">dft</span><span class="p">,</span> <span class="n">df</span>
+<span class="kn">from</span> <span class="nn">pyscf.pbc</span> <span class="kn">import</span> <span class="n">df</span>
+
+<span class="n">cell</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">Cell</span><span class="p">()</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">a</span>             <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">         3.37316115       3.37316115       0.00000000</span>
+<span class="s1">         0.00000000       3.37316115       3.37316115</span>
+<span class="s1">         3.37316115       0.00000000       3.37316115&#39;&#39;&#39;</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">atom</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">   C        0.00000000       0.00000000       0.00000000</span>
+<span class="s1">   C        1.686580575      1.686580575      1.686580575</span>
+<span class="s1">            &#39;&#39;&#39;</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">basis</span>         <span class="o">=</span> <span class="s1">&#39;bfd-vdz&#39;</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">ecp</span>           <span class="o">=</span> <span class="s1">&#39;bfd&#39;</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">unit</span>          <span class="o">=</span> <span class="s1">&#39;B&#39;</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">drop_exponent</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">verbose</span>       <span class="o">=</span> <span class="mi">5</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">charge</span>        <span class="o">=</span> <span class="mi">0</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">spin</span>          <span class="o">=</span> <span class="mi">0</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
+
+<span class="n">sp_twist</span><span class="o">=</span><span class="p">[</span><span class="mf">0.07761248</span><span class="p">,</span> <span class="mf">0.07761248</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.07761248</span><span class="p">]</span>
+
+<span class="n">kmesh</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">kpts</span><span class="o">=</span><span class="p">[[</span> <span class="mf">0.07761248</span><span class="p">,</span>  <span class="mf">0.07761248</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.07761248</span><span class="p">],[</span> <span class="mf">0.54328733</span><span class="p">,</span>  <span class="mf">0.54328733</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.54328733</span><span class="p">]]</span>
+
+
+<span class="n">mf</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">KRHF</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span><span class="n">kpts</span><span class="p">)</span>
+<span class="n">mf</span><span class="o">.</span><span class="n">exxdiv</span> <span class="o">=</span> <span class="s1">&#39;ewald&#39;</span>
+<span class="n">mf</span><span class="o">.</span><span class="n">max_cycle</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="n">e_scf</span><span class="o">=</span><span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+
+<span class="n">ener</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;e_scf&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">ener</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e_scf</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;e_scf&#39;</span><span class="p">,</span><span class="n">e_scf</span><span class="p">)</span>
+<span class="n">ener</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">title</span><span class="o">=</span><span class="s2">&quot;C_diamond-tiled-cplx&quot;</span>
+<span class="kn">from</span> <span class="nn">PyscfToQmcpack</span> <span class="kn">import</span> <span class="n">savetoqmcpack</span>
+<span class="n">savetoqmcpack</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span><span class="n">mf</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span><span class="n">kmesh</span><span class="o">=</span><span class="n">kmesh</span><span class="p">,</span><span class="n">kpts</span><span class="o">=</span><span class="n">kpts</span><span class="p">,</span><span class="n">sp_twist</span><span class="o">=</span><span class="n">sp_twist</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that the last three lines of the file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;C_diamond-tiled-cplx&quot;</span>
+<span class="kn">from</span> <span class="nn">PyscfToQmcpack</span> <span class="kn">import</span> <span class="n">savetoqmcpack</span>
+<span class="n">savetoqmcpack</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span><span class="n">mf</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span><span class="n">kmesh</span><span class="o">=</span><span class="n">kmesh</span><span class="p">,</span><span class="n">kpts</span><span class="o">=</span><span class="n">kpts</span><span class="p">,</span><span class="n">sp_twist</span><span class="o">=</span><span class="n">sp_twist</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>contain the title (name of the HDF5 to be used in QMCPACK) and the call
+to the converter. The title variable will be the name of the HDF5 file
+where all the data needed by QMCPACK will be stored. The function
+<em>savetoqmcpack</em> will be called at the end of the calculation and will
+generate the HDF5 similarly to the nonperiodic PySCF calculation in
+<span class="xref std std-ref">convert4qmc</span>. The function is distributed
+with QMCPACK and is located in the qmcpack/src/QMCTools directory under
+the name <em>PyscfToQmcpack.py</em>. Note that you need to specify the
+supertwist coordinates that was used with the provided kpoints. The
+supertwist must match the coordinates of the K-points otherwise the
+phase factor for the atomic orbital will be incorrect and incorrect
+results will be obtained. (For more details on how to generate tiling
+with PySCF and Nexus, refer to the Nexus guide or the 2019 QMCPACK
+Workshop material available on github:
+<a class="reference external" href="https://github.com/QMCPACK/qmcpack_workshop_2019">https://github.com/QMCPACK/qmcpack_workshop_2019</a> under
+<strong>qmcpack_workshop_2019/day2_nexus/pyscf/04_pyscf_diamond_hf_qmc/</strong></p>
+<p>For the converter in the script to be called properly, you need
+to specify the path to the file in your PYTHONPATH such as</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PYTHONPATH=QMCPACK_PATH/src/QMCTools:$PYTHONPATH
+</pre></div>
+</div>
+<p>To generate QMCPACK input files, you will need to run <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> exactly as specified in <span class="xref std std-ref">convert4qmc</span> for both cases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">pyscf</span> <span class="n">C_diamond</span><span class="o">-</span><span class="n">tiled</span><span class="o">-</span><span class="n">cplx</span>
+</pre></div>
+</div>
+<p>This tool can be used with any option described in convert4qmc. Since
+the HDF5 contains all the information needed, there is no need to
+specify any other specific tag for periodicity. A supercell at
+<span class="math notranslate nohighlight">\(\Gamma\)</span>-point or using multiple k-points will work without
+further modification.</p>
+<p>Running convert4qmc will generate 3 input files:</p>
+<div class="literal-block-wrapper docutils container" id="listing-49">
+<div class="code-block-caption"><span class="caption-number">Listing 49 </span><span class="caption-text">C_diamond-tiled-cplx.structure.xml. This file contains the geometry of the system.</span><a class="headerlink" href="#listing-49" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;qmcsystem&gt;
+  &lt;simulationcell&gt;
+    &lt;parameter name=&quot;lattice&quot;&gt;
+  6.74632230000000e+00  6.74632230000000e+00  0.00000000000000e+00
+  0.00000000000000e+00  3.37316115000000e+00  3.37316115000000e+00
+  3.37316115000000e+00  0.00000000000000e+00  3.37316115000000e+00
+&lt;/parameter&gt;
+    &lt;parameter name=&quot;bconds&quot;&gt;p p p&lt;/parameter&gt;
+    &lt;parameter name=&quot;LR_dim_cutoff&quot;&gt;15&lt;/parameter&gt;
+  &lt;/simulationcell&gt;
+  &lt;particleset name=&quot;ion0&quot; size=&quot;4&quot;&gt;
+    &lt;group name=&quot;C&quot;&gt;
+      &lt;parameter name=&quot;charge&quot;&gt;4&lt;/parameter&gt;
+      &lt;parameter name=&quot;valence&quot;&gt;4&lt;/parameter&gt;
+      &lt;parameter name=&quot;atomicnumber&quot;&gt;6&lt;/parameter&gt;
+    &lt;/group&gt;
+    &lt;attrib name=&quot;position&quot; datatype=&quot;posArray&quot;&gt;
+  0.0000000000e+00  0.0000000000e+00  0.0000000000e+00
+  1.6865805750e+00  1.6865805750e+00  1.6865805750e+00
+  3.3731611500e+00  3.3731611500e+00  0.0000000000e+00
+  5.0597417250e+00  5.0597417250e+00  1.6865805750e+00
+&lt;/attrib&gt;
+    &lt;attrib name=&quot;ionid&quot; datatype=&quot;stringArray&quot;&gt;
+ C C C C
+&lt;/attrib&gt;
+  &lt;/particleset&gt;
+  &lt;particleset name=&quot;e&quot; random=&quot;yes&quot; randomsrc=&quot;ion0&quot;&gt;
+    &lt;group name=&quot;u&quot; size=&quot;8&quot;&gt;
+      &lt;parameter name=&quot;charge&quot;&gt;-1&lt;/parameter&gt;
+    &lt;/group&gt;
+    &lt;group name=&quot;d&quot; size=&quot;8&quot;&gt;
+      &lt;parameter name=&quot;charge&quot;&gt;-1&lt;/parameter&gt;
+    &lt;/group&gt;
+  &lt;/particleset&gt;
+&lt;/qmcsystem&gt;
+</pre></div>
+</div>
+</div>
+<p>As one can see, for both examples, the two-atom primitive cell has been
+expanded to contain four atoms in a <span class="math notranslate nohighlight">\(2 \times 1 \times 1\)</span> carbon
+cell.</p>
+<div class="literal-block-wrapper docutils container" id="listing-50">
+<div class="code-block-caption"><span class="caption-number">Listing 50 </span><span class="caption-text">C_diamond-tiled-cplx.wfj.xml. This file contains the trial wavefunction.</span><a class="headerlink" href="#listing-50" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;qmcsystem&gt;
+  &lt;wavefunction name=&quot;psi0&quot; target=&quot;e&quot;&gt;
+    &lt;determinantset type=&quot;MolecularOrbital&quot; name=&quot;LCAOBSet&quot; source=&quot;ion0&quot; transform=&quot;yes&quot; twist=&quot;0.07761248  0.07761248  -0.07761248&quot; href=&quot;C_diamond-tiled-cplx.h5&quot; PBCimages=&quot;8  8  8&quot;&gt;
+      &lt;slaterdeterminant&gt;
+        &lt;determinant id=&quot;updet&quot; size=&quot;8&quot;&gt;
+          &lt;occupation mode=&quot;ground&quot;/&gt;
+          &lt;coefficient size=&quot;52&quot; spindataset=&quot;0&quot;/&gt;
+        &lt;/determinant&gt;
+        &lt;determinant id=&quot;downdet&quot; size=&quot;8&quot;&gt;
+          &lt;occupation mode=&quot;ground&quot;/&gt;
+          &lt;coefficient size=&quot;52&quot; spindataset=&quot;0&quot;/&gt;
+        &lt;/determinant&gt;
+
+      &lt;/slaterdeterminant&gt;
+    &lt;/determinantset&gt;
+    &lt;jastrow name=&quot;J2&quot; type=&quot;Two-Body&quot; function=&quot;Bspline&quot; print=&quot;yes&quot;&gt;
+      &lt;correlation size=&quot;10&quot; speciesA=&quot;u&quot; speciesB=&quot;u&quot;&gt;
+        &lt;coefficients id=&quot;uu&quot; type=&quot;Array&quot;&gt; 0 0 0 0 0 0 0 0 0 0&lt;/coefficients&gt;
+      &lt;/correlation&gt;
+      &lt;correlation size=&quot;10&quot; speciesA=&quot;u&quot; speciesB=&quot;d&quot;&gt;
+        &lt;coefficients id=&quot;ud&quot; type=&quot;Array&quot;&gt; 0 0 0 0 0 0 0 0 0 0&lt;/coefficients&gt;
+      &lt;/correlation&gt;
+    &lt;/jastrow&gt;
+    &lt;jastrow name=&quot;J1&quot; type=&quot;One-Body&quot; function=&quot;Bspline&quot; source=&quot;ion0&quot; print=&quot;yes&quot;&gt;
+      &lt;correlation size=&quot;10&quot; cusp=&quot;0&quot; elementType=&quot;C&quot;&gt;
+        &lt;coefficients id=&quot;eC&quot; type=&quot;Array&quot;&gt; 0 0 0 0 0 0 0 0 0 0&lt;/coefficients&gt;
+      &lt;/correlation&gt;
+    &lt;/jastrow&gt;
+  &lt;/wavefunction&gt;
+&lt;/qmcsystem&gt;
+</pre></div>
+</div>
+</div>
+<p>This file contains information related to the trial wavefunction. It is identical to the input file from an OBC calculation to the exception of the following tags:</p>
+<p><a href="#id3"><span class="problematic" id="id4">*</span></a>.wfj.xml specific tags:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 13%" />
+<col style="width: 12%" />
+<col style="width: 62%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>tag</strong></p></th>
+<th class="head"><p><strong>tag type</strong></p></th>
+<th class="head"><p><strong>default</strong></p></th>
+<th class="head"><p><strong>description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">twist</span></code></p></td>
+<td><p>3 doubles</p></td>
+<td><p>(0 0 0)</p></td>
+<td><p>Coordinate of the twist to compute</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">href</span></code></p></td>
+<td><p>string</p></td>
+<td><p>default</p></td>
+<td><p>Name of the HDF5 file generated by PySCF and used for convert4qmc</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PBCimages</span></code></p></td>
+<td><p>3 Integer</p></td>
+<td><p>8 8 8</p></td>
+<td><p>Number of periodic images to evaluate the orbitals</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Other files containing QMC methods (such as optimization, VMC, and DMC blocks) will be generated and will behave in a similar fashion regardless of the type of SPO in the trial wavefunction.</p>
+<p id="bibtex-bibliography-LCAO-0"><dl class="citation">
+<dt class="bibtex label" id="sun2018"><span class="brackets">SBB+18</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Qiming Sun, Timothy C. Berkelbach, Nick S. Blunt, George H. Booth, Sheng Guo, Zhendong Li, Junzi Liu, James D. McClain, Elvira R. Sayfutyarova, Sandeep Sharma, Sebastian Wouters, and Garnet Kin-Lic Chan. Pyscf: the python-based simulations of chemistry framework. <em>Wiley Interdisciplinary Reviews: Computational Molecular Science</em>, 8(1):n/a–n/a, 2018. <a class="reference external" href="https://doi.org/10.1002/wcms.1340">doi:10.1002/wcms.1340</a>.</p>
+</dd>
+</dl>
+</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="analyzing.html" class="btn btn-neutral float-left" title="Analyzing QMCPACK data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
