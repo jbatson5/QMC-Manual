@@ -30,6 +30,8 @@ User's Guide and Developer's Manual for
    LCAO
    sCI
    afqmc
+   examples
+   lab_qmc_statistics 
 
 
 

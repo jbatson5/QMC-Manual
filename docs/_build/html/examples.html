@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -9,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; QMC Manual 0.0.1 documentation</title>
+  <title>Examples &mdash; QMC Manual 0.0.1 documentation</title>
   
 
   
@@ -35,8 +34,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="#" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab 1: MC Statistical Analysis" href="lab_qmc_statistics.html" />
+    <link rel="prev" title="Auxiliary-Field Quantum Monte Carlo" href="afqmc.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -81,7 +82,7 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
@@ -97,7 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#using-qmcpack-directly">Using QMCPACK directly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-nexus">Using Nexus</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
 </ul>
 
@@ -144,12 +149,14 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Index</li>
+      <li>Examples</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -161,11 +168,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-
-<h1 id="index">Index</h1>
-
-<div class="genindex-jumpbox">
- 
+  <div class="section" id="examples">
+<span id="id1"></span><h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p><strong>WARNING: THESE EXAMPLES ARE NOT CONVERGED! YOU MUST CONVERGE
+PARAMETERS (SIMULATION CELL SIZE, JASTROW PARAMETER NUMBER/CUTOFF, TWIST
+NUMBER, DMC TIME STEP, DFT PLANE WAVE CUTOFF, DFT K-POINT MESH, ETC.)
+FOR REAL CALCUATIONS!</strong></p>
+<p>The following examples should run in serial on a modern workstation in a few hours.</p>
+<div class="section" id="using-qmcpack-directly">
+<h2>Using QMCPACK directly<a class="headerlink" href="#using-qmcpack-directly" title="Permalink to this headline">¶</a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">examples/molecules</span></code> are the following examples.
+Each directory also contains a <code class="docutils literal notranslate"><span class="pre">README</span></code> file with more details.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Directory</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">H20</span></code></p></td>
+<td><p>H2O molecule from GAMESS orbitals</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">He</span></code></p></td>
+<td><p>Helium atom with simple wavefunctions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="using-nexus">
+<h2>Using Nexus<a class="headerlink" href="#using-nexus" title="Permalink to this headline">¶</a></h2>
+<p>For more information about Nexus, see the User Guide in <code class="docutils literal notranslate"><span class="pre">nexus/documentation</span></code>.</p>
+<p>For Python to find the Nexus library, the PYTHONPATH environment variable should be set to <code class="docutils literal notranslate"><span class="pre">&lt;QMCPACK</span> <span class="pre">source&gt;/nexus/library</span></code>.
+For these examples to work properly, the executables for QE and QMCPACK either
+need to be on the path, or the paths in the script should be adjusted.</p>
+<p>These examples can be found under the <code class="docutils literal notranslate"><span class="pre">nexus/examples/qmcpack</span></code> directory.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 72%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Directory</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">diamond</span></code></p></td>
+<td><p>Bulk diamond with VMC</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">graphene</span></code></p></td>
+<td><p>Graphene sheet with DMC</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">c20</span></code></p></td>
+<td><p>C20 cage molecule</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">oxygen_dimer</span></code></p></td>
+<td><p>Binding curve for O<span class="math notranslate nohighlight">\(_2\)</span> molecule</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">H2O</span></code></p></td>
+<td><p>H<span class="math notranslate nohighlight">\(_2\)</span>O molecule with QE orbitals</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LiH</span></code></p></td>
+<td><p>LiH crystal with QE orbitals</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -173,6 +241,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lab_qmc_statistics.html" class="btn btn-neutral float-right" title="Lab 1: MC Statistical Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="afqmc.html" class="btn btn-neutral float-left" title="Auxiliary-Field Quantum Monte Carlo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

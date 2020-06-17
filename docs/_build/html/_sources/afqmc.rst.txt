@@ -681,7 +681,7 @@ The following is a growing list of useful advice for new users, followed by a sa
 
 .. code-block::
   :caption: Example of sections of an AFQMC input file for a large calculation.
-  :name: Listing 56 
+  :name: Listing 56
 
   ...
 
@@ -713,3 +713,148 @@ The following is a growing list of useful advice for new users, followed by a sa
       <parameter name="nWalkers">8</parameter>
       <parameter name="ortho">5</parameter>
     </execute>
+
+.. _pyscf:
+
+Using PySCF to generate integrals for AFQMC
+-------------------------------------------
+
+
+PySCF (https://github.com/sunqm/pyscf) is a collection of electronic structure programs powered by Python. It is the recommended program for the generation of input for AFQMC calculations in QMCPACK. We refer the reader to the documentation of the code (http://sunqm.github.io/pyscf/) for a detailed description of the features and the functionality of the code. While the notes below are not meant to replace a detailed study of the PySCF documentation, these notes describe useful knowledge and tips in the use of pyscf for the generation of input for QMCPACK.
+
+For molecular systems or periodic calculations at the Gamma point, PySCF provides a routine that generates the integral file in Molpro's FCIDUMP format, which contains all the information needed to run AFQMC with a single determinant trial wave-function. Below is an example using this routine to generate the FCIDUMP file for an 8-atom unit cell of carbon in the diamond structure with HF orbitals. For a detailed description, see PySCF's documentation.
+
+.. code-block::
+  :caption: Simple example showing how to generate FCIDUMP files with PySCF
+  :name: Listing 57
+
+  import numpy
+  from pyscf.tools import fcidump
+  from pyscf.pbc import gto, scf, tools
+
+  cell = gto.Cell()
+  cell.a = '''
+    3.5668 0 0
+    0 3.5668 0
+    0 0 3.5668'''
+  cell.atom = '''
+    C 0. 0. 0.
+    C 0.8917 0.8917 0.8917
+    C 1.7834 1.7834 0.
+    C 2.6751 2.6751 0.8917
+    C 1.7834 0. 1.7834
+    C 2.6751 0.8917 2.6751
+    C 0. 1.7834 1.7834
+    C 0.8917 2.6751 2.6751'''
+  cell.basis = 'gth-szv'
+  cell.pseudo = 'gth-pade'
+  cell.gs = [10]*3 # for testing purposes, must be increased for converged results
+  cell.verbose = 4
+  cell.build()
+
+  mf = scf.RHF(cell)
+  ehf = mf.kernel()
+  print("HF energy (per unit cell) = %.17g" % ehf)
+
+  c = mf.mo_coeff
+  h1e = reduce(numpy.dot, (c.T, mf.get_hcore(), c))
+  eri = mf.with_df.ao2mo(c,compact=True)
+
+  # nuclear energy + electronic ewald
+  e0 = cell.energy_nuc() + tools.pbc.madelung(cell, numpy.zeros(3))*cell.nelectron * -.5
+  fcidump.from_integrals('fcidump.dat', h1e, eri, c.shape[1],cell.nelectron, ms=0, tol=1e-8, nuc=e0)
+
+.. centered:: ``afqmc`` method
+
+parameters in ``AFQMCInfo``
+
+.. _table13:
+.. table::
+
+  +----------+--------------+---------------------------+-------------+-----------------------------------------+
+  | **Name** | **Datatype** | **Values**                | **Default** | **Description**                         |
+  +==========+==============+===========================+=============+=========================================+
+  | ``NMO``  | integer      | :math:`\geq  0`           | no          | Number of molecular orbitals            |
+  +----------+--------------+---------------------------+-------------+-----------------------------------------+
+  | ``NAEA`` | integer      | :math:`\geq  0`           | no          | Number of active electrons of spin-up   |
+  +----------+--------------+---------------------------+-------------+-----------------------------------------+
+  | ``NAEB`` | integer      | :math:`\geq  0`           | no          | Number of active electrons of spin-down |
+  +----------+--------------+---------------------------+-------------+-----------------------------------------+
+
+parameters in ``Hamiltonian``
+
++--------------+--------------+------------+-------------+-------------------------------------+
+| **Name**     | **Datatype** | **Values** | **Default** | **Description**                     |
++==============+==============+============+=============+=====================================+
+| ``info``     | argument     |            |             | Name of ``AFQMCInfo`` block         |
++--------------+--------------+------------+-------------+-------------------------------------+
+| ``filename`` | string       |            | no          | Name of file with the hamiltonian   |
++--------------+--------------+------------+-------------+-------------------------------------+
+| ``filetype`` | string       | hdf5       | yes         | Native HDF5-based format of QMCPACK |
++--------------+--------------+------------+-------------+-------------------------------------+
+
+parameters in ``Wavefunction``
+
++--------------+--------------+-------------+-------------+--------------------------------------------------------------------+
+| **Name**     | **Datatype** | **Values**  | **Default** | **Description**                                                    |
++==============+==============+=============+=============+====================================================================+
+| ``info``     | argument     |             |             | name of ``AFQMCInfo`` block                                        |
++--------------+--------------+-------------+-------------+--------------------------------------------------------------------+
+| ``type``     | argument     | MSD, PHMSD  | no          | Linear combination of (assumed non-orthogonal) Slater determinants |
++--------------+--------------+-------------+-------------+--------------------------------------------------------------------+
+| ``filetype`` | string       | ascii, hdf5 | no          | CI-type multi-determinant wave function                            |
++--------------+--------------+-------------+-------------+--------------------------------------------------------------------+
+
+parameters in ``WalkerSet``
+
++------------------+--------------+------------+-------------+--------------------------------------------------------+
+| **Name**         | **Datatype** | **Values** | **Default** | **Description**                                        |
++==================+==============+============+=============+========================================================+
+| ``walker_type``  | string       | collinear  | yes         | Request a collinear walker set.                        |
++------------------+--------------+------------+-------------+--------------------------------------------------------+
+|                  |              | closed     | no          | Request a closed shell (doubly-occupied) walker set.   |
++------------------+--------------+------------+-------------+--------------------------------------------------------+
+
+parameters in ``Propagator``
+
++------------+--------------+------------+-------------+------------------------------------------------+
+| **Name**   | **Datatype** | **Values** | **Default** | **Description**                                |
++============+==============+============+=============+================================================+
+| ``type``   | argument     | afqmc      | afqmc       | Type of propagator                             |
++------------+--------------+------------+-------------+------------------------------------------------+
+| ``info``   | argument     |            |             | Name of ``AFQMCInfo`` block                    |
++------------+--------------+------------+-------------+------------------------------------------------+
+| ``hybrid`` | string       | yes        |             | Use hybrid propagation algorithm.              |
++------------+--------------+------------+-------------+------------------------------------------------+
+|            |              | no         |             | Use local energy based propagation algorithm.  |
++------------+--------------+------------+-------------+------------------------------------------------+
+
+parameters in ``execute``
+
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| **Name**     | **Datatype** | **Values**              | **Default** | **Description**                                   |
++==============+==============+=========================+=============+===================================================+
+| ``wset``     | argument     |                         |             |                                                   |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``ham``      | argument     |                         |             |                                                   |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``wfn``      | argument     |                         |             |                                                   |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``prop``     | argument     |                         |             |                                                   |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``info``     | argument     |                         |             | Name of ``AFQMCInfo`` block                       |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``nWalkers`` | integer      | :math:`\geq 0`          | 5           | Initial number of walkers per task group          |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``timestep`` | real         | :math:`> 0`             | 0.01        | Time step in 1/a.u.                               |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``blocks``   | integer      | :math:`\geq 0`          | 100         | Number of blocks                                  |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``step``     | integer      | :math:`> 0`             | 1           | Number of steps within a block                    |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``substep``  | integer      | :math:`> 0`             | 1           | Number of substeps within a step                  |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+| ``ortho``    | integer      | :math:`> 0`             | 1           | Number of steps between walker orthogonalization. |
++--------------+--------------+-------------------------+-------------+---------------------------------------------------+
+
+.. bibliography:: /bibs/afqmc.bib

@@ -1,0 +1,779 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lab 1: MC Statistical Analysis &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Examples" href="examples.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 1: MC Statistical Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#topics-covered-in-this-lab">Topics covered in this lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lab-directories-and-files">Lab directories and files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#atomic-units">Atomic units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reviewing-statistics">Reviewing statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspecting-mc-data">Inspecting MC Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#averaging-quantities-in-the-mc-data">Averaging quantities in the MC data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluating-mc-simulation-quality">Evaluating MC simulation quality</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tracing-mc-quantities">Tracing MC quantities</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#blocking-away-autocorrelation">Blocking away autocorrelation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#balancing-autocorrelation-and-acceptance-ratio">Balancing autocorrelation and acceptance ratio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#considering-variance">Considering variance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reducing-statistical-error-bars">Reducing statistical error bars</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#increasing-mc-sampling">Increasing MC sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improving-the-basis-sets">Improving the basis sets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Lab 1: MC Statistical Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lab_qmc_statistics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lab-1-mc-statistical-analysis">
+<span id="lab-qmc-statistics"></span><h1>Lab 1: MC Statistical Analysis<a class="headerlink" href="#lab-1-mc-statistical-analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="topics-covered-in-this-lab">
+<h2>Topics covered in this lab<a class="headerlink" href="#topics-covered-in-this-lab" title="Permalink to this headline">¶</a></h2>
+<p>This lab focuses on the basics of analyzing data from MC calculations.
+In this lab, participants will use data from VMC calculations of a
+simple 1-electron system with an analytically soluble system (the ground
+state of the hydrogen atom) to understand how to interpret an MC
+situation. Most of these analyses will also carry over to DMC
+simulations. Topics covered include:</p>
+<ul class="simple">
+<li><p>Averaging MC variables</p></li>
+<li><p>The statisical error bar of mean values</p></li>
+<li><p>The effects of autocorrelation and variance on the error bar</p></li>
+<li><p>The relationship between MC time step and autocorrelation</p></li>
+<li><p>The use of blocking to reduce autocorrelation</p></li>
+<li><p>The significance of the acceptance ratio</p></li>
+<li><p>The significance of the sample size</p></li>
+<li><p>How to determine whether an MC run was successful</p></li>
+<li><p>The relationship between wavefunction quality and variance</p></li>
+<li><p>Gauging the efficiency of MC runs</p></li>
+<li><p>The cost of scaling up to larger system sizes</p></li>
+</ul>
+</div>
+<div class="section" id="lab-directories-and-files">
+<h2>Lab directories and files<a class="headerlink" href="#lab-directories-and-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>labs/lab1_qmc_statistics/
+│
+├── atom                              - H atom VMC calculation
+│   ├── H.s000.scalar.dat                - H atom VMC data
+│   └── H.xml                            - H atom VMC input file
+│
+├── autocorrelation                   - varying autocorrelation
+│   ├── H.dat                            - data for gnuplot
+│   ├── H.plt                            - gnuplot for time step vs. E_L, tau_c
+│   ├── H.s000.scalar.dat                - H atom VMC data: time step = 10
+│   ├── H.s001.scalar.dat                - H atom VMC data: time step =  5
+│   ├── H.s002.scalar.dat                - H atom VMC data: time step =  2
+│   ├── H.s003.scalar.dat                - H atom VMC data: time step =  1
+│   ├── H.s004.scalar.dat                - H atom VMC data: time step =  0.5
+│   ├── H.s005.scalar.dat                - H atom VMC data: time step =  0.2
+│   ├── H.s006.scalar.dat                - H atom VMC data: time step =  0.1
+│   ├── H.s007.scalar.dat                - H atom VMC data: time step =  0.05
+│   ├── H.s008.scalar.dat                - H atom VMC data: time step =  0.02
+│   ├── H.s009.scalar.dat                - H atom VMC data: time step =  0.01
+│   ├── H.s010.scalar.dat                - H atom VMC data: time step =  0.005
+│   ├── H.s011.scalar.dat                - H atom VMC data: time step =  0.002
+│   ├── H.s012.scalar.dat                - H atom VMC data: time step =  0.001
+│   ├── H.s013.scalar.dat                - H atom VMC data: time step =  0.0005
+│   ├── H.s014.scalar.dat                - H atom VMC data: time step =  0.0002
+│   ├── H.s015.scalar.dat                - H atom VMC data: time step =  0.0001
+│   └── H.xml                            - H atom VMC input file
+│
+├── average                            - Python scripts for average/std. dev.
+│   ├── average.py                         - average five E_L from H atom VMC
+│   ├── stddev2.py                         - standard deviation using (E_L)^2
+│   └── stddev.py                          - standard deviation around the mean
+│
+├── basis                              - varying basis set for orbitals
+│   ├── H__exact.s000.scalar.dat           - H atom VMC data using STO basis
+│   ├── H_STO-2G.s000.scalar.dat           - H atom VMC data using STO-2G basis
+│   ├── H_STO-3G.s000.scalar.dat           - H atom VMC data using STO-3G basis
+│   └── H_STO-6G.s000.scalar.dat           - H atom VMC data using STO-6G basis
+│
+├── blocking                           - varying block/step ratio
+│   ├── H.dat                              - data for gnuplot
+│   ├── H.plt                              - gnuplot for N_block vs. E, tau_c
+│   ├── H.s000.scalar.dat                  - H atom VMC data 50000:1 blocks:steps
+│   ├── H.s001.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  25000:2 blocks:steps
+│   ├── H.s002.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  12500:4 blocks:steps
+│   ├── H.s003.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  6250: 8 blocks:steps
+│   ├── H.s004.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  3125:16 blocks:steps
+│   ├── H.s005.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  2500:20 blocks:steps
+│   ├── H.s006.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  1250:40 blocks:steps
+│   ├── H.s007.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  1000:50 blocks:steps
+│   ├── H.s008.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  500:100 blocks:steps
+│   ├── H.s009.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  250:200 blocks:steps
+│   ├── H.s010.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  125:400 blocks:steps
+│   ├── H.s011.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  100:500 blocks:steps
+│   ├── H.s012.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  50:1000 blocks:steps
+│   ├── H.s013.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  40:1250 blocks:steps
+│   ├── H.s014.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  20:2500 blocks:steps
+│   ├── H.s015.scalar.dat                  - &quot;  &quot;    &quot;    &quot;  10:5000 blocks:steps
+│   └── H.xml                             - H atom VMC input file
+│
+├── blocks                             -  varying total number of blocks
+│   ├── H.dat                             - data for gnuplot
+│   ├── H.plt                             - gnuplot for N_block vs. E
+│   ├── H.s000.scalar.dat                 - H atom VMC data    500 blocks
+│   ├── H.s001.scalar.dat                 - &quot;  &quot;    &quot;    &quot;    2000 blocks
+│   ├── H.s002.scalar.dat                 - &quot;  &quot;    &quot;    &quot;    8000 blocks
+│   ├── H.s003.scalar.dat                 - &quot;  &quot;    &quot;    &quot;   32000 blocks
+│   ├── H.s004.scalar.dat                 - &quot;  &quot;    &quot;    &quot;  128000 blocks
+│   └── H.xml                             - H atom VMC input file
+│
+├── dimer                          - comparing no and simple Jastrow factor
+│   ├── H2_STO___no_jastrow.s000.scalar.dat - H dimer VMC data without Jastrow
+│   └── H2_STO_with_jastrow.s000.scalar.dat - H dimer VMC data with Jastrow
+│
+├──  docs                               - documentation
+│   ├──  Lab_1_MC_Analysis.pdf             - this document
+│   └──  Lab_1_Slides.pdf                  - slides presented in the lab
+│
+├── nodes                              - varying number of computing nodes
+│   ├──  H.dat                             - data for gnuplot
+│   ├──  H.plt                             - gnuplot for N_node vs. E
+│   ├──  H.s000.scalar.dat                 - H atom VMC data with  32 nodes
+│   ├──  H.s001.scalar.dat                 - H atom VMC data with 128 nodes
+│   └──  H.s002.scalar.dat                 - H atom VMC data with 512 nodes
+│
+├── problematic                        - problematic VMC run
+│   └──  H.s000.scalar.dat                 - H atom VMC data with a problem
+│
+└── size                                - scaling with number of particles
+    ├──  01________H.s000.scalar.dat       - H atom VMC data
+    ├──  02_______H2.s000.scalar.dat       - H dimer &quot;   &quot;
+    ├──  06________C.s000.scalar.dat       - C atom  &quot;   &quot;
+    ├──  10______CH4.s000.scalar.dat       - methane &quot;   &quot;
+    ├──  12_______C2.s000.scalar.dat       - C dimer &quot;   &quot;
+    ├──  16_____C2H4.s000.scalar.dat       - ethene  &quot;
+    ├──  18___CH4CH4.s000.scalar.dat       - methane dimer VMC data
+    ├──  32_C2H4C2H4.s000.scalar.dat       - ethene dimer   &quot;   &quot;
+    ├──  nelectron_tcpu.dat                - data for gnuplot
+    └──  Nelectron_tCPU.plt                - gnuplot for N_elec vs. t_CPU
+</pre></div>
+</div>
+</div>
+<div class="section" id="atomic-units">
+<h2>Atomic units<a class="headerlink" href="#atomic-units" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK operates in Ha atomic units to reduce the number of factors in
+the Schrödinger equation. Thus, the unit of length is the bohr (5.291772
+<span class="math notranslate nohighlight">\(\times 10^{-11}\)</span> m = 0.529177 Å); the unit of energy is the Ha
+(4.359744 <span class="math notranslate nohighlight">\(\times 10^{-18}\)</span> J = 27.211385 eV). The energy of the
+ground state of the hydrogen atom in these units is -0.5 Ha.</p>
+</div>
+<div class="section" id="reviewing-statistics">
+<span id="review"></span><h2>Reviewing statistics<a class="headerlink" href="#reviewing-statistics" title="Permalink to this headline">¶</a></h2>
+<p>We will practice taking the average (mean) and standard deviation of
+some MC data by hand to review the basic definitions.</p>
+<p>Enter Python’s command line by typing <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">[Enter]</span></code>. You will see a
+prompt “&gt;&gt;&gt;.”</p>
+<p>The mean of a dataset is given by:</p>
+<div class="math notranslate nohighlight" id="equation-eq63">
+<span class="eqno">(63)<a class="headerlink" href="#equation-eq63" title="Permalink to this equation">¶</a></span>\[\overline{x} = \frac{1}{N}\sum_{i=1}^{N} x_i\:.\]</div>
+<p>To calculate the average of five local energies from an MC calculation
+of the ground state of an electron in the hydrogen atom, input (truncate
+at the thousandths place if you cannot copy and paste; script versions
+are also available in the <code class="docutils literal notranslate"><span class="pre">average</span></code> directory):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.45481953564</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.48066105923</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.47316713469</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.46204733302</span><span class="p">)</span>
+<span class="p">)</span><span class="o">/</span><span class="mf">5.</span>
+</pre></div>
+</div>
+<p>Then, press <code class="docutils literal notranslate"><span class="pre">[Enter]</span></code> to get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.45481953564</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.48066105923</span><span class="p">)</span> <span class="o">+</span>
+<span class="go">(-0.47316713469) + (-0.4620473302))/5.</span>
+<span class="go">-0.46473683566800006</span>
+</pre></div>
+</div>
+<p>To understand the significance of the mean, we also need the standard deviation
+around the mean of the data (also called the error bar), given by:</p>
+<div class="math notranslate nohighlight" id="equation-eq64">
+<span class="eqno">(64)<a class="headerlink" href="#equation-eq64" title="Permalink to this equation">¶</a></span>\[\sigma = \sqrt{\frac{1}{N(N-1)}\sum_{i=1}^{N} ({x_i} - \overline{x})^2}\:.\]</div>
+<p>To calculate the standard deviation around the mean (-0.464736835668) of these
+five data points, put in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="p">(</span><span class="mf">5.</span><span class="o">-</span><span class="mf">1.</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> \\
+<span class="p">(</span><span class="o">-</span><span class="mf">0.45481953564</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.48066105923</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.47316713469</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+<span class="p">(</span><span class="o">-</span><span class="mf">0.46204733302</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
+<span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+</pre></div>
+</div>
+<p>Then, press <code class="docutils literal notranslate"><span class="pre">[Enter]</span></code> to get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">5.</span><span class="o">*</span><span class="p">(</span><span class="mf">5.</span><span class="o">-</span><span class="mf">1.</span><span class="p">)))</span> <span class="o">*</span> <span class="p">(</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.464736835668</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+<span class="go">(-0.45481953564-(-0.464736835668))**2 + (-0.48066105923-(-0.464736835668))**2 +</span>
+<span class="go">(-0.47316713469-(-0.464736835668))**2 + (-0.46204733302-(-0.464736835668))**2</span>
+<span class="go">) )**0.5</span>
+<span class="go">0.0053303187464332066</span>
+</pre></div>
+</div>
+<p>Thus, we might report this data as having a value -0.465 +/- 0.005 Ha.
+This calculation of the standard deviation assumes that the average for this
+data is fixed, but we can continually add MC samples to the data, so it
+is better to use an estimate of the error bar that does not rely on the overall
+average.  Such an estimate is given by:</p>
+<div class="math notranslate nohighlight" id="equation-eq65">
+<span class="eqno">(65)<a class="headerlink" href="#equation-eq65" title="Permalink to this equation">¶</a></span>\[\tilde{\sigma} = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N} \left[{(x^2)}_i - ({x_i})^2\right]}\:.\]</div>
+<p>To calculate the standard deviation with this formula, input the following,
+which includes the square of the local energy calculated with each
+corresponding local energy:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">5.</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span>
+<span class="p">(</span><span class="mf">0.60984565298</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \\
+<span class="p">(</span><span class="mf">0.61641291630</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.45481953564</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="mf">1.35860151160</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.48066105923</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> \\
+<span class="p">(</span><span class="mf">0.78720769003</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.47316713469</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+<span class="p">(</span><span class="mf">0.56393677687</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.46204733302</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+<span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+</pre></div>
+</div>
+<p>and press <code class="docutils literal notranslate"><span class="pre">[Enter]</span></code> to get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">((</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">5.</span><span class="o">-</span><span class="mf">1.</span><span class="p">))</span><span class="o">*</span><span class="p">((</span><span class="mf">0.60984565298</span><span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="mf">0.45298911858</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span>
+<span class="go">(0.61641291630-(-0.45481953564)**2)+(1.35860151160-(-0.48066105923)**2)+</span>
+<span class="go">(0.78720769003-(-0.47316713469)**2)+(0.56393677687-(-0.46204733302)**2))</span>
+<span class="go">)**0.5</span>
+<span class="go">0.84491636672906634</span>
+</pre></div>
+</div>
+<p>This much larger standard deviation, acknowledging that the mean of this
+small data set is not the average in the limit of infinite sampling,
+more accurately reports the value of the local energy as -0.5 +/- 0.8
+Ha.</p>
+<p>Type <code class="docutils literal notranslate"><span class="pre">quit()</span></code> and press <code class="docutils literal notranslate"><span class="pre">[Enter]</span></code> to exit the Python command line.</p>
+</div>
+<div class="section" id="inspecting-mc-data">
+<span id="inspect-data"></span><h2>Inspecting MC Data<a class="headerlink" href="#inspecting-mc-data" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK outputs data from MC calculations into files ending in
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code>. Several quantities are calculated and written for each
+block of MC steps in successive columns to the right of the step index.</p>
+<p>Change directories to <code class="docutils literal notranslate"><span class="pre">atom</span></code>, and open the file ending in
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> with a text editor (e.g., <strong>vi *.scalar.dat</strong> or <strong>emacs
+*.scalar.dat</strong>. If possible, adjust the terminal so that lines do not
+wrap. The data will begin as follows (broken into three groups to fit on
+this page):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#   index    LocalEnergy         LocalEnergy_sq      LocalPotential     ...</span>
+         <span class="mi">0</span>   <span class="o">-</span><span class="mf">4.5298911858e-01</span>    <span class="mf">6.0984565298e-01</span>   <span class="o">-</span><span class="mf">1.1708693521e+00</span>
+         <span class="mi">1</span>   <span class="o">-</span><span class="mf">4.5481953564e-01</span>    <span class="mf">6.1641291630e-01</span>   <span class="o">-</span><span class="mf">1.1863425644e+00</span>
+         <span class="mi">2</span>   <span class="o">-</span><span class="mf">4.8066105923e-01</span>    <span class="mf">1.3586015116e+00</span>   <span class="o">-</span><span class="mf">1.1766446209e+00</span>
+         <span class="mi">3</span>   <span class="o">-</span><span class="mf">4.7316713469e-01</span>    <span class="mf">7.8720769003e-01</span>   <span class="o">-</span><span class="mf">1.1799481122e+00</span>
+         <span class="mi">4</span>   <span class="o">-</span><span class="mf">4.6204733302e-01</span>    <span class="mf">5.6393677687e-01</span>   <span class="o">-</span><span class="mf">1.1619244081e+00</span>
+         <span class="mi">5</span>   <span class="o">-</span><span class="mf">4.4313854290e-01</span>    <span class="mf">6.0831516179e-01</span>   <span class="o">-</span><span class="mf">1.2064503041e+00</span>
+         <span class="mi">6</span>   <span class="o">-</span><span class="mf">4.5064926960e-01</span>    <span class="mf">5.9891422196e-01</span>   <span class="o">-</span><span class="mf">1.1521370176e+00</span>
+         <span class="mi">7</span>   <span class="o">-</span><span class="mf">4.5687452611e-01</span>    <span class="mf">5.8139614676e-01</span>   <span class="o">-</span><span class="mf">1.1423627617e+00</span>
+         <span class="mi">8</span>   <span class="o">-</span><span class="mf">4.5018503739e-01</span>    <span class="mf">8.4147849706e-01</span>   <span class="o">-</span><span class="mf">1.1842075439e+00</span>
+         <span class="mi">9</span>   <span class="o">-</span><span class="mf">4.3862013841e-01</span>    <span class="mf">5.5477715836e-01</span>   <span class="o">-</span><span class="mf">1.2080979177e+00</span>
+</pre></div>
+</div>
+<p>The first line begins with a #, indicating that this line does not
+contain MC data but rather the labels of the columns. After a blank
+line, the remaining lines consist of the MC data. The first column,
+labeled index, is an integer indicating which block of MC data is on
+that line. The second column contains the quantity usually of greatest
+interest from the simulation: the local energy. Since this simulation
+did not use the exact ground state wavefunction, it does not produce
+-0.5 Ha as the local energy although the value lies within about 10%.
+The value of the local energy fluctuates from block to block, and the
+closer the trial wavefunction is to the ground state the smaller these
+fluctuations will be. The next column contains an important ingredient
+in estimating the error in the MC average—the square of the local
+energy—found by evaluating the square of the Hamiltonian.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>   <span class="n">Kinetic</span>             <span class="n">Coulomb</span>             <span class="n">BlockWeight</span>        <span class="o">...</span>
+       <span class="mf">7.1788023352e-01</span>   <span class="o">-</span><span class="mf">1.1708693521e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.3152302871e-01</span>   <span class="o">-</span><span class="mf">1.1863425644e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">6.9598356165e-01</span>   <span class="o">-</span><span class="mf">1.1766446209e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.0678097751e-01</span>   <span class="o">-</span><span class="mf">1.1799481122e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">6.9987707508e-01</span>   <span class="o">-</span><span class="mf">1.1619244081e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.6331176120e-01</span>   <span class="o">-</span><span class="mf">1.2064503041e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.0148774798e-01</span>   <span class="o">-</span><span class="mf">1.1521370176e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">6.8548823555e-01</span>   <span class="o">-</span><span class="mf">1.1423627617e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.3402250655e-01</span>   <span class="o">-</span><span class="mf">1.1842075439e+00</span>    <span class="mf">1.2800000000e+04</span>
+       <span class="mf">7.6947777925e-01</span>   <span class="o">-</span><span class="mf">1.2080979177e+00</span>    <span class="mf">1.2800000000e+04</span>
+</pre></div>
+</div>
+<p>The fourth column from the left consists of the values of the local potential
+energy.  In this simulation, it is identical to the Coulomb potential
+(contained in the sixth column) because the one electron in the simulation has
+only the potential energy coming from its interaction with the nucleus.  In
+many-electron simulations, the local potential energy contains contributions
+from the electron-electron Coulomb interactions and the nuclear potential or
+pseudopotential.  The fifth column contains the local kinetic energy value for
+each MC block, obtained from the Laplacian of the wavefunction.  The sixth
+column shows the local Coulomb interaction energy.  The seventh column displays
+the weight each line of data has in the average (the weights are identical in
+this simulation).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>    <span class="n">BlockCPU</span>            <span class="n">AcceptRatio</span>
+       <span class="mf">6.0178991748e-03</span>    <span class="mf">9.8515625000e-01</span>
+       <span class="mf">5.8323097461e-03</span>    <span class="mf">9.8562500000e-01</span>
+       <span class="mf">5.8213412744e-03</span>    <span class="mf">9.8531250000e-01</span>
+       <span class="mf">5.8330412549e-03</span>    <span class="mf">9.8828125000e-01</span>
+       <span class="mf">5.8108362256e-03</span>    <span class="mf">9.8625000000e-01</span>
+       <span class="mf">5.8254170264e-03</span>    <span class="mf">9.8625000000e-01</span>
+       <span class="mf">5.8314813086e-03</span>    <span class="mf">9.8679687500e-01</span>
+       <span class="mf">5.8258469971e-03</span>    <span class="mf">9.8726562500e-01</span>
+       <span class="mf">5.8158433545e-03</span>    <span class="mf">9.8468750000e-01</span>
+       <span class="mf">5.7959401123e-03</span>    <span class="mf">9.8539062500e-01</span>
+</pre></div>
+</div>
+<p>The eighth column shows the CPU time (in seconds) to calculate the data
+in that line. The ninth column from the left contains the acceptance
+ratio (1 being full acceptance) for MC steps in that line’s data. Other
+than the block weight, all quantities vary from line to line.</p>
+<p>Exit the text editor (<strong>[Esc] :q! [Enter]</strong> in vi, <strong>[Ctrl]-x [Ctrl]-c</strong>
+in emacs).</p>
+</div>
+<div class="section" id="averaging-quantities-in-the-mc-data">
+<span id="averaging"></span><h2>Averaging quantities in the MC data<a class="headerlink" href="#averaging-quantities-in-the-mc-data" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK includes the qmca Python tool to average quantities in the
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file (and also the <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> file of DMC simulations).
+Without any flags, qmca will output the average of each column with a
+quantity in the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file as follows.</p>
+<p>Execute qmca by <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">*.scalar.dat</span></code>, which for this data outputs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span>  <span class="n">series</span> <span class="mi">0</span>
+<span class="n">LocalEnergy</span>           <span class="o">=</span>          <span class="o">-</span><span class="mf">0.45446</span> <span class="o">+/-</span>          <span class="mf">0.00057</span>
+<span class="n">Variance</span>              <span class="o">=</span>             <span class="mf">0.529</span> <span class="o">+/-</span>            <span class="mf">0.018</span>
+<span class="n">Kinetic</span>               <span class="o">=</span>            <span class="mf">0.7366</span> <span class="o">+/-</span>           <span class="mf">0.0020</span>
+<span class="n">LocalPotential</span>        <span class="o">=</span>           <span class="o">-</span><span class="mf">1.1910</span> <span class="o">+/-</span>           <span class="mf">0.0016</span>
+<span class="n">Coulomb</span>               <span class="o">=</span>           <span class="o">-</span><span class="mf">1.1910</span> <span class="o">+/-</span>           <span class="mf">0.0016</span>
+<span class="n">LocalEnergy_sq</span>        <span class="o">=</span>             <span class="mf">0.736</span> <span class="o">+/-</span>            <span class="mf">0.018</span>
+<span class="n">BlockWeight</span>           <span class="o">=</span>    <span class="mf">12800.00000000</span> <span class="o">+/-</span>       <span class="mf">0.00000000</span>
+<span class="n">BlockCPU</span>              <span class="o">=</span>        <span class="mf">0.00582002</span> <span class="o">+/-</span>       <span class="mf">0.00000067</span>
+<span class="n">AcceptRatio</span>           <span class="o">=</span>          <span class="mf">0.985508</span> <span class="o">+/-</span>         <span class="mf">0.000048</span>
+<span class="n">Efficiency</span>            <span class="o">=</span>        <span class="mf">0.00000000</span> <span class="o">+/-</span>       <span class="mf">0.00000000</span>
+</pre></div>
+</div>
+<p>After one blank, qmca prints the title of the subsequent data, gleaned
+from the data file name. In this case, <code class="docutils literal notranslate"><span class="pre">H.s000.scalar.dat</span></code> became “H
+series 0.” Everything before the first “<code class="docutils literal notranslate"><span class="pre">.s</span></code>” will be interpreted as
+the title, and the number between “<code class="docutils literal notranslate"><span class="pre">.s</span></code>” and the next “.” will be
+interpreted as the series number.</p>
+<p>The first column under the title is the name of each quantity qmca
+averaged. The column to the right of the equal signs contains the
+average for the quantity of that line, and the column to the right of
+the plus-slash-minus is the statistical error bar on the quantity. All
+quantities calculated from MC simulations have and must be reported with
+a statistical error bar!</p>
+<p>Two new quantities not present in the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file are computed
+by qmca from the data—variance and efficiency. We will look at these
+later in this lab.</p>
+<p>To view only one value, <strong>qmca</strong> takes the <strong>-q (quantity)</strong> flag. For
+example, the output of <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">LocalEnergy</span> <span class="pre">*.scalar.dat</span></code> in this
+directory produces a single line of output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.454460</span> <span class="o">+/-</span> <span class="mf">0.000568</span>
+</pre></div>
+</div>
+<p>Type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">–help</span></code> to see the list of all quantities and their
+abbreviations.</p>
+</div>
+<div class="section" id="evaluating-mc-simulation-quality">
+<h2>Evaluating MC simulation quality<a class="headerlink" href="#evaluating-mc-simulation-quality" title="Permalink to this headline">¶</a></h2>
+<p>There are several aspects of a MC simulation to consider in deciding how well
+it went.  Besides the deviation of the average from an expected value (if there
+is one), the stability of the simulation in its sampling, the autocorrelation
+between MC steps, the value of the acceptance ratio (accepted steps over total
+proposed steps), and the variance in the local energy all indicate the quality
+of an MC simulation.  We will look at these one by one.</p>
+<div class="section" id="tracing-mc-quantities">
+<h3>Tracing MC quantities<a class="headerlink" href="#tracing-mc-quantities" title="Permalink to this headline">¶</a></h3>
+<p>Visualizing the evolution of MC quantities over the course of the
+simulation by a <em>trace</em> offers a quick picture of whether the random
+walk had the expected behavior. qmca plots traces with the -t flag.</p>
+<p>Type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">-t</span> <span class="pre">H.s000.scalar.dat</span></code>, which produces a graph of the
+trace of the local energy:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_tracing1.png"><img alt="_images/lab_qmc_statistics_tracing1.png" class="align-center" src="_images/lab_qmc_statistics_tracing1.png" style="width: 500px;" /></a>
+<p>The solid black line connects the values of the local energy at each MC
+block (labeled “samples”). The average value is marked with a
+horizontal, solid red line. One standard deviation above and below the
+average are marked with horizontal, dashed red lines.</p>
+<p>The solid black line connects the values of the local energy at each MC
+block (labeled “samples”). The average value is marked with a
+horizontal, solid red line. One standard deviation above and below the
+average are marked with horizontal, dashed red lines.</p>
+<p>The trace of this run is largely centered on the average with no
+large-scale oscillations or major shifts, indicating a good-quality MC
+run.</p>
+<p>Try tracing the kinetic and potential energies, seeing that their
+behavior is comparable with the total local energy.</p>
+<p>Change to directory <code class="docutils literal notranslate"><span class="pre">problematic</span></code> and type
+<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">-t</span> <span class="pre">H.s000.scalar.dat</span></code> to produce this graph:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_tracing2.png"><img alt="_images/lab_qmc_statistics_tracing2.png" class="align-center" src="_images/lab_qmc_statistics_tracing2.png" style="width: 500px;" /></a>
+<p>Here, the local energy samples cluster around the expected -0.5 Ha for the
+first 150 samples or so and then begin to oscillate more wildly and increase
+erratically toward 0, indicating a poor-quality MC run.</p>
+<p>Again, trace the kinetic and potential energies in this run and see how their
+behavior compares with the total local energy.</p>
+</div>
+<div class="section" id="blocking-away-autocorrelation">
+<h3>Blocking away autocorrelation<a class="headerlink" href="#blocking-away-autocorrelation" title="Permalink to this headline">¶</a></h3>
+<p><em>Autocorrelation</em> occurs when a given MC step biases subsequent MC
+steps, leading to samples that are not statistically independent. We
+must take this autocorrelation into account to obtain accurate
+statistics. qmca outputs autocorrelation when given the –sac flag.</p>
+<p>Change to directory <code class="docutils literal notranslate"><span class="pre">autocorrelation</span></code> and type
+<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">--sac</span> <span class="pre">H.s000.scalar.dat</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.454982</span> <span class="o">+/-</span> <span class="mf">0.000430</span>    <span class="mf">1.0</span>
+</pre></div>
+</div>
+<p>The value after the error bar on the quantity is the autocorrelation
+(1.0 in this case).</p>
+<p>Proposing too small a step in configuration space, the MC <em>time step</em>,
+can lead to autocorrelation since the new samples will be in the
+neighborhood of previous samples. Type <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">timestep</span> <span class="pre">H.xml</span></code> to see
+the varying time step values in this QMCPACK input file (<code class="docutils literal notranslate"><span class="pre">H.xml</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mi">10</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.2</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.1</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.05</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.02</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.01</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.005</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.002</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.001</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.0005</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.0002</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.0001</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Generally, as the time step decreases, the autocorrelation will increase
+(caveat: very large time steps will also have increasing
+autocorrelation). To see this, type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">--sac</span> <span class="pre">*.scalar.dat</span></code> to
+see the energies and autocorrelation times, then plot with gnuplot by
+inputting <code class="docutils literal notranslate"><span class="pre">gnuplot</span> <span class="pre">H.plt</span></code>:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_blocking1.png"><img alt="_images/lab_qmc_statistics_blocking1.png" class="align-center" src="_images/lab_qmc_statistics_blocking1.png" style="width: 500px;" /></a>
+<p>The error bar also increases with the autocorrelation.</p>
+<p>Press <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">[Enter]</span></code> to quit gnuplot.</p>
+<p>To get around the bias of autocorrelation, we group the MC steps into
+blocks, take the average of the data in the steps of each block, and
+then finally average the averages in all the blocks. QMCPACK outputs the
+block averages as each line in the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> file. (For DMC
+simulations, in addition to the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code>, QMCPACK outputs the
+quantities at each step to the <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> file, which permits
+reblocking the data differently from the specification in the input
+file.)</p>
+<p>Change directories to <code class="docutils literal notranslate"><span class="pre">blocking</span></code>. Here we look at the time step of the
+last dataset in the <code class="docutils literal notranslate"><span class="pre">autocorrelation</span></code> directory. Verify this by typing
+<code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">timestep</span> <span class="pre">H.xml</span></code> to see that all values are set to 0.001. Now to
+see how we will vary the blocking, type <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-A1</span> <span class="pre">blocks</span> <span class="pre">H.xml</span></code>. The
+parameter “steps” indicates the number of steps per block, and the
+parameter “blocks” gives the number of blocks. For this comparison, the
+total number of MC steps (equal to the product of “steps” and “blocks”)
+is fixed at 50,000. Now check the effect of blocking on
+autocorrelation—type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">--sac</span> <span class="pre">*scalar.dat</span></code> to see the data and
+<code class="docutils literal notranslate"><span class="pre">gnuplot</span> <span class="pre">H.plt</span></code> to visualize the data:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_blocking2.png"><img alt="_images/lab_qmc_statistics_blocking2.png" class="align-center" src="_images/lab_qmc_statistics_blocking2.png" style="width: 500px;" /></a>
+<p>The greatest number of steps per block produces the smallest
+autocorrelation time. The larger number of blocks over which to average
+at small step-per-block number masks the corresponding increase in error
+bar with increasing autocorrelation.</p>
+<p>Press <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">[Enter]</span></code> to quit gnuplot.</p>
+</div>
+<div class="section" id="balancing-autocorrelation-and-acceptance-ratio">
+<h3>Balancing autocorrelation and acceptance ratio<a class="headerlink" href="#balancing-autocorrelation-and-acceptance-ratio" title="Permalink to this headline">¶</a></h3>
+<p>Adjusting the time step value also affects the ratio of accepted steps to
+proposed steps.  Stepping nearby in configuration space implies that the
+probability distribution is similar and thus more likely to result in an
+accepted move.  Keeping the acceptance ratio high means the algorithm is
+efficiently exploring configuration space and not sticking at particular
+configurations.  Return to the <code class="docutils literal notranslate"><span class="pre">autocorrelation</span></code> directory.  Refresh your
+memory on the time steps in this set of simulations by <code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">timestep</span>
+<span class="pre">H.xml</span></code>. Then, type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ar</span> <span class="pre">*scalar.dat</span></code> to see the acceptance ratio
+as it varies with decreasing time step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.047646</span> <span class="o">+/-</span> <span class="mf">0.000206</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.125361</span> <span class="o">+/-</span> <span class="mf">0.000308</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.328590</span> <span class="o">+/-</span> <span class="mf">0.000340</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">3</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.535708</span> <span class="o">+/-</span> <span class="mf">0.000313</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">4</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.732537</span> <span class="o">+/-</span> <span class="mf">0.000234</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">5</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.903498</span> <span class="o">+/-</span> <span class="mf">0.000156</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">6</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.961506</span> <span class="o">+/-</span> <span class="mf">0.000083</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">7</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.985499</span> <span class="o">+/-</span> <span class="mf">0.000051</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">8</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.996251</span> <span class="o">+/-</span> <span class="mf">0.000025</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">9</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.998638</span> <span class="o">+/-</span> <span class="mf">0.000014</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">10</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999515</span> <span class="o">+/-</span> <span class="mf">0.000009</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">11</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999884</span> <span class="o">+/-</span> <span class="mf">0.000004</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">12</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999958</span> <span class="o">+/-</span> <span class="mf">0.000003</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">13</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999986</span> <span class="o">+/-</span> <span class="mf">0.000002</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">14</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999995</span> <span class="o">+/-</span> <span class="mf">0.000001</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">15</span>  <span class="n">AcceptRatio</span> <span class="o">=</span> <span class="mf">0.999999</span> <span class="o">+/-</span> <span class="mf">0.000000</span>
+</pre></div>
+</div>
+<p>By series 8 (time step = 0.02), the acceptance ratio is in excess of
+99%.</p>
+<p>Considering the increase in autocorrelation and subsequent increase in
+error bar as time step decreases, it is important to choose a time step
+that trades off appropriately between acceptance ratio and
+autocorrelation. In this example, a time step of 0.02 occupies a spot
+where the acceptance ratio is high (99.6%) and autocorrelation is not
+appreciably larger than the minimum value (1.4 vs. 1.0).</p>
+</div>
+<div class="section" id="considering-variance">
+<h3>Considering variance<a class="headerlink" href="#considering-variance" title="Permalink to this headline">¶</a></h3>
+<p>Besides autocorrelation, the dominant contributor to the error bar is
+the <em>variance</em> in the local energy. The variance measures the
+fluctuations around the average local energy, and, as the fluctuations
+go to zero, the wavefunction reaches an exact eigenstate of the
+Hamiltonian. qmca calculates this from the local energy and local energy
+squared columns of the <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code>.</p>
+<p>Type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">v</span> <span class="pre">H.s009.scalar.dat</span></code> to calculate the variance on the
+run with time step balancing autocorrelation and acceptance ratio:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H</span>  <span class="n">series</span> <span class="mi">9</span>  <span class="n">Variance</span> <span class="o">=</span> <span class="mf">0.513570</span> <span class="o">+/-</span> <span class="mf">0.010589</span>
+</pre></div>
+</div>
+<p>Just as the total energy does not tell us much by itself, neither does
+the variance. However, comparing the ratio of the variance with the
+energy indicates how the magnitude of the fluctuations compares with the
+energy itself. Type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">H.s009.scalar.dat</span></code> to calculate the
+energy and variance on the run side by side with the ratio:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                    <span class="n">LocalEnergy</span>               <span class="n">Variance</span>        <span class="n">ratio</span>
+<span class="n">H</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.454460</span> <span class="o">+/-</span> <span class="mf">0.000568</span>   <span class="mf">0.529496</span> <span class="o">+/-</span> <span class="mf">0.018445</span>   <span class="mf">1.1651</span>
+</pre></div>
+</div>
+<p>The very high ration of 1.1651 indicates the square of the fluctuations is on
+average larger than the value itself.  In the next section, we will approach
+ways to improve the variance that subsequent labs will build on.</p>
+</div>
+</div>
+<div class="section" id="reducing-statistical-error-bars">
+<h2>Reducing statistical error bars<a class="headerlink" href="#reducing-statistical-error-bars" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="increasing-mc-sampling">
+<h3>Increasing MC sampling<a class="headerlink" href="#increasing-mc-sampling" title="Permalink to this headline">¶</a></h3>
+<p>Increasing the number of MC samples in a dataset reduces the error bar
+as the inverse of the square root of the number of samples. There are
+two ways to increase the number of MC samples in a simulation: (1)
+running more samples in parallel and (2) increasing the number of blocks
+(with fixed number of steps per block, this increases the total number
+of MC steps).</p>
+<p>To see the effect of running more samples in parallel, change to the
+directory <code class="docutils literal notranslate"><span class="pre">nodes</span></code>. The series here increases the number of nodes by
+factors of four from 32 to 128 to 512. Type <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">*scalar.dat</span></code>
+and note the change in the error bar on the local energy as the number
+of nodes. Visualize this with <strong>gnuplot H.plt</strong>:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_nodes.png"><img alt="_images/lab_qmc_statistics_nodes.png" class="align-center" src="_images/lab_qmc_statistics_nodes.png" style="width: 500px;" /></a>
+<p>Increasing the number of blocks, unlike running in parallel, increases
+the total CPU time of the simulation.</p>
+<p>Press <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">[Enter]</span></code> to quit gnuplot.</p>
+<p>To see the effect of increasing the block number, change to the
+directory <code class="docutils literal notranslate"><span class="pre">blocks</span></code>. To see how we will vary the number of blocks, type
+<code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-A1</span> <span class="pre">blocks</span> <span class="pre">H.xml</span></code>. The number of steps remains fixed, thus
+increasing the total number of samples. Visualize the tradeoff by
+inputting <code class="docutils literal notranslate"><span class="pre">gnuplot</span> <span class="pre">H.plt</span></code>:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_blocks.png"><img alt="_images/lab_qmc_statistics_blocks.png" class="align-center" src="_images/lab_qmc_statistics_blocks.png" style="width: 500px;" /></a>
+<p>Press <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">[Enter]</span></code> to quit gnuplot.</p>
+</div>
+<div class="section" id="improving-the-basis-sets">
+<h3>Improving the basis sets<a class="headerlink" href="#improving-the-basis-sets" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
