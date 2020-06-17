@@ -29,6 +29,7 @@ User's Guide and Developer's Manual for
    analyzing
    LCAO
    sCI
+   afqmc
 
 
 

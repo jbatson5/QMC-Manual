@@ -1,0 +1,834 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Auxiliary-Field Quantum Monte Carlo &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Selected Configuration Interaction" href="sCI.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Auxiliary-Field Quantum Monte Carlo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#theoretical-background">Theoretical Background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input">Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#file-formats">File formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advice-useful-information">Advice/Useful Information</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Auxiliary-Field Quantum Monte Carlo</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/afqmc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="auxiliary-field-quantum-monte-carlo">
+<span id="afqmc"></span><h1>Auxiliary-Field Quantum Monte Carlo<a class="headerlink" href="#auxiliary-field-quantum-monte-carlo" title="Permalink to this headline">¶</a></h1>
+<p>The AFQMC method is an orbital-space formulation of the imaginary-time propagation algorithm. We refer the reader to one of the review articles on the method <span class="bibtex" id="id1">[AFQMC_review]</span><span class="bibtex" id="id2">[PhysRevLett.90.136401]</span><span class="bibtex" id="id3">[PhysRevE.70.056702]</span> for a detailed description of the algorithm. It uses the Hubbard-Stratonovich transformation to express the imaginary-time propagator, which is inherently a 2-body operator, as an integral over 1-body propagators, which can be efficiently applied to an arbitrary Slater determinant. This transformation allows us to represent the interacting many-body system as an average over a noninteracting system (e.g., Slater determinants) in a time-dependent fluctuating external field (the Auxiliary fields). The walkers in this case represent nonorthogonal Slater determinants, whose time average represents the desired quantum state. QMCPACK currently implements the phaseless AFQMC algorithm of Zhang and Krakauer <span class="bibtex" id="id4">[PhysRevLett.90.136401]</span>, where a trial wavefunction is used to project the simulation to the real axis, controlling the fermionic sign problem at the expense of a bias. This approximation is similar in spirit to the fixed-node approximation in real-space DMC but applied in the Hilbert space where the AFQMC random walk occurs.</p>
+<div class="section" id="theoretical-background">
+<h2>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Permalink to this headline">¶</a></h2>
+<p>… coming soon …</p>
+</div>
+<div class="section" id="input">
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<p>The input for an AFQMC calculation is fundamentally different to the
+input for other real-space algorithms in QMCPACK. The main source of
+input comes from the Hamiltonian matrix elements in an appropriate
+single particle basis. This must be evaluated by an external code and
+saved in a format that QMCPACK can read. More details about file formats
+follow. The input file has six basic xml-blocks: <code class="docutils literal notranslate"><span class="pre">AFQMCInfo</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code>, <code class="docutils literal notranslate"><span class="pre">Wavefunction</span></code>, <code class="docutils literal notranslate"><span class="pre">WalkerSet</span></code>, <code class="docutils literal notranslate"><span class="pre">Propagator</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">execute</span></code>. The first five define input structures required for various
+types of calculations. The <code class="docutils literal notranslate"><span class="pre">execute</span></code> block represents actual
+calculations and takes as input the other blocks. Nonexecution blocks
+are parsed first, followed by a second pass where execution blocks are
+parsed (and executed) in order. <a class="reference internal" href="#listing-51"><span class="std std-ref">Listing 51</span></a> shows an example of a
+minimal input file for an AFQMC calculation.
+<code class="xref std std-numref docutils literal notranslate"><span class="pre">table13</span></code> shows a brief description of the most
+important parameters in the calculation. All xml sections contain a
+“name” argument used to identify the resulting object within QMCPACK.
+For example, in the example, multiple Hamiltonian objects with different
+names can be defined. The one actually used in the calculation is the
+one passed to “execute” as ham.</p>
+<div class="literal-block-wrapper docutils container" id="listing-51">
+<div class="code-block-caption"><span class="caption-number">Listing 51 </span><span class="caption-text">Sample input file for AFQMC.</span><a class="headerlink" href="#listing-51" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;simulation method=&quot;afqmc&quot;&gt;
+  &lt;project id=&quot;Carbon&quot; series=&quot;0&quot;/&gt;
+
+  &lt;AFQMCInfo name=&quot;info0&quot;&gt;
+    &lt;parameter name=&quot;NMO&quot;&gt;32&lt;/parameter&gt;
+    &lt;parameter name=&quot;NAEA&quot;&gt;16&lt;/parameter&gt;
+    &lt;parameter name=&quot;NAEB&quot;&gt;16&lt;/parameter&gt;
+  &lt;/AFQMCInfo&gt;
+
+  &lt;Hamiltonian name=&quot;ham0&quot; info=&quot;info0&quot;&gt;
+    &lt;parameter name=&quot;filename&quot;&gt;../fcidump.h5&lt;/parameter&gt;
+  &lt;/Hamiltonian&gt;
+
+  &lt;Wavefunction name=&quot;wfn0&quot; type=&quot;MSD&quot; info=&quot;info0&quot;&gt;
+    &lt;parameter name=&quot;filetype&quot;&gt;ascii&lt;/parameter&gt;
+    &lt;parameter name=&quot;filename&quot;&gt;wfn.dat&lt;/parameter&gt;
+  &lt;/Wavefunction&gt;
+
+  &lt;WalkerSet name=&quot;wset0&quot;&gt;
+    &lt;parameter name=&quot;walker_type&quot;&gt;closed&lt;/parameter&gt;
+  &lt;/WalkerSet&gt;
+
+  &lt;Propagator name=&quot;prop0&quot; info=&quot;info0&quot;&gt;
+  &lt;/Propagator&gt;
+
+  &lt;execute wset=&quot;wset0&quot; ham=&quot;ham0&quot; wfn=&quot;wfn0&quot; prop=&quot;prop0&quot; info=&quot;info0&quot;&gt;
+    &lt;parameter name=&quot;timestep&quot;&gt;0.005&lt;/parameter&gt;
+    &lt;parameter name=&quot;blocks&quot;&gt;10000&lt;/parameter&gt;
+    &lt;parameter name=&quot;nWalkers&quot;&gt;20&lt;/parameter&gt;
+  &lt;/execute&gt;
+
+&lt;/simulation&gt;
+</pre></div>
+</div>
+</div>
+<p>The following list includes all input sections for AFQMC calculations, along with a detailed explanation of accepted parameters. Since the code is under active development, the list of parameters and their interpretation might change in the future.</p>
+<p><code class="docutils literal notranslate"><span class="pre">AFQMCInfo</span></code>: Input block that defines basic information about the
+calculation. It is passed to all other input blocks to propagate the
+basic information: <code class="docutils literal notranslate"><span class="pre">&lt;AFQMCInfo</span> <span class="pre">name=&quot;info0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>NMO</strong>. Number of molecular orbitals, i.e., number of states in the
+single particle basis.</p></li>
+<li><p><strong>NAEA</strong>. Number of active electrons-alpha, i.e., number of spin-up
+electrons.</p></li>
+<li><p><strong>NAEB</strong>. Number of active electrons-beta, i.e., number of spin-down
+electrons.</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code>: Controls the object that reads, stores, and manages the
+<code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code>.
+<code class="docutils literal notranslate"><span class="pre">&lt;Hamiltonian</span> <span class="pre">name=&quot;ham0&quot;</span> <span class="pre">type=&quot;SparseGeneral&quot;</span> <span class="pre">info=&quot;info0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>filename</strong>. Name of file with the <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code>. This is a
+required parameter.</p></li>
+<li><p><strong>cutoff_1bar</strong>. Cutoff applied to integrals during reading. Any term
+in the Hamiltonian smaller than this value is set to zero. (For
+filetype=“hdf5”, the cutoff is applied only to the 2-electron
+integrals). Default: 1e-8</p></li>
+<li><p><strong>cutoff_decomposition</strong>. Cutoff used to stop the iterative cycle in
+the generation of the Cholesky decomposition of the 2-electron
+integrals. The generation of Cholesky vectors is stopped when the
+maximum error in the diagonal reaches this value. In case of an
+eigenvalue factorization, this becomes the cutoff applied to the
+eigenvalues. Only eigenvalues above this value are kept. Default:
+1e-6</p></li>
+<li><p><strong>nblocks</strong>. This parameter controls the distribution of the
+2-electron integrals among processors. In the default behavior
+(nblocks=1), all nodes contain the entire list of integrals. If
+nblocks <span class="math notranslate nohighlight">\(&gt;\)</span> 1, the of nodes in the calculation will be split in
+nblocks groups. Each node in a given group contains the same subset
+of integrals and subsequently operates on this subset during any
+further operation that requires the hamiltonian. The maximum number
+of groups is NMO. Currently only works for filetype=“hdf5” and the
+file must contain integrals. Not yet implemented for input
+hamiltonians in the form of Cholesky vectors or for ASCII input.
+Coming soon! Default: No distribution</p></li>
+<li><p><strong>printEig</strong>. If “yes”, prints additional information during the
+Cholesky decomposition. Default: no</p></li>
+<li><p><strong>fix_2eint</strong>. If this is set to “yes”, orbital pairs that are
+found not to be positive definite are ignored in the generation of
+the Cholesky factorization. This is necessary if the 2-electron
+integrals are not positive definite because of round-off errors in
+their generation. Default: no</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Wavefunction</span></code>: controls the object that manages the trial
+wavefunctions. This block expects a list of xml-blocks defining actual
+trial wavefunctions for various roles.
+<code class="docutils literal notranslate"><span class="pre">&lt;Wavefunction</span> <span class="pre">name=&quot;wfn0&quot;</span> <span class="pre">type=&quot;MSD/PHMSD&quot;</span> <span class="pre">info=&quot;info0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>filename</strong>. Name of file with wavefunction information.</p></li>
+<li><p><strong>cutoff</strong>. cutoff applied to the terms in the calculation of the
+local energy. Only terms in the Hamiltonian above this cutoff are
+included in the evaluation of the energy. Default: 1e-6</p></li>
+<li><p><strong>nnodes</strong>. Defines the parallelization of the local energy
+evaluation and the distribution of the <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code> matrix (not to
+be confused with the list of 2-electron integrals managed by
+<code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code>. These are not the same.) If nnodes <span class="math notranslate nohighlight">\(&gt;\)</span> 1, the
+nodes in the simulation are split into groups of nnodes, each group
+works collectively in the evaluation of the local energy of their
+walkers. This helps distribute the effort involved in the evaluation
+of the local energy among the nodes in the group, but also
+distributes the memory associated with the wavefunction among the
+nodes in the group. Default: No distribution</p></li>
+<li><p><strong>ndet</strong>. Number of determinants to read from file. Default: Read all
+determinants.</p></li>
+<li><p><strong>cutoff</strong>. For sparse hamiltoniants, this defines the cutoff applied
+to the half-rotated 2-electron integrals. Default: 0.0</p></li>
+<li><p><strong>nbatch</strong>. This turns on(&gt;=1)/off(==0) batched calculation of
+density matrices and overlaps. -1 means all the walkers in the batch.
+Default: 0 (CPU) / -1 (GPU)</p></li>
+<li><p><strong>nbatch_qr</strong>. This turns on(&gt;=1)/off(==0) batched QR calculation. -1
+means all the walkers in the batch. Default: 0 (CPU) / -1 (GPU)</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">WalkerSet</span></code>: Controls the object that handles the set of walkers.
+<code class="docutils literal notranslate"><span class="pre">&lt;WalkerSet</span> <span class="pre">name=&quot;wset0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>walker_type</strong>. Type of walker set: closed or collinear. Default:
+collinear</p></li>
+<li><p><strong>pop_control</strong>. Population control algorithm. Options: “simple”:
+Uses a simple branching scheme with a fluctuating population. Walkers
+with weight above max_weight are split into multiple walkers of
+weight reset_weight. Walkers with weight below min_weight are killed
+with probability (weight/min_weight); “pair”: Fixed-population
+branching algorithm, based on QWalk’s branching algorithm. Pairs of
+walkers with weight above/below max_weight/min_weight are combined
+into 2 walkers with weights equal to <span class="math notranslate nohighlight">\((w_1+w_2)/2\)</span>. The
+probability of replicating walker w1 (larger weight) occurs with
+probability <span class="math notranslate nohighlight">\(w_1/(w_1+w_2)\)</span>, otherwise walker w2 (lower weight)
+is replicated; “comb”: Fixed-population branching algorithm based on
+the Comb method. Will be available in the next release. Default:
+“pair”</p></li>
+<li><p><strong>min_weight</strong>. Weight at which walkers are possibly killed (with
+probability weight/min_weight). Default: 0.05</p></li>
+<li><p><strong>max_weight</strong>. Weight at which walkers are replicated. Default: 4.0</p></li>
+<li><p><strong>reset_weight</strong>. Weight to which replicated walkers are reset to.
+Default: 1.0</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Propagator</span></code>: Controls the object that manages the propagators.
+<code class="docutils literal notranslate"><span class="pre">&lt;Propagator</span> <span class="pre">name=&quot;prop0&quot;</span> <span class="pre">info=&quot;info0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>cutoff</strong>. Cutoff applied to Cholesky vectors. Elements of the
+Cholesky vectors below this value are set to zero. Only meaningful
+with sparse hamiltonians. Default: 1e-6</p></li>
+<li><p><strong>substractMF</strong>. If “yes”, apply mean-field subtraction based on the
+ImpSamp trial wavefunction. Must set to “no” to turn it off. Default:
+yes</p></li>
+<li><p><strong>vbias_bound</strong>. Upper bound applied to the vias potential.
+Components of the vias potential above this value are truncated
+there. The bound is currently applied to
+<span class="math notranslate nohighlight">\(\sqrt{\tau} v_{bias}\)</span>, so a larger value must be used as
+either the time step or the fluctuations increase (e.g. from running
+a larger system or using a poor trial wavefunction). Default: 3.0</p></li>
+<li><p><strong>apply_constrain</strong>. If “yes”, apply the phaseless constrain to the
+walker propagation. Currently, setting this to “no” produces unknown
+behavior, since free propagation algorithm has not been tested.
+Default: yes</p></li>
+<li><p><strong>hybrid</strong>. If “yes”, use hybrid propagation algorithm. This
+propagation scheme doesn’t use the local energy during propagation,
+leading to significant speed ups when its evaluation cost is high.
+The local energy of the ImpSamp trial wavefunction is never
+evaluated. To obtain energy estimates in this case, you must define
+an Estimator xml-block with the <code class="docutils literal notranslate"><span class="pre">Wavefunction</span></code> block. The local
+energy of this trial wavefunction is evaluated and printed. It is
+possible to use a previously defined trial wavefunction in the
+Estimator block, just set its “name” argument to the name of a
+previously defined wavefunction. In this case, the same object is
+used for both roles. Default: no</p></li>
+<li><p><strong>nnodes</strong>. Controls the parallel propagation algorithm. If nnodes
+<span class="math notranslate nohighlight">\(&gt;\)</span> 1, the nodes in the simulation are split into groups of
+nnodes nodes, each group working collectively to propagate their
+walkers. Default: 1 (Serial algorithm)</p></li>
+<li><p><strong>nbatch</strong>. This turns on(&gt;=1)/off(==0) batched calculation of
+density matrices and overlaps. -1 means all the walkers in the batch.
+Default: 0 (CPU) / -1 (GPU)</p></li>
+<li><p><strong>nbatch_qr</strong>. This turns on(&gt;=1)/off(==0) batched QR
+calculation. -1 means all the walkers in the batch. Default: 0 (CPU)
+/ -1 (GPU)</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">execute</span></code>: Defines an execution region.
+<code class="docutils literal notranslate"><span class="pre">&lt;execute</span> <span class="pre">wset=&quot;wset0&quot;</span> <span class="pre">ham=&quot;ham0&quot;</span> <span class="pre">wfn=&quot;wfn0&quot;</span> <span class="pre">prop=&quot;prop0&quot;</span> <span class="pre">info=&quot;info0&quot;&gt;</span></code></p>
+<ul class="simple">
+<li><p><strong>nWalkers</strong>. Initial number of walkers per core group (see
+ncores). This sets the number of walkers for a given gorup of
+“ncores” on a node; the total number of walkers in the simulation
+depends on the total number of nodes and on the total number of
+cores on a node in the following way:
+<span class="math notranslate nohighlight">\(\#_walkers_total = nWalkers * \#_nodes * \#_cores_total / ncores\)</span>.
+Default: 5</p></li>
+<li><p><strong>timestep</strong>. Time step in 1/a.u.
+Default: 0.01</p></li>
+<li><p><strong>blocks</strong>. Number of blocks. Slow operations occur once per block
+(e.g., write to file, slow observables, checkpoints),
+Default: 100</p></li>
+<li><p><strong>step</strong>. Number of steps within a block. Operations that occur at
+the step level include load balance, orthogonalization, branching,
+etc.
+Default: 1</p></li>
+<li><p><strong>substep</strong>. Number of substeps within a step. Only walker
+propagation occurs in a substep.
+Default: 1</p></li>
+<li><p><strong>ortho</strong>. Number of steps between orthogonalization. Default: 1</p></li>
+<li><p><strong>ncores</strong>. Number of nodes in a task group. This number defines the
+number of cores on a node that share the parallel work associated
+with a distributed task. This number is used in the <code class="docutils literal notranslate"><span class="pre">Wavefunction</span></code>
+and <code class="docutils literal notranslate"><span class="pre">Propagator</span></code> task groups. The walker sets are shares by the
+ncores on a given node in the task group.</p></li>
+<li><p><strong>checkpoint</strong>. Number of blocks between checkpoint files are
+generated. If a value smaller than 1 is given, no file is generated.
+If <strong>hdf_write_file</strong> is not set, a default name is used. <strong>Default:
+0</strong></p></li>
+<li><p><strong>hdf_write_file</strong>. If set (and checkpoint&gt;0), a checkpoint file with
+this name will be written.</p></li>
+<li><p><strong>hdf_read_file</strong>. If set, the simulation will be restarted from
+the given file.</p></li>
+</ul>
+<p>Within the <code class="docutils literal notranslate"><span class="pre">Estimators</span></code> xml block has an argument <strong>name</strong>: the type
+of estimator we want to measure. Currently available estimators include:
+“basic”, “energy”, “mixed_one_rdm”, and “back_propagation”.</p>
+<p>The basic estimator has the following optional parameters:</p>
+<ul class="simple">
+<li><p><strong>timers</strong>. print timing information. Default: true</p></li>
+</ul>
+<p>The back_propagation estimator has the following parameters:</p>
+<ul class="simple">
+<li><p><strong>ortho</strong>. Number of back-propagation steps between
+orthogonalization. Default: 10</p></li>
+<li><p><strong>nsteps</strong>. Maximum number of back-propagation steps. Default: 10</p></li>
+<li><p><strong>naverages</strong>. Number of back propagation calculations to perform.
+The number of steps will be chosed equally distributed in the range
+0,nsteps. Default: 1</p></li>
+<li><p><strong>block_size</strong>. Number of blocks to use in the internal average of
+the back propagated estimator. This is used to block data and reduce
+the size of the output. Default: 1</p></li>
+<li><p><strong>nskip</strong>. Number of blocks to skip at the start of the calculation
+for equilibration purposes. Default: 0</p></li>
+</ul>
+</div>
+<div class="section" id="file-formats">
+<h2>File formats<a class="headerlink" href="#file-formats" title="Permalink to this headline">¶</a></h2>
+<p>QMCPACK offers three factorization approaches which are appropriate in different settings. The most generic approach implemented
+is based on the modified-Cholesky
+factorization <span class="bibtex" id="id5">[BeebeCholesky1977]</span><span class="bibtex" id="id6">[KochCholesky2003]</span><span class="bibtex" id="id7">[AquilanteMOLCAS2009]</span><span class="bibtex" id="id8">[PurwantoCa2011]</span><span class="bibtex" id="id9">[PurwantoDownfolding2013]</span> of the ERI
+tensor:</p>
+<div class="math notranslate nohighlight" id="equation-eq58">
+<span class="eqno">(58)<a class="headerlink" href="#equation-eq58" title="Permalink to this equation">¶</a></span>\[v_{pqrs} = V_{(pr),(sq)} \approx \sum_n^{N_\mathrm{chol}} L_{pr,n} L^{*}_{sq,n},\]</div>
+<p>where the sum is truncated at <span class="math notranslate nohighlight">\(N_{\mathrm{chol}} = x_c M\)</span>,
+<span class="math notranslate nohighlight">\(x_c\)</span> is typically between <span class="math notranslate nohighlight">\(5\)</span> and <span class="math notranslate nohighlight">\(10\)</span>, <span class="math notranslate nohighlight">\(M\)</span> is
+the number of basis functions and we have assumed that the
+single-particle orbitals are in general complex. The storage requirement
+is thus naively <span class="math notranslate nohighlight">\(\mathcal{O}(M^3)\)</span>. Note we follow the usual
+definition of <span class="math notranslate nohighlight">\(v_{pqrs} = \langle pq | rs \rangle = (pr|qs)\)</span>. With
+this form of factorization QMCPACK allows for the integrals to be stored
+in either dense or sparse format.</p>
+<p>The dense case is the simplest and is only implemented for Hamiltonians
+with <em>real</em> integrals (and basis functions, i.e. not the homegeneous
+electron gas which has complex orbitals but real integrals). The file
+format is given as follows:</p>
+<div class="literal-block-wrapper docutils container" id="listing-52">
+<div class="code-block-caption"><span class="caption-number">Listing 52 </span><span class="caption-text">Sample Dense Cholesky QMCPACK Hamtiltonian.</span><a class="headerlink" href="#listing-52" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ h5dump -n afqmc.h5
+HDF5 &quot;afqmc.h5&quot; {
+    FILE_CONTENTS {
+        group      /
+        group      /Hamiltonian
+        group      /Hamiltonian/DenseFactorized
+        dataset    /Hamiltonian/DenseFactorized/L
+        dataset    /Hamiltonian/dims
+        dataset    /Hamiltonian/hcore
+        dataset    /Hamiltonian/Energies
+    }
+}
+</pre></div>
+</div>
+</div>
+<p>where the datasets are given by the following</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/DenseFactorized/L</span></code> Contains the <span class="math notranslate nohighlight">\([M^2,N_\mathrm{nchol}]\)</span> dimensional matrix
+representatation of <span class="math notranslate nohighlight">\(L_{pr,n}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/dims</span></code> Descriptor array of length 8 containing
+<span class="math notranslate nohighlight">\([0,0,0,M,N_\alpha,N_\beta,0,N_\mathrm{nchol}]\)</span>. Note that
+<span class="math notranslate nohighlight">\(N_\alpha\)</span> and <span class="math notranslate nohighlight">\(N_\beta\)</span> are somewhat redundant and will
+be read from the input file and wavefunction. This allows for the
+Hamiltonian to be used with different (potentially spin polarized)
+wavefunctions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/hcore</span></code> Contains the <span class="math notranslate nohighlight">\([M,M]\)</span> dimensional one-body Hamiltonian matrix
+elements <span class="math notranslate nohighlight">\(h_{pq}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Energies</span></code> Array containing <span class="math notranslate nohighlight">\([E_{II}, E_{\mathrm{core}}]\)</span>.
+<span class="math notranslate nohighlight">\(E_{II}\)</span> should contain ion-ion repulsion energy and any
+additional constant terms which have to be added to the total energy.
+<span class="math notranslate nohighlight">\(E_{\mathrm{core}}\)</span> is deprecated and not used.</p></li>
+</ul>
+<p>Typically the Cholesky matrix is sparse, particularly if written in the
+non-orthogonal AO basis (not currently supported in QMCPACK). In this
+case only a small number of non-zero elements (denoted <span class="math notranslate nohighlight">\(nnz\)</span>
+below) need to be stored which can reduce the memory overhead
+considerably. Internally QMCPACK stores this matrix in the CSR format,
+and the HDF5 file format is reflective of this. For large systems and,
+more generally when running in parallel, it is convenient to chunk the
+writing/reading of the Cholesky matrix into blocks of size
+<span class="math notranslate nohighlight">\([M^2,\frac{N_{\mathrm{chol}}}{N_{\mathrm{blocks}}}]\)</span> (if
+interpreted as a dense array). This is achieved by writing these blocks
+to different data sets in the file. For the sparse case the Hamtiltonian
+file format is given as follows:</p>
+<div class="literal-block-wrapper docutils container" id="listing-53">
+<div class="code-block-caption"><span class="caption-number">Listing 53 </span><span class="caption-text">Sample Sparse Cholesky QMCPACK Hamtiltonian.</span><a class="headerlink" href="#listing-53" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ h5dump -n afqmc.h5
+HDF5 &quot;afqmc.h5&quot; {
+    FILE_CONTENTS {
+        group      /
+        group      /Hamiltonian
+        group      /Hamiltonian/Factorized
+        dataset    /Hamiltonian/Factorized/block_sizes
+        dataset    /Hamiltonian/Factorized/index_0
+        dataset    /Hamiltonian/Factorized/vals_0
+        dataset    /Hamiltonian/ComplexIntegrals
+        dataset    /Hamiltonian/dims
+        dataset    /Hamiltonian/hcore
+        dataset    /Hamiltonian/Energies
+    }
+}
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Factorized/block_sizes</span></code> Contains the number of elements in each block of the sparse
+representation of the Cholesky matrix <span class="math notranslate nohighlight">\(L_{pr,n}\)</span>. In this case
+there is 1 block.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Factorized/index_0</span></code> <span class="math notranslate nohighlight">\([2\times nnz]\)</span> dimensional array, containing the indices of
+the non-zero values of <span class="math notranslate nohighlight">\(L_{ik,n}\)</span>. The row indices are stored
+in the even entries, and the column indices in the odd entries.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Factorized/vals_0</span></code> <span class="math notranslate nohighlight">\([nnz]\)</span> length array containing non-zero values of
+<span class="math notranslate nohighlight">\(L_{pr,n}\)</span> for chunk 0.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/dims</span></code> Descriptor array of length 8 containing
+<span class="math notranslate nohighlight">\([0,nnz,N_{\mathrm{block}},M,N_\alpha,N_\beta,0,N_\mathrm{nchol}]\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/ComplexIntegrals</span></code> Length 1 array that specifies if integrals are complex valued. 1
+for complex integrals, 0 for real integrals.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/hcore</span></code> Contains the <span class="math notranslate nohighlight">\([M,M]\)</span> dimensional one-body Hamiltonian matrix
+elements <span class="math notranslate nohighlight">\(h_{pq}\)</span>. Due to its small size this is written as a
+dense 2D-array.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Energies</span></code> Array containing <span class="math notranslate nohighlight">\([E_{II}, E_{\mathrm{core}}]\)</span>.
+<span class="math notranslate nohighlight">\(E_{II}\)</span> should contain ion-ion repulsion energy and any
+additional constant terms which have to be added to the total energy.
+<span class="math notranslate nohighlight">\(E_{\mathrm{core}}\)</span> is deprecated and not used.</p></li>
+</ul>
+<p>To reduce the memory overhead of storing the three-index tensor we recently adapted the
+tensor-hypercontraction <span class="bibtex" id="id10">[HohensteinTHCI2012]</span><span class="bibtex" id="id11">[ParrishTHCII2012]</span><span class="bibtex" id="id12">[HohensteinTHCIII2012]</span> (THC) approach for use in AFQMCcite{MaloneISDF2019}. Within the THC approach we
+can approximate the orbital products entering the ERIs as</p>
+<div class="math notranslate nohighlight" id="equation-eq59">
+<span class="eqno">(59)<a class="headerlink" href="#equation-eq59" title="Permalink to this equation">¶</a></span>\[\varphi^{*}_p(\mathbf{r})\varphi_r(\mathbf{r}) \approx \sum_\mu^{N_\mu} \zeta_\mu(\mathbf{r}) \varphi^*_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu),\label{eq:orb_prod}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\varphi_p(\mathbf{r})\)</span> are the one-electron orbitals and
+<span class="math notranslate nohighlight">\(\mathbf{r}_\mu\)</span> are a set of specially selected interpolating
+points, <span class="math notranslate nohighlight">\(\zeta_\mu(\mathbf{r})\)</span> are a set of interpolating vectors
+and <span class="math notranslate nohighlight">\(N_\mu = x_\mu M\)</span>. We can then write the ERI tensor as a
+product of rank-2 tensors</p>
+<div class="math notranslate nohighlight" id="equation-eq60">
+<span class="eqno">(60)<a class="headerlink" href="#equation-eq60" title="Permalink to this equation">¶</a></span>\[v_{pqrs} \approx \sum_{\mu\nu} \varphi^{*}_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu) M_{\mu\nu} \varphi^{*}_q(\mathbf{r}_\nu)\varphi_s(\mathbf{r}_\nu)\label{eq:4ix_thc},\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-eq61">
+<span class="eqno">(61)<a class="headerlink" href="#equation-eq61" title="Permalink to this equation">¶</a></span>\[M_{\mu\nu} = \int d\mathbf{r}d\mathbf{r}' \zeta_\mu(\mathbf{r})\frac{1}{|\mathbf{r}-\mathbf{r}'|}\zeta^{*}_\nu(\mathbf{r}')\label{eq:mmat}.\]</div>
+<p>We also require the half-rotated versions of these quantities which live
+on a different set of <span class="math notranslate nohighlight">\(\tilde{N}_\mu\)</span> interpolating points
+<span class="math notranslate nohighlight">\(\tilde{\mathbf{r}}_\mu\)</span> (see <span class="bibtex" id="id13">[MaloneISDF2019]</span>). The file format for THC
+factorization is as follows:</p>
+<div class="literal-block-wrapper docutils container" id="listing-54">
+<div class="code-block-caption"><span class="caption-number">Listing 54 </span><span class="caption-text">Sample Sparse Cholesky QMCPACK Hamtiltonian.</span><a class="headerlink" href="#listing-54" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ h5dump -n afqmc.h5
+HDF5 &quot;afqmc.h5&quot; {
+    FILE_CONTENTS {
+        group      /
+        group      /Hamiltonian
+        group      /Hamiltonian/THC
+        dataset    /Hamiltonian/THC/Luv
+        dataset    /Hamiltonian/THC/Orbitals
+        dataset    /Hamiltonian/THC/HalfTransformedMuv
+        dataset    /Hamiltonian/THC/HalfTransformedFullOrbitals
+        dataset    /Hamiltonian/THC/HalfTransformedOccOrbitals
+        dataset    /Hamiltonian/THC/dims
+        dataset    /Hamiltonian/ComplexIntegrals
+        dataset    /Hamiltonian/dims
+        dataset    /Hamiltonian/hcore
+        dataset    /Hamiltonian/Energies
+    }
+}
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/Luv</span></code> Cholesky factorization of the <span class="math notranslate nohighlight">\(M_{\mu\nu}\)</span> matrix given in <a class="reference internal" href="#equation-eq61">(61)</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/Orbitals</span></code> <span class="math notranslate nohighlight">\([M,N_\mu]\)</span> dimensional array of orbitals evaluated at chosen
+interpolating points <span class="math notranslate nohighlight">\(\varphi_i(\mathbf{r}_\mu)\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/HalfTransformedMuv</span></code> <span class="math notranslate nohighlight">\([\tilde{N}_\mu,\tilde{N}_\mu]\)</span> dimensional array containing
+half-transformed <span class="math notranslate nohighlight">\(\tilde{M}_{\mu\nu}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/HalfTransformedFullOrbitals</span></code> <span class="math notranslate nohighlight">\([M,\tilde{N}_\mu]\)</span> dimensional array containing orbital set
+computed at half-transformed interpolating points
+<span class="math notranslate nohighlight">\(\varphi_i(\tilde{\mathbf{r}}_\mu)\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/HalfTransformedOccOrbitals</span></code> <span class="math notranslate nohighlight">\([N_\alpha+N_\beta,\tilde{N}_\mu]\)</span> dimensional array
+containing half-rotated orbital set computed at half-transformed
+interpolating points
+<span class="math notranslate nohighlight">\(\varphi_a(\tilde{\mathbf{r}}_\mu) = \sum_{p} A_{pa}^* \varphi_{p}(\tilde{\mathbf{r}}_\mu)\)</span>,
+where <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> is the Slater-Matrix of the (currently
+single-determinant) trial wavefunction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/THC/dims</span></code> Descriptor array containing <span class="math notranslate nohighlight">\([M, N_\mu, \tilde{N}_\mu]\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/ComplexIntegrals</span></code> Length 1 array that specifies if integrals are complex valued. 1
+for complex integrals, 0 for real integrals.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/dims</span></code> Descriptor array of length 8 containing
+<span class="math notranslate nohighlight">\([0,0,0,M,N_\alpha,N_\beta,0,0]\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/hcore</span></code> Contains the <span class="math notranslate nohighlight">\([M,M]\)</span> dimensional one-body Hamiltonian matrix
+elements <span class="math notranslate nohighlight">\(h_{ij}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Energies</span></code> Array containing <span class="math notranslate nohighlight">\([E_{II}, E_{\mathrm{core}}]\)</span>.
+<span class="math notranslate nohighlight">\(E_{II}\)</span> should contain ion-ion repulsion energy and any
+additional constant terms which have to be added to the total energy
+(such as the electron-electron interaction Madelung contribution of
+<span class="math notranslate nohighlight">\(\frac{1}{2} N \xi )\)</span>. <span class="math notranslate nohighlight">\(E_{\mathrm{core}}\)</span> is deprecated
+and not used.</p></li>
+</ul>
+<p>Finally, we have implemented an explicitly <span class="math notranslate nohighlight">\(k\)</span>-point dependent factorization for periodic systems <span class="bibtex" id="id14">[MottaKPoint2019]</span><span class="bibtex" id="id15">[MaloneGPU2020]</span></p>
+<div class="math notranslate nohighlight" id="equation-eq62">
+<span class="eqno">(62)<a class="headerlink" href="#equation-eq62" title="Permalink to this equation">¶</a></span>\[\begin{split}v_{pqrs} = \sum_{\substack{n\textbf{Q}\textbf{k}\textbf{k}' \\ pqrs\sigma\sigma'}} L^{\textbf{Q},\textbf{k}}_{pr,n} {L^{\textbf{Q},\textbf{k}'}_{sq,n}}^{*}\label{eq:kp_h2}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\textbf{k}\)</span>, <span class="math notranslate nohighlight">\(\textbf{k}'\)</span> and <span class="math notranslate nohighlight">\(\textbf{Q}\)</span> are
+vectors in the first Brillouin zone. The one-body Hamiltonian is block
+diagonal in <span class="math notranslate nohighlight">\(\textbf{k}\)</span> and in <a class="reference internal" href="#equation-eq62">(62)</a> we have used
+momentum conservation
+<span class="math notranslate nohighlight">\((\textbf{k}_p - \textbf{k}_r + \textbf{k}_q - \textbf{k}_s) = \textbf{G}\)</span>
+with <span class="math notranslate nohighlight">\(\textbf{G}\)</span> being some vector in the reciprocal lattice of
+the simulation cell. The convention for the Cholesky matrix
+<span class="math notranslate nohighlight">\(L^{\textbf{Q},\textbf{k}}_{pr,\gamma}\)</span> is as follows:
+<span class="math notranslate nohighlight">\(\textbf{k}_r = \textbf{k}_p - \textbf{Q}\)</span>, so the vector
+<span class="math notranslate nohighlight">\(\textbf{k}\)</span> labels the <em>k</em>-point of the first band index,
+<span class="math notranslate nohighlight">\(\textit{p}\)</span>, while the <em>k</em>-point vector of the second band index,
+<span class="math notranslate nohighlight">\(\textit{r}\)</span>, is given by <span class="math notranslate nohighlight">\(\textbf{k} - \textbf{Q}\)</span>.
+Electron repulsion integrals at different <span class="math notranslate nohighlight">\(\textbf{Q}\)</span> vectors are
+zero by symmetry, resulting in a reduction in the number of required
+<span class="math notranslate nohighlight">\(\mathbf{Q}\)</span> vectors. For certain <span class="math notranslate nohighlight">\(\textbf{Q}\)</span> vectors that
+satisfy <span class="math notranslate nohighlight">\(\textbf{Q} \ne -\textbf{Q}\)</span> (this is not satisfied at the
+origin and at high symmetry points on the edge of the 1BZ), we have
+<span class="math notranslate nohighlight">\({L^{\textbf{Q},\textbf{k}}_{sq,\gamma}}^{*} = {L^{-\textbf{Q},\textbf{k}-\textbf{Q}}_{qs,\gamma}}\)</span>,
+which requires us to store Cholesky vectors for either one of the
+<span class="math notranslate nohighlight">\((\textbf{Q},-\textbf{Q})\)</span> pair, but not both.</p>
+<p>In what follows let <span class="math notranslate nohighlight">\(m_{\mathbf{k}}\)</span> denote the number of basis
+functions for basis functions of a given <span class="math notranslate nohighlight">\(k\)</span>-point (these can in
+principle differ for different <span class="math notranslate nohighlight">\(k\)</span>-points due to linear
+dependencies), <span class="math notranslate nohighlight">\(n^{\alpha}_{\mathbf{k}}\)</span> the number of
+<span class="math notranslate nohighlight">\(\alpha\)</span> electrons in a given <span class="math notranslate nohighlight">\(k\)</span>-point and
+<span class="math notranslate nohighlight">\(n_{\mathrm{chol}}^{\mathbf{Q}_n}\)</span> the number of Cholesky vectors
+for momentum transfer <span class="math notranslate nohighlight">\(\mathbf{Q}_n\)</span>. The file format for this
+factorization is as follows (for a <span class="math notranslate nohighlight">\(2\times2\times2\)</span>
+<span class="math notranslate nohighlight">\(k\)</span>-point mesh, for denser meshes generally there will be far
+fewer symmetry inequivalent momentum transfer vectors than there are
+<span class="math notranslate nohighlight">\(k\)</span>-points):</p>
+<div class="literal-block-wrapper docutils container" id="listing-55">
+<div class="code-block-caption"><span class="caption-number">Listing 55 </span><span class="caption-text">Sample Dense <span class="math notranslate nohighlight">\(k\)</span>-point dependent Cholesky QMCPACK Hamtiltonian.</span><a class="headerlink" href="#listing-55" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ h5dump -n afqmc.h5
+HDF5 &quot;afqmc.h5&quot; {
+    FILE_CONTENTS {
+        group      /
+        group      /Hamiltonian
+        group      /Hamiltonian/KPFactorized
+        dataset    /Hamiltonian/KPFactorized/L0
+        dataset    /Hamiltonian/KPFactorized/L1
+        dataset    /Hamiltonian/KPFactorized/L2
+        dataset    /Hamiltonian/KPFactorized/L3
+        dataset    /Hamiltonian/KPFactorized/L4
+        dataset    /Hamiltonian/KPFactorized/L5
+        dataset    /Hamiltonian/KPFactorized/L6
+        dataset    /Hamiltonian/KPFactorized/L7
+        dataset    /Hamiltonian/NCholPerKP
+        dataset    /Hamiltonian/MinusK
+        dataset    /Hamiltonian/NMOPerKP
+        dataset    /Hamiltonian/QKTok2
+        dataset    /Hamiltonian/H1_kp0
+        dataset    /Hamiltonian/H1_kp1
+        dataset    /Hamiltonian/H1_kp2
+        dataset    /Hamiltonian/H1_kp3
+        dataset    /Hamiltonian/H1_kp4
+        dataset    /Hamiltonian/H1_kp5
+        dataset    /Hamiltonian/H1_kp6
+        dataset    /Hamiltonian/H1_kp7
+        dataset    /Hamiltonian/ComplexIntegrals
+        dataset    /Hamiltonian/KPoints
+        dataset    /Hamiltonian/dims
+        dataset    /Hamiltonian/Energies
+    }
+}
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/KPFactorized/L[n]</span></code> This series of datasets store elements of the Cholesky tensors
+<span class="math notranslate nohighlight">\(L[\mathbf{Q}_n,\mathbf{k},pr,n]\)</span>. Each data set is of
+dimension
+<span class="math notranslate nohighlight">\([N_k,m_{\mathbf{k}}\times m_{\mathbf{k}'},n^{\mathbf{Q}_n}_\mathrm{chol}]\)</span>,
+where, again, <span class="math notranslate nohighlight">\(k\)</span> is the <span class="math notranslate nohighlight">\(k\)</span>-point associated with basis
+function <span class="math notranslate nohighlight">\(p\)</span>, the <span class="math notranslate nohighlight">\(k\)</span>-point of basis function <span class="math notranslate nohighlight">\(r\)</span>
+is defined via the mapping <code class="docutils literal notranslate"><span class="pre">QKtok2</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/NCholPerKP</span></code> <span class="math notranslate nohighlight">\(N_k\)</span> length array giving number of Cholesky vectors per
+<span class="math notranslate nohighlight">\(k\)</span>-point.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/MinusK</span></code>: <span class="math notranslate nohighlight">\(N_k\)</span> length array mapping a
+<span class="math notranslate nohighlight">\(k\)</span>-point to its inverse: <span class="math notranslate nohighlight">\(\mathbf{k}_i+\)</span><code class="docutils literal notranslate"><span class="pre">MinusK[i]</span></code>
+<span class="math notranslate nohighlight">\(= \mathbf{0} \mod \mathbf{G}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/NMOPerKP</span></code>: <span class="math notranslate nohighlight">\(N_k\)</span> length array listing number of
+basis functions per <span class="math notranslate nohighlight">\(k\)</span>-point.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/QKTok2</span></code>: <span class="math notranslate nohighlight">\([N_k,N_k]\)</span> dimensional array.
+<code class="docutils literal notranslate"><span class="pre">QKtok2[i,j]</span></code> yields the <span class="math notranslate nohighlight">\(k\)</span> point index satisfying
+<span class="math notranslate nohighlight">\(\mathbf{k}=\mathbf{Q}_i-\mathbf{k}_j+\mathbf{G}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/dims</span></code>: Descriptor array of length 8 containing
+<span class="math notranslate nohighlight">\([0,0,0,M,N_\alpha,N_\beta,0,0]\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/H1_kp[n]</span></code> Contains the <span class="math notranslate nohighlight">\([m_{\mathbf{k}_n},m_{\mathbf{k}_n}]\)</span>
+dimensional one-body Hamiltonian matrix elements
+<span class="math notranslate nohighlight">\(h_{(\mathbf{k}_{n}p)(\mathbf{k}_{n}q)}\)</span>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/ComplexIntegrals</span></code> Length 1 array that specifies if integrals are complex valued. 1
+for complex integrals, 0 for real integrals.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/KPoints</span></code> <span class="math notranslate nohighlight">\([N_k,3]\)</span> Dimensional array containing <span class="math notranslate nohighlight">\(k\)</span>-points used to
+sample Brillouin zone.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/dims</span></code> Descriptor array of length 8 containing
+<span class="math notranslate nohighlight">\([0,0,N_k,M,N_\alpha,N_\beta,0,N_\mathrm{nchol}]\)</span>. Note that
+<span class="math notranslate nohighlight">\(M\)</span> is the total number of basis functions, i.e.
+<span class="math notranslate nohighlight">\(M=\sum_\mathbf{k} m_\mathbf{k}\)</span>, and likewise for the number
+of electrons.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/Hamiltonian/Energies</span></code> Array containing <span class="math notranslate nohighlight">\([E_{II}, E_{\mathrm{core}}]\)</span>.
+<span class="math notranslate nohighlight">\(E_{II}\)</span> should contain ion-ion repulsion energy and any
+additional constant terms which have to be added to the total energy
+(such as the electron-electron interaction Madelung contribution of
+<span class="math notranslate nohighlight">\(\frac{1}{2} N \xi )\)</span>. <span class="math notranslate nohighlight">\(E_{\mathrm{core}}\)</span> is deprecated
+and not used.</p></li>
+</ul>
+<p>Complex integrals should be written as an array with an additional dimension, e.g., a 1D array should be written as a 2D array with <code class="docutils literal notranslate"><span class="pre">array_hdf5[:,0]=real(1d_array)</span></code> and <code class="docutils literal notranslate"><span class="pre">array_hdf5[:,1]=imag(1d_array)</span></code>. The functions <code class="docutils literal notranslate"><span class="pre">afqmctools.utils.misc.from_qmcpack_complex</span></code> and <code class="docutils literal notranslate"><span class="pre">afqmctools.utils.misc.to_qmcpack_complex</span></code> can be used to transform qmcpack format to complex valued numpy arrays of the appropriate shape and vice versa.</p>
+<p>Finally, if using external tools to generate this file format, we provide a sanity checker script in <code class="docutils literal notranslate"><span class="pre">utils/afqmctools/bin/test_afqmc_input.py</span></code> which will raise errors if the format does not conform to what is being used internally.</p>
+</div>
+<div class="section" id="advice-useful-information">
+<h2>Advice/Useful Information<a class="headerlink" href="#advice-useful-information" title="Permalink to this headline">¶</a></h2>
+<p>AFQMC calculations are computationally expensive and require some care to obtain reasonable performance.
+The following is a growing list of useful advice for new users, followed by a sample input for a large calculation.</p>
+<ul class="simple">
+<li><p>Generate Cholesky-decomposed integrals with external codes instead of
+the 2-electron integrals directly. The generation of the Cholesky
+factorization is faster and consumes less memory.</p></li>
+<li><p>Use the hybrid algorithm for walker propagation. Set steps/substeps
+to adequate values to reduce the number of energy evaluations. This
+is essential when using large multideterminant expansions.</p></li>
+<li><p>Adjust cutoffs in the wavefunction and propagator bloxks until
+desired accuracy is reached. The cost of the calculation will depend
+on these cutoffs.</p></li>
+<li><p>Adjust ncores/nWalkers to obtain better efficiency. Larger nWalkers
+will lead to more efficient linear algebra operations but will
+increase the time per step. Larger ncores will reduce the time per
+step but will reduce efficiency because of inefficiencies in the
+parallel implementation. For large calculations, values between 6–12
+for both quantities should be reasonable, depending on architecture.</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="listing-56">
+<div class="code-block-caption"><span class="caption-number">Listing 56 </span><span class="caption-text">Example of sections of an AFQMC input file for a large calculation.</span><a class="headerlink" href="#listing-56" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+
+  <span class="o">&lt;</span><span class="n">Hamiltonian</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ham0&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;SparseGeneral&quot;</span> <span class="n">info</span><span class="o">=</span><span class="s2">&quot;info0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;filename&quot;</span><span class="o">&gt;</span><span class="n">fcidump</span><span class="o">.</span><span class="n">h5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cutoff_1bar&quot;</span><span class="o">&gt;</span><span class="mf">1e-6</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cutoff_decomposition&quot;</span><span class="o">&gt;</span><span class="mf">1e-5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">Hamiltonian</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">Wavefunction</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wfn0&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;MSD&quot;</span> <span class="n">info</span><span class="o">=</span><span class="s2">&quot;info0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;filetype&quot;</span><span class="o">&gt;</span><span class="n">ascii</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;filename&quot;</span><span class="o">&gt;</span><span class="n">wfn</span><span class="o">.</span><span class="n">dat</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">Wavefunction</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">WalkerSet</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wset0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;walker_type&quot;</span><span class="o">&gt;</span><span class="n">closed</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">WalkerSet</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">Propagator</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prop0&quot;</span> <span class="n">info</span><span class="o">=</span><span class="s2">&quot;info0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;hybrid&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">Propagator</span><span class="o">&gt;</span>
+
+  <span class="o">&lt;</span><span class="n">execute</span> <span class="n">wset</span><span class="o">=</span><span class="s2">&quot;wset0&quot;</span> <span class="n">ham</span><span class="o">=</span><span class="s2">&quot;ham0&quot;</span> <span class="n">wfn</span><span class="o">=</span><span class="s2">&quot;wfn0&quot;</span> <span class="n">prop</span><span class="o">=</span><span class="s2">&quot;prop0&quot;</span> <span class="n">info</span><span class="o">=</span><span class="s2">&quot;info0&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ncores&quot;</span><span class="o">&gt;</span><span class="mi">8</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span><span class="o">&gt;</span><span class="mf">0.01</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span><span class="o">&gt;</span><span class="mi">10000</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span><span class="o">&gt;</span><span class="mi">10</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;substeps&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nWalkers&quot;</span><span class="o">&gt;</span><span class="mi">8</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">execute</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="sCI.html" class="btn btn-neutral float-left" title="Selected Configuration Interaction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
