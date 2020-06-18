@@ -665,3 +665,129 @@ Press ``q [Enter]`` to quit gnuplot.
 
 Improving the basis sets
 ~~~~~~~~~~~~~~~~~~~~~~~~
+
+In all of the previous examples, we are using the sum of two Gaussian
+functions (STO-2G) to approximate what should be a simple decaying
+exponential for the wavefunction of the ground state of the hydrogen
+atom. The sum of multiple copies of a function varying each copy’s width
+and amplitude with coefficients is called a *basis set*. As we add
+Gaussians to the basis set, the approximation improves, the variance
+goes toward zero, and the energy goes to -0.5 Ha. In nearly every other
+case, the exact function is unknown, and we add basis functions until
+the total energy does not change within some threshold.
+
+Change to the directory ``basis`` and look at the total energy and
+variance as we change the wavefunction by typing ``qmca -q ev H_``:
+
+::
+
+                            LocalEnergy               Variance        ratio
+  H_STO-2G  series 0  -0.454460 +/- 0.000568   0.529496 +/- 0.018445   1.1651
+  H_STO-3G  series 0  -0.465386 +/- 0.000502   0.410491 +/- 0.010051   0.8820
+  H_STO-6G  series 0  -0.471332 +/- 0.000491   0.213919 +/- 0.012954   0.4539
+  H__exact  series 0  -0.500000 +/- 0.000000   0.000000 +/- 0.000000   -0.0000
+
+qmca also puts out the ratio of the variance to the local energy in a
+column to the right of the variance error bar. A typical high-quality
+value for this ratio is lower than 0.1 or so—none of these few-Gaussian
+wavefunctions satisfy that rule of thumb.
+
+Use qmca to plot the trace of the local energy, kinetic energy, and
+potential energy of H__exact. The total energy is constantly -0.5 Ha
+even though the kinetic and potential energies fluctuate from
+configuration to configuration.
+
+Adding a Jastrow factor
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Another route to reducing the variance is the introduction of a Jastrow
+factor to account for electron-electron correlation (not the statistical
+autocorrelation of MC steps but the physical avoidance that electrons
+have of one another). To do this, we will switch to the hydrogen dimer
+with the exact ground state wavefunction of the atom (STO basis)—this
+will not be exact for the dimer. The ground state energy of the hydrogen
+dimer is -1.174 Ha.
+
+Change directories to ``dimer`` and put in ``qmca -q ev *scalar.dat`` to
+see the result of adding a simple, one-parameter Jastrow to the STO
+basis for the hydrogen dimer at experimental bond length:
+
+::
+
+                                  LocalEnergy               Variance
+  H2_STO___no_jastrow  series 0  -0.876548 +/- 0.005313   0.473526 +/- 0.014910
+  H2_STO_with_jastrow  series 0  -0.912763 +/- 0.004470   0.279651 +/- 0.016405
+
+The energy reduces by 0.044 +/- 0.006 HA and the variance by 0.19 +/-
+0.02. This is still 20% above the ground state energy, and subsequent
+labs will cover how to improve on this with improved forms of the
+wavefunction that capture more of the physics.
+
+Scaling to larger numbers of electrons
+--------------------------------------
+
+Calculating the efficiency
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The inverse of the product of CPU time and the variance measures the
+*efficiency* of an MC calculation. Use qmca to calculate efficiency by
+typing ``qmca -q eff *scalar.dat`` to see the efficiency of these two
+H\ :math:`_2` calculations:
+
+::
+
+  H2_STO___no_jastrow  series 0  Efficiency = 16698.725453 +/- 0.000000
+  H2_STO_with_jastrow  series 0  Efficiency = 52912.365609 +/- 0.000000
+
+The Jastrow factor increased the efficiency in these calculations by a factor
+of three, largely through the reduction in variance (check the average block
+CPU time to verify this claim).
+
+Scaling up
+~~~~~~~~~~
+
+To see how MC scales with increasing particle number, change directories
+to ``size``. Here are the data from runs of increasing numbers of
+electrons for H, H\ :math:`_2`, C, CH\ :math:`_4`, C\ :math:`_2`,
+C\ :math:`_2`\ H\ :math:`_4`, (CH\ :math:`_4`)\ :math:`_2`, and
+(C\ :math:`_2`\ H\ :math:`_4`)\ :math:`_2` using the STO-6G basis set
+for the orbitals of the Slater determinant. The file names begin with
+the number of electrons simulated for those data.
+
+Use ``qmca -q bc *scalar.dat`` to see that the CPU time per block
+increases with the number of electrons in the simulation; then plot the
+total CPU time of the simulation by **gnuplot Nelectron_tCPU.plt**:
+
+.. image:: /figs/lab_qmc_statistics_scaling.png
+  :width: 500
+  :align: center
+
+The green pluses represent the CPU time per block at each electron
+number. The red line is a quadratic fit to those data. For a fixed basis
+set size, we expect the time to scale quadratically up to 1,000s of
+electrons, at which point a cubic scaling term may become dominant.
+Knowing the scaling allows you to roughly project the calculation time
+for a larger number of electrons.
+
+Press ``q [Enter]`` to quit gnuplot.
+
+This is not the whole story, however. The variance of the energy also
+increases with a fixed basis set as the number of particles increases at
+a faster rate than the energy decreases. To see this, type
+``qmca -q ev *scalar.dat``:
+
+::
+
+              LocalEnergy               Variance
+  01________H  series 0  -0.471352 +/- 0.000493      0.213020 +/- 0.012950
+  02_______H2  series 0  -0.898875 +/- 0.000998      0.545717 +/- 0.009980
+  06________C  series 0  -37.608586 +/- 0.020453   184.322000 +/- 45.481193
+  10______CH4  series 0  -38.821513 +/- 0.022740   169.797871 +/- 24.765674
+  12_______C2  series 0  -72.302390 +/- 0.037691   491.416711 +/- 106.090103
+  16_____C2H4  series 0  -75.488701 +/- 0.042919   404.218115 +/- 60.196642
+  18___CH4CH4  series 0  -58.459857 +/- 0.039309   498.579645 +/- 92.480126
+  32_C2H4C2H4  series 0  -91.567283 +/- 0.048392   632.114026 +/- 69.637760
+
+The increase in variance is not uniform, but the general trend is upward with a
+fixed wavefunction form and basis set.  Subsequent labs will address how to
+improve the wavefunction to keep the variance manageable.

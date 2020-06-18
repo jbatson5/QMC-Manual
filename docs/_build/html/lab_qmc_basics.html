@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lab 2: QMC Basics &mdash; QMC Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Lab 1: MC Statistical Analysis" href="lab_qmc_statistics.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMC Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 2: QMC Basics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#topics-covered-in-this-lab">Topics covered in this lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lab-outline">Lab outline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lab-directories-and-files">Lab directories and files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-and-converting-a-pseudopotential-for-oxygen">Obtaining and converting a pseudopotential for oxygen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dft-with-qe-to-obtain-the-orbital-part-of-the-wavefunction">DFT with QE to obtain the orbital part of the wavefunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optimization-with-qmcpack-to-obtain-the-correlated-part-of-the-wavefunction">Optimization with QMCPACK to obtain the correlated part of the wavefunction</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMC Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Lab 2: QMC Basics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lab_qmc_basics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lab-2-qmc-basics">
+<span id="lab-qmc-basics"></span><h1>Lab 2: QMC Basics<a class="headerlink" href="#lab-2-qmc-basics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="topics-covered-in-this-lab">
+<h2>Topics covered in this lab<a class="headerlink" href="#topics-covered-in-this-lab" title="Permalink to this headline">¶</a></h2>
+<p>This lab focuses on the basics of performing quality QMC calculations.
+As an example, participants test an oxygen pseudopotential within DMC by
+calculating atomic and dimer properties, a common step prior to
+production runs. Topics covered include:</p>
+<ul class="simple">
+<li><p>Converting pseudopotentials into QMCPACK’s FSATOM format</p></li>
+<li><p>Generating orbitals with QE</p></li>
+<li><p>Converting orbitals into QMCPACK’s ESHDF format with pw2qmcpack</p></li>
+<li><p>Optimizing Jastrow factors with QMCPACK</p></li>
+<li><p>Removing DMC time step errors via extrapolation</p></li>
+<li><p>Automating QMC workflows with Nexus</p></li>
+<li><p>Testing pseudopotentials for accuracy</p></li>
+</ul>
+</div>
+<div class="section" id="lab-outline">
+<h2>Lab outline<a class="headerlink" href="#lab-outline" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Download and conversion of oxygen atom pseudopotential</p></li>
+<li><p>DMC time step study of the neutral oxygen atom</p>
+<ol class="arabic simple">
+<li><p>DFT orbital generation with QE</p></li>
+<li><p>Orbital conversion with</p></li>
+<li><p>Optimization of Jastrow correlation factor with QMCPACK</p></li>
+<li><p>DMC run with multiple time steps</p></li>
+</ol>
+</li>
+<li><p>DMC time step study of the first ionization potential of oxygen</p>
+<ol class="arabic simple">
+<li><p>Repetition of a-d above for ionized oxygen atom</p></li>
+</ol>
+</li>
+<li><p>Automated DMC calculations of the oxygen dimer binding curve</p></li>
+</ol>
+</div>
+<div class="section" id="lab-directories-and-files">
+<h2>Lab directories and files<a class="headerlink" href="#lab-directories-and-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>%
+labs/lab2_qmc_basics/
+│
+├── oxygen_atom           - oxygen atom calculations
+│   ├── O.q0.dft.in          - Quantum ESPRESSO input for DFT run
+│   ├── O.q0.p2q.in          - pw2qmcpack.x input for orbital conversion run
+│   ├── O.q0.opt.in.xml      - QMCPACK input for Jastrow optimization run
+│   ├── O.q0.dmc.in.xml      - QMCPACK input file for neutral O DMC
+│   ├── ip_conv.py           - tool to fit oxygen IP vs timestep
+│   └── reference            - directory w/ completed runs
+│
+├── oxygen_dimer          - oxygen dimer calculations
+│   ├── dimer_fit.py         - tool to fit dimer binding curve
+│   ├── O_dimer.py           - automation script for dimer calculations
+│   ├── pseudopotentials     - directory for pseudopotentials
+│   └── reference            - directory w/ completed runs
+│
+└── your_system           - performing calculations for an arbitrary system (yours)
+    ├── example.py           - example nexus file for periodic diamond
+    ├── pseudopotentials     - directory containing C pseudopotentials
+    └── reference            - directory w/ completed runs
+</pre></div>
+</div>
+</div>
+<div class="section" id="obtaining-and-converting-a-pseudopotential-for-oxygen">
+<span id="lqb-pseudo"></span><h2>Obtaining and converting a pseudopotential for oxygen<a class="headerlink" href="#obtaining-and-converting-a-pseudopotential-for-oxygen" title="Permalink to this headline">¶</a></h2>
+<p>First enter the <code class="docutils literal notranslate"><span class="pre">oxygen_atom</span></code> directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">labs</span><span class="o">/</span><span class="n">lab2_qmc_basics</span><span class="o">/</span><span class="n">oxygen_atom</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Throughout the rest of the lab, locations are specified with respect to <code class="docutils literal notranslate"><span class="pre">labs/lab2_qmc_basics</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">oxygen_atom</span></code>).</p>
+<p>We use a potential from the Burkatzki-Filippi-Dolg pseudopotential database.
+Although the full database is available in QMCPACK distribution (<code class="docutils literal notranslate"><span class="pre">trunk/pseudopotentials/BFD/</span></code>),
+we use a BFD pseudopotential to illustrate the process of converting and testing an
+external potential for use with QMCPACK.   To obtain the pseudopotential, go to
+<a class="reference external" href="http://www.burkatzki.com/pseudos/index.2.html">http://www.burkatzki.com/pseudos/index.2.html</a>
+and click on the “Select Pseudopotential” button.  Next click on oxygen in the
+periodic table.  Click on the empty circle next to “V5Z” (a large Gaussian
+basis set) and click on “Next.”  Select the Gamess format and click on
+“Retrive Potential.”  Helpful information about the pseudopotential will be
+displayed.  The desired portion is at the bottom (the last 7 lines).  Copy
+this text into the editor of your choice (e.g., <code class="docutils literal notranslate"><span class="pre">emacs</span></code> or <code class="docutils literal notranslate"><span class="pre">vi</span></code>)
+and save it as <code class="docutils literal notranslate"><span class="pre">O.BFD.gamess</span></code>
+(be sure to include a new line at the end of the file).  To transform the
+pseudopotential into the FSATOM XML format used by QMCPACK, use the <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code>
+tool:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">gamess_pot</span> <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">gamess</span> <span class="o">--</span><span class="n">s_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> \
+ <span class="o">--</span><span class="n">p_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> <span class="o">--</span><span class="n">d_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> <span class="o">--</span><span class="n">xml</span> <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>Observe the notation used to describe the reference valence configuration for this helium-core PP: <code class="docutils literal notranslate"><span class="pre">1s(2)2p(4)</span></code>.  The <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> tool uses the following convention for the valence states: the first $s$ state is labeled <code class="docutils literal notranslate"><span class="pre">1s</span></code> (<code class="docutils literal notranslate"><span class="pre">1s</span></code>, <code class="docutils literal notranslate"><span class="pre">2s</span></code>, <code class="docutils literal notranslate"><span class="pre">3s</span></code>, <span class="math notranslate nohighlight">\(\ldots\)</span>), the first <span class="math notranslate nohighlight">\(p\)</span> state is labeled <code class="docutils literal notranslate"><span class="pre">2p</span></code> (<code class="docutils literal notranslate"><span class="pre">2p</span></code>, <code class="docutils literal notranslate"><span class="pre">3p</span></code>, <span class="math notranslate nohighlight">\(\ldots\)</span>), and the first <span class="math notranslate nohighlight">\(d\)</span> state is labeled <code class="docutils literal notranslate"><span class="pre">3d</span></code> (<code class="docutils literal notranslate"><span class="pre">3d</span></code>, <code class="docutils literal notranslate"><span class="pre">4d</span></code>, <span class="math notranslate nohighlight">\(\ldots\)</span>). Copy the resulting xml file into the <code class="docutils literal notranslate"><span class="pre">oxygen_atom</span></code> directory.</p>
+<p>Note: The command to convert the PP into QE’s UPF format is similar (both formats are required):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">gamess_pot</span> <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">gamess</span> <span class="o">--</span><span class="n">s_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> \
+ <span class="o">--</span><span class="n">p_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> <span class="o">--</span><span class="n">d_ref</span> <span class="s2">&quot;1s(2)2p(4)&quot;</span> <span class="o">--</span><span class="n">log_grid</span> <span class="o">--</span><span class="n">upf</span> <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">upf</span>
+</pre></div>
+</div>
+<p>For reference, the text of <code class="docutils literal notranslate"><span class="pre">O.BFD.gamess</span></code> should be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">O</span><span class="o">-</span><span class="n">QMC</span> <span class="n">GEN</span> <span class="mi">2</span> <span class="mi">1</span>
+<span class="mi">3</span>
+<span class="mf">6.00000000</span> <span class="mi">1</span> <span class="mf">9.29793903</span>
+<span class="mf">55.78763416</span> <span class="mi">3</span> <span class="mf">8.86492204</span>
+<span class="o">-</span><span class="mf">38.81978498</span> <span class="mi">2</span> <span class="mf">8.62925665</span>
+<span class="mi">1</span>
+<span class="mf">38.41914135</span> <span class="mi">2</span> <span class="mf">8.71924452</span>
+</pre></div>
+</div>
+<p>The full QMCPACK pseudopotential is also included in <code class="docutils literal notranslate"><span class="pre">oxygen_atom/reference/O.BFD.*</span></code>.</p>
+</div>
+<div class="section" id="dft-with-qe-to-obtain-the-orbital-part-of-the-wavefunction">
+<span id="lqb-dft"></span><h2>DFT with QE to obtain the orbital part of the wavefunction<a class="headerlink" href="#dft-with-qe-to-obtain-the-orbital-part-of-the-wavefunction" title="Permalink to this headline">¶</a></h2>
+<p>With the pseudopotential in hand, the next step toward a QMC calculation is to obtain the
+Fermionic part of the wavefunction, in this case a single Slater determinant constructed
+from DFT-LDA orbitals for a neutral oxygen atom.  If you had trouble with the pseudopotential conversion
+step, preconverted pseudopotential files are located in the <code class="docutils literal notranslate"><span class="pre">oxygen_atom/reference</span></code> directory.</p>
+<p>QE input for the DFT-LDA ground state of the neutral oxygen atom can be found in <code class="docutils literal notranslate"><span class="pre">O.q0.dft.in</span></code>
+and also in <a class="reference internal" href="#listing-58"><span class="std std-ref">Listing 58</span></a>.  Setting <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> instructs QE to write the
+orbitals to disk at the end of the run. Option <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> could be a potential problem
+in large simulations; therefore, we recommend avoiding it and using the converter pw2qmcpack in parallel
+(see details in <span class="xref std std-ref">pw2qmcpack</span>).
+Note that the plane-wave energy cutoff has been set to a reasonable value of 300 Ry here (<code class="docutils literal notranslate"><span class="pre">ecutwfc=300</span></code>).
+This value depends on the pseudopotentials used, and, in general,
+should be selected by running DFT <span class="math notranslate nohighlight">\(\rightarrow\)</span> (orbital conversion) <span class="math notranslate nohighlight">\(\rightarrow\)</span> VMC with
+increasing energy cutoffs until the lowest VMC total energy and variance is reached.</p>
+<div class="literal-block-wrapper docutils container" id="listing-58">
+<div class="code-block-caption"><span class="caption-number">Listing 58 </span><span class="caption-text">QE input file for the neutral oxygen atom (<code class="docutils literal notranslate"><span class="pre">O.q0.dft.in</span></code>)</span><a class="headerlink" href="#listing-58" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">CONTROL</span>
+   <span class="n">calculation</span>       <span class="o">=</span> <span class="s1">&#39;scf&#39;</span>
+   <span class="n">restart_mode</span>      <span class="o">=</span> <span class="s1">&#39;from_scratch&#39;</span>
+   <span class="n">prefix</span>            <span class="o">=</span> <span class="s1">&#39;O.q0&#39;</span>
+   <span class="n">outdir</span>            <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+   <span class="n">pseudo_dir</span>        <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+   <span class="n">disk_io</span>           <span class="o">=</span> <span class="s1">&#39;low&#39;</span>
+   <span class="n">wf_collect</span>        <span class="o">=</span> <span class="o">.</span><span class="n">true</span><span class="o">.</span>
+<span class="o">/</span>
+
+<span class="o">&amp;</span><span class="n">SYSTEM</span>
+   <span class="n">celldm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>         <span class="o">=</span> <span class="mf">1.0</span>
+   <span class="n">ibrav</span>             <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">nat</span>               <span class="o">=</span> <span class="mi">1</span>
+   <span class="n">ntyp</span>              <span class="o">=</span> <span class="mi">1</span>
+   <span class="n">nspin</span>             <span class="o">=</span> <span class="mi">2</span>
+   <span class="n">tot_charge</span>        <span class="o">=</span> <span class="mi">0</span>
+   <span class="n">tot_magnetization</span> <span class="o">=</span> <span class="mi">2</span>
+   <span class="n">input_dft</span>         <span class="o">=</span> <span class="s1">&#39;lda&#39;</span>
+   <span class="n">ecutwfc</span>           <span class="o">=</span> <span class="mi">300</span>
+   <span class="n">ecutrho</span>           <span class="o">=</span> <span class="mi">1200</span>
+   <span class="n">nosym</span>             <span class="o">=</span> <span class="o">.</span><span class="n">true</span><span class="o">.</span>
+   <span class="n">occupations</span>       <span class="o">=</span> <span class="s1">&#39;smearing&#39;</span>
+   <span class="n">smearing</span>          <span class="o">=</span> <span class="s1">&#39;fermi-dirac&#39;</span>
+   <span class="n">degauss</span>           <span class="o">=</span> <span class="mf">0.0001</span>
+<span class="o">/</span>
+
+<span class="o">&amp;</span><span class="n">ELECTRONS</span>
+   <span class="n">diagonalization</span>   <span class="o">=</span> <span class="s1">&#39;david&#39;</span>
+   <span class="n">mixing_mode</span>       <span class="o">=</span> <span class="s1">&#39;plain&#39;</span>
+   <span class="n">mixing_beta</span>       <span class="o">=</span> <span class="mf">0.7</span>
+   <span class="n">conv_thr</span>          <span class="o">=</span> <span class="mf">1e-08</span>
+   <span class="n">electron_maxstep</span>  <span class="o">=</span> <span class="mi">1000</span>
+<span class="o">/</span>
+
+
+<span class="n">ATOMIC_SPECIES</span>
+   <span class="n">O</span>  <span class="mf">15.999</span> <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">upf</span>
+
+<span class="n">ATOMIC_POSITIONS</span> <span class="n">alat</span>
+   <span class="n">O</span>     <span class="mf">9.44863067</span>       <span class="mf">9.44863161</span>       <span class="mf">9.44863255</span>
+
+<span class="n">K_POINTS</span> <span class="n">automatic</span>
+   <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+
+<span class="n">CELL_PARAMETERS</span> <span class="n">cubic</span>
+        <span class="mf">18.89726133</span>       <span class="mf">0.00000000</span>       <span class="mf">0.00000000</span>
+         <span class="mf">0.00000000</span>      <span class="mf">18.89726133</span>       <span class="mf">0.00000000</span>
+         <span class="mf">0.00000000</span>       <span class="mf">0.00000000</span>      <span class="mf">18.89726133</span>
+</pre></div>
+</div>
+</div>
+<p>Run QE by typing</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">pw</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span><span class="nb">input</span> <span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">dft</span><span class="o">.</span><span class="ow">in</span> <span class="o">&gt;&amp;</span><span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">dft</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>The DFT run should take a few minutes to complete.  If desired, you can track the progress of the DFT run by typing “<code class="docutils literal notranslate"><span class="pre">tail</span> <span class="pre">-f</span> <span class="pre">O.q0.dft.out</span></code>.” Once finished, you should check the LDA total energy in <code class="docutils literal notranslate"><span class="pre">O.q0.dft.out</span></code>  by typing  “<code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">'!</span>&#160; <span class="pre">'</span> <span class="pre">O.q0.dft.out</span></code>.”  The result should be close to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!    total energy              =     -31.57553905 Ry
+</pre></div>
+</div>
+<p>The orbitals have been written in a format native to QE in the <code class="docutils literal notranslate"><span class="pre">O.q0.save</span></code> directory.  We will convert them into the ESHDF format expected by QMCPACK by using the <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> tool.  The input for <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> can be found in the file <code class="docutils literal notranslate"><span class="pre">O.q0.p2q.in</span></code> and also in <a class="reference internal" href="#listing-59"><span class="std std-ref">Listing 59</span></a>.</p>
+<div class="literal-block-wrapper docutils container" id="listing-59">
+<div class="code-block-caption"><span class="caption-number">Listing 59 </span><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> input file for orbital conversion (<code class="docutils literal notranslate"><span class="pre">O.q0.p2q.in</span></code>)</span><a class="headerlink" href="#listing-59" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">inputpp</span>
+  <span class="n">prefix</span>     <span class="o">=</span> <span class="s1">&#39;O.q0&#39;</span>
+  <span class="n">outdir</span>     <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+  <span class="n">write_psir</span> <span class="o">=</span> <span class="o">.</span><span class="n">false</span><span class="o">.</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>Perform the orbital conversion now by typing the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">1</span> <span class="n">pw2qmcpack</span><span class="o">.</span><span class="n">x</span><span class="o">&lt;</span><span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">p2q</span><span class="o">.</span><span class="ow">in</span><span class="o">&gt;&amp;</span><span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">p2q</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>Upon completion of the run, a new file should be present containing the orbitals for QMCPACK: <code class="docutils literal notranslate"><span class="pre">O.q0.pwscf.h5</span></code>.  Template XML files for particle (<code class="docutils literal notranslate"><span class="pre">O.q0.ptcl.xml</span></code>) and wavefunction (<code class="docutils literal notranslate"><span class="pre">O.q0.wfs.xml</span></code>) inputs to QMCPACK should also be present.</p>
+</div>
+<div class="section" id="optimization-with-qmcpack-to-obtain-the-correlated-part-of-the-wavefunction">
+<span id="optimization-walkthrough"></span><h2>Optimization with QMCPACK to obtain the correlated part of the wavefunction<a class="headerlink" href="#optimization-with-qmcpack-to-obtain-the-correlated-part-of-the-wavefunction" title="Permalink to this headline">¶</a></h2>
+<p>The wavefunction we have obtained to this point corresponds to a noninteracting Hamiltonian.  Once the Coulomb pair potential is switched on between particles, it is known analytically that the exact wavefunction has cusps whenever two particles meet spatially and, in general, the electrons become correlated.  This is represented in the wavefunction by introducing a Jastrow factor containing at least pair correlations:</p>
+<div class="math notranslate nohighlight" id="equation-eq66">
+<span class="eqno">(66)<a class="headerlink" href="#equation-eq66" title="Permalink to this equation">¶</a></span>\[\Psi_{Slater-Jastrow}=e^{-J}\Psi_{Slater}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq67">
+<span class="eqno">(67)<a class="headerlink" href="#equation-eq67" title="Permalink to this equation">¶</a></span>\[J = \sum_{\sigma\sigma'}\sum_{i&lt;j}u^{\sigma\sigma'}_2(|r_i-r_j|) + \sum_\sigma\sum_{iI}u^{\sigma I}_1(|r_i-r_I|)\:.\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\sigma\)</span> is a spin variable while <span class="math notranslate nohighlight">\(r_i\)</span> and <span class="math notranslate nohighlight">\(r_I\)</span>
+represent electron and ion coordinates, respectively. The introduction
+of <span class="math notranslate nohighlight">\(J\)</span> into the wavefunction is similar to F12 methods in quantum
+chemistry, though it has been present in essentially all QMC studies
+since the first applications the method (circa 1965).</p>
+<p>How are the functions <span class="math notranslate nohighlight">\(u_2^{\sigma\sigma'}\)</span> and
+<span class="math notranslate nohighlight">\(u_1^{\sigma}\)</span> obtained? Generally, they are approximated by
+analytical functions with several unknown parameters that are determined
+by minimizing the energy or variance directly within VMC. This is
+effective because the energy and variance reach a global minimum only
+for the true ground state wavefunction
+(<span class="math notranslate nohighlight">\(\textrm{Energy}=E\equiv\langle{\Psi}|{\hat{H}}|{\Psi}\rangle\)</span>,
+<span class="math notranslate nohighlight">\(\textrm{Variance}=V\equiv\langle{\Psi}|{(\hat{H}-E)^2}|{\Psi}\rangle\)</span>).
+For this exercise, we will focus on minimizing the variance.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lab_qmc_statistics.html" class="btn btn-neutral float-left" title="Lab 1: MC Statistical Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

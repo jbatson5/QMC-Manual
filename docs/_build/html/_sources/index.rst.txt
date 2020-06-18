@@ -31,7 +31,8 @@ User's Guide and Developer's Manual for
    sCI
    afqmc
    examples
-   lab_qmc_statistics 
+   lab_qmc_statistics
+   lab_qmc_basics 
 
 
 

@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab 2: QMC Basics" href="lab_qmc_basics.html" />
     <link rel="prev" title="Examples" href="examples.html" /> 
 </head>
 
@@ -115,10 +116,17 @@
 <li class="toctree-l2"><a class="reference internal" href="#reducing-statistical-error-bars">Reducing statistical error bars</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#increasing-mc-sampling">Increasing MC sampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improving-the-basis-sets">Improving the basis sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-jastrow-factor">Adding a Jastrow factor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scaling-to-larger-numbers-of-electrons">Scaling to larger numbers of electrons</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#calculating-the-efficiency">Calculating the efficiency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling-up">Scaling up</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
 </ul>
 
             
@@ -725,6 +733,110 @@ inputting <code class="docutils literal notranslate"><span class="pre">gnuplot</
 </div>
 <div class="section" id="improving-the-basis-sets">
 <h3>Improving the basis sets<a class="headerlink" href="#improving-the-basis-sets" title="Permalink to this headline">¶</a></h3>
+<p>In all of the previous examples, we are using the sum of two Gaussian
+functions (STO-2G) to approximate what should be a simple decaying
+exponential for the wavefunction of the ground state of the hydrogen
+atom. The sum of multiple copies of a function varying each copy’s width
+and amplitude with coefficients is called a <em>basis set</em>. As we add
+Gaussians to the basis set, the approximation improves, the variance
+goes toward zero, and the energy goes to -0.5 Ha. In nearly every other
+case, the exact function is unknown, and we add basis functions until
+the total energy does not change within some threshold.</p>
+<p>Change to the directory <code class="docutils literal notranslate"><span class="pre">basis</span></code> and look at the total energy and
+variance as we change the wavefunction by typing <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">H_</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                          <span class="n">LocalEnergy</span>               <span class="n">Variance</span>        <span class="n">ratio</span>
+<span class="n">H_STO</span><span class="o">-</span><span class="mi">2</span><span class="n">G</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.454460</span> <span class="o">+/-</span> <span class="mf">0.000568</span>   <span class="mf">0.529496</span> <span class="o">+/-</span> <span class="mf">0.018445</span>   <span class="mf">1.1651</span>
+<span class="n">H_STO</span><span class="o">-</span><span class="mi">3</span><span class="n">G</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.465386</span> <span class="o">+/-</span> <span class="mf">0.000502</span>   <span class="mf">0.410491</span> <span class="o">+/-</span> <span class="mf">0.010051</span>   <span class="mf">0.8820</span>
+<span class="n">H_STO</span><span class="o">-</span><span class="mi">6</span><span class="n">G</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.471332</span> <span class="o">+/-</span> <span class="mf">0.000491</span>   <span class="mf">0.213919</span> <span class="o">+/-</span> <span class="mf">0.012954</span>   <span class="mf">0.4539</span>
+<span class="n">H__exact</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.500000</span> <span class="o">+/-</span> <span class="mf">0.000000</span>   <span class="mf">0.000000</span> <span class="o">+/-</span> <span class="mf">0.000000</span>   <span class="o">-</span><span class="mf">0.0000</span>
+</pre></div>
+</div>
+<p>qmca also puts out the ratio of the variance to the local energy in a
+column to the right of the variance error bar. A typical high-quality
+value for this ratio is lower than 0.1 or so—none of these few-Gaussian
+wavefunctions satisfy that rule of thumb.</p>
+<p>Use qmca to plot the trace of the local energy, kinetic energy, and
+potential energy of H__exact. The total energy is constantly -0.5 Ha
+even though the kinetic and potential energies fluctuate from
+configuration to configuration.</p>
+</div>
+<div class="section" id="adding-a-jastrow-factor">
+<h3>Adding a Jastrow factor<a class="headerlink" href="#adding-a-jastrow-factor" title="Permalink to this headline">¶</a></h3>
+<p>Another route to reducing the variance is the introduction of a Jastrow
+factor to account for electron-electron correlation (not the statistical
+autocorrelation of MC steps but the physical avoidance that electrons
+have of one another). To do this, we will switch to the hydrogen dimer
+with the exact ground state wavefunction of the atom (STO basis)—this
+will not be exact for the dimer. The ground state energy of the hydrogen
+dimer is -1.174 Ha.</p>
+<p>Change directories to <code class="docutils literal notranslate"><span class="pre">dimer</span></code> and put in <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">*scalar.dat</span></code> to
+see the result of adding a simple, one-parameter Jastrow to the STO
+basis for the hydrogen dimer at experimental bond length:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                                <span class="n">LocalEnergy</span>               <span class="n">Variance</span>
+<span class="n">H2_STO___no_jastrow</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.876548</span> <span class="o">+/-</span> <span class="mf">0.005313</span>   <span class="mf">0.473526</span> <span class="o">+/-</span> <span class="mf">0.014910</span>
+<span class="n">H2_STO_with_jastrow</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.912763</span> <span class="o">+/-</span> <span class="mf">0.004470</span>   <span class="mf">0.279651</span> <span class="o">+/-</span> <span class="mf">0.016405</span>
+</pre></div>
+</div>
+<p>The energy reduces by 0.044 +/- 0.006 HA and the variance by 0.19 +/-
+0.02. This is still 20% above the ground state energy, and subsequent
+labs will cover how to improve on this with improved forms of the
+wavefunction that capture more of the physics.</p>
+</div>
+</div>
+<div class="section" id="scaling-to-larger-numbers-of-electrons">
+<h2>Scaling to larger numbers of electrons<a class="headerlink" href="#scaling-to-larger-numbers-of-electrons" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="calculating-the-efficiency">
+<h3>Calculating the efficiency<a class="headerlink" href="#calculating-the-efficiency" title="Permalink to this headline">¶</a></h3>
+<p>The inverse of the product of CPU time and the variance measures the
+<em>efficiency</em> of an MC calculation. Use qmca to calculate efficiency by
+typing <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">eff</span> <span class="pre">*scalar.dat</span></code> to see the efficiency of these two
+H<span class="math notranslate nohighlight">\(_2\)</span> calculations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">H2_STO___no_jastrow</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">Efficiency</span> <span class="o">=</span> <span class="mf">16698.725453</span> <span class="o">+/-</span> <span class="mf">0.000000</span>
+<span class="n">H2_STO_with_jastrow</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">Efficiency</span> <span class="o">=</span> <span class="mf">52912.365609</span> <span class="o">+/-</span> <span class="mf">0.000000</span>
+</pre></div>
+</div>
+<p>The Jastrow factor increased the efficiency in these calculations by a factor
+of three, largely through the reduction in variance (check the average block
+CPU time to verify this claim).</p>
+</div>
+<div class="section" id="scaling-up">
+<h3>Scaling up<a class="headerlink" href="#scaling-up" title="Permalink to this headline">¶</a></h3>
+<p>To see how MC scales with increasing particle number, change directories
+to <code class="docutils literal notranslate"><span class="pre">size</span></code>. Here are the data from runs of increasing numbers of
+electrons for H, H<span class="math notranslate nohighlight">\(_2\)</span>, C, CH<span class="math notranslate nohighlight">\(_4\)</span>, C<span class="math notranslate nohighlight">\(_2\)</span>,
+C<span class="math notranslate nohighlight">\(_2\)</span>H<span class="math notranslate nohighlight">\(_4\)</span>, (CH<span class="math notranslate nohighlight">\(_4\)</span>)<span class="math notranslate nohighlight">\(_2\)</span>, and
+(C<span class="math notranslate nohighlight">\(_2\)</span>H<span class="math notranslate nohighlight">\(_4\)</span>)<span class="math notranslate nohighlight">\(_2\)</span> using the STO-6G basis set
+for the orbitals of the Slater determinant. The file names begin with
+the number of electrons simulated for those data.</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">bc</span> <span class="pre">*scalar.dat</span></code> to see that the CPU time per block
+increases with the number of electrons in the simulation; then plot the
+total CPU time of the simulation by <strong>gnuplot Nelectron_tCPU.plt</strong>:</p>
+<a class="reference internal image-reference" href="_images/lab_qmc_statistics_scaling.png"><img alt="_images/lab_qmc_statistics_scaling.png" class="align-center" src="_images/lab_qmc_statistics_scaling.png" style="width: 500px;" /></a>
+<p>The green pluses represent the CPU time per block at each electron
+number. The red line is a quadratic fit to those data. For a fixed basis
+set size, we expect the time to scale quadratically up to 1,000s of
+electrons, at which point a cubic scaling term may become dominant.
+Knowing the scaling allows you to roughly project the calculation time
+for a larger number of electrons.</p>
+<p>Press <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">[Enter]</span></code> to quit gnuplot.</p>
+<p>This is not the whole story, however. The variance of the energy also
+increases with a fixed basis set as the number of particles increases at
+a faster rate than the energy decreases. To see this, type
+<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">*scalar.dat</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>            <span class="n">LocalEnergy</span>               <span class="n">Variance</span>
+<span class="mi">01</span><span class="n">________H</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.471352</span> <span class="o">+/-</span> <span class="mf">0.000493</span>      <span class="mf">0.213020</span> <span class="o">+/-</span> <span class="mf">0.012950</span>
+<span class="mi">02</span><span class="n">_______H2</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">0.898875</span> <span class="o">+/-</span> <span class="mf">0.000998</span>      <span class="mf">0.545717</span> <span class="o">+/-</span> <span class="mf">0.009980</span>
+<span class="mi">06</span><span class="n">________C</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">37.608586</span> <span class="o">+/-</span> <span class="mf">0.020453</span>   <span class="mf">184.322000</span> <span class="o">+/-</span> <span class="mf">45.481193</span>
+<span class="mi">10</span><span class="n">______CH4</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">38.821513</span> <span class="o">+/-</span> <span class="mf">0.022740</span>   <span class="mf">169.797871</span> <span class="o">+/-</span> <span class="mf">24.765674</span>
+<span class="mi">12</span><span class="n">_______C2</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">72.302390</span> <span class="o">+/-</span> <span class="mf">0.037691</span>   <span class="mf">491.416711</span> <span class="o">+/-</span> <span class="mf">106.090103</span>
+<span class="mi">16</span><span class="n">_____C2H4</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">75.488701</span> <span class="o">+/-</span> <span class="mf">0.042919</span>   <span class="mf">404.218115</span> <span class="o">+/-</span> <span class="mf">60.196642</span>
+<span class="mi">18</span><span class="n">___CH4CH4</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">58.459857</span> <span class="o">+/-</span> <span class="mf">0.039309</span>   <span class="mf">498.579645</span> <span class="o">+/-</span> <span class="mf">92.480126</span>
+<span class="mi">32</span><span class="n">_C2H4C2H4</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">91.567283</span> <span class="o">+/-</span> <span class="mf">0.048392</span>   <span class="mf">632.114026</span> <span class="o">+/-</span> <span class="mf">69.637760</span>
+</pre></div>
+</div>
+<p>The increase in variance is not uniform, but the general trend is upward with a
+fixed wavefunction form and basis set.  Subsequent labs will address how to
+improve the wavefunction to keep the variance manageable.</p>
 </div>
 </div>
 </div>
@@ -736,6 +848,8 @@ inputting <code class="docutils literal notranslate"><span class="pre">gnuplot</
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lab_qmc_basics.html" class="btn btn-neutral float-right" title="Lab 2: QMC Basics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="examples.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
