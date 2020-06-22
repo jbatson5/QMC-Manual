@@ -107,6 +107,18 @@
 <li class="toctree-l2"><a class="reference internal" href="#dft-with-qe-to-obtain-the-orbital-part-of-the-wavefunction">DFT with QE to obtain the orbital part of the wavefunction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optimization-with-qmcpack-to-obtain-the-correlated-part-of-the-wavefunction">Optimization with QMCPACK to obtain the correlated part of the wavefunction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dmc-timestep-extrapolation-i-neutral-oxygen-atom">DMC timestep extrapolation I: neutral oxygen atom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dmc-time-step-extrapolation-ii-oxygen-atom-ionization-potential">DMC time step extrapolation II: oxygen atom ionization potential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dmc-workflow-automation-with-nexus">DMC workflow automation with Nexus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automated-binding-curve-of-the-oxygen-dimer">Automated binding curve of the oxygen dimer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-running-your-system-with-qmcpack">(Optional) Running your system with QMCPACK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#appendix-a-basic-python-constructs">Appendix A: Basic Python constructs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#intrinsic-types-int-float-str">Intrinsic types: <code class="docutils literal notranslate"><span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">str</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#container-types-tuple-list-array-dict-obj">Container types: <code class="docutils literal notranslate"><span class="pre">tuple,</span> <span class="pre">list,</span> <span class="pre">array,</span> <span class="pre">dict,</span> <span class="pre">obj</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conditional-statements-if-elif-else">Conditional Statements: <code class="docutils literal notranslate"><span class="pre">if/elif/else</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#iteration-for">Iteration: <code class="docutils literal notranslate"><span class="pre">for</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions-def-argument-syntax">Functions: <code class="docutils literal notranslate"><span class="pre">def</span></code>, argument syntax</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -678,6 +690,882 @@ accomplish this is to choose input parameters in the following way</p>
    \texttt{warmupSteps}_{n} &amp;= \texttt{warmupSteps}_{n-1}\times 2\nonumber\\
    \texttt{blocks}_{n}      &amp;= \texttt{blocks}_{n-1}\nonumber\\
    \texttt{steps}_{n}       &amp;= \texttt{steps}_{n-1}\times 2\end{aligned}\end{split}\]</div>
+<p>Each DMC run will require about twice as much computer time as the one
+preceding it. Note that the number of blocks is kept fixed for uniform
+statistical analysis.
+<span class="math notranslate nohighlight">\(\texttt{blocks}\times\texttt{steps}\times\texttt{timestep}\sim 60~\mathrm{Ha}^{-1}\)</span>
+is sufficient for this system.</p>
+<p>Choose an initial DMC time step and create a sequence of <span class="math notranslate nohighlight">\(N\)</span> time steps according to <a class="reference internal" href="#equation-eq69">(69)</a>.  Make <span class="math notranslate nohighlight">\(N\)</span> copies of the DMC XML block in the input file.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;dmc&quot;</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;pbyp&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;warmupSteps&quot;</span>         <span class="o">&gt;</span>    <span class="n">DWARMUP</span>         <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span>              <span class="o">&gt;</span>    <span class="n">DBLOCKS</span>         <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;steps&quot;</span>               <span class="o">&gt;</span>    <span class="n">DSTEPS</span>          <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span>            <span class="o">&gt;</span>    <span class="n">DTIMESTEP</span>       <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nonlocalmoves&quot;</span>       <span class="o">&gt;</span>    <span class="n">yes</span>             <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Fill in <code class="docutils literal notranslate"><span class="pre">DWARMUP</span></code>, <code class="docutils literal notranslate"><span class="pre">DBLOCKS</span></code>, <code class="docutils literal notranslate"><span class="pre">DSTEPS</span></code>, and <code class="docutils literal notranslate"><span class="pre">DTIMESTEP</span></code> for each DMC run according to <a class="reference internal" href="#equation-eq69">(69)</a>.  Start the DMC time step extrapolation run by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">qmcpack</span> <span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">dmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="o">&gt;&amp;</span><span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">dmc</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>The run should take only a few minutes to complete.</p>
+<p>QMCPACK will create files prefixed with <code class="docutils literal notranslate"><span class="pre">O.q0.dmc</span></code>.  The log file is <code class="docutils literal notranslate"><span class="pre">O.q0.dmc.out</span></code>.  As before, block-averaged data is written to <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> files.  In addition, DMC runs produce <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> files, which contain energy data averaged only over the walker population (one line per DMC step).  The <code class="docutils literal notranslate"><span class="pre">dmc.dat</span></code> files also provide a record of the walker population at each step.</p>
+<div class="figure align-center" id="id3">
+<span id="fig16"></span><a class="reference internal image-reference" href="_images/lab_qmc_basics_timestep_conv.jpg"><img alt="_images/lab_qmc_basics_timestep_conv.jpg" src="_images/lab_qmc_basics_timestep_conv.jpg" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 16 </span><span class="caption-text">Linear fit to DMC timestep data from <code class="docutils literal notranslate"><span class="pre">PlotTstepConv.pl</span></code>.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">PlotTstepConv.pl</span></code> to obtain a linear fit to the time step data (type “<code class="docutils literal notranslate"><span class="pre">PlotTstepConv.pl</span> <span class="pre">O.q0.dmc.in.xml</span> <span class="pre">40</span></code>”).  You should see a plot similar to <a class="reference internal" href="#fig16"><span class="std std-numref">Fig. 16</span></a>.  The tail end of the text output displays the parameters for the linear fit.  The “<code class="docutils literal notranslate"><span class="pre">a</span></code>” parameter is the total energy extrapolated to zero time step in Hartree units.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">Final</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">parameters</span>            <span class="n">Asymptotic</span> <span class="n">Standard</span> <span class="n">Error</span>
+<span class="o">=======================</span>            <span class="o">==========================</span>
+
+<span class="n">a</span>               <span class="o">=</span> <span class="o">-</span><span class="mf">15.8925</span>         <span class="o">+/-</span> <span class="mf">0.0007442</span>    <span class="p">(</span><span class="mf">0.004683</span><span class="o">%</span><span class="p">)</span>
+<span class="n">b</span>               <span class="o">=</span> <span class="o">-</span><span class="mf">0.0457479</span>       <span class="o">+/-</span> <span class="mf">0.0422</span>       <span class="p">(</span><span class="mf">92.24</span><span class="o">%</span><span class="p">)</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p><strong>Questions and Exercises</strong></p>
+<ol class="arabic simple">
+<li><p>What is the <span class="math notranslate nohighlight">\(\tau\rightarrow 0\)</span> extrapolated value for the
+total energy?</p></li>
+<li><p>What is the maximum time step you should use if you want to calculate
+the total energy to an accuracy of <span class="math notranslate nohighlight">\(0.05\)</span> eV? For convenience,
+<span class="math notranslate nohighlight">\(1~\textrm{Ha}=27.2113846~\textrm{eV}\)</span>.</p></li>
+<li><p>What is the acceptance ratio for this (bias <span class="math notranslate nohighlight">\(&lt;0.05\)</span> eV) run?
+Does it follow the rule of thumb for sensible DMC (acceptance ratio
+<span class="math notranslate nohighlight">\(&gt;99\)</span>%) ?</p></li>
+<li><p>Check the fluctuations in the walker population
+(<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">nw</span> <span class="pre">O.q0.dmc*dmc.dat</span> <span class="pre">–noac</span></code>). Does the population seem
+to be stable?</p></li>
+<li><p>(Optional) Study population control bias for the oxygen atom. Select
+a few population sizes. Copy <code class="docutils literal notranslate"><span class="pre">O.q0.dmc.in.xml</span></code> to a new file and
+remove all but one DMC run (select a single time step). Make one copy
+of the new file for each population, set “textttsamples,” and choose
+a unique <code class="docutils literal notranslate"><span class="pre">id</span></code> in <code class="docutils literal notranslate"><span class="pre">&lt;project/&gt;</span></code>. Use <code class="docutils literal notranslate"><span class="pre">qmca</span></code> to study the
+dependence of the DMC total energy on the walker population. How
+large is the bias compared with time step error? What bias is
+incurred by following the “rule of thumb” of a couple thousand
+walkers? Will population control bias generally be an issue for
+production runs on modern parallel machines?</p></li>
+</ol>
+</div>
+<div class="section" id="dmc-time-step-extrapolation-ii-oxygen-atom-ionization-potential">
+<h2>DMC time step extrapolation II: oxygen atom ionization potential<a class="headerlink" href="#dmc-time-step-extrapolation-ii-oxygen-atom-ionization-potential" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we will repeat the calculations of the previous two
+sections (optimization, time step extrapolation) for the <span class="math notranslate nohighlight">\(+1\)</span>
+charge state of the oxygen atom. Comparing the resulting first
+ionization potential (IP) with experimental data will complete our first
+test of the BFD oxygen pseudopotential. In actual practice, higher IPs
+could also be tested before performing production runs.</p>
+<p>Obtaining the time step extrapolated DMC total energy for ionized oxygen
+should take much less (human) time than for the neutral case. For
+convenience, the necessary steps are summarized as follows.</p>
+<ol class="arabic simple">
+<li><p>Obtain DFT orbitals with QE.</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Copy the DFT input (<code class="docutils literal notranslate"><span class="pre">O.q0.dft.in</span></code>) to <code class="docutils literal notranslate"><span class="pre">O.q1.dft.in</span></code></p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">O.q1.dft.in</span></code> to match the +1 charge state of the oxygen atom.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">prefix</span>            <span class="o">=</span> <span class="s1">&#39;O.q1&#39;</span>
+<span class="o">...</span>
+<span class="n">tot_charge</span>        <span class="o">=</span> <span class="mi">1</span>
+<span class="n">tot_magnetization</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="3">
+<li><p>Perform the DFT run: <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">4</span> <span class="pre">pw.x</span> <span class="pre">-input</span> <span class="pre">O.q1.dft.in</span> <span class="pre">&gt;&amp;O.q1.dft.out&amp;</span></code></p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Convert the orbitals to ESHDF format.</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Copy the pw2qmcpack input (<code class="docutils literal notranslate"><span class="pre">O.q0.p2q.in</span></code>) to <code class="docutils literal notranslate"><span class="pre">O.q1.p2q.in</span></code></p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">O.q1.p2q.in</span></code> to match the file prefix used in DFT.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;O.q1&#39;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="3">
+<li><p>Perform the orbital conversion run: <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">1</span> <span class="pre">pw2qmcpack.x&lt;O.q1.p2q.in&gt;&amp;O.q1.p2q.out&amp;</span></code></p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Optimize the Jastrow factor with QMCPACK.</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Copy the optimization input (<code class="docutils literal notranslate"><span class="pre">O.q0.opt.in.xml</span></code>) to <code class="docutils literal notranslate"><span class="pre">O.q1.opt.in.xml</span></code></p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">O.q1.opt.in.xml</span></code> to match the file prefix used in DFT.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="o">&lt;</span><span class="n">project</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;O.q1.opt&quot;</span> <span class="n">series</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">include</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;O.q1.ptcl.xml&quot;</span><span class="o">/&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">include</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;O.q1.wfs.xml&quot;</span><span class="o">/&gt;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="3">
+<li><p>Edit the particle XML file (<code class="docutils literal notranslate"><span class="pre">O.q1.ptcl.xml</span></code>) to have open boundary conditions.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bconds&quot;</span><span class="o">&gt;</span>
+  <span class="n">n</span> <span class="n">n</span> <span class="n">n</span>
+<span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="4">
+<li><p>Add cutoffs to the Jastrow factors in the wavefunction XML file (<code class="docutils literal notranslate"><span class="pre">O.q1.wfs.xml</span></code>)</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;10.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;10.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;O&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;5.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="5">
+<li><p>Perform the Jastrow optimization run: <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">4</span> <span class="pre">qmcpack</span> <span class="pre">O.q1.opt.in.xml</span> <span class="pre">&gt;&amp;O.q1.opt.out&amp;</span></code></p></li>
+<li><p>Identify the optimal set of parameters with <code class="docutils literal notranslate"><span class="pre">qmca</span></code> (<code class="docutils literal notranslate"><span class="pre">[your</span> <span class="pre">opt.xml]</span></code>).</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>DMC time step study with QMCPACK</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Copy the DMC input (<code class="docutils literal notranslate"><span class="pre">O.q0.dmc.in.xml</span></code>) to <code class="docutils literal notranslate"><span class="pre">O.q1.dmc.in.xml</span></code></p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">O.q1.dmc.in.xml</span></code> to use the DFT prefix and the optimal Jastrow.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="o">&lt;</span><span class="n">project</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;O.q1.dmc&quot;</span> <span class="n">series</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">include</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;O.q1.ptcl.xml&quot;</span><span class="o">/&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">include</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;[your opt.xml]&quot;</span><span class="o">/&gt;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="loweralpha simple" start="3">
+<li><p>Perform the DMC run: <code class="docutils literal notranslate"><span class="pre">mpirun</span> <span class="pre">-np</span> <span class="pre">4</span> <span class="pre">qmcpack</span> <span class="pre">O.q1.dmc.in.xml</span> <span class="pre">&gt;&amp;O.q1.dmc.out&amp;</span></code></p></li>
+<li><p>Obtain the DMC total energy extrapolated to zero time step with <code class="docutils literal notranslate"><span class="pre">PlotTstepConv.pl</span></code>.</p></li>
+</ol>
+</div></blockquote>
+<p>The aforementioned process, which excludes additional steps for orbital generation and conversion, can become tedious to perform by hand in production settings where many calculations are often required.  For this reason, automation tools are introduced for calculations involving the oxygen dimer in <a class="reference internal" href="#dimer-automation"><span class="std std-ref">Automated binding curve of the oxygen dimer</span></a> of the lab.</p>
+<p><strong>Questions and Exercises</strong></p>
+<ol class="arabic simple">
+<li><p>What is the <span class="math notranslate nohighlight">\(\tau\rightarrow 0\)</span> extrapolated DMC value for the
+first ionization potential of oxygen?</p></li>
+<li><p>How does the extrapolated value compare with the experimental IP? Go
+to <a class="reference external" href="http://physics.nist.gov/PhysRefData/ASD/ionEnergy.html">http://physics.nist.gov/PhysRefData/ASD/ionEnergy.html</a> and enter
+“<code class="docutils literal notranslate"><span class="pre">O</span> <span class="pre">I</span></code>” in the box labeled “<code class="docutils literal notranslate"><span class="pre">Spectra</span></code>” and click on the
+“<code class="docutils literal notranslate"><span class="pre">Retrieve</span> <span class="pre">Data</span></code>” button.</p></li>
+<li><p>What can we conclude about the accuracy of the pseudopotential? What
+factors complicate this assessment?</p></li>
+<li><p>Explore the sensitivity of the IP to the choice of time step. Type <code class="docutils literal notranslate"><span class="pre">./ip_conv.py</span></code> to
+view three time step extrapolation plots: two for the <span class="math notranslate nohighlight">\(q=0,\)</span>
+one for total energies, and one for the IP. Is the IP more, less, or
+similarly sensitive to time step than the total energy?</p></li>
+<li><p>What is the maximum time step you should use if you want to calculate
+the ionization potential to an accuracy of <span class="math notranslate nohighlight">\(0.05\)</span> eV? What
+factor of CPU time is saved by assessing time step convergence on the
+IP (a total energy difference) vs. a single total energy?</p></li>
+<li><p>Are the acceptance ratio and population fluctuations reasonable for
+the <span class="math notranslate nohighlight">\(q=1\)</span> calculations?</p></li>
+</ol>
+</div>
+<div class="section" id="dmc-workflow-automation-with-nexus">
+<h2>DMC workflow automation with Nexus<a class="headerlink" href="#dmc-workflow-automation-with-nexus" title="Permalink to this headline">¶</a></h2>
+<p>Production QMC projects are often composed of many similar workflows.  The simplest of these is a single DMC calculation involving four different compute jobs:</p>
+<ol class="arabic simple">
+<li><p>Orbital generation via QE or GAMESS.</p></li>
+<li><p>Conversion of orbital data via <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> or <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code>.</p></li>
+<li><p>Optimization of Jastrow factors via QMCPACK.</p></li>
+<li><p>DMC calculation via QMCPACK.</p></li>
+</ol>
+<p>Simulation workflows quickly become more complex with increasing costs in terms of human time for the researcher.  Automation tools can decrease both human time and error if used well.</p>
+<p>The set of automation tools we will be using is known as Nexus <a class="bibtex reference internal" href="#krogel2016nexus" id="id1">[Kro16]</a>, which is distributed with QMCPACK.  Nexus is capable of generating input files, submitting and monitoring compute jobs, passing data between simulations (relaxed structures, orbital files, optimized Jastrow parameters, etc.), and data analysis.  The user interface to Nexus is through a set of functions defined in the Python programming language.  User scripts that execute simple workflows resemble input files and do not require programming experience.  More complex workflows require only basic programming constructs (e.g. for loops and if statements).  Nexus input files/scripts should be easier to navigate than QMCPACK input files and more efficient than submitting all the jobs by hand.</p>
+<p>Nexus is driven by simple user-defined scripts that resemble keyword-driven input files.  An example Nexus input file that performs a single VMC calculation (with pregenerated orbitals) follows.  Take a moment to read it over and especially note the comments (prefixed with “<code class="docutils literal notranslate"><span class="pre">\#</span></code>”) explaining most of the contents.  If the input syntax is unclear you may want to consult portions of <a class="reference internal" href="#python-basics"><span class="std std-ref">Appendix A: Basic Python constructs</span></a>, which gives a condensed summary of Python constructs.  An additional example and details about the inner workings of Nexus can be found in the reference publication <a class="bibtex reference internal" href="#krogel2016nexus" id="id2">[Kro16]</a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python3</span>
+
+<span class="c1"># import Nexus functions</span>
+<span class="kn">from</span> <span class="nn">nexus</span> <span class="kn">import</span> <span class="n">settings</span><span class="p">,</span><span class="n">job</span><span class="p">,</span><span class="n">get_machine</span><span class="p">,</span><span class="n">run_project</span>
+<span class="kn">from</span> <span class="nn">nexus</span> <span class="kn">import</span> <span class="n">generate_physical_system</span>
+<span class="kn">from</span> <span class="nn">nexus</span> <span class="kn">import</span> <span class="n">generate_qmcpack</span><span class="p">,</span><span class="n">vmc</span>
+
+<span class="n">settings</span><span class="p">(</span>                             <span class="c1"># Nexus settings</span>
+    <span class="n">pseudo_dir</span>    <span class="o">=</span> <span class="s1">&#39;./pseudopotentials&#39;</span><span class="p">,</span> <span class="c1"># location of PP files</span>
+    <span class="n">runs</span>          <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>                   <span class="c1"># root directory for simulations</span>
+    <span class="n">results</span>       <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>                   <span class="c1"># root directory for simulation results</span>
+    <span class="n">status_only</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>                    <span class="c1"># show simulation status, then exit</span>
+    <span class="n">generate_only</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>                    <span class="c1"># generate input files, then exit</span>
+    <span class="n">sleep</span>         <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>                    <span class="c1"># seconds between checks on sim. progress</span>
+    <span class="n">machine</span>       <span class="o">=</span> <span class="s1">&#39;ws4&#39;</span><span class="p">,</span>                <span class="c1"># workstation with 4 cores</span>
+    <span class="p">)</span>
+
+<span class="n">qmcjob</span> <span class="o">=</span> <span class="n">job</span><span class="p">(</span>                         <span class="c1"># specify job parameters</span>
+    <span class="n">cores</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>                          <span class="c1"># use 4 MPI tasks</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>                          <span class="c1"># 1 OpenMP thread per node</span>
+    <span class="n">app</span>     <span class="o">=</span> <span class="s1">&#39;qmcpack&#39;</span>                   <span class="c1"># use QMCPACK executable (assumed in PATH)</span>
+    <span class="p">)</span>
+
+<span class="n">qmc_calcs</span> <span class="o">=</span> <span class="p">[</span>                         <span class="c1"># list QMC calculation methods</span>
+    <span class="n">vmc</span><span class="p">(</span>                                  <span class="c1">#   VMC</span>
+        <span class="n">walkers</span>     <span class="o">=</span>   <span class="mi">1</span><span class="p">,</span>                <span class="c1">#     1 walker</span>
+        <span class="n">warmupsteps</span> <span class="o">=</span>  <span class="mi">50</span><span class="p">,</span>                <span class="c1">#    50 MC steps for warmup</span>
+        <span class="n">blocks</span>      <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>                <span class="c1">#   200 blocks</span>
+        <span class="n">steps</span>       <span class="o">=</span>  <span class="mi">10</span><span class="p">,</span>                <span class="c1">#    10 steps per block</span>
+        <span class="n">timestep</span>    <span class="o">=</span>  <span class="o">.</span><span class="mi">4</span>                 <span class="c1">#   0.4 1/Ha timestep</span>
+        <span class="p">)]</span>
+
+<span class="n">dimer</span> <span class="o">=</span> <span class="n">generate_physical_system</span><span class="p">(</span>     <span class="c1"># make a dimer system</span>
+    <span class="nb">type</span>       <span class="o">=</span> <span class="s1">&#39;dimer&#39;</span><span class="p">,</span>                 <span class="c1"># system type is dimer</span>
+    <span class="n">dimer</span>      <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">),</span>               <span class="c1"># dimer is two oxygen atoms</span>
+    <span class="n">separation</span> <span class="o">=</span> <span class="mf">1.2074</span><span class="p">,</span>                  <span class="c1"># separated by 1.2074 Angstrom</span>
+    <span class="n">Lbox</span>       <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>                    <span class="c1"># simulation box is 15 Angstrom</span>
+    <span class="n">units</span>      <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>                     <span class="c1"># Angstrom is dist. unit</span>
+    <span class="n">net_spin</span>   <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>                       <span class="c1"># nup-ndown is 2</span>
+    <span class="n">O</span>          <span class="o">=</span> <span class="mi">6</span>                        <span class="c1"># pseudo-oxygen has 6 valence el.</span>
+    <span class="p">)</span>
+
+<span class="n">qmc</span> <span class="o">=</span> <span class="n">generate_qmcpack</span><span class="p">(</span>                <span class="c1"># make a qmcpack simulation</span>
+    <span class="n">identifier</span>   <span class="o">=</span> <span class="s1">&#39;example&#39;</span><span class="p">,</span>             <span class="c1"># prefix files with &#39;example&#39;</span>
+    <span class="n">path</span>         <span class="o">=</span> <span class="s1">&#39;scale_1.0&#39;</span><span class="p">,</span>           <span class="c1"># run in ./scale_1.0 directory</span>
+    <span class="n">system</span>       <span class="o">=</span> <span class="n">dimer</span><span class="p">,</span>                 <span class="c1"># run the dimer system</span>
+    <span class="n">job</span>          <span class="o">=</span> <span class="n">qmcjob</span><span class="p">,</span>                <span class="c1"># set job parameters</span>
+    <span class="n">input_type</span>   <span class="o">=</span> <span class="s1">&#39;basic&#39;</span><span class="p">,</span>               <span class="c1"># basic qmcpack inputs given below</span>
+    <span class="n">pseudos</span>      <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;O.BFD.xml&#39;</span><span class="p">],</span>         <span class="c1"># list of PP&#39;s to use</span>
+    <span class="n">orbitals_h5</span>  <span class="o">=</span> <span class="s1">&#39;O2.pwscf.h5&#39;</span><span class="p">,</span>         <span class="c1"># file with orbitals from DFT</span>
+    <span class="n">bconds</span>       <span class="o">=</span> <span class="s1">&#39;nnn&#39;</span><span class="p">,</span>                 <span class="c1"># open boundary conditions</span>
+    <span class="n">jastrows</span>     <span class="o">=</span> <span class="p">[],</span>                    <span class="c1"># no jastrow factors</span>
+    <span class="n">calculations</span> <span class="o">=</span> <span class="n">qmc_calcs</span>              <span class="c1"># QMC calculations to perform</span>
+    <span class="p">)</span>
+
+<span class="n">run_project</span><span class="p">(</span><span class="n">qmc</span><span class="p">)</span>                       <span class="c1"># write input file and submit job</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="automated-binding-curve-of-the-oxygen-dimer">
+<span id="dimer-automation"></span><h2>Automated binding curve of the oxygen dimer<a class="headerlink" href="#automated-binding-curve-of-the-oxygen-dimer" title="Permalink to this headline">¶</a></h2>
+<p>In this section we will use Nexus to calculate the DMC total energy of the oxygen dimer over a series of bond lengths.  The equilibrium bond length and binding energy of the dimer will be determined by performing a polynomial fit to the data (Morse potential fits should be preferred in production tests).  Comparing these values with corresponding experimental data provides a second test of the BFD pseudopotential for oxygen.</p>
+<p>Enter the <code class="docutils literal notranslate"><span class="pre">oxygen_dimer</span></code> directory.  Copy your BFD pseudopotential from the atom runs into <code class="docutils literal notranslate"><span class="pre">oxygen_dimer/pseudopotentials</span></code> (be sure to move both files: <code class="docutils literal notranslate"><span class="pre">.upf</span></code> and <code class="docutils literal notranslate"><span class="pre">.xml</span></code>).  Open <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> with a text editor.  The overall format is similar to the example file shown in the last section. The main difference is that a full workflow of runs (DFT orbital generation, orbital conversion, optimization and DMC) are being performed rather than a single VMC run.</p>
+<p>As in the example in the last section, the oxygen dimer is generated with the <code class="docutils literal notranslate"><span class="pre">generate_physical_</span>
+<span class="pre">system</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dimer</span> <span class="o">=</span> <span class="n">generate_physical_system</span><span class="p">(</span>
+    <span class="nb">type</span>       <span class="o">=</span> <span class="s1">&#39;dimer&#39;</span><span class="p">,</span>
+    <span class="n">dimer</span>      <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">),</span>
+    <span class="n">separation</span> <span class="o">=</span> <span class="mf">1.2074</span><span class="o">*</span><span class="n">scale</span><span class="p">,</span>
+    <span class="n">Lbox</span>       <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+    <span class="n">units</span>      <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
+    <span class="n">net_spin</span>   <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">O</span>          <span class="o">=</span> <span class="mi">6</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Similar syntax can be used to generate crystal structures or to specify systems with arbitrary atomic configurations and simulation cells.  Notice that a “<code class="docutils literal notranslate"><span class="pre">scale</span></code>” variable has been introduced to stretch or compress the dimer.</p>
+<p>Next, objects representing a QE (PWSCF) run and subsequent orbital conversion step are constructed with respective <code class="docutils literal notranslate"><span class="pre">generate_*</span></code> functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dft</span> <span class="o">=</span> <span class="n">generate_pwscf</span><span class="p">(</span>
+    <span class="n">identifier</span>   <span class="o">=</span> <span class="s1">&#39;dft&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="n">input_dft</span>    <span class="o">=</span> <span class="s1">&#39;lda&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
+<span class="n">sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dft</span><span class="p">)</span>
+
+<span class="c1"># describe orbital conversion run</span>
+<span class="n">p2q</span> <span class="o">=</span> <span class="n">generate_pw2qmcpack</span><span class="p">(</span>
+    <span class="n">identifier</span>   <span class="o">=</span> <span class="s1">&#39;p2q&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">(</span><span class="n">dft</span><span class="p">,</span><span class="s1">&#39;orbitals&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+<span class="n">sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p2q</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> keyword.  This keyword is used to construct workflows out of otherwise separate runs.  In this case, the dependency indicates that the orbital conversion run must wait for the DFT to finish before starting.</p>
+<p>Objects representing QMCPACK simulations are then constructed with the <code class="docutils literal notranslate"><span class="pre">generate_qmcpack</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">opt</span> <span class="o">=</span> <span class="n">generate_qmcpack</span><span class="p">(</span>
+    <span class="n">identifier</span>   <span class="o">=</span> <span class="s1">&#39;opt&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="n">jastrows</span>     <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;J1&#39;</span><span class="p">,</span><span class="s1">&#39;bspline&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">5.0</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;J2&#39;</span><span class="p">,</span><span class="s1">&#39;bspline&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mf">10.0</span><span class="p">)],</span>
+    <span class="n">calculations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">loop</span><span class="p">(</span><span class="nb">max</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+             <span class="n">qmc</span><span class="o">=</span><span class="n">linear</span><span class="p">(</span>
+                <span class="n">energy</span>               <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">unreweightedvariance</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                <span class="n">reweightedvariance</span>   <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="n">timestep</span>             <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
+                <span class="n">samples</span>              <span class="o">=</span> <span class="mi">61440</span><span class="p">,</span>
+                <span class="n">warmupsteps</span>          <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+                <span class="n">blocks</span>               <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+                <span class="n">substeps</span>             <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">nonlocalpp</span>           <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="n">usebuffer</span>            <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="n">walkers</span>              <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">minwalkers</span>           <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">maxweight</span>            <span class="o">=</span> <span class="mf">1e9</span><span class="p">,</span>
+                <span class="n">usedrift</span>             <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="n">minmethod</span>            <span class="o">=</span> <span class="s1">&#39;quartic&#39;</span><span class="p">,</span>
+                <span class="n">beta</span>                 <span class="o">=</span> <span class="mf">0.025</span><span class="p">,</span>
+                <span class="n">exp0</span>                 <span class="o">=</span> <span class="o">-</span><span class="mi">16</span><span class="p">,</span>
+                <span class="n">bigchange</span>            <span class="o">=</span> <span class="mf">15.0</span><span class="p">,</span>
+                <span class="n">alloweddifference</span>    <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
+                <span class="n">stepsize</span>             <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+                <span class="n">stabilizerscale</span>      <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+                <span class="n">nstabilizers</span>         <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                <span class="p">)</span>
+             <span class="p">)</span>
+        <span class="p">],</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2q</span><span class="p">,</span><span class="s1">&#39;orbitals&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+<span class="n">sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
+
+<span class="n">qmc</span> <span class="o">=</span> <span class="n">generate_qmcpack</span><span class="p">(</span>
+    <span class="n">identifier</span>   <span class="o">=</span> <span class="s1">&#39;qmc&#39;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="n">jastrows</span>     <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">calculations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">vmc</span><span class="p">(</span>
+            <span class="n">walkers</span>     <span class="o">=</span>   <span class="mi">1</span><span class="p">,</span>
+            <span class="n">warmupsteps</span> <span class="o">=</span>  <span class="mi">30</span><span class="p">,</span>
+            <span class="n">blocks</span>      <span class="o">=</span>  <span class="mi">20</span><span class="p">,</span>
+            <span class="n">steps</span>       <span class="o">=</span>  <span class="mi">10</span><span class="p">,</span>
+            <span class="n">substeps</span>    <span class="o">=</span>   <span class="mi">2</span><span class="p">,</span>
+            <span class="n">timestep</span>    <span class="o">=</span>  <span class="o">.</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">samples</span>     <span class="o">=</span> <span class="mi">2048</span>
+            <span class="p">),</span>
+        <span class="n">dmc</span><span class="p">(</span>
+            <span class="n">warmupsteps</span>   <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="n">blocks</span>        <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
+            <span class="n">steps</span>         <span class="o">=</span>  <span class="mi">32</span><span class="p">,</span>
+            <span class="n">timestep</span>      <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+            <span class="n">nonlocalmoves</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[(</span><span class="n">p2q</span><span class="p">,</span><span class="s1">&#39;orbitals&#39;</span><span class="p">),(</span><span class="n">opt</span><span class="p">,</span><span class="s1">&#39;jastrow&#39;</span><span class="p">)],</span>
+    <span class="p">)</span>
+<span class="n">sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qmc</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Shared details such as the run directory, job, pseudopotentials, and orbital file have been omitted (<code class="docutils literal notranslate"><span class="pre">...</span></code>).  The “<code class="docutils literal notranslate"><span class="pre">opt</span></code>” run will optimize a 1-body B-spline Jastrow with 8 knots having a cutoff of 5.0 Bohr and a B-spline Jastrow (for up-up and up-down correlations) with 8 knots and cutoffs of 10.0 Bohr.  The Jastrow list for the DMC run is empty, and the previous use of <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> indicates that the DMC run depends on the optimization run for the Jastrow factor.  Nexus will submit the “<code class="docutils literal notranslate"><span class="pre">opt</span></code>” run first, and upon completion it will scan the output, select the optimal set of parameters, pass the Jastrow information to the “<code class="docutils literal notranslate"><span class="pre">qmc</span></code>” run, and then submit the DMC job.  Independent job workflows are submitted in parallel when permitted.  No input files are written or job submissions made until the “<code class="docutils literal notranslate"><span class="pre">run_project</span></code>” function is reached:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run_project</span><span class="p">(</span><span class="n">sims</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All of the simulation objects have been collected into a list (<code class="docutils literal notranslate"><span class="pre">sims</span></code>) for submission.</p>
+<p>As written, <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> will perform calculations only at the equilibrium separation distance of 1.2074 {AA} since the list of scaling factors (representing stretching or compressing the dimer)  contains only one value (<code class="docutils literal notranslate"><span class="pre">scales</span> <span class="pre">=</span> <span class="pre">[1.00]</span></code>).  Modify the file now to perform DMC calculations across a range of separation distances with each DMC run using the Jastrow factor optimized at the equilibrium separation distance.  Specifically, you will want to change the list of scaling factors to include both compression (<code class="docutils literal notranslate"><span class="pre">scale&lt;1.0</span></code>) and stretch (<code class="docutils literal notranslate"><span class="pre">scale&gt;1.0</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scales</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span><span class="mf">0.90</span><span class="p">,</span><span class="mf">0.95</span><span class="p">,</span><span class="mf">1.05</span><span class="p">,</span><span class="mf">1.10</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Note that “<code class="docutils literal notranslate"><span class="pre">1.00</span></code>” is left in front because we are going to optimize the Jastrow factor first at the equilibrium separation and reuse this Jastrow factor for all other separation distances.  This procedure is used because it can reduce variations in localization errors (due to pseudopotentials in DMC) along the binding curve.</p>
+<p>Change the <code class="docutils literal notranslate"><span class="pre">status_only</span></code> parameter in the “<code class="docutils literal notranslate"><span class="pre">settings</span></code>” function to <code class="docutils literal notranslate"><span class="pre">1</span></code> and type “<code class="docutils literal notranslate"><span class="pre">./O_dimer.py</span></code>” at the command line.  This will print the status of all simulations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Project</span> <span class="n">starting</span>
+  <span class="n">checking</span> <span class="k">for</span> <span class="n">file</span> <span class="n">collisions</span>
+  <span class="n">loading</span> <span class="n">cascade</span> <span class="n">images</span>
+    <span class="n">cascade</span> <span class="mi">0</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">10</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">4</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">13</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">7</span> <span class="n">checking</span> <span class="ow">in</span>
+  <span class="n">checking</span> <span class="n">cascade</span> <span class="n">dependencies</span>
+    <span class="nb">all</span> <span class="n">simulation</span> <span class="n">dependencies</span> <span class="n">satisfied</span>
+
+  <span class="n">cascade</span> <span class="n">status</span>
+    <span class="n">setup</span><span class="p">,</span> <span class="n">sent_files</span><span class="p">,</span> <span class="n">submitted</span><span class="p">,</span> <span class="n">finished</span><span class="p">,</span> <span class="n">got_output</span><span class="p">,</span> <span class="n">analyzed</span>
+    <span class="mi">000000</span>  <span class="n">dft</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span>
+    <span class="mi">000000</span>  <span class="n">p2q</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span>
+    <span class="mi">000000</span>  <span class="n">opt</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span>
+    <span class="mi">000000</span>  <span class="n">qmc</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span>
+    <span class="mi">000000</span>  <span class="n">dft</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">9</span>
+    <span class="mi">000000</span>  <span class="n">p2q</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">9</span>
+    <span class="mi">000000</span>  <span class="n">qmc</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">9</span>
+    <span class="mi">000000</span>  <span class="n">dft</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">95</span>
+    <span class="mi">000000</span>  <span class="n">p2q</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">95</span>
+    <span class="mi">000000</span>  <span class="n">qmc</span>     <span class="o">./</span><span class="n">scale_0</span><span class="o">.</span><span class="mi">95</span>
+    <span class="mi">000000</span>  <span class="n">dft</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">05</span>
+    <span class="mi">000000</span>  <span class="n">p2q</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">05</span>
+    <span class="mi">000000</span>  <span class="n">qmc</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">05</span>
+    <span class="mi">000000</span>  <span class="n">dft</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">1</span>
+    <span class="mi">000000</span>  <span class="n">p2q</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">1</span>
+    <span class="mi">000000</span>  <span class="n">qmc</span>     <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">1</span>
+    <span class="n">setup</span><span class="p">,</span> <span class="n">sent_files</span><span class="p">,</span> <span class="n">submitted</span><span class="p">,</span> <span class="n">finished</span><span class="p">,</span> <span class="n">got_output</span><span class="p">,</span> <span class="n">analyzed</span>
+</pre></div>
+</div>
+<p>In this case, five simulation “cascades” (workflows) have been identified, each one starting and ending with “<code class="docutils literal notranslate"><span class="pre">dft</span></code>” and “<code class="docutils literal notranslate"><span class="pre">qmc</span></code>” runs, respectively.  The six status flags <code class="docutils literal notranslate"><span class="pre">setup</span></code>, <code class="docutils literal notranslate"><span class="pre">sent_files</span></code>, <code class="docutils literal notranslate"><span class="pre">submitted</span></code>, <code class="docutils literal notranslate"><span class="pre">finished</span></code>, <code class="docutils literal notranslate"><span class="pre">got_output</span></code>, <code class="docutils literal notranslate"><span class="pre">analyzed</span></code>) each shows <code class="docutils literal notranslate"><span class="pre">0</span></code>, indicating that no work has been done yet.</p>
+<p>Now change “<code class="docutils literal notranslate"><span class="pre">status_only</span></code>” back to <code class="docutils literal notranslate"><span class="pre">0</span></code>, set “<code class="docutils literal notranslate"><span class="pre">generate_only</span></code>” to <code class="docutils literal notranslate"><span class="pre">1</span></code>, and run <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> again.  This will perform a dry run of all simulations.  The dry run should finish in about 20 seconds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Project</span> <span class="n">starting</span>
+  <span class="n">checking</span> <span class="k">for</span> <span class="n">file</span> <span class="n">collisions</span>
+  <span class="n">loading</span> <span class="n">cascade</span> <span class="n">images</span>
+    <span class="n">cascade</span> <span class="mi">0</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">10</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">4</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">13</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">7</span> <span class="n">checking</span> <span class="ow">in</span>
+  <span class="n">checking</span> <span class="n">cascade</span> <span class="n">dependencies</span>
+    <span class="nb">all</span> <span class="n">simulation</span> <span class="n">dependencies</span> <span class="n">satisfied</span>
+
+  <span class="n">starting</span> <span class="n">runs</span><span class="p">:</span>
+  <span class="o">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+  <span class="n">poll</span> <span class="mi">0</span>  <span class="n">memory</span> <span class="mf">91.03</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">0</span>
+      <span class="n">writing</span> <span class="nb">input</span> <span class="n">files</span>  <span class="mi">0</span> <span class="n">dft</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">0</span>
+      <span class="n">sending</span> <span class="n">required</span> <span class="n">files</span>  <span class="mi">0</span> <span class="n">dft</span>
+      <span class="n">submitting</span> <span class="n">job</span>  <span class="mi">0</span> <span class="n">dft</span>
+  <span class="o">...</span>
+  <span class="n">poll</span> <span class="mi">1</span>  <span class="n">memory</span> <span class="mf">91.10</span> <span class="n">MB</span>
+  <span class="o">...</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">0</span>
+      <span class="n">Would</span> <span class="n">have</span> <span class="n">executed</span><span class="p">:</span>
+        <span class="n">export</span> <span class="n">OMP_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">pw</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span><span class="nb">input</span> <span class="n">dft</span><span class="o">.</span><span class="ow">in</span>
+
+  <span class="n">poll</span> <span class="mi">2</span>  <span class="n">memory</span> <span class="mf">91.10</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">0</span>
+      <span class="n">copying</span> <span class="n">results</span>  <span class="mi">0</span> <span class="n">dft</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">0</span>
+      <span class="n">analyzing</span>  <span class="mi">0</span> <span class="n">dft</span>
+  <span class="o">...</span>
+  <span class="n">poll</span> <span class="mi">3</span>  <span class="n">memory</span> <span class="mf">91.10</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">1</span>
+      <span class="n">writing</span> <span class="nb">input</span> <span class="n">files</span>  <span class="mi">1</span> <span class="n">p2q</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">1</span>
+      <span class="n">sending</span> <span class="n">required</span> <span class="n">files</span>  <span class="mi">1</span> <span class="n">p2q</span>
+      <span class="n">submitting</span> <span class="n">job</span>  <span class="mi">1</span> <span class="n">p2q</span>
+  <span class="o">...</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">1</span>
+      <span class="n">Would</span> <span class="n">have</span> <span class="n">executed</span><span class="p">:</span>
+        <span class="n">export</span> <span class="n">OMP_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">1</span> <span class="n">pw2qmcpack</span><span class="o">.</span><span class="n">x</span><span class="o">&lt;</span><span class="n">p2q</span><span class="o">.</span><span class="ow">in</span>
+
+  <span class="n">poll</span> <span class="mi">4</span>  <span class="n">memory</span> <span class="mf">91.10</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">1</span>
+      <span class="n">copying</span> <span class="n">results</span>  <span class="mi">1</span> <span class="n">p2q</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">1</span>
+      <span class="n">analyzing</span>  <span class="mi">1</span> <span class="n">p2q</span>
+  <span class="o">...</span>
+  <span class="n">poll</span> <span class="mi">5</span>  <span class="n">memory</span> <span class="mf">91.10</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">2</span>
+      <span class="n">writing</span> <span class="nb">input</span> <span class="n">files</span>  <span class="mi">2</span> <span class="n">opt</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">2</span>
+      <span class="n">sending</span> <span class="n">required</span> <span class="n">files</span>  <span class="mi">2</span> <span class="n">opt</span>
+      <span class="n">submitting</span> <span class="n">job</span>  <span class="mi">2</span> <span class="n">opt</span>
+  <span class="o">...</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">2</span>
+      <span class="n">Would</span> <span class="n">have</span> <span class="n">executed</span><span class="p">:</span>
+        <span class="n">export</span> <span class="n">OMP_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">qmcpack</span> <span class="n">opt</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span>
+
+  <span class="n">poll</span> <span class="mi">6</span>  <span class="n">memory</span> <span class="mf">91.16</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">2</span>
+      <span class="n">copying</span> <span class="n">results</span>  <span class="mi">2</span> <span class="n">opt</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">2</span>
+      <span class="n">analyzing</span>  <span class="mi">2</span> <span class="n">opt</span>
+  <span class="o">...</span>
+  <span class="n">poll</span> <span class="mi">7</span>  <span class="n">memory</span> <span class="mf">93.00</span> <span class="n">MB</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">3</span>
+      <span class="n">writing</span> <span class="nb">input</span> <span class="n">files</span>  <span class="mi">3</span> <span class="n">qmc</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">3</span>
+      <span class="n">sending</span> <span class="n">required</span> <span class="n">files</span>  <span class="mi">3</span> <span class="n">qmc</span>
+      <span class="n">submitting</span> <span class="n">job</span>  <span class="mi">3</span> <span class="n">qmc</span>
+  <span class="o">...</span>
+    <span class="n">Entering</span> <span class="o">./</span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span> <span class="mi">3</span>
+      <span class="n">Would</span> <span class="n">have</span> <span class="n">executed</span><span class="p">:</span>
+        <span class="n">export</span> <span class="n">OMP_NUM_THREADS</span><span class="o">=</span><span class="mi">1</span>
+        <span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">qmcpack</span> <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span>
+  <span class="o">...</span>
+  <span class="n">poll</span> <span class="mi">17</span>  <span class="n">memory</span> <span class="mf">93.06</span> <span class="n">MB</span>
+<span class="n">Project</span> <span class="n">finished</span>
+</pre></div>
+</div>
+<p>Nexus polls the simulation status every 3 seconds and sleeps in between.
+The “<code class="docutils literal notranslate"><span class="pre">scale_</span></code>” directories should now contain several files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scale_1</span><span class="o">.</span><span class="mi">0</span>
+   <span class="n">dft</span><span class="o">.</span><span class="ow">in</span>
+   <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">upf</span>
+   <span class="n">O</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">xml</span>
+   <span class="n">opt</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span>
+   <span class="n">p2q</span><span class="o">.</span><span class="ow">in</span>
+   <span class="n">pwscf_output</span>
+   <span class="n">qmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span>
+   <span class="n">sim_dft</span><span class="o">/</span>
+       <span class="n">analyzer</span><span class="o">.</span><span class="n">p</span>
+       <span class="nb">input</span><span class="o">.</span><span class="n">p</span>
+       <span class="n">sim</span><span class="o">.</span><span class="n">p</span>
+   <span class="n">sim_opt</span><span class="o">/</span>
+       <span class="n">analyzer</span><span class="o">.</span><span class="n">p</span>
+       <span class="nb">input</span><span class="o">.</span><span class="n">p</span>
+       <span class="n">sim</span><span class="o">.</span><span class="n">p</span>
+   <span class="n">sim_p2q</span><span class="o">/</span>
+       <span class="n">analyzer</span><span class="o">.</span><span class="n">p</span>
+       <span class="nb">input</span><span class="o">.</span><span class="n">p</span>
+       <span class="n">sim</span><span class="o">.</span><span class="n">p</span>
+   <span class="n">sim_qmc</span><span class="o">/</span>
+       <span class="n">analyzer</span><span class="o">.</span><span class="n">p</span>
+       <span class="nb">input</span><span class="o">.</span><span class="n">p</span>
+       <span class="n">sim</span><span class="o">.</span><span class="n">p</span>
+</pre></div>
+</div>
+<p>Take a minute to inspect the generated input (<code class="docutils literal notranslate"><span class="pre">dft.in</span></code>, <code class="docutils literal notranslate"><span class="pre">p2q.in</span></code>, <code class="docutils literal notranslate"><span class="pre">opt.in.xml</span></code>, <code class="docutils literal notranslate"><span class="pre">qmc.in.xml</span></code>). The pseudopotential files (<code class="docutils literal notranslate"><span class="pre">O.BFD.upf</span></code> and <code class="docutils literal notranslate"><span class="pre">O.BFD.xml</span></code>) have been copied into each local directory. Four additional directories have been created: <code class="docutils literal notranslate"><span class="pre">sim_dft</span></code>,  <code class="docutils literal notranslate"><span class="pre">sim_p2q</span></code>, <code class="docutils literal notranslate"><span class="pre">sim_opt</span></code> and <code class="docutils literal notranslate"><span class="pre">sim_qmc</span></code>.  The <code class="docutils literal notranslate"><span class="pre">sim.p</span></code> files in each directory contain the current status of each simulation.  If you run <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> again, it should not attempt to rerun any of the simulations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Project</span> <span class="n">starting</span>
+  <span class="n">checking</span> <span class="k">for</span> <span class="n">file</span> <span class="n">collisions</span>
+  <span class="n">loading</span> <span class="n">cascade</span> <span class="n">images</span>
+    <span class="n">cascade</span> <span class="mi">0</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">10</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">4</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">13</span> <span class="n">checking</span> <span class="ow">in</span>
+    <span class="n">cascade</span> <span class="mi">7</span> <span class="n">checking</span> <span class="ow">in</span>
+  <span class="n">checking</span> <span class="n">cascade</span> <span class="n">dependencies</span>
+    <span class="nb">all</span> <span class="n">simulation</span> <span class="n">dependencies</span> <span class="n">satisfied</span>
+
+  <span class="n">starting</span> <span class="n">runs</span><span class="p">:</span>
+  <span class="o">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+  <span class="n">poll</span> <span class="mi">0</span>  <span class="n">memory</span> <span class="mf">64.25</span> <span class="n">MB</span>
+<span class="n">Project</span> <span class="n">finished</span>
+</pre></div>
+</div>
+<p>This way you can continue to add to the <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> file (e.g., adding more separation distances) without worrying about duplicate job submissions.</p>
+<p>Now submit the jobs in the dimer workflow.  Reset the state of the simulations by removing the <code class="docutils literal notranslate"><span class="pre">sim.p</span></code> files (“<code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">./scale*/sim*/sim.p</span></code>”), set “<code class="docutils literal notranslate"><span class="pre">generate_only</span></code>” to <code class="docutils literal notranslate"><span class="pre">0</span></code>, and rerun <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code>.  It should take about 20 minutes for all the jobs to complete.  You may wish to open another terminal to monitor the progress of the individual jobs while the current terminal runs <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> in the foreground.  You can begin the following first exercise once the optimization job completes.</p>
+<p><strong>Questions and Exercises</strong></p>
+<ol class="arabic simple">
+<li><p>Evaluate the quality of the optimization at <code class="docutils literal notranslate"><span class="pre">scale=1.0</span></code> using the <code class="docutils literal notranslate"><span class="pre">qmca</span></code> tool. Did the
+optimization succeed? How does the variance compare with the neutral
+oxygen atom? Is the wavefunction of similar quality to the atomic
+case?</p></li>
+<li><p>Evaluate the traces of the local energy and the DMC walker population
+for each separation distance with the <code class="docutils literal notranslate"><span class="pre">qmca</span></code> tool. Are there any anomalies
+in the runs? Is the acceptance ratio reasonable? Is the wavefunction
+of similar quality across all separation distances?</p></li>
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">dimer_fit.py</span></code> tool located in <code class="docutils literal notranslate"><span class="pre">oxygen_dimer</span></code> to fit the oxygen dimer binding curve. To get
+the binding energy of the dimer, we will need the DMC energy of the
+atom. Before performing the fit, answer: What DMC time step should be
+used for the oxygen atom results? The tool accepts three arguments
+(<code class="docutils literal notranslate"><span class="pre">./dimer_fit.py</span> <span class="pre">P</span> <span class="pre">N</span> <span class="pre">E</span> <span class="pre">Eerr</span></code>), <code class="docutils literal notranslate"><span class="pre">P</span></code> is the prefix of the DMC input files (should be “<code class="docutils literal notranslate"><span class="pre">qmc</span></code>” at this point), <code class="docutils literal notranslate"><span class="pre">N</span></code>
+is the order of the fit (use 2 to start),``E`` and <code class="docutils literal notranslate"><span class="pre">Eerr</span></code> are your DMC total
+energy and error bar, respectively, for the oxygen atom (in electron
+volts). A plot of the dimer data will be displayed, and text output
+will show the DMC equilibrium bond length and binding energy as well
+as experimental values. How accurately does your fit to the DMC data
+reproduce the experimental values? What factors affect the accuracy
+of your results?</p></li>
+<li><p>Refit your data with a fourth-order polynomial. How do your
+predictions change with a fourth-order fit? Is a fourth-order fit
+appropriate for the available data?</p></li>
+<li><p>Add new “<code class="docutils literal notranslate"><span class="pre">scale</span></code>” values to the list in <code class="docutils literal notranslate"><span class="pre">O_dimer.py</span></code> that interpolate between the original
+set (e.g., expand to ). Perform the DMC calculations and redo the
+fits. How accurately does your fit to the DMC data reproduce the
+experimental values? Should this pseudopotential be used in
+production calculations?</p></li>
+<li><p>(Optional) Perform optimization runs at the extreme separation
+distances corresponding to <code class="docutils literal notranslate"><span class="pre">scale=[0.90,1.10]</span></code>. Are the individually optimized
+wavefunctions of significantly better quality than the one imported
+from <code class="docutils literal notranslate"><span class="pre">scale=1.00</span></code>? Why? What form of Jastrow factor might give an even better
+improvement?</p></li>
+</ol>
+</div>
+<div class="section" id="optional-running-your-system-with-qmcpack">
+<span id="your-system"></span><h2>(Optional) Running your system with QMCPACK<a class="headerlink" href="#optional-running-your-system-with-qmcpack" title="Permalink to this headline">¶</a></h2>
+<p>This section covers a fairly simple route to get started on QMC calculations of an arbitrary system of interest using the Nexus workflow management system to set up input files and optionally perform the runs.  The example provided in this section uses QE (PWSCF) to generate the orbitals forming the Slater determinant part of the trial wavefunction.  PWSCF is a natural choice for solid-state systems, and it can be used for surface/slab and molecular systems as well, albeit at the price of describing additional vacuum space with plane waves.</p>
+<p>To start out, you will need PPs for each element in your system in both
+the UPF (PWSCF) and FSATOM/XML (QMCPACK) formats. A good place to start
+is the BFD pseudopotential database
+(<a class="reference external" href="http://www.burkatzki.com/pseudos/index.2.html">http://www.burkatzki.com/pseudos/index.2.html</a>), which we have already
+used in our study of the oxygen atom. The database does not contain PPs
+for the fourth and fifth row transition metals or any of the lanthanides
+or actinides. If you need a PP that is not in the BFD database, you may
+need to generate and test one manually (e.g., with OPIUM,
+<a class="reference external" href="http://opium.sourceforge.net/">http://opium.sourceforge.net/</a>). Otherwise, use <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> as outlined in
+<a class="reference internal" href="#lqb-pseudo"><span class="std std-ref">Obtaining and converting a pseudopotential for oxygen</span></a> to obtain PPs in the formats used by PWSCF
+and QMCPACK. Enter the <code class="docutils literal notranslate"><span class="pre">your_system</span></code> lab directory and place the converted PPs in <code class="docutils literal notranslate"><span class="pre">your_system/pseudopotentials</span></code>.</p>
+<p>Before performing production calculations (more than just the initial setup in this section), be sure to converge the plane-wave energy cutoff in PWSCF as these PPs can be rather hard, sometimes requiring cutoffs in excess of 300 Ry.  Depending on the system under study, the amount of memory required to represent the orbitals (QMCPACK uses 3D B-splines) can become prohibitive, forcing you to search for softer PPs.</p>
+<p>Beyond PPs, all that is required to get started are the atomic positions and the dimensions/shape of the simulation cell.  The Nexus file <code class="docutils literal notranslate"><span class="pre">example.py</span></code> illustrates how to set up PWSCF and QMCPACK input files by providing minimal information regarding the physical system (an 8-atom cubic cell of diamond in the example).  Most of the contents should be familiar from your experience with the automated calculations of the oxygen dimer binding curve in <a class="reference internal" href="#dimer-automation"><span class="std std-ref">Automated binding curve of the oxygen dimer</span></a> (if you have skipped ahead you may want to skim that section for relevant information).  The most important change is the expanded description of the physical system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># details of your physical system (diamond conventional cell below)</span>
+<span class="n">my_project_name</span> <span class="o">=</span> <span class="s1">&#39;diamond_vmc&#39;</span>   <span class="c1"># directory to perform runs</span>
+<span class="n">my_dft_pps</span>      <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C.BFD.upf&#39;</span><span class="p">]</span>   <span class="c1"># pwscf pseudopotentials</span>
+<span class="n">my_qmc_pps</span>      <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C.BFD.xml&#39;</span><span class="p">]</span>   <span class="c1"># qmcpack pseudopotentials</span>
+
+<span class="c1">#  generate your system</span>
+<span class="c1">#    units      :  &#39;A&#39;/&#39;B&#39; for Angstrom/Bohr</span>
+<span class="c1">#    axes       :  simulation cell axes in cartesian coordinates (a1,a2,a3)</span>
+<span class="c1">#    elem       :  list of atoms in the system</span>
+<span class="c1">#    pos        :  corresponding atomic positions in cartesian coordinates</span>
+<span class="c1">#    kgrid      :  Monkhorst-Pack grid</span>
+<span class="c1">#    kshift     :  Monkhorst-Pack shift (between 0 and 0.5)</span>
+<span class="c1">#    net_charge :  system charge in units of e</span>
+<span class="c1">#    net_spin   :  # of up spins - # of down spins</span>
+<span class="c1">#    C = 4      :  (pseudo) carbon has 4 valence electrons</span>
+<span class="n">my_system</span> <span class="o">=</span> <span class="n">generate_physical_system</span><span class="p">(</span>
+    <span class="n">units</span>      <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
+    <span class="n">axes</span>       <span class="o">=</span> <span class="p">[[</span> <span class="mf">3.57000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">3.57000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">3.57000000e+00</span><span class="p">]],</span>
+    <span class="n">elem</span>       <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">],</span>
+    <span class="n">pos</span>        <span class="o">=</span> <span class="p">[[</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">8.92500000e-01</span><span class="p">,</span> <span class="mf">8.92500000e-01</span><span class="p">,</span> <span class="mf">8.92500000e-01</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">1.78500000e+00</span><span class="p">,</span> <span class="mf">1.78500000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">8.92500000e-01</span><span class="p">,</span> <span class="mf">2.67750000e+00</span><span class="p">,</span> <span class="mf">2.67750000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">1.78500000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">1.78500000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">2.67750000e+00</span><span class="p">,</span> <span class="mf">8.92500000e-01</span><span class="p">,</span> <span class="mf">2.67750000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">1.78500000e+00</span><span class="p">,</span> <span class="mf">1.78500000e+00</span><span class="p">,</span> <span class="mf">0.00000000e+00</span><span class="p">],</span>
+                  <span class="p">[</span> <span class="mf">2.67750000e+00</span><span class="p">,</span> <span class="mf">2.67750000e+00</span><span class="p">,</span> <span class="mf">8.92500000e-01</span><span class="p">]],</span>
+    <span class="n">kgrid</span>      <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">kshift</span>     <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">net_charge</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">net_spin</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">C</span>          <span class="o">=</span> <span class="mi">4</span>       <span class="c1"># one line like this for each atomic species</span>
+    <span class="p">)</span>
+
+<span class="n">my_bconds</span>       <span class="o">=</span> <span class="s1">&#39;ppp&#39;</span>  <span class="c1">#  ppp/nnn for periodic/open BC&#39;s in QMC</span>
+                         <span class="c1">#  if nnn, center atoms about (a1+a2+a3)/2</span>
+</pre></div>
+</div>
+<p>If you have a system you would like to try with QMC, make a copy of <code class="docutils literal notranslate"><span class="pre">example.py</span></code> and fill in the relevant information about the PPs, simulation cell axes, and atomic species/positions.  Otherwise, you can proceed with <code class="docutils literal notranslate"><span class="pre">example.py</span></code> as it is.</p>
+<p>Set “<code class="docutils literal notranslate"><span class="pre">generate_only</span></code>” to <code class="docutils literal notranslate"><span class="pre">1</span></code> and type “<code class="docutils literal notranslate"><span class="pre">./example.py</span></code>” or similar to generate the input files.  All files will be written to “<code class="docutils literal notranslate"><span class="pre">./diamond_vmc</span></code>” (“<code class="docutils literal notranslate"><span class="pre">./[my_project_name]</span></code>” if you have changed “<code class="docutils literal notranslate"><span class="pre">my_project_name</span></code>” in the file).  The input files for PWSCF, pw2qmcpack, and QMCPACK are <code class="docutils literal notranslate"><span class="pre">scf.in</span></code>, <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.in</span></code>, and <code class="docutils literal notranslate"><span class="pre">vmc.in.xml</span></code>, respectively.  Take some time to inspect the generated input files.  If you have questions about the file contents, or run into issues with the generation process, feel free to consult with a lab instructor.</p>
+<p>If desired, you can submit the runs directly with <code class="docutils literal notranslate"><span class="pre">example.py</span></code>.  To do this, first reset the Nexus simulation record by typing “<code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">./diamond_vmc/sim*/sim.p</span></code>” or similar and set “<code class="docutils literal notranslate"><span class="pre">generate_only</span></code>” back to <code class="docutils literal notranslate"><span class="pre">0</span></code>.  Next rerun <code class="docutils literal notranslate"><span class="pre">example.py</span></code>  (you may want to redirect the text output).</p>
+<p>Alternatively the runs can be submitted by hand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">pw</span><span class="o">.</span><span class="n">x</span><span class="o">&lt;</span><span class="n">scf</span><span class="o">.</span><span class="ow">in</span><span class="o">&gt;&amp;</span><span class="n">scf</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+
+<span class="p">(</span><span class="n">wait</span> <span class="n">until</span> <span class="n">JOB</span> <span class="n">DONE</span> <span class="n">appears</span> <span class="ow">in</span> <span class="n">scf</span><span class="o">.</span><span class="n">out</span><span class="p">)</span>
+
+<span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">1</span> <span class="n">pw2qmcpack</span><span class="o">.</span><span class="n">x</span><span class="o">&lt;</span><span class="n">p2q</span><span class="o">.</span><span class="ow">in</span><span class="o">&gt;&amp;</span><span class="n">p2q</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>Once the conversion process has finished, the orbitals should be located in the file <code class="docutils literal notranslate"><span class="pre">diamond_vmc/pwscf_output/pwscf.pwscf.h5</span></code>.  Open <code class="docutils literal notranslate"><span class="pre">diamond_vmc/vmc.in.xml</span></code> and replace “<code class="docutils literal notranslate"><span class="pre">MISSING.h5</span></code>” with “<code class="docutils literal notranslate"><span class="pre">./pwscf_output/pwscf.pwscf.h5</span></code>”.  Next submit the VMC run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">qmcpack</span> <span class="n">vmc</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span><span class="o">&gt;&amp;</span><span class="n">vmc</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>Note: If your system is large, the preceding process may not complete within the time frame of this lab.  Working with a stripped down (but relevant) example is a good idea for exploratory runs.</p>
+<p>Once the runs have finished, you may want to begin exploring Jastrow optimization and DMC for your system.  Example calculations are provided at the end of <code class="docutils literal notranslate"><span class="pre">example.py</span></code> in the commented out text.</p>
+</div>
+<div class="section" id="appendix-a-basic-python-constructs">
+<span id="python-basics"></span><h2>Appendix A: Basic Python constructs<a class="headerlink" href="#appendix-a-basic-python-constructs" title="Permalink to this headline">¶</a></h2>
+<p>Basic Python data types (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">tuple</span></code>, <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">array</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code>, <code class="docutils literal notranslate"><span class="pre">obj</span></code>) and programming constructs (<code class="docutils literal notranslate"><span class="pre">if</span></code> statements, <code class="docutils literal notranslate"><span class="pre">for</span></code> loops, functions w/ keyword arguments) are briefly overviewed in the following.  All examples can be executed interactively in Python.  To do this, type “<code class="docutils literal notranslate"><span class="pre">python</span></code>” at the command line and paste any of the shaded text below at the <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> prompt.  For more information about effective use of Python, consult the detailed online documentation: <a class="reference external" href="https://docs.python.org/2/">https://docs.python.org/2/</a>.</p>
+<div class="section" id="intrinsic-types-int-float-str">
+<h3>Intrinsic types: <code class="docutils literal notranslate"><span class="pre">int,</span> <span class="pre">float,</span> <span class="pre">str</span></code><a class="headerlink" href="#intrinsic-types-int-float-str" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#this is a comment</span>
+<span class="n">i</span><span class="o">=</span><span class="mi">5</span>                     <span class="c1"># integer</span>
+<span class="n">f</span><span class="o">=</span><span class="mf">3.6</span>                   <span class="c1"># float</span>
+<span class="n">s</span><span class="o">=</span><span class="s1">&#39;quantum/monte/carlo&#39;</span> <span class="c1"># string</span>
+<span class="n">n</span><span class="o">=</span><span class="kc">None</span>                  <span class="c1"># represents &quot;nothing&quot;</span>
+
+<span class="n">f</span><span class="o">+=</span><span class="mf">1.4</span>                  <span class="c1"># add-assign (-,*,/ also): 5.0</span>
+<span class="mi">2</span><span class="o">**</span><span class="mi">3</span>                    <span class="c1"># raise to a power: 8</span>
+<span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>                  <span class="c1"># int to string: &#39;5&#39;</span>
+<span class="n">s</span><span class="o">+</span><span class="s1">&#39;/simulations&#39;</span>        <span class="c1"># joining strings: &#39;quantum/monte/carlo/simulations&#39;</span>
+<span class="s1">&#39;i=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>       <span class="c1"># format string: &#39;i=5&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="container-types-tuple-list-array-dict-obj">
+<h3>Container types: <code class="docutils literal notranslate"><span class="pre">tuple,</span> <span class="pre">list,</span> <span class="pre">array,</span> <span class="pre">dict,</span> <span class="pre">obj</span></code><a class="headerlink" href="#container-types-tuple-list-array-dict-obj" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>  <span class="c1"># get array from numpy module</span>
+<span class="kn">from</span> <span class="nn">generic</span> <span class="kn">import</span> <span class="n">obj</span>  <span class="c1"># get obj from Nexus&#39; generic module</span>
+
+<span class="n">t</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span><span class="mi">56</span><span class="p">,</span><span class="mf">123.0</span><span class="p">)</span>     <span class="c1"># tuple</span>
+
+<span class="n">l</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="mf">3.14</span><span class="p">,</span><span class="mi">196</span><span class="p">]</span>        <span class="c1"># list</span>
+
+<span class="n">a</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>        <span class="c1"># array</span>
+
+<span class="n">d</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">6</span><span class="p">}</span>         <span class="c1"># dict</span>
+
+<span class="n">o</span><span class="o">=</span><span class="n">obj</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>          <span class="c1"># obj</span>
+
+                        <span class="c1"># printing</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>                <span class="c1">#  (&#39;A&#39;, 42, 56, 123.0)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>                <span class="c1">#  [&#39;B&#39;, 3.1400000000000001, 196]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>                <span class="c1">#  [1 2 3]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                <span class="c1">#  {&#39;a&#39;: 5, &#39;b&#39;: 6}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>                <span class="c1">#    a               = 5</span>
+                        <span class="c1">#    b               = 6</span>
+
+<span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="c1">#number of elements: (4, 3, 3, 2, 2)</span>
+
+<span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span><span class="n">o</span><span class="o">.</span><span class="n">a</span>  <span class="c1">#element access: (&#39;A&#39;, &#39;B&#39;, 1, 5, 5)</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">])</span>  <span class="c1"># slices: works for tuple, list, array</span>
+<span class="n">s</span><span class="p">[:]</span>                    <span class="c1">#   array([0, 1, 2, 3, 4])</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>                   <span class="c1">#   array([2, 3, 4])</span>
+<span class="n">s</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>                   <span class="c1">#   array([0, 1])</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>                  <span class="c1">#   array([1, 2, 3])</span>
+<span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>                <span class="c1">#   array([0, 2, 4])</span>
+
+                        <span class="c1"># list operations</span>
+<span class="n">l2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>            <span class="c1">#   make independent copy</span>
+<span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>             <span class="c1">#   add new element: [&#39;B&#39;, 3.14, 196, 4]</span>
+<span class="n">l</span><span class="o">+</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>               <span class="c1">#   addition: [&#39;B&#39;, 3.14, 196, 4, 5, 6, 7]</span>
+<span class="mi">3</span><span class="o">*</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>                 <span class="c1">#   multiplication:  [0, 1, 0, 1, 0, 1]</span>
+
+<span class="n">b</span><span class="o">=</span><span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>        <span class="c1"># array operations</span>
+<span class="n">a2</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>           <span class="c1">#   make independent copy</span>
+<span class="n">a</span><span class="o">+</span><span class="n">b</span>                     <span class="c1">#   addition: array([ 6, 8, 10])</span>
+<span class="n">a</span><span class="o">+</span><span class="mi">3</span>                     <span class="c1">#   addition: array([ 4, 5, 6])</span>
+<span class="n">a</span><span class="o">*</span><span class="n">b</span>                     <span class="c1">#   multiplication: array([ 5, 12, 21])</span>
+<span class="mi">3</span><span class="o">*</span><span class="n">a</span>                     <span class="c1">#   multiplication: array([3, 6, 9])</span>
+
+                        <span class="c1"># dict/obj operations</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>           <span class="c1">#   make independent copy</span>
+<span class="n">d</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">7</span>              <span class="c1">#   add/assign element</span>
+<span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>                <span class="c1">#   get element names: [&#39;a&#39;, &#39;c&#39;, &#39;b&#39;]</span>
+<span class="n">d</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>              <span class="c1">#   get element values: [5, 7, 6]</span>
+
+                        <span class="c1"># obj-specific operations</span>
+<span class="n">o</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="mi">7</span>                 <span class="c1">#   add/assign element</span>
+<span class="n">o</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>          <span class="c1">#   add/assign multiple elements</span>
+</pre></div>
+</div>
+<p>An important feature of Python to be aware of is that assignment is most often by reference, that is, new values are not always created.  This point is illustrated with an <code class="docutils literal notranslate"><span class="pre">obj</span></code> instance in the following example, but it also holds for <code class="docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">array</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code>, and others.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">o</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">=</span><span class="n">o</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">p</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="mi">7</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="go">  a               = 7</span>
+<span class="go">  b               = 6</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="mi">9</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+<span class="go">  a               = 7</span>
+<span class="go">  b               = 6</span>
+</pre></div>
+</div>
+<p>Here <code class="docutils literal notranslate"><span class="pre">p</span></code> is just another name for <code class="docutils literal notranslate"><span class="pre">o</span></code>, while <code class="docutils literal notranslate"><span class="pre">q</span></code> is a fully independent copy of it.</p>
+</div>
+<div class="section" id="conditional-statements-if-elif-else">
+<h3>Conditional Statements: <code class="docutils literal notranslate"><span class="pre">if/elif/else</span></code><a class="headerlink" href="#conditional-statements-if-elif-else" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is None&#39;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">a</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is 4&#39;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">a</span><span class="o">&lt;=</span><span class="mi">6</span> <span class="ow">and</span> <span class="n">a</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is in the range (2,6]&#39;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">a</span><span class="o">&lt;-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">a</span><span class="o">&gt;</span><span class="mi">26</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is not in the range [-1,26]&#39;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">a</span><span class="o">!=</span><span class="mi">10</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is not 10&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a is 10&#39;</span><span class="p">)</span>
+<span class="c1">#end if</span>
+</pre></div>
+</div>
+<p>The “<code class="docutils literal notranslate"><span class="pre">\#end</span> <span class="pre">if</span></code>” is not part of Python syntax, but you will see text like this throughout Nexus for clear encapsulation.</p>
+</div>
+<div class="section" id="iteration-for">
+<h3>Iteration: <code class="docutils literal notranslate"><span class="pre">for</span></code><a class="headerlink" href="#iteration-for" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">generic</span> <span class="kn">import</span> <span class="n">obj</span>
+
+<span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)):</span>  <span class="c1"># loop over list indices</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="n">l</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="c1">#end for</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                 <span class="c1"># s is 21</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>              <span class="c1"># loop over list elements</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="n">v</span>
+<span class="c1">#end for</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                 <span class="c1"># s is 6</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>              <span class="c1"># loop over obj elements</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="n">v</span>
+<span class="c1">#end for</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                 <span class="c1"># s is 11</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">n</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">items</span><span class="p">():</span><span class="c1"># loop over name/value pairs in obj</span>
+    <span class="n">d</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">+=</span> <span class="n">v</span>
+<span class="c1">#end for</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>                 <span class="c1"># d is {&#39;a&#39;: 10, &#39;b&#39;: 10}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions-def-argument-syntax">
+<h3>Functions: <code class="docutils literal notranslate"><span class="pre">def</span></code>, argument syntax<a class="headerlink" href="#functions-def-argument-syntax" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>          <span class="c1"># basic function, c has a default value</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+<span class="c1">#end def f</span>
+
+<span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>                 <span class="c1"># prints: 1 2 5</span>
+
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>   <span class="c1"># general function, returns nothing</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>          <span class="c1">#     args: tuple of positional arguments</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>        <span class="c1">#   kwargs: dict of keyword arguments</span>
+<span class="c1">#end def f</span>
+
+<span class="n">f</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">,(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;t&#39;</span><span class="p">)</span>   <span class="c1"># 2 pos., 2 kw. args, prints:</span>
+                         <span class="c1">#   (&#39;s&#39;, (1, 2))</span>
+                         <span class="c1">#   {&#39;a&#39;: 3, &#39;b&#39;: &#39;t&#39;}</span>
+
+<span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>                <span class="c1"># pos. args from list, 1 kw. arg, prints:</span>
+                         <span class="c1">#   (0, 1, 2)</span>
+                         <span class="c1">#   {&#39;a&#39;: 6}</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">l</span><span class="p">,</span><span class="o">**</span><span class="n">o</span><span class="p">)</span>                <span class="c1"># pos./kw. args from list/obj, prints:</span>
+                         <span class="c1">#   (0, 1, 2)</span>
+                         <span class="c1">#   {&#39;a&#39;: 5, &#39;b&#39;: 6}</span>
+
+<span class="n">f</span><span class="p">(</span>                       <span class="c1"># indented kw. args, prints</span>
+    <span class="n">blocks</span>   <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>      <span class="c1">#   ()</span>
+    <span class="n">steps</span>    <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>       <span class="c1">#   {&#39;steps&#39;: 10, &#39;blocks&#39;: 200, &#39;timestep&#39;: 0.01}</span>
+    <span class="n">timestep</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="p">)</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">obj</span><span class="p">(</span>                 <span class="c1"># obj w/ indented kw. args</span>
+    <span class="n">blocks</span>   <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">steps</span>    <span class="o">=</span>  <span class="mi">5</span><span class="p">,</span>
+    <span class="n">timestep</span> <span class="o">=</span> <span class="mf">0.02</span>
+    <span class="p">)</span>
+
+<span class="n">f</span><span class="p">(</span><span class="o">**</span><span class="n">o</span><span class="p">)</span>                   <span class="c1"># kw. args from obj, prints:</span>
+                         <span class="c1">#   ()</span>
+                         <span class="c1">#   {&#39;timestep&#39;: 0.02, &#39;blocks&#39;: 100, &#39;steps&#39;: 5}</span>
+</pre></div>
+</div>
+<p id="bibtex-bibliography-lab_qmc_basics-0"><dl class="citation">
+<dt class="bibtex label" id="krogel2016nexus"><span class="brackets">Kro16</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>Jaron T. Krogel. Nexus: a modular workflow management system for quantum simulation codes. <em>Computer Physics Communications</em>, 198:154–168, 2016. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0010465515002982">http://www.sciencedirect.com/science/article/pii/S0010465515002982</a>, <a class="reference external" href="https://doi.org/10.1016/j.cpc.2015.08.012">doi:10.1016/j.cpc.2015.08.012</a>.</p>
+</dd>
+</dl>
+</p>
+</div>
 </div>
 </div>
 
