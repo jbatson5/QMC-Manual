@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Obtaining, installing, and validating QMCPACK &mdash; QMC Manual 0.0.1 documentation</title>
+  <title>Obtaining, installing, and validating QMCPACK &mdash; QMCPACK Manual 0.0.1 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> QMC Manual
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
           
 
           
@@ -131,7 +131,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installing-via-spack">Installing via Spack</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#known-limitations">Known limitations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#setting-up-the-spack-environment">Setting up the Spack environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Building QMCPACK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Building QMCPACK</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#loading-qmcpack-into-your-environment">Loading QMCPACK into your environment</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#dependencies-that-need-to-be-compiled-with-gcc">Dependencies that need to be compiled with GCC</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#installing-qmcpack-with-spack-on-linux">Installing QMCPACK with Spack on Linux</a></li>
@@ -168,6 +168,12 @@
 <li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
 </ul>
 
             
@@ -182,7 +188,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">QMC Manual</a>
+          <a href="index.html">QMCPACK Manual</a>
         
       </nav>
 
@@ -486,6 +492,7 @@ the path to the source directory.</p>
                      <span class="n">Release</span> <span class="p">(</span><span class="n">create</span> <span class="n">a</span> <span class="n">release</span><span class="o">/</span><span class="n">optimized</span> <span class="n">build</span><span class="p">)</span>
                      <span class="n">RelWithDebInfo</span> <span class="p">(</span><span class="n">create</span> <span class="n">a</span> <span class="n">release</span><span class="o">/</span><span class="n">optimized</span> <span class="n">build</span> <span class="k">with</span> <span class="n">debug</span> <span class="n">info</span><span class="p">)</span>
                      <span class="n">MinSizeRel</span> <span class="p">(</span><span class="n">create</span> <span class="n">an</span> <span class="n">executable</span> <span class="n">optimized</span> <span class="k">for</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">CMAKE_SYSTEM_NAME</span>    <span class="n">Set</span> <span class="n">value</span> <span class="n">to</span> <span class="n">CrayLinuxEnvironment</span> <span class="n">when</span> <span class="n">cross</span><span class="o">-</span><span class="n">compiling</span> <span class="ow">in</span> <span class="n">Cray</span> <span class="n">Programming</span> <span class="n">Environment</span><span class="o">.</span>
 <span class="n">CMAKE_C_COMPILER</span>     <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span> <span class="n">compiler</span>
 <span class="n">CMAKE_CXX_COMPILER</span>   <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span><span class="o">++</span> <span class="n">compiler</span>
 <span class="n">CMAKE_C_FLAGS</span>        <span class="n">Set</span> <span class="n">the</span> <span class="n">C</span> <span class="n">flags</span><span class="o">.</span>  <span class="n">Note</span><span class="p">:</span> <span class="n">to</span> <span class="n">prevent</span> <span class="n">default</span>
@@ -733,8 +740,8 @@ QMCPACK tried to do its best with CMake to facilitate cross compiling.</p>
 <ul class="simple">
 <li><p>On a machine using a Cray programming environment, we rely on
 compiler wrappers provided by Cray to correctly set architecture-specific
-flags. The CMake configure log should indicate that a
-Cray machine was detected.</p></li>
+flags. Please also add <code class="docutils literal notranslate"><span class="pre">-DCMAKE_SYSTEM_NAME=CrayLinuxEnvironment</span></code> to cmake.
+The CMake configure log should indicate that a Cray machine was detected.</p></li>
 <li><p>If not on a Cray machine, by default we assume building for
 the host architecture (e.g., -xHost is added for the Intel compiler
 and -march=native is added for GNU/Clang compilers).</p></li>
@@ -920,13 +927,12 @@ source to use the brew-provided gcc instead of Apple CLANG.</p>
 <p>Theta is a 9.65 petaflops system manufactured by Cray with 3,624 compute nodes.
 Each node features a second-generation Intel Xeon Phi 7230 processor and 192 GB DDR4 RAM.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">CRAYPE_LINK_TYPE</span><span class="o">=</span><span class="n">dynamic</span>
-<span class="c1"># Do not use cmake 3.9.1, it causes trouble with parallel HDF5.</span>
-<span class="n">module</span> <span class="n">load</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.11</span><span class="o">.</span><span class="mi">4</span>
+<span class="n">module</span> <span class="n">load</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.16</span><span class="o">.</span><span class="mi">2</span>
 <span class="n">module</span> <span class="n">unload</span> <span class="n">cray</span><span class="o">-</span><span class="n">libsci</span>
 <span class="n">module</span> <span class="n">load</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span>
 <span class="n">module</span> <span class="n">load</span> <span class="n">gcc</span>   <span class="c1"># Make C++ 14 standard library available to the Intel compiler</span>
 <span class="n">export</span> <span class="n">BOOST_ROOT</span><span class="o">=/</span><span class="n">soft</span><span class="o">/</span><span class="n">libraries</span><span class="o">/</span><span class="n">boost</span><span class="o">/</span><span class="mf">1.64</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">intel</span>
-<span class="n">cmake</span> <span class="o">..</span>
+<span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_SYSTEM_NAME</span><span class="o">=</span><span class="n">CrayLinuxEnvironment</span> <span class="o">..</span>
 <span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">24</span>
 <span class="n">ls</span> <span class="o">-</span><span class="n">l</span> <span class="nb">bin</span><span class="o">/</span><span class="n">qmcpack</span>
 </pre></div>
@@ -981,33 +987,32 @@ export CRAYPE_LINK_TYPE=dynamic
 module unload cray-libsci
 module load boost/1.70.0
 module load cray-hdf5-parallel
-module load cmake/3.14.0
-module load gcc/7.3.0 # Make C++ 14 standard library available to the Intel compiler
+module load cmake/3.14.4
+module load gcc/8.3.0 # Make C++ 14 standard library available to the Intel compiler
 cd $SCRATCH
 mkdir build_cori_hsw
 cd build_cori_hsw
-cmake -DQMC_SYMLINK_TEST_FILES=0 $HOME/qmc/git_QMCPACK/qmcpack/
+cmake -DQMC_SYMLINK_TEST_FILES=0 -DCMAKE_SYSTEM_NAME=CrayLinuxEnvironment $HOME/qmc/git_QMCPACK/qmcpack/
 nice make -j 8
 ls -l bin/qmcpack
 </pre></div>
 </div>
-<p>When the preceding was tested on May 16, 2019, the following module and
+<p>When the preceding was tested on June 15, 2020, the following module and
 software versions were present:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build_cori_hsw</span><span class="o">&gt;</span> <span class="n">module</span> <span class="nb">list</span>
 <span class="n">Currently</span> <span class="n">Loaded</span> <span class="n">Modulefiles</span><span class="p">:</span>
-<span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">10.6</span>                                   <span class="mi">14</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">43</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__ga796da32</span><span class="o">.</span><span class="n">ari</span>
-<span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                          <span class="mi">15</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">18</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">47</span><span class="n">__g2aa4f39</span><span class="o">.</span><span class="n">ari</span>
-<span class="mi">3</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">18.0</span><span class="o">.</span><span class="mf">1.163</span>                                   <span class="mi">16</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
-<span class="mi">4</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                               <span class="mi">17</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">4</span>
-<span class="mi">5</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">15</span>                                      <span class="mi">18</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">haswell</span>
-<span class="mi">6</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">13</span><span class="n">__g5196236</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">19</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">3</span>
-<span class="mi">7</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">13</span><span class="n">__gea11d3d</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">20</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">7.3</span><span class="o">.</span><span class="mi">0</span>
-<span class="mi">8</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                         <span class="mi">21</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>
-<span class="mi">9</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__g5a674e0</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">22</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">4</span>
-<span class="mi">10</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">11</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span>   <span class="mi">23</span><span class="p">)</span> <span class="n">boost</span><span class="o">/</span><span class="mf">1.70</span><span class="o">.</span><span class="mi">0</span>
-<span class="mi">11</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">15</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">11</span><span class="n">__g7549d06</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">24</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span><span class="o">/</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">2.0</span>
-<span class="mi">12</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">43</span><span class="n">__g6c4e934</span><span class="o">.</span><span class="n">ari</span>              <span class="mi">25</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">0</span>
-<span class="mi">13</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.7_2</span><span class="o">.</span><span class="mf">2.118</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_10</span><span class="o">.</span><span class="mi">1</span><span class="n">__g58b37a2</span>
+<span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">11.4</span>                                 <span class="mi">13</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">20</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">8</span><span class="n">__g0475745</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                        <span class="mi">14</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_3</span><span class="o">.</span><span class="mi">34</span><span class="n">__g36b56f4</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">3</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>                                         <span class="mi">15</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.12_2</span><span class="o">.</span><span class="mf">2.156</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_8</span><span class="o">.</span><span class="mi">6</span><span class="n">__g5aab709e</span>
+<span class="mi">4</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">7</span>                                    <span class="mi">16</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">57</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_5</span><span class="o">.</span><span class="mi">10</span><span class="n">__g1b735148</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">5</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">19.0</span><span class="o">.</span><span class="mf">3.199</span>                                 <span class="mi">17</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">20</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">42</span><span class="n">__g8e3fb5b</span><span class="o">.</span><span class="n">ari</span>
+<span class="mi">6</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                             <span class="mi">18</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
+<span class="mi">7</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.6</span><span class="o">.</span><span class="mi">2</span>                                     <span class="mi">19</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">5</span>
+<span class="mi">8</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_3</span><span class="o">.</span><span class="mi">29</span><span class="n">__g8175d3d</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">20</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">haswell</span>
+<span class="mi">9</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_7</span><span class="o">.</span><span class="mi">32</span><span class="n">__ge78e5b0</span><span class="o">.</span><span class="n">ari</span>         <span class="mi">21</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">10</span>
+<span class="mi">10</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                      <span class="mi">22</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">hugepages2M</span>
+<span class="mi">11</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">43</span><span class="n">__g38cf134</span><span class="o">.</span><span class="n">ari</span>          <span class="mi">23</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">8.3</span><span class="o">.</span><span class="mi">0</span>
+<span class="mi">12</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_6</span><span class="o">.</span><span class="mi">27</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span> <span class="mi">24</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">4</span>
 </pre></div>
 </div>
 <p>The following slurm job file can be used to run the tests:</p>
@@ -1034,33 +1039,32 @@ module swap craype-haswell craype-mic-knl # Only difference between Haswell and 
 module unload cray-libsci
 module load boost/1.70.0
 module load cray-hdf5-parallel
-module load cmake/3.14.0
-module load gcc/7.3.0 # Make C++ 14 standard library available to the Intel compiler
+module load cmake/3.14.4
+module load gcc/8.3.0 # Make C++ 14 standard library available to the Intel compiler
 cd $SCRATCH
 mkdir build_cori_knl
 cd build_cori_knl
-cmake -DQMC_SYMLINK_TEST_FILES=0 $HOME/git_QMCPACK/qmcpack/
+cmake -DQMC_SYMLINK_TEST_FILES=0 -DCMAKE_SYSTEM_NAME=CrayLinuxEnvironment $HOME/qmc/git_QMCPACK/qmcpack/
 nice make -j 8
 ls -l bin/qmcpack
 </pre></div>
 </div>
-<p>When the preceding was tested on May 16, 2019, the following module and
+<p>When the preceding was tested on June 15, 2020, the following module and
 software versions were present:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">build_cori_knl</span><span class="o">&gt;</span> <span class="n">module</span> <span class="nb">list</span>
   <span class="n">Currently</span> <span class="n">Loaded</span> <span class="n">Modulefiles</span><span class="p">:</span>
-  <span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">10.6</span>                                  <span class="mi">14</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">43</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__ga796da32</span><span class="o">.</span><span class="n">ari</span>
-  <span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                         <span class="mi">15</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">18</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">47</span><span class="n">__g2aa4f39</span><span class="o">.</span><span class="n">ari</span>
-  <span class="mi">3</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">18.0</span><span class="o">.</span><span class="mf">1.163</span>                                  <span class="mi">16</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
-  <span class="mi">4</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                              <span class="mi">17</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">4</span>
-  <span class="mi">5</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">15</span>                                     <span class="mi">18</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">mic</span><span class="o">-</span><span class="n">knl</span>
-  <span class="mi">6</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">13</span><span class="n">__g5196236</span><span class="o">.</span><span class="n">ari</span>            <span class="mi">19</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">3</span>
-  <span class="mi">7</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">13</span><span class="n">__gea11d3d</span><span class="o">.</span><span class="n">ari</span>          <span class="mi">20</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">7.3</span><span class="o">.</span><span class="mi">0</span>
-  <span class="mi">8</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                        <span class="mi">21</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>
-  <span class="mi">9</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">45</span><span class="n">__g5a674e0</span><span class="o">.</span><span class="n">ari</span>            <span class="mi">22</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">4</span>
-  <span class="mi">10</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_3</span><span class="o">.</span><span class="mi">11</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span>  <span class="mi">23</span><span class="p">)</span> <span class="n">boost</span><span class="o">/</span><span class="mf">1.70</span><span class="o">.</span><span class="mi">0</span>
-  <span class="mi">11</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">15</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">11</span><span class="n">__g7549d06</span><span class="o">.</span><span class="n">ari</span>          <span class="mi">24</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">hdf5</span><span class="o">-</span><span class="n">parallel</span><span class="o">/</span><span class="mf">1.10</span><span class="o">.</span><span class="mf">2.0</span>
-  <span class="mi">12</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">3</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_5</span><span class="o">.</span><span class="mi">43</span><span class="n">__g6c4e934</span><span class="o">.</span><span class="n">ari</span>             <span class="mi">25</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">0</span>
-  <span class="mi">13</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.7_2</span><span class="o">.</span><span class="mf">2.118</span><span class="o">-</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">7.1_10</span><span class="o">.</span><span class="mi">1</span><span class="n">__g58b37a2</span>
+  <span class="mi">1</span><span class="p">)</span> <span class="n">modules</span><span class="o">/</span><span class="mf">3.2</span><span class="o">.</span><span class="mf">11.4</span>                                 <span class="mi">13</span><span class="p">)</span> <span class="n">xpmem</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">20</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">8</span><span class="n">__g0475745</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">2</span><span class="p">)</span> <span class="n">nsg</span><span class="o">/</span><span class="mf">1.2</span><span class="o">.</span><span class="mi">0</span>                                        <span class="mi">14</span><span class="p">)</span> <span class="n">job</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">4</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_3</span><span class="o">.</span><span class="mi">34</span><span class="n">__g36b56f4</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">3</span><span class="p">)</span> <span class="n">altd</span><span class="o">/</span><span class="mf">2.0</span>                                         <span class="mi">15</span><span class="p">)</span> <span class="n">dvs</span><span class="o">/</span><span class="mf">2.12_2</span><span class="o">.</span><span class="mf">2.156</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_8</span><span class="o">.</span><span class="mi">6</span><span class="n">__g5aab709e</span>
+  <span class="mi">4</span><span class="p">)</span> <span class="n">darshan</span><span class="o">/</span><span class="mf">3.1</span><span class="o">.</span><span class="mi">7</span>                                    <span class="mi">16</span><span class="p">)</span> <span class="n">alps</span><span class="o">/</span><span class="mf">6.6</span><span class="o">.</span><span class="mi">57</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_5</span><span class="o">.</span><span class="mi">10</span><span class="n">__g1b735148</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">5</span><span class="p">)</span> <span class="n">intel</span><span class="o">/</span><span class="mf">19.0</span><span class="o">.</span><span class="mf">3.199</span>                                 <span class="mi">17</span><span class="p">)</span> <span class="n">rca</span><span class="o">/</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">20</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">42</span><span class="n">__g8e3fb5b</span><span class="o">.</span><span class="n">ari</span>
+  <span class="mi">6</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">network</span><span class="o">-</span><span class="n">aries</span>                             <span class="mi">18</span><span class="p">)</span> <span class="n">atp</span><span class="o">/</span><span class="mf">2.1</span><span class="o">.</span><span class="mi">3</span>
+  <span class="mi">7</span><span class="p">)</span> <span class="n">craype</span><span class="o">/</span><span class="mf">2.6</span><span class="o">.</span><span class="mi">2</span>                                     <span class="mi">19</span><span class="p">)</span> <span class="n">PrgEnv</span><span class="o">-</span><span class="n">intel</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mi">5</span>
+  <span class="mi">8</span><span class="p">)</span> <span class="n">udreg</span><span class="o">/</span><span class="mf">2.3</span><span class="o">.</span><span class="mi">2</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_3</span><span class="o">.</span><span class="mi">29</span><span class="n">__g8175d3d</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">20</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">mic</span><span class="o">-</span><span class="n">knl</span>
+  <span class="mi">9</span><span class="p">)</span> <span class="n">ugni</span><span class="o">/</span><span class="mf">6.0</span><span class="o">.</span><span class="mf">14.0</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_7</span><span class="o">.</span><span class="mi">32</span><span class="n">__ge78e5b0</span><span class="o">.</span><span class="n">ari</span>         <span class="mi">21</span><span class="p">)</span> <span class="n">cray</span><span class="o">-</span><span class="n">mpich</span><span class="o">/</span><span class="mf">7.7</span><span class="o">.</span><span class="mi">10</span>
+ <span class="mi">10</span><span class="p">)</span> <span class="n">pmi</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mi">14</span>                                       <span class="mi">22</span><span class="p">)</span> <span class="n">craype</span><span class="o">-</span><span class="n">hugepages2M</span>
+ <span class="mi">11</span><span class="p">)</span> <span class="n">dmapp</span><span class="o">/</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_4</span><span class="o">.</span><span class="mi">43</span><span class="n">__g38cf134</span><span class="o">.</span><span class="n">ari</span>           <span class="mi">23</span><span class="p">)</span> <span class="n">gcc</span><span class="o">/</span><span class="mf">8.3</span><span class="o">.</span><span class="mi">0</span>
+ <span class="mi">12</span><span class="p">)</span> <span class="n">gni</span><span class="o">-</span><span class="n">headers</span><span class="o">/</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">12.0</span><span class="o">-</span><span class="mf">7.0</span><span class="o">.</span><span class="mf">1.1_6</span><span class="o">.</span><span class="mi">27</span><span class="n">__g3b1768f</span><span class="o">.</span><span class="n">ari</span>  <span class="mi">24</span><span class="p">)</span> <span class="n">cmake</span><span class="o">/</span><span class="mf">3.14</span><span class="o">.</span><span class="mi">4</span>
 </pre></div>
 </div>
 </div>
@@ -1087,7 +1091,7 @@ software versions were present:</p>
 <span class="n">make</span> <span class="o">-</span><span class="n">j</span> <span class="mi">56</span>
 </pre></div>
 </div>
-<p>Note that armclang is recognized as an <a href="#id2"><span class="problematic" id="id3">`</span></a>unknown’ compiler by CMake v3.13* and below. In this case, we need to force it as clang to apply necessary flags. To do so, pass the following additionals option to CMake:</p>
+<p>Note that armclang is recognized as an ‘unknown’ compiler by CMake v3.13* and below. In this case, we need to force it as clang to apply necessary flags. To do so, pass the following additionals option to CMake:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DCMAKE_C_COMPILER_ID</span><span class="o">=</span><span class="n">Clang</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER_ID</span><span class="o">=</span><span class="n">Clang</span> \
 <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER_VERSION</span><span class="o">=</span><span class="mf">5.0</span> <span class="o">-</span><span class="n">DCMAKE_CXX_STANDARD_COMPUTED_DEFAULT</span><span class="o">=</span><span class="mi">98</span> \
 </pre></div>
@@ -1242,8 +1246,8 @@ leveraging your local Python installation by adding an entry in
 </pre></div>
 </div>
 </div>
-<div class="section" id="id4">
-<h3>Building QMCPACK<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Building QMCPACK<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>The QMCPACK Spack package has a number of variants to support different compile time
 options and different versions of the application. A full list can be displayed by typing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">your</span> <span class="n">laptop</span><span class="o">&gt;</span> <span class="n">spack</span> <span class="n">info</span> <span class="n">qmcpack</span>
@@ -1533,7 +1537,7 @@ output to the standard output:</p>
 </div>
 <p>The test system includes specific tests for the complex version of the code.</p>
 <p>The input data files for the tests are located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory.
-The system-level test directories are grouped into <code class="docutils literal notranslate"><span class="pre">heg</span></code>, <code class="docutils literal notranslate"><span class="pre">molecules</span></code>, and <code class="docutils literal notranslate"><span class="pre">solids</span></code>, with particular physical systems under each (for example <code class="docutils literal notranslate"><span class="pre">molecules/H4_ae</span></code> <a class="footnote-reference brackets" href="#f1" id="id5">1</a> ).
+The system-level test directories are grouped into <code class="docutils literal notranslate"><span class="pre">heg</span></code>, <code class="docutils literal notranslate"><span class="pre">molecules</span></code>, and <code class="docutils literal notranslate"><span class="pre">solids</span></code>, with particular physical systems under each (for example <code class="docutils literal notranslate"><span class="pre">molecules/H4_ae</span></code> <a class="footnote-reference brackets" href="#f1" id="id3">1</a> ).
 Under each physical system directory there might be tests for multiple QMC methods or parameter variations.
 The numerical comparisons and test definitions are in the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file in each physical system directory.</p>
 <p>If <em>all</em> the QMC tests fail it is likely
@@ -1645,9 +1649,9 @@ and are not reoptimized, as might be done for research purposes.  Runs
 in the hundreds of electrons up to low thousands of electrons are representative of
 research runs performed in 2017. The largest runs target
 future machines and require very large memory.</p>
-<table class="docutils align-default" id="id6">
+<table class="docutils align-default" id="id4">
 <caption><span class="caption-number">Table 1 </span><span class="caption-text">System sizes and names for NiO performance tests. GPU performance
-  tests are named similarly but have different walker counts.</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
+  tests are named similarly but have different walker counts.</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 39%" />
 <col style="width: 21%" />
@@ -1735,12 +1739,12 @@ the XML format used by QMCPACK itself. The utility also enables the
 atomic orbitals to be recomputed via a numerical density functional
 calculation if they need to be reconstructed for use in an
 electronic structure calculation.</p>
-<div class="figure align-center" id="id7">
+<div class="figure align-center" id="id5">
 <span id="fig2"></span><a class="reference internal image-reference" href="_images/QMCPACK_CDash_CTest_Results_20160129.png"><img alt="_images/QMCPACK_CDash_CTest_Results_20160129.png" src="_images/QMCPACK_CDash_CTest_Results_20160129.png" style="width: 80%;" /></a>
 <p class="caption"><span class="caption-number">Fig. 2 </span><span class="caption-text">Example test results for QMCPACK showing data for a
 workstation (Intel, GCC, both CPU and GPU builds) and for two ORNL
 supercomputers. In this example, four errors were found. This
-dashboard is accessible at <a class="reference external" href="https://cdash.qmcpack.org">https://cdash.qmcpack.org</a></span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+dashboard is accessible at <a class="reference external" href="https://cdash.qmcpack.org">https://cdash.qmcpack.org</a></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="installing-and-patching-quantum-espresso">
@@ -1841,7 +1845,7 @@ reconstruct the full compilation line.</p></li>
 details, or contact a developer.</p>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
-<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id5">1</a></span></dt>
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
 <dd><p>The suffix “ae” is short for “all-electron,” and “pp” is short for “pseudopotential.”</p>
 </dd>
 </dl>

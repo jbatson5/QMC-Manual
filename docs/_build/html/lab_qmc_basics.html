@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lab 2: QMC Basics &mdash; QMC Manual 0.0.1 documentation</title>
+  <title>Lab 2: QMC Basics &mdash; QMCPACK Manual 0.0.1 documentation</title>
   
 
   
@@ -50,7 +50,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> QMC Manual
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
           
 
           
@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#obtaining-and-converting-a-pseudopotential-for-oxygen">Obtaining and converting a pseudopotential for oxygen</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#dft-with-qe-to-obtain-the-orbital-part-of-the-wavefunction">DFT with QE to obtain the orbital part of the wavefunction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optimization-with-qmcpack-to-obtain-the-correlated-part-of-the-wavefunction">Optimization with QMCPACK to obtain the correlated part of the wavefunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dmc-timestep-extrapolation-i-neutral-oxygen-atom">DMC timestep extrapolation I: neutral oxygen atom</a></li>
 </ul>
 </li>
 </ul>
@@ -122,7 +123,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">QMC Manual</a>
+          <a href="index.html">QMCPACK Manual</a>
         
       </nav>
 
@@ -395,6 +396,288 @@ for the true ground state wavefunction
 (<span class="math notranslate nohighlight">\(\textrm{Energy}=E\equiv\langle{\Psi}|{\hat{H}}|{\Psi}\rangle\)</span>,
 <span class="math notranslate nohighlight">\(\textrm{Variance}=V\equiv\langle{\Psi}|{(\hat{H}-E)^2}|{\Psi}\rangle\)</span>).
 For this exercise, we will focus on minimizing the variance.</p>
+<p>First, we need to update the template particle and wavefunction information in <code class="docutils literal notranslate"><span class="pre">O.q0.ptcl.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">O.q0.wfs.xml</span></code>.  We want to simulate the O atom in open boundary conditions (the default is periodic).  To do this, open <code class="docutils literal notranslate"><span class="pre">`O.q0.ptcl.xml</span></code> with your favorite text editor (e.g., <code class="docutils literal notranslate"><span class="pre">emacs</span></code> or <code class="docutils literal notranslate"><span class="pre">vi</span></code>) and replace</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bconds&quot;</span><span class="o">&gt;</span>
+   <span class="n">p</span> <span class="n">p</span> <span class="n">p</span>
+<span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LR_dim_cutoff&quot;</span><span class="o">&gt;</span>
+   <span class="mi">15</span>
+<span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;bconds&quot;</span><span class="o">&gt;</span>
+   <span class="n">n</span> <span class="n">n</span> <span class="n">n</span>
+<span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Next we will select Jastrow factors appropriate for an atom.  In open boundary conditions, the B-spline Jastrow correlation functions should cut off to zero at some distance away from the atom.  Open <code class="docutils literal notranslate"><span class="pre">O.q0.wfs.xml</span></code> and add the following cutoffs (<code class="docutils literal notranslate"><span class="pre">rcut</span></code> in Bohr radii) to the correlation factors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;10.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;10.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">correlation</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;O&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;5.0&quot;</span><span class="o">&gt;</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>These terms correspond to
+<span class="math notranslate nohighlight">\(u_2^{\uparrow\uparrow}/u_2^{\downarrow\downarrow}\)</span>,
+<span class="math notranslate nohighlight">\(u_2^{\uparrow\downarrow}\)</span>, and
+<span class="math notranslate nohighlight">\(u_1^{\uparrow O}/u_1^{\downarrow O}\)</span>, respectively. In each case,
+the correlation function (<span class="math notranslate nohighlight">\(u_*\)</span>) is represented by piecewise
+continuous cubic B-splines. Each correlation function has eight
+parameters, which are just the values of <span class="math notranslate nohighlight">\(u\)</span> on a uniformly spaced
+grid up to <code class="docutils literal notranslate"><span class="pre">rcut</span></code>. Initially the parameters (<code class="docutils literal notranslate"><span class="pre">coefficients</span></code>) are set
+to zero:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">correlation</span> <span class="n">speciesA</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">speciesB</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;8&quot;</span> <span class="n">rcut</span><span class="o">=</span><span class="s2">&quot;10.0&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">coefficients</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;uu&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;Array&quot;</span><span class="o">&gt;</span>
+     <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span>
+  <span class="o">&lt;/</span><span class="n">coefficients</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">correlation</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Finally, we need to assemble particle, wavefunction, and pseudopotential information into the main QMCPACK input file (<code class="docutils literal notranslate"><span class="pre">O.q0.opt.in.xml</span></code>) and specify inputs for the Jastrow optimization process.  Open <code class="docutils literal notranslate"><span class="pre">O.q0.opt.in.xml</span></code> and write in the location of the particle, wavefunction, and pseudopotential files (“<code class="docutils literal notranslate"><span class="pre">&lt;!--</span> <span class="pre">...</span> <span class="pre">--&gt;</span></code>” are comments):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>...
+&lt;!-- include simulationcell and particle information from pw2qmcpqack --&gt;
+&lt;include href=&quot;O.q0.ptcl.xml&quot;/&gt;
+...
+&lt;!-- include wavefunction information from pw2qmcpqack --&gt;
+&lt;include href=&quot;O.q0.wfs.xml&quot;/&gt;
+...
+&lt;!-- O pseudopotential read from &quot;O.BFD.xml&quot; --&gt;
+&lt;pseudo elementType=&quot;O&quot; href=&quot;O.BFD.xml&quot;/&gt;
+...
+</pre></div>
+</div>
+<p>The relevant portion of the input describing the linear optimization process is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">loop</span> <span class="nb">max</span><span class="o">=</span><span class="s2">&quot;MAX&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span> <span class="n">move</span><span class="o">=</span><span class="s2">&quot;pbyp&quot;</span> <span class="n">checkpoint</span><span class="o">=</span><span class="s2">&quot;-1&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">cost</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span>              <span class="o">&gt;</span>  <span class="n">ECOST</span>    <span class="o">&lt;/</span><span class="n">cost</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">cost</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;unreweightedvariance&quot;</span><span class="o">&gt;</span>  <span class="n">UVCOST</span>   <span class="o">&lt;/</span><span class="n">cost</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">cost</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;reweightedvariance&quot;</span>  <span class="o">&gt;</span>  <span class="n">RVCOST</span>   <span class="o">&lt;/</span><span class="n">cost</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;timestep&quot;</span>       <span class="o">&gt;</span>  <span class="n">TS</span>       <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span>        <span class="o">&gt;</span>  <span class="n">SAMPLES</span>  <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;warmupSteps&quot;</span>    <span class="o">&gt;</span>  <span class="mi">50</span>       <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;blocks&quot;</span>         <span class="o">&gt;</span>  <span class="mi">200</span>      <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;subSteps&quot;</span>       <span class="o">&gt;</span>  <span class="mi">1</span>        <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;nonlocalpp&quot;</span>     <span class="o">&gt;</span>  <span class="n">yes</span>      <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;useBuffer&quot;</span>      <span class="o">&gt;</span>  <span class="n">yes</span>      <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">...</span>
+  <span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">loop</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>An explanation of each input variable follows.  The remaining variables control specialized internal details of the linear optimization algorithm.  The meaning of these inputs is beyond the scope of this lab, and reasonable results are often obtained keeping these values fixed.</p>
+<dl class="simple">
+<dt>energy</dt><dd><p>Fraction of trial energy in the cost function.</p>
+</dd>
+<dt>unreweightedvariance</dt><dd><p>Fraction of unreweighted trial variance in the cost function.
+Neglecting the weights can be more robust.</p>
+</dd>
+<dt>reweightedvariance</dt><dd><p>Fraction of trial variance (including the full weights) in the cost
+function.</p>
+</dd>
+<dt>timestep</dt><dd><p>Time step of the VMC random walk, determines spatial distance moved
+by each electron during MC steps. Should be chosen such that the
+acceptance ratio of MC moves is around 50% (30–70% is often
+acceptable). Reasonable values are often between 0.2 and 0.6
+<span class="math notranslate nohighlight">\(\textrm{Ha}^{-1}\)</span>.</p>
+</dd>
+<dt>samples</dt><dd><p>Total number of MC samples collected for optimization; determines
+statistical error bar of cost function. It is often efficient to
+start with a modest number of samples (50k) and then increase as
+needed. More samples may be required if the wavefunction contains a
+large number of variational parameters. MUST be be a multiple of the
+number of threads/cores.</p>
+</dd>
+<dt>warmupSteps</dt><dd><p>Number of MC steps discarded as a warmup or equilibration period of
+the random walk. If this is too small, it will bias the optimization
+procedure.</p>
+</dd>
+<dt>blocks</dt><dd><p>Number of average energy values written to output files. Should be
+greater than 200 for meaningful statistical analysis of output data
+(e.g., via <code class="docutils literal notranslate"><span class="pre">qmca</span></code>).</p>
+</dd>
+<dt>subSteps</dt><dd><p>Number of MC steps in between energy evaluations. Each energy
+evaluation is expensive, so taking a few steps to decorrelate between
+measurements can be more efficient. Will be less efficient with many
+substeps.</p>
+</dd>
+<dt>nonlocalpp,useBuffer</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">nonlocalpp=&quot;no,&quot;</span></code> then the nonlocal part of the pseudopotential
+is not included when computing the cost function. If
+<code class="docutils literal notranslate"><span class="pre">useBuffer=&quot;yes,&quot;</span></code> then temporary data is stored to speed up
+nonlocal pseudopotential evaluation at the expense of memory
+consumption.</p>
+</dd>
+<dt>loop max</dt><dd><p>Number of times to repeat the optimization. Using the resulting
+wavefunction from the previous optimization in the next one improves
+the results. Typical choices range between 8 and 16.</p>
+</dd>
+</dl>
+<p>The cost function defines the quantity to be minimized during
+optimization. The three components of the cost function, energy,
+unreweighted variance, and reweighted variance should sum to one.
+Dedicating 100% of the cost function to unreweighted variance is often a
+good choice. Another common choice is to try 90/10 or 80/20 mixtures of
+reweighted variance and energy. Using 100% energy minimization is
+desirable for reducing DMC pseudopotential localization errors, but the
+optimization process is less stable and should be attempted only after
+first performing several cycles of, for example, variance minimization
+(the entire <code class="docutils literal notranslate"><span class="pre">loop</span></code> section can be duplicated with a different cost
+function each time).</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">MAX</span></code>, <code class="docutils literal notranslate"><span class="pre">EVCOST</span></code>, <code class="docutils literal notranslate"><span class="pre">UVCOST</span></code>, <code class="docutils literal notranslate"><span class="pre">RVCOST</span></code>, <code class="docutils literal notranslate"><span class="pre">TS</span></code>, and <code class="docutils literal notranslate"><span class="pre">SAMPLES</span></code> in the <code class="docutils literal notranslate"><span class="pre">loop</span></code> with appropriate starting values in the <code class="docutils literal notranslate"><span class="pre">O.q0.opt.in.xml</span></code> input file.  Perform the optimization run by typing</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">4</span> <span class="n">qmcpack</span> <span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="ow">in</span><span class="o">.</span><span class="n">xml</span> <span class="o">&gt;&amp;</span><span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">out</span><span class="o">&amp;</span>
+</pre></div>
+</div>
+<p>The run should take only a few minutes for reasonable values of loop <code class="docutils literal notranslate"><span class="pre">max</span></code> and <code class="docutils literal notranslate"><span class="pre">samples</span></code>.</p>
+<p>The log file output will appear in <code class="docutils literal notranslate"><span class="pre">O.q0.opt.out</span></code>.  The beginning of each linear optimization will be marked with text similar to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">=========================================================</span>
+  <span class="n">Start</span> <span class="n">QMCFixedSampleLinearOptimize</span>
+  <span class="n">File</span> <span class="n">Root</span> <span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span><span class="o">.</span><span class="n">s011</span> <span class="n">append</span> <span class="o">=</span> <span class="n">no</span>
+<span class="o">=========================================================</span>
+</pre></div>
+</div>
+<p>At the end of each optimization section the change in cost function, new values for the Jastrow parameters, and elapsed wall clock time are reported:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.0598901869e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.0592576381e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">6.3254886314e-05</span>
+<span class="o">...</span>
+ <span class="o">&lt;</span><span class="n">optVariables</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;O.q0.opt.s011.opt.xml&quot;</span><span class="o">&gt;</span>
+<span class="n">uu_0</span> <span class="mf">6.9392504232e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">0</span>
+<span class="n">uu_1</span> <span class="mf">4.9690781460e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">1</span>
+<span class="n">uu_2</span> <span class="mf">4.0934542375e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">2</span>
+<span class="n">uu_3</span> <span class="mf">3.7875640157e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">3</span>
+<span class="n">uu_4</span> <span class="mf">3.7308380014e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">4</span>
+<span class="n">uu_5</span> <span class="mf">3.5419786809e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">5</span>
+<span class="n">uu_6</span> <span class="mf">4.3139019377e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">6</span>
+<span class="n">uu_7</span> <span class="mf">1.9344371667e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">7</span>
+<span class="n">ud_0</span> <span class="mf">3.9219009713e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">8</span>
+<span class="n">ud_1</span> <span class="mf">1.2352664647e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">9</span>
+<span class="n">ud_2</span> <span class="mf">4.4048945133e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">10</span>
+<span class="n">ud_3</span> <span class="mf">2.1415676741e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">11</span>
+<span class="n">ud_4</span> <span class="mf">1.5201803731e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">12</span>
+<span class="n">ud_5</span> <span class="mf">2.3708169445e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">13</span>
+<span class="n">ud_6</span> <span class="mf">3.4279064930e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">14</span>
+<span class="n">ud_7</span> <span class="mf">4.3334583596e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">15</span>
+<span class="n">eO_0</span> <span class="o">-</span><span class="mf">7.8490123937e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">16</span>
+<span class="n">eO_1</span> <span class="o">-</span><span class="mf">6.6726618338e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">17</span>
+<span class="n">eO_2</span> <span class="o">-</span><span class="mf">4.8753453838e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">18</span>
+<span class="n">eO_3</span> <span class="o">-</span><span class="mf">3.0913993774e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">19</span>
+<span class="n">eO_4</span> <span class="o">-</span><span class="mf">1.7901872177e-01</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">20</span>
+<span class="n">eO_5</span> <span class="o">-</span><span class="mf">8.6199000697e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">21</span>
+<span class="n">eO_6</span> <span class="o">-</span><span class="mf">4.0601160841e-02</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">22</span>
+<span class="n">eO_7</span> <span class="o">-</span><span class="mf">4.1358075061e-03</span> <span class="mi">1</span> <span class="mi">1</span>  <span class="n">ON</span> <span class="mi">23</span>
+ <span class="o">&lt;/</span><span class="n">optVariables</span><span class="o">&gt;</span>
+<span class="o">...</span>
+ <span class="n">QMC</span> <span class="n">Execution</span> <span class="n">time</span> <span class="o">=</span> <span class="mf">2.8218972974e+01</span> <span class="n">secs</span>
+</pre></div>
+</div>
+<p>The cost function should decrease during each linear optimization (<code class="docutils literal notranslate"><span class="pre">Delta</span> <span class="pre">cost</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>).  Try “<code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">OldCost</span> <span class="pre">*opt.out.</span></code>”  You should see something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OldCost</span><span class="p">:</span> <span class="mf">1.2655186572e+00</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.2443875597e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">5.4107990118e-01</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.2229830632e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.9833678217e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">2.3961524143e-02</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">8.0649629434e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">8.0551871147e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">9.7758287036e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">6.6821241388e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.6797703487e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">2.3537901148e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.0106275099e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.0078055426e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">2.8219672877e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">6.9538522411e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.9419186712e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">1.1933569922e-03</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">6.7709626744e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.7501251165e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">2.0837557922e-03</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">6.6659923822e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.6651737755e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">8.1860671682e-05</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.7828995609e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.7735482525e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">9.3513083900e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.2717974404e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.2715201115e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">2.7732880747e-05</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">6.9400639873e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">6.9257183689e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">1.4345618444e-03</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">7.0598901869e-01</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">7.0592576381e-01</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">6.3254886314e-05</span>
+</pre></div>
+</div>
+<p>Blocked averages of energy data, including the kinetic energy and components of the potential energy, are written to <code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> files.  The first is named “<code class="docutils literal notranslate"><span class="pre">O.q0.opt.s000.scalar.dat</span></code>,” with a series number of zero (<code class="docutils literal notranslate"><span class="pre">s000</span></code>).  In the end there will be <code class="docutils literal notranslate"><span class="pre">MAX</span></code> of them, one for each series.</p>
+<p>When the job has finished, use the <code class="docutils literal notranslate"><span class="pre">qmca</span></code> tool to assess the effectiveness of the optimization process.  To look at just the total energy and the variance, type “<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">O.q0.opt*scalar*</span></code>.”  This will print the energy, variance, and the variance/energy ratio in Hartree units:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                  <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">15.739585</span> <span class="o">+/-</span> <span class="mf">0.007656</span>   <span class="mf">0.887412</span> <span class="o">+/-</span> <span class="mf">0.010728</span>   <span class="mf">0.0564</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="o">-</span><span class="mf">15.848347</span> <span class="o">+/-</span> <span class="mf">0.004089</span>   <span class="mf">0.318490</span> <span class="o">+/-</span> <span class="mf">0.006404</span>   <span class="mf">0.0201</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">15.867494</span> <span class="o">+/-</span> <span class="mf">0.004831</span>   <span class="mf">0.292309</span> <span class="o">+/-</span> <span class="mf">0.007786</span>   <span class="mf">0.0184</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">3</span>  <span class="o">-</span><span class="mf">15.871508</span> <span class="o">+/-</span> <span class="mf">0.003025</span>   <span class="mf">0.275364</span> <span class="o">+/-</span> <span class="mf">0.006045</span>   <span class="mf">0.0173</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">4</span>  <span class="o">-</span><span class="mf">15.865512</span> <span class="o">+/-</span> <span class="mf">0.002997</span>   <span class="mf">0.278056</span> <span class="o">+/-</span> <span class="mf">0.006523</span>   <span class="mf">0.0175</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">5</span>  <span class="o">-</span><span class="mf">15.864967</span> <span class="o">+/-</span> <span class="mf">0.002733</span>   <span class="mf">0.278065</span> <span class="o">+/-</span> <span class="mf">0.004413</span>   <span class="mf">0.0175</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">6</span>  <span class="o">-</span><span class="mf">15.869644</span> <span class="o">+/-</span> <span class="mf">0.002949</span>   <span class="mf">0.273497</span> <span class="o">+/-</span> <span class="mf">0.006141</span>   <span class="mf">0.0172</span>
+<span class="n">O</span><span class="o">.</span><span class="n">q0</span><span class="o">.</span><span class="n">opt</span>  <span class="n">series</span> <span class="mi">7</span>  <span class="o">-</span><span class="mf">15.868397</span> <span class="o">+/-</span> <span class="mf">0.003838</span>   <span class="mf">0.285451</span> <span class="o">+/-</span> <span class="mf">0.007570</span>   <span class="mf">0.0180</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Plots of the data can also be obtained with the “<code class="docutils literal notranslate"><span class="pre">-p</span></code>” option
+(“<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-p</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">O.q0.opt*scalar*</span></code>”).</p>
+<p>Identify which optimization series is the “best” according to your cost function.  It is likely that multiple series are similar in quality.  Note the <code class="docutils literal notranslate"><span class="pre">opt.xml</span></code> file corresponding to this series.  This file contains the final value of the optimized Jastrow parameters to be used in the DMC calculations of the next section of the lab.</p>
+<p><strong>Questions and Exercises</strong></p>
+<ol class="arabic simple">
+<li><p>What is the acceptance ratio of your optimization runs? (use
+“texttqmca -q ar O.q0.opt*scalar*”) Do you expect the MC sampling to
+be efficient?</p></li>
+<li><p>How do you know when the optimization process has converged?</p></li>
+<li><p>(optional) Optimization is sometimes sensitive to initial guesses of
+the parameters. If you have time, try varying the initial parameters,
+including the cutoff radius (<code class="docutils literal notranslate"><span class="pre">rcut</span></code>) of the Jastrow factors
+(remember to change <code class="docutils literal notranslate"><span class="pre">id</span></code> in the <code class="docutils literal notranslate"><span class="pre">&lt;project/&gt;</span></code> element). Do you
+arrive at a similar set of final Jastrow parameters? What is the
+lowest variance you are able to achieve?</p></li>
+</ol>
+</div>
+<div class="section" id="dmc-timestep-extrapolation-i-neutral-oxygen-atom">
+<h2>DMC timestep extrapolation I: neutral oxygen atom<a class="headerlink" href="#dmc-timestep-extrapolation-i-neutral-oxygen-atom" title="Permalink to this headline">¶</a></h2>
+<p>The DMC algorithm contains two biases in addition to the fixed node and pseudopotential approximations that are important to control: time step and population control bias.  In this section we focus on estimating and removing time step bias from DMC calculations.  The essential fact to remember is that the bias vanishes as the time step goes to zero, while the needed computer time increases inversely with the time step.</p>
+<p>In the same directory you used to perform wavefunction optimization (<code class="docutils literal notranslate"><span class="pre">oxygen_atom</span></code>) you will find a sample DMC input file for the neutral oxygen atom named <code class="docutils literal notranslate"><span class="pre">O.q0.dmc.in.xml</span></code>.  Open this file in a text editor and note the differences from the optimization case.  Wavefunction information is no longer included from <code class="docutils literal notranslate"><span class="pre">pw2qmcpack</span></code> but instead should come from the optimization run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!-- OPT_XML is from optimization, e.g. O.q0.opt.s008.opt.xml --&gt;
+&lt;include href=&quot;OPT_XML&quot;/&gt;
+</pre></div>
+</div>
+<p>Replace “<code class="docutils literal notranslate"><span class="pre">OPT_XML</span></code>” with the <code class="docutils literal notranslate"><span class="pre">opt.xml</span></code> file corresponding to the best Jastrow parameters you found in the last section (this is a file name similar to <code class="docutils literal notranslate"><span class="pre">O.q0.opt.s008.opt.xml</span></code>).</p>
+<p>The QMC calculation section at the bottom is also different.  The linear optimization blocks have been replaced with XML describing a VMC run followed by DMC.  Descriptions of the input keywords follow.</p>
+<dl class="simple">
+<dt>timestep</dt><dd><p>Time step of the VMC/DMC random walk. In VMC choose a time step
+corresponding to an acceptance ratio of about 50%. In DMC the
+acceptance ratio is often above 99%.</p>
+</dd>
+<dt>warmupSteps</dt><dd><p>Number of MC steps discarded as a warmup or equilibration period of
+the random walk.</p>
+</dd>
+<dt>steps</dt><dd><p>Number of MC steps per block. Physical quantities, such as the total
+energy, are averaged over walkers and steps.</p>
+</dd>
+<dt>blocks</dt><dd><p>Number of blocks. This is also the number of average energy values
+written to output files. The number should be greater than 200 for
+meaningful statistical analysis of output data (e.g., via <code class="docutils literal notranslate"><span class="pre">qmca</span></code>).
+The total number of MC steps each walker takes is
+<code class="docutils literal notranslate"><span class="pre">blocks</span></code><span class="math notranslate nohighlight">\(\times\)</span><code class="docutils literal notranslate"><span class="pre">steps</span></code>.</p>
+</dd>
+<dt>samples</dt><dd><p>VMC only. This is the number of walkers used in subsequent DMC runs.
+Each DMC walker is initialized with electron positions sampled from
+the VMC random walk.</p>
+</dd>
+<dt>nonlocalmoves</dt><dd><p>DMC only. If yes/no, use the locality approximation/T-moves for
+nonlocal pseudopotentials. T-moves generally improve the stability of
+the algorithm and restore the variational principle for small systems
+(T-moves version 1).</p>
+</dd>
+</dl>
+<p>The purpose of the VMC run is to provide initial electron positions for each DMC walker.  Setting <span class="math notranslate nohighlight">\(\texttt{walkers}=1\)</span> in the VMC block ensures there will be only one VMC walker per execution thread.  There will be a total of 4 VMC walkers in this case (see <code class="docutils literal notranslate"><span class="pre">O.q0.dmc.qsub.in</span></code>).  We want the electron positions used to initialize the DMC walkers to be decorrelated from one another.  A VMC walker will often decorrelate from its current position after propagating for a few Ha <span class="math notranslate nohighlight">\(^{-1}\)</span> in imaginary time (in general, this is system dependent).  This leads to a rough rule of thumb for choosing <code class="docutils literal notranslate"><span class="pre">blocks</span></code> and <code class="docutils literal notranslate"><span class="pre">steps</span></code> for the VMC run (<span class="math notranslate nohighlight">\(\texttt{vwalkers}=4\)</span> here):</p>
+<div class="math notranslate nohighlight" id="equation-eq68">
+<span class="eqno">(68)<a class="headerlink" href="#equation-eq68" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+   \texttt{VBLOCKS}\times\texttt{VSTEPS} \ge \frac{\texttt{DWALKERS}}{\texttt{VWALKERS}} \frac{5~\textrm{Ha}^{-1}}{\texttt{VTIMESTEP}}\end{aligned}\]</div>
+<p>Fill in the VMC XML block with appropriate values for these parameters.
+There should be more than one DMC walker per thread and enough walkers
+in total to avoid population control bias. The general rule of thumb is
+to have more than <span class="math notranslate nohighlight">\(\sim 2,000\)</span> walkers, although the dependence of
+the total energy on population size should be explicitly checked from
+time to time.</p>
+<p>To study time step bias, we will perform a sequence of DMC runs over a
+range of time steps (<span class="math notranslate nohighlight">\(0.1\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> is too large, and
+time steps below <span class="math notranslate nohighlight">\(0.002\)</span> Ha<span class="math notranslate nohighlight">\(^{-1}\)</span> are probably too
+small). A common approach is to select a fairly large time step to begin
+with and then decrease the time step by a factor of two in each
+subsequent DMC run. The total amount of imaginary time the walker
+population propagates should be the same for each run. A simple way to
+accomplish this is to choose input parameters in the following way</p>
+<div class="math notranslate nohighlight" id="equation-eq69">
+<span class="eqno">(69)<a class="headerlink" href="#equation-eq69" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+   \texttt{timestep}_{n}    &amp;= \texttt{timestep}_{n-1}/2\nonumber\\
+   \texttt{warmupSteps}_{n} &amp;= \texttt{warmupSteps}_{n-1}\times 2\nonumber\\
+   \texttt{blocks}_{n}      &amp;= \texttt{blocks}_{n-1}\nonumber\\
+   \texttt{steps}_{n}       &amp;= \texttt{steps}_{n-1}\times 2\end{aligned}\end{split}\]</div>
 </div>
 </div>
 

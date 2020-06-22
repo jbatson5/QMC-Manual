@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analyzing QMCPACK data &mdash; QMC Manual 0.0.1 documentation</title>
+  <title>Analyzing QMCPACK data &mdash; QMCPACK Manual 0.0.1 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> QMC Manual
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
           
 
           
@@ -121,6 +121,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
 </ul>
 
             
@@ -135,7 +140,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">QMC Manual</a>
+          <a href="index.html">QMCPACK Manual</a>
         
       </nav>
 
@@ -294,7 +299,7 @@ this case.</span><a class="headerlink" href="#id1" title="Permalink to this imag
 variations around a flat line).  This property is important to verify
 by plotting the trace for each QMC run.</p>
 <p>If we exclude none of the equilibration data points, we get an
-erroneous estimate of $-45.870(2)$~Ha for the local energy:</p>
+erroneous estimate of <span class="math notranslate nohighlight">\(-45.870(2)\)</span> Ha for the local energy:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">0</span> <span class="n">qmc</span><span class="o">.</span><span class="n">s000</span><span class="o">.</span><span class="n">scalar</span><span class="o">.</span><span class="n">dat</span>
 <span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">45.870071</span> <span class="o">+/-</span> <span class="mf">0.018072</span>
 </pre></div>
@@ -471,7 +476,7 @@ large (<span class="math notranslate nohighlight">\(\sim 12\)</span> blocks):</p
 bar, indicating that we cannot trust the reported error bar.
 This can also be demonstrated directly from the data.  If we halve the number
 of included samples to 100, we expect from Gaussian statistics
-that the error bar will grow by a factor of $sqrt{2}$, but instead we
+that the error bar will grow by a factor of <span class="math notranslate nohighlight">\(\sqrt{2}\)</span>, but instead we
 get</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">e</span> <span class="o">-</span><span class="n">e</span> <span class="mi">300</span> <span class="o">*</span><span class="n">s001</span><span class="o">.</span><span class="n">scalar</span><span class="o">*</span>
 <span class="n">qmc</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="n">LocalEnergy</span>           <span class="o">=</span>  <span class="o">-</span><span class="mf">46.048537</span> <span class="o">+/-</span> <span class="mf">0.009280</span>
@@ -688,10 +693,10 @@ an “equation-of-state” calculation involving the 8-atom diamond cell we
 have used so far, we might be interested in the total energy for the
 various supercell volumes along the trajectory from compression to
 expansion. After checking the traces
-(<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">scale_/vmc/*scalar*</span></code>) to settle on a sensible
+(<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-t</span> <span class="pre">-q</span> <span class="pre">e</span> <span class="pre">scale_*/vmc/*scalar*</span></code>) to settle on a sensible
 equilibration cutoff as discussed in the preceding subsections, we can
 obtain the total energies all at once:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="n">scale_</span><span class="o">*/</span><span class="n">vmc</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qmca</span> <span class="o">-</span><span class="n">q</span> <span class="n">ev</span> <span class="o">-</span><span class="n">e</span> <span class="mi">40</span> <span class="n">scale_</span><span class="o">*/</span><span class="n">vmc</span><span class="o">/*</span><span class="n">scalar</span><span class="o">*</span>
                             <span class="n">LocalEnergy</span>               <span class="n">Variance</span>           <span class="n">ratio</span>
 <span class="n">scale_0</span><span class="o">.</span><span class="mi">80</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">44.670984</span> <span class="o">+/-</span> <span class="mf">0.006051</span>  <span class="mf">2.542384</span> <span class="o">+/-</span> <span class="mf">0.019902</span>  <span class="mf">0.0569</span>
 <span class="n">scale_0</span><span class="o">.</span><span class="mi">82</span><span class="o">/</span><span class="n">vmc</span><span class="o">/</span><span class="n">qmc</span>  <span class="n">series</span> <span class="mi">0</span> <span class="o">-</span><span class="mf">44.982818</span> <span class="o">+/-</span> <span class="mf">0.005757</span>  <span class="mf">2.413011</span> <span class="o">+/-</span> <span class="mf">0.022626</span>  <span class="mf">0.0536</span>
@@ -1186,35 +1191,35 @@ capabilities of <code class="docutils literal notranslate"><span class="pre">qde
 <p>To use <code class="docutils literal notranslate"><span class="pre">qdens</span></code>, Nexus must be installed along with NumPy and H5Py. A
 short list of example use cases are covered in the next section. Current
 input flags are:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">qdens</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>&gt;qdens
 
-<span class="n">Usage</span><span class="p">:</span> <span class="n">qdens</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span> <span class="p">[</span><span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+Usage: qdens [options] [file(s)]
 
-<span class="n">Options</span><span class="p">:</span>
-  <span class="o">--</span><span class="n">version</span>             <span class="n">show</span> <span class="n">program</span><span class="s1">&#39;s version number and exit</span>
-  <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">Print</span> <span class="n">help</span> <span class="n">information</span> <span class="ow">and</span> <span class="n">exit</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">verbose</span>         <span class="n">Print</span> <span class="n">detailed</span> <span class="n">information</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">f</span> <span class="n">FORMATS</span><span class="p">,</span> <span class="o">--</span><span class="n">formats</span><span class="o">=</span><span class="n">FORMATS</span>
-                        <span class="n">Format</span> <span class="ow">or</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">formats</span> <span class="k">for</span> <span class="n">density</span> <span class="n">file</span> <span class="n">output</span><span class="o">.</span>
-                        <span class="n">Options</span><span class="p">:</span> <span class="n">dat</span><span class="p">,</span> <span class="n">xsf</span><span class="p">,</span> <span class="n">chgcar</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">e</span> <span class="n">EQUILIBRATION</span><span class="p">,</span> <span class="o">--</span><span class="n">equilibration</span><span class="o">=</span><span class="n">EQUILIBRATION</span>
-                        <span class="n">Equilibration</span> <span class="n">length</span> <span class="ow">in</span> <span class="n">blocks</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">r</span> <span class="n">REBLOCK</span><span class="p">,</span> <span class="o">--</span><span class="n">reblock</span><span class="o">=</span><span class="n">REBLOCK</span>
-                        <span class="n">Block</span> <span class="n">coarsening</span> <span class="n">factor</span><span class="p">;</span> <span class="n">use</span> <span class="n">estimated</span> <span class="n">autocorrelation</span>
-                        <span class="n">length</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">a</span><span class="p">,</span> <span class="o">--</span><span class="n">average</span>         <span class="n">Average</span> <span class="n">over</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">each</span> <span class="n">series</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">w</span> <span class="n">WEIGHTS</span><span class="p">,</span> <span class="o">--</span><span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span>
-                        <span class="n">List</span> <span class="n">of</span> <span class="n">weights</span> <span class="k">for</span> <span class="n">averaging</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">i</span> <span class="n">INPUT</span><span class="p">,</span> <span class="o">--</span><span class="nb">input</span><span class="o">=</span><span class="n">INPUT</span>
-                        <span class="n">QMCPACK</span> <span class="nb">input</span> <span class="n">file</span> <span class="n">containing</span> <span class="n">structure</span> <span class="ow">and</span> <span class="n">grid</span>
-                        <span class="n">information</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">s</span> <span class="n">STRUCTURE</span><span class="p">,</span> <span class="o">--</span><span class="n">structure</span><span class="o">=</span><span class="n">STRUCTURE</span>
-                        <span class="n">File</span> <span class="n">containing</span> <span class="n">atomic</span> <span class="n">structure</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">g</span> <span class="n">GRID</span><span class="p">,</span> <span class="o">--</span><span class="n">grid</span><span class="o">=</span><span class="n">GRID</span>  <span class="n">Density</span> <span class="n">grid</span> <span class="n">dimensions</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">-</span><span class="n">c</span> <span class="n">CELL</span><span class="p">,</span> <span class="o">--</span><span class="n">cell</span><span class="o">=</span><span class="n">CELL</span>  <span class="n">Simulation</span> <span class="n">cell</span> <span class="n">axes</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">lineplot</span><span class="o">=</span><span class="n">LINEPLOT</span>   <span class="n">Produce</span> <span class="n">a</span> <span class="n">line</span> <span class="n">plot</span> <span class="n">along</span> <span class="n">the</span> <span class="n">selected</span> <span class="n">dimension</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                        <span class="mi">1</span><span class="p">,</span> <span class="ow">or</span> <span class="mi">2</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span>
-  <span class="o">--</span><span class="n">noplot</span>              <span class="n">Do</span> <span class="ow">not</span> <span class="n">show</span> <span class="n">plots</span> <span class="n">interactively</span> <span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span>
+Options:
+  --version             show program&#39;s version number and exit
+  -h, --help            Print help information and exit (default=False).
+  -v, --verbose         Print detailed information (default=False).
+  -f FORMATS, --formats=FORMATS
+                        Format or list of formats for density file output.
+                        Options: dat, xsf, chgcar (default=None).
+  -e EQUILIBRATION, --equilibration=EQUILIBRATION
+                        Equilibration length in blocks (default=0).
+  -r REBLOCK, --reblock=REBLOCK
+                        Block coarsening factor; use estimated autocorrelation
+                        length (default=None).
+  -a, --average         Average over files in each series (default=False).
+  -w WEIGHTS, --weights=WEIGHTS
+                        List of weights for averaging (default=None).
+  -i INPUT, --input=INPUT
+                        QMCPACK input file containing structure and grid
+                        information (default=None).
+  -s STRUCTURE, --structure=STRUCTURE
+                        File containing atomic structure (default=None).
+  -g GRID, --grid=GRID  Density grid dimensions (default=None).
+  -c CELL, --cell=CELL  Simulation cell axes (default=None).
+  --lineplot=LINEPLOT   Produce a line plot along the selected dimension: 0,
+                        1, or 2 (default=None).
+  --noplot              Do not show plots interactively (default=False).
 </pre></div>
 </div>
 <div class="section" id="usage-examples">
