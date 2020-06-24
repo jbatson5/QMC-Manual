@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lab 4: Condensed Matter Calculations &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Lab 3: Advanced molecular calculations" href="lab_advanced_molecules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 4: Condensed Matter Calculations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#topics-covered-in-this-lab">Topics covered in this lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lab-directories-and-files">Lab directories and files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preliminaries">Preliminaries</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Lab 4: Condensed Matter Calculations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lab_condensed_matter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lab-4-condensed-matter-calculations">
+<span id="lab-condensed-matter"></span><h1>Lab 4: Condensed Matter Calculations<a class="headerlink" href="#lab-4-condensed-matter-calculations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="topics-covered-in-this-lab">
+<h2>Topics covered in this lab<a class="headerlink" href="#topics-covered-in-this-lab" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Tiling DFT primitive cells into QMC supercells</p></li>
+<li><p>Reducing finite-size errors via extrapolation</p></li>
+<li><p>Reducing finite-size errors via averaging over twisted boundary
+conditions</p></li>
+<li><p>Using the B-spline mesh factor to reduce memory requirements</p></li>
+<li><p>Using a coarsely resolved vacuum buffer region to reduce memory
+requirements</p></li>
+<li><p>Calculating the DMC total energies of representative 2D and 3D
+extended systems</p></li>
+</ul>
+</div>
+<div class="section" id="lab-directories-and-files">
+<h2>Lab directories and files<a class="headerlink" href="#lab-directories-and-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>labs/lab4_condensed_matter/
+├── Be-2at-setup.py           - DFT only for prim to conv cell
+├── Be-2at-qmc.py             - QMC only for prim to conv cell
+├── Be-16at-qmc.py            - DFT and QMC for prim to 16 atom cell
+├── graphene-setup.py         - DFT and OPT for graphene
+├── graphene-loop-mesh.py     - VMC scan over orbital bspline mesh factors
+├── graphene-final.py         - DMC for final meshfactor
+└── pseudopotentials          - pseudopotential directory
+    ├── Be.ncpp                 - Be PP for Quantum ESPRESSO
+    ├── Be.xml                  - Be PP for QMCPACK
+    ├── C.BFD.upf               - C  PP for Quantum ESPRESSO
+    └── C.BFD.xml               - C  PP for QMCPACK
+</pre></div>
+</div>
+<p>The goal of this lab is to introduce you to the somewhat specialized problems involved in performing DMC calculations on condensed matter as opposed to the atoms and molecules that were the focus of the preceding labs.   Calculations will be performed on two different systems.  Firstly, we will perform a series of calculations on BCC beryllium, focusing on the necessary methodology to limit finite-size effects.  Secondly, we will perform calculations on graphene as an example of a system where QMCPACK’s capability to handle cases with mixed periodic and open boundary conditions is useful.  This example will also focus on strategies to limit memory usage for such systems.
+All of the calculations performed in this lab will use the Nexus workflow management system, which vastly simplifies the process by automating the steps of generating trial wavefunctions and performing DMC calculations.</p>
+</div>
+<div class="section" id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Permalink to this headline">¶</a></h2>
+<p>For any DMC calculation, we must start with a trial wavefunction. As is typical for our calculations of condensed matter, we will produce this wavefunction using DFT.  Specifically, we will use QE to generate a Slater determinant of SPOs.  This is done as a three-step process.  First, we calculate the converged charge density by performing a DFT calculation with a fine grid of k-points to fully sample the Brillouin zone.  Next, a non-self- consistent calculation is performed at the specific k-points needed for the supercell and twists needed in the DMC calculation (more on this later).  Finally, a wavefunction is converted from the binary representation used by QE to the portable hdf5 representation used by QMCPACK.</p>
+<p>The choice of k-points necessary to generate the wavefunctions depends on both the supercell chosen for the DMC calculation and by the supercell twist vectors needed.  Recall that the wavefunction in a plane-wave DFT calculation is written using Bloch’s theorem as:</p>
+<div class="math notranslate nohighlight" id="equation-eq70">
+<span class="eqno">(70)<a class="headerlink" href="#equation-eq70" title="Permalink to this equation">¶</a></span>\[\Psi(\vec{r}) = e^{i\vec{k}\cdot\vec{r}}u(\vec{r})\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{k}\)</span> is confined to the first Brillouin zone of the
+cell chosen and <span class="math notranslate nohighlight">\(u(\vec{r})\)</span> is periodic in this simulation cell.
+A plane-wave DFT calculation stores the periodic part of the
+wavefunction as a linear combination of plane waves for each SPO at all
+k-points selected. The symmetry of the system allows us to generate an
+arbitrary supercell of the primitive cell as follows: Consider the set
+of primitive lattice vectors, <span class="math notranslate nohighlight">\(\{ \mathbf{a}^p_1, \mathbf{a}^p_2,
+\mathbf{a}^p_3\}\)</span>. We may write these vectors in a matrix,
+<span class="math notranslate nohighlight">\(\mathbf{L}_p\)</span>, the rows of which are the primitive lattice
+vectors. Consider a nonsingular matrix of integers, <span class="math notranslate nohighlight">\(\mathbf{S}\)</span>.
+A corresponding set of supercell lattice vectors,
+<span class="math notranslate nohighlight">\(\{\mathbf{a}^s_1, \mathbf{a}^s_2, \mathbf{a}^s_3\}\)</span>, can be
+constructed by the matrix product</p>
+<div class="math notranslate nohighlight" id="equation-eq71">
+<span class="eqno">(71)<a class="headerlink" href="#equation-eq71" title="Permalink to this equation">¶</a></span>\[\mathbf{a}^s_i = S_{ij} \mathbf{a}^p_j]\:.\]</div>
+<p>If the primitive cell contains <span class="math notranslate nohighlight">\(N_p\)</span> atoms, the supercell will
+then contain <span class="math notranslate nohighlight">\(N_s = |\det(\mathbf{S})| N_p\)</span> atoms.</p>
+<p>Now, the wavefunciton at any point in this new supercell can be related
+to the wavefunction in the primitive cell by finding the linear
+combination of primitive lattice vectors that maps this point back to
+the primitive cell:</p>
+<div class="math notranslate nohighlight" id="equation-eq72">
+<span class="eqno">(72)<a class="headerlink" href="#equation-eq72" title="Permalink to this equation">¶</a></span>\[\vec{r}' = \vec{r} + x \mathbf{a}^p_1 + y \mathbf{a}^p_2 + z\mathbf{a}^p_3 = \vec{r} + \vec{T}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(x, y, z\)</span> are integers. Now the wavefunction in the
+supercell at point <span class="math notranslate nohighlight">\(\vec{r}'\)</span> can be written in terms of the
+wavefunction in the primitive cell at <span class="math notranslate nohighlight">\(\vec{r}'\)</span> as:</p>
+<div class="math notranslate nohighlight" id="equation-eq73">
+<span class="eqno">(73)<a class="headerlink" href="#equation-eq73" title="Permalink to this equation">¶</a></span>\[\Psi(\vec{r}) = \Psi(\vec{r}') e^{i \vec{T} \cdot \vec{k}}\:,\]</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lab_advanced_molecules.html" class="btn btn-neutral float-left" title="Lab 3: Advanced molecular calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

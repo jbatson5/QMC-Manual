@@ -34,6 +34,7 @@ User's Guide and Developer's Manual for
    lab_qmc_statistics
    lab_qmc_basics
    lab_advanced_molecules
+   lab_condensed_matter
 
 
 

@@ -1230,3 +1230,11 @@ present in the J1 and J2 blocks.
           </coefficients>
         </correlation>
         </jastrow>
+
+This training assumes basic familiarity with the UNIX operating system. In particular,
+we use simple scripts written in “csh.” In addition, we assume you have obtained
+all the necessary files and executables and that the training files are located
+at ${TRAINING TOP}.
+
+The goal of this training is not only to familiarize you with the execution and
+options in QMCPACK but also to introduce you to important concepts in QMC calculations and many-body electronic structure calculations.
