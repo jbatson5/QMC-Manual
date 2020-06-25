@@ -1,0 +1,362 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Lab 5: Excited state calculations &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Lab 4: Condensed Matter Calculations" href="lab_condensed_matter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Lab 5: Excited state calculations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#topics-covered-in-this-lab">Topics covered in this lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lab-directories-and-files">Lab directories and files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basics-and-excited-state-experiments">Basics and excited state experiments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#preparation-for-the-excited-state-calculations">Preparation for the excited state calculations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lab-ex-highk">Identifying high-symmetry k-points</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Lab 5: Excited state calculations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/lab_excited.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="lab-5-excited-state-calculations">
+<span id="excited"></span><h1>Lab 5: Excited state calculations<a class="headerlink" href="#lab-5-excited-state-calculations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="topics-covered-in-this-lab">
+<h2>Topics covered in this lab<a class="headerlink" href="#topics-covered-in-this-lab" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Tiling DFT primitive cells into optimal QMC supercells</p></li>
+<li><p>Fundamentals of between neutral and charged calculations</p></li>
+<li><p>Calculating quasiparticle excitation energies of condensed matter
+systems</p></li>
+<li><p>Calculating optical excitation energies of condensed matter systems</p></li>
+</ul>
+</div>
+<div class="section" id="lab-directories-and-files">
+<h2>Lab directories and files<a class="headerlink" href="#lab-directories-and-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>labs/lab5_excited_properties/
+├── band.py           - Band structure calculation for Carbon Diamond
+├── optical.py        - VMC optical gap calculation using the tiling matrix from band.py
+├── quasiparticle.py  - VMC quasiparticle gap calculation using the tiling matrix from band.py
+└── pseudopotentials      - pseudopotential directory
+    ├── C.BFD.upf         - C PP for Quantum ESPRESSO
+    └── C.BFD.xml         - C PP for QMCPACK
+</pre></div>
+</div>
+<p>The goal of this lab is to perform neutral and charged excitation
+calculations in condensed matter systems using QMCPACK. Throughout this
+lab, a working knowledge of <em>Lab4 Condensed Matter Calculations</em> is
+assumed. First, we will introduce the concepts of neutral and charged
+excitations. We will briefly discuss these in relation to the specific
+experimental studies that must be used to benchmark DMC results.
+Secondly, we will perform charged (quasiparticle) and neutral (optical)
+excitations calculations on C-diamond.</p>
+</div>
+<div class="section" id="basics-and-excited-state-experiments">
+<h2>Basics and excited state experiments<a class="headerlink" href="#basics-and-excited-state-experiments" title="Permalink to this headline">¶</a></h2>
+<p>Although VMC and DMC methods are better suited for studying ground state
+properties of materials, they can still provide useful information
+regarding the excited states. Unlike the applications of band structure
+theory such as DFT and GW, it is more challenging to obtain the complete
+excitation spectra using DMC. However, it is relatively straightforward
+to calculate the band gap minimum of a condensed matter system using
+DMC.</p>
+<p>We will briefly discuss the two main ways of obtaining the band gap
+minimum through experiments: photoemission and absorption studies. The
+energy required to remove an electron from a neutral system is called
+the IP (ionization potential), which is available from direct
+photoemission experiments. In contrast, the emission energy of a
+negatively charged system (or the energy required to convert a
+negatively charged system to a neutral system), known as electron
+affinity (EA), is available from inverse photoemission experiments.
+Outlines of these experiments are shown in <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>.</p>
+<div class="figure align-center" id="id2">
+<span id="fig22"></span><a class="reference internal image-reference" href="_images/lab_excited_experiments.png"><img alt="_images/lab_excited_experiments.png" src="_images/lab_excited_experiments.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 22 </span><span class="caption-text">Direct and inverse photoemission experiments involve charged excitations, whereas optical absorption experiments involve excitations that are just enough to be excited to the conduction band. From <span class="bibtex" id="id1">[Onida2002a]</span></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+<p>Following the explanation in the previous paragraph and <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>, the <em>quasiparticle</em> band gap of a material can be defined as:</p>
+<div class="math notranslate nohighlight" id="equation-eq76">
+<span class="eqno">(76)<a class="headerlink" href="#equation-eq76" title="Permalink to this equation">¶</a></span>\[E_g=EA-IP=(E_{N+1}^{CBM}-E_{N}^{K'})-(E_{N}^{K'}-E_{N-1}^{VBM})=E_{N+1}^{CBM}+E_{N-1}^{VBM}-2*E_{N}^{K'}\label{eq:qp}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of electrons in the neutral system and
+<span class="math notranslate nohighlight">\(E_{N}\)</span> is the ground state energy of the neutral system. CBM and
+VBM stand for the conduction band minimum and valence band maximum,
+respectively. K’ can formally be arbitrary at the infinite limit.
+However, in practical calculations, a supertwist that accommodates both
+CBM and VBM can be more efficient in terms of computational time and
+systematic finite-size error cancellation. In the literature, the
+quasiparticle gap is also called the electronic gap. The term electronic
+comes from the fact that in both photoemission experiments, it is
+assumed that the perturbed electron is not interacting with the sample.</p>
+<p>Additionally, absorption experiments can be performed in which electrons
+are perturbed at relatively lower energies, just enough to be excited
+into the conduction band. In absorption experiments, electrons are
+perturbed at lower energies. Therefore, they are not completely free and
+the system is still considered neutral. Since a <em>quasihole</em> and
+<em>quasielectron</em> are formed simultaneously, a bound state is created,
+unlike the free electron in the quasiparticle gap as described
+previously. This process is also known as <em>optical</em> excitation, which is
+schematically shown in <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>, under “Absorption.” The
+optical gap can be formulated as follows:</p>
+<div class="math notranslate nohighlight" id="equation-eq77">
+<span class="eqno">(77)<a class="headerlink" href="#equation-eq77" title="Permalink to this equation">¶</a></span>\[E_g^{K_1 {\rightarrow} K_2}=E^{K_1 {\rightarrow} K_2}- E_{0}\label{eq:optical}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(E^{K_1 {\rightarrow} K_2}\)</span> is the energy of the system when
+a valence electron at wavevector <span class="math notranslate nohighlight">\(K_1\)</span> is promoted to the
+conduction band at wavevector <span class="math notranslate nohighlight">\(K_2\)</span>. Therefore, the
+<span class="math notranslate nohighlight">\(E_g^{K_1 {\rightarrow} K_2}\)</span> is called the optical gap for
+promoting an electron at <span class="math notranslate nohighlight">\(K_1\)</span> to <span class="math notranslate nohighlight">\(K_2\)</span>. If both CBM and VBM
+are on the same k-vector then the material is called direct band gap
+since it can directly emit photons without any external perturbation
+(phonons). However, if CBM and VBM share different k-vectors, then the
+photon-emitting electron has to transfer some of its momenta to the
+crystal lattice and then decay to the ground state. As this process
+involves an intermediate step, this property is called the indirect band
+gap. The difference between the optical and electronic band gaps is
+called the exciton binding energy. Exciton binding energy is very
+important for optoelectronic applications such as lasers. Since the
+recombination usually occurs between free holes and free electrons, a
+bound electron and hole state means that the spectrum of emission
+energies will be narrower. In the examples that follow, we will
+investigate the optical excitations of C-diamond.</p>
+</div>
+<div class="section" id="preparation-for-the-excited-state-calculations">
+<span id="lab-ex-prep"></span><h2>Preparation for the excited state calculations<a class="headerlink" href="#preparation-for-the-excited-state-calculations" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we will study the preparation steps to perform excited
+state calculations with QMC. Here, the most basic steps are listed in
+the implementation order:</p>
+<ol class="arabic simple">
+<li><p>Identify the high-symmetry k-points of the standardized primitive
+cell.</p></li>
+<li><p>Perform DFT band structure calculation along high-symmetry paths.</p></li>
+<li><p>Find a supertwist that includes all the k-points of interest.</p></li>
+<li><p>Identify the indexing of k-points in the supertwist to be used in
+QMCPACK.</p></li>
+</ol>
+<div class="section" id="lab-ex-highk">
+<span id="identifying-high-symmetry-k-points"></span><h3>Identifying high-symmetry k-points<a class="headerlink" href="#lab-ex-highk" title="Permalink to this headline">¶</a></h3>
+<p>Primitive cell is the most basic, nonunique repeat unit of a crystal in
+real space. However, the translations of the repeat unit, the Bravais
+lattice is unique for each crystal and can be represented using discrete
+translation operations, <span class="math notranslate nohighlight">\(R_n\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq78">
+<span class="eqno">(78)<a class="headerlink" href="#equation-eq78" title="Permalink to this equation">¶</a></span>\[{\bf R_n} = n_1{\bf a_1} + n_2{\bf a_2} + n_3{\bf a_3}\:,\]</div>
+<p><span class="math notranslate nohighlight">\(a_n\)</span> are the real-space lattice vectors in three dimensions.
+Thanks to the periodicity of the Bravais lattice, a crystal can also be
+represented using periodic functions in the reciprocal space:</p>
+<div class="math notranslate nohighlight" id="equation-eq79">
+<span class="eqno">(79)<a class="headerlink" href="#equation-eq79" title="Permalink to this equation">¶</a></span>\[f({\bf R_n + r})= \sum_{m}f_me^{iG_m({\bf R_n+r})}\label{eqn:lab_ex_rec_real}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(G_m\)</span> are called as the reciprocal lattice vectors.
+<a class="reference internal" href="#equation-eq79">(79)</a> also satisfies the equality
+<span class="math notranslate nohighlight">\(G_m\cdot{R_n}=2{\pi}N\)</span>. High-symmetry structures can be
+represented using a subspace of the BZ, which is called as the
+irreducible Brillouin Zone (iBZ). If we choose a series of paths of
+high-symmetry k-points that encapsulates the iBZ, we can determine the
+band gap and electronic structure of the material. For more discussion,
+please refer to any solid-state physics textbook.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lab_condensed_matter.html" class="btn btn-neutral float-left" title="Lab 4: Condensed Matter Calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

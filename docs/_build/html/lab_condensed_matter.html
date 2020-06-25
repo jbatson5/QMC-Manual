@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab 5: Excited state calculations" href="lab_excited.html" />
     <link rel="prev" title="Lab 3: Advanced molecular calculations" href="lab_advanced_molecules.html" /> 
 </head>
 
@@ -105,8 +106,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#topics-covered-in-this-lab">Topics covered in this lab</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#lab-directories-and-files">Lab directories and files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#preliminaries">Preliminaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#total-energy-of-bcc-beryllium">Total energy of BCC beryllium</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#handling-a-2d-system-graphene">Handling a 2D system: graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conclusion">Conclusion</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
 </ul>
 
             
@@ -240,6 +245,248 @@ supercell at point <span class="math notranslate nohighlight">\(\vec{r}'\)</span
 wavefunction in the primitive cell at <span class="math notranslate nohighlight">\(\vec{r}'\)</span> as:</p>
 <div class="math notranslate nohighlight" id="equation-eq73">
 <span class="eqno">(73)<a class="headerlink" href="#equation-eq73" title="Permalink to this equation">¶</a></span>\[\Psi(\vec{r}) = \Psi(\vec{r}') e^{i \vec{T} \cdot \vec{k}}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{k}\)</span> is confined to the first Brillouin zone of the
+primitive cell. We have also chosen the supercell twist vector, which
+places a constraint on the form of the wavefunction in the supercell.
+The combination of these two constraints allows us to identify family of
+N k-points in the primitive cell that satisfy the constraints. Thus, for
+a given supercell tiling matrix and twist angle, we can write the
+wavefunction everywhere in the supercell by knowing the wavefunction a N
+k-points in the primitive cell. This means that the memory necessary to
+store the wavefunction in a supercell is only linear in the size of the
+supercell rather than the quadratic cost if symmetry were neglected.</p>
+</div>
+<div class="section" id="total-energy-of-bcc-beryllium">
+<h2>Total energy of BCC beryllium<a class="headerlink" href="#total-energy-of-bcc-beryllium" title="Permalink to this headline">¶</a></h2>
+<p>When performing calculations of periodic solids with QMC, it is essential to work with a reasonable size supercell rather than the primitive cells that are common in mean field calculations.  Specifically, all of the finite-size correction schemes discussed in the morning require that the exchange-correlation hole be considerably smaller than the periodic simulation cell.  Additionally, finite-size effects are lessened as the distance between the electrons in the cell and their periodic images increases, so it is advantageous to generate supercells that are as spherical as possible to maximize this distance.  However, a competing consideration is that when calculating total energies we often want to extrapolate the energy per particle to the thermodynamic limit by means of the following formula in three dimensions:</p>
+<div class="math notranslate nohighlight" id="equation-eq74">
+<span class="eqno">(74)<a class="headerlink" href="#equation-eq74" title="Permalink to this equation">¶</a></span>\[ E_{\inf} = C + E_{N}/N\:.\]</div>
+<p>This formula derived assuming the shape of the supercells is consistent
+(more specifically that the periodic distances scale uniformly with
+system size), meaning we will need to do a uniform tiling, that is,
+<span class="math notranslate nohighlight">\(2\times2\times2\)</span>, <span class="math notranslate nohighlight">\(3\times3\times3\)</span>, etc. As a
+<span class="math notranslate nohighlight">\(3\times3\times3\)</span> tiling is 27 times larger than the supercell and
+the practical limit of DMC is on the order of 200 atoms (depending on
+Z), sometimes it is advantageous to choose a less spherical supercell
+with fewer atoms rather than a more spherical one that is too expensive
+to tile.</p>
+<p>In the case of a BCC crystal, it is possible to tile the one atom
+primitive cell to a cubic supercell only by doubling the number of
+electrons. This is the best possible combination of a small number of
+atoms that can be tiled and a regular box that maximizes the distance
+between periodic images. We will need to determine the tiling matrix S
+that generates this cubic supercell by solving the following equation
+for the coefficients of the S matrix:</p>
+<div class="math notranslate nohighlight" id="equation-eq75">
+<span class="eqno">(75)<a class="headerlink" href="#equation-eq75" title="Permalink to this equation">¶</a></span>\[\begin{split}\left[\begin{array}{rrr}
+  1 &amp; 0 &amp; 0 \\
+  0 &amp; 1 &amp; 0 \\
+  0 &amp; 0 &amp; 1
+  \end{array}\right] =  \left[\begin{array}{rrr}
+  s_{11} &amp; s_{12} &amp; s_{13} \\
+  s_{21} &amp; s_{22} &amp; s_{23} \\
+  s_{31} &amp; s_{32} &amp; s_{33}
+  \end{array}\right] \cdot
+\left[\begin{array}{rrr}
+  0.5 &amp;  0.5 &amp; -0.5 \\
+ -0.5 &amp;  0.5 &amp;  0.5 \\
+  0.5 &amp; -0.5 &amp;  0.5
+\end{array}\right]\:.\end{split}\]</div>
+<p>We will now use Nexus to generate the trial wavefunction for this BCC beryllium.</p>
+<p>Fortunately, the Nexus will handle determination of the proper k-vectors given the tiling matrix.  All that is needed is to place the tiling matrix in the <code class="docutils literal notranslate"><span class="pre">Be-2at-setup.py</span></code> file.   Now the definition of the physical system is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bcc_Be</span> <span class="o">=</span> <span class="n">generate_physical_system</span><span class="p">(</span>
+    <span class="n">lattice</span>    <span class="o">=</span> <span class="s1">&#39;cubic&#39;</span><span class="p">,</span>
+    <span class="n">cell</span>       <span class="o">=</span> <span class="s1">&#39;primitive&#39;</span><span class="p">,</span>
+    <span class="n">centering</span>  <span class="o">=</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span>
+    <span class="n">atoms</span>      <span class="o">=</span> <span class="s1">&#39;Be&#39;</span><span class="p">,</span>
+    <span class="n">constants</span>  <span class="o">=</span> <span class="mf">3.490</span><span class="p">,</span>
+    <span class="n">units</span>      <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
+    <span class="n">net_charge</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">net_spin</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">Be</span>         <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">tiling</span>     <span class="o">=</span> <span class="p">[[</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">],[</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">f</span><span class="p">],[</span><span class="n">g</span><span class="p">,</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]],</span>
+    <span class="n">kgrid</span>      <span class="o">=</span> <span class="n">kgrid</span><span class="p">,</span>
+    <span class="n">kshift</span>     <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>where the tiling line should be replaced with the preceding row major
+tiling matrix. This script file will now perform a converged DFT
+calculation to generate the charge density in a directory called
+<code class="docutils literal notranslate"><span class="pre">bcc-beryllium/scf</span></code> and perform a non-self-consistend DFT calculation
+to generate SPOs in the directory <code class="docutils literal notranslate"><span class="pre">bcc-beryllium/nscf</span></code>. Fortunately,
+Nexus will calculate the required k-points needed to tile the
+wavefunction to the supercell, so all that is necessary is the
+granularity of the supercell twists and whether this grid is shifted
+from the origin. Once this is finished, it performs the conversion from
+pwscf’s binary format to the hdf5 format used by QMCPACK. Finally, it
+will optimize the coefficients of 1-body and 2-body Jastrow factors in
+the supercell defined by the tiling matrix.</p>
+<p>Run these calculations by executing the script <code class="docutils literal notranslate"><span class="pre">Be-2at-setup.py</span></code>. You
+will notice the small calculations required to generate the wavefunction
+of beryllium in a one-atom cell are rather inefficient to run on a
+high-performance computer such as vesta in terms of the time spent doing
+calculations versus time waiting on the scheduler and booting compute
+nodes. One of the benefits of the portable HDF format that is used by
+QMCPACK is that you can generate data like wavefunctions on a local
+workstation or other convenient resource and use high-performance
+clusters for the more expensive QMC calculations.</p>
+<p>In this case, the wavefunction is generated in the directory
+<code class="docutils literal notranslate"><span class="pre">bcc-beryllium/nscf-2at_222/pwscf_</span> <span class="pre">output</span></code> in a file called
+<code class="docutils literal notranslate"><span class="pre">pwscf.pwscf.h5</span></code>. For debugging purposes, it can be useful to verify
+that the contents of this file are what you expect. For instance, you
+can use the tool <code class="docutils literal notranslate"><span class="pre">h5ls</span></code> to check the geometry of the cell where the
+DFT calculations were performed or the number of k-points or electrons
+in the calculation. This is done with the command h5ls -d
+pwscf.pwscf.h5/supercell or h5ls -d pwscf.pwscf.h5/electrons.</p>
+<p>In the course of running <code class="docutils literal notranslate"><span class="pre">Be-2at-setup.py</span></code>, you will get an error when
+attempting to perform the VMC and wavefunction optimization
+calculations. This is because the wavefunction has generated supercell
+twists of the form (+/- 1/4, +/- 1/4, +/- 1/4). In the case that the
+supercell twist contains only 0 or 1/2, it is possible to operate
+entirely with real arithmetic. The executable that has been indicated in
+<code class="docutils literal notranslate"><span class="pre">Be-2at-setup.py</span></code> was compiled for this case. Note that where
+possible, the memory use is a factor of two less than the general case
+and the calculations are somewhat faster. However, it is often necessary
+to perform calculations away from these special twist angles to reduce
+finite-size effects. To fix this, delete the directory
+<code class="docutils literal notranslate"><span class="pre">bcc-beryllium/opt-2at</span></code>, change the line near the top of
+<code class="docutils literal notranslate"><span class="pre">Be-2at-setup.py</span></code> from</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmcpack</span>    <span class="o">=</span> <span class="s1">&#39;/soft/applications/qmcpack/Binaries/qmcpack&#39;</span>
+</pre></div>
+</div>
+<p>to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmcpack</span>    <span class="o">=</span> <span class="s1">&#39;/soft/applications/qmcpack/Binaries/qmcpack_comp&#39;</span>
+</pre></div>
+</div>
+<p>and rerun the script.</p>
+<p>When the optimization calculation has finished, check that everything has proceeded correctly by looking at the output in the <code class="docutils literal notranslate"><span class="pre">opt-2at</span></code> directory.  Firstly, you can grep the output file for Delta to see if the cost function has indeed been decreasing during the optimization.  You should find something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.8789147e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.0695360e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">8.0937871e-03</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">3.8507795e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">3.8338486e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">1.6930674e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.1079105e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.0898345e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">1.8076319e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.2681333e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.2356598e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">3.2473514e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">3.9168577e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">3.8552883e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">6.1569350e-04</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.2176276e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.2083371e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">9.2903058e-05</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.3977361e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.2865751e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">1.11161830</span><span class="o">-</span><span class="mi">03</span>
+<span class="n">OldCost</span><span class="p">:</span> <span class="mf">4.1420944e-02</span> <span class="n">NewCost</span><span class="p">:</span> <span class="mf">4.0779569e-02</span> <span class="n">Delta</span> <span class="n">Cost</span><span class="p">:</span><span class="o">-</span><span class="mf">6.4137501e-04</span>
+</pre></div>
+</div>
+<p>which shows that the starting wavefunction was fairly good and that most
+of the optimization occurred in the first step. Confirm this by using
+<code class="docutils literal notranslate"><span class="pre">qmca</span></code> to look at how the energy and variance changed over the course
+of the calculation with the command: <code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">-e</span> <span class="pre">10</span> <span class="pre">*.scalar.dat</span></code>
+executed in the <code class="docutils literal notranslate"><span class="pre">opt-2at</span> <span class="pre">directory</span></code>. You should get output like the
+following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                  <span class="n">LocalEnergy</span>               <span class="n">Variance</span>             <span class="n">ratio</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">0</span>  <span class="o">-</span><span class="mf">2.159139</span> <span class="o">+/-</span> <span class="mf">0.001897</span>   <span class="mf">0.047343</span> <span class="o">+/-</span> <span class="mf">0.000758</span>   <span class="mf">0.0219</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">1</span>  <span class="o">-</span><span class="mf">2.163752</span> <span class="o">+/-</span> <span class="mf">0.001305</span>   <span class="mf">0.039389</span> <span class="o">+/-</span> <span class="mf">0.000666</span>   <span class="mf">0.0182</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">2</span>  <span class="o">-</span><span class="mf">2.160913</span> <span class="o">+/-</span> <span class="mf">0.001347</span>   <span class="mf">0.040879</span> <span class="o">+/-</span> <span class="mf">0.000682</span>   <span class="mf">0.0189</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">3</span>  <span class="o">-</span><span class="mf">2.162043</span> <span class="o">+/-</span> <span class="mf">0.001223</span>   <span class="mf">0.041183</span> <span class="o">+/-</span> <span class="mf">0.001250</span>   <span class="mf">0.0190</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">4</span>  <span class="o">-</span><span class="mf">2.162441</span> <span class="o">+/-</span> <span class="mf">0.000865</span>   <span class="mf">0.039597</span> <span class="o">+/-</span> <span class="mf">0.000342</span>   <span class="mf">0.0183</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">5</span>  <span class="o">-</span><span class="mf">2.161287</span> <span class="o">+/-</span> <span class="mf">0.000732</span>   <span class="mf">0.039954</span> <span class="o">+/-</span> <span class="mf">0.000498</span>   <span class="mf">0.0185</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">6</span>  <span class="o">-</span><span class="mf">2.163458</span> <span class="o">+/-</span> <span class="mf">0.000973</span>   <span class="mf">0.044431</span> <span class="o">+/-</span> <span class="mf">0.003583</span>   <span class="mf">0.0205</span>
+<span class="n">opt</span>  <span class="n">series</span> <span class="mi">7</span>  <span class="o">-</span><span class="mf">2.163495</span> <span class="o">+/-</span> <span class="mf">0.001027</span>   <span class="mf">0.040783</span> <span class="o">+/-</span> <span class="mf">0.000413</span>   <span class="mf">0.0189</span>
+</pre></div>
+</div>
+<p>Now that the optimization has completed successfully, we can perform DMC
+calculations. The first goal of the calculations will be to try to
+eliminate the 1-body finite-size effects by twist averaging. The script
+<code class="docutils literal notranslate"><span class="pre">Be-2at-qmc.py</span></code> has the necessary input. Note that on line 42 two
+twist grids are specified, (2,2,2) and (3,3,3). Change the tiling matrix
+in this input file as in <code class="docutils literal notranslate"><span class="pre">Be-2at-qmc.py</span></code> and start the calculations.
+Note that this workflow takes advantage of QMCPACK’s capability to group
+jobs. If you look in the directory <code class="docutils literal notranslate"><span class="pre">dmc-2at_222</span></code> at the job submission
+script (<code class="docutils literal notranslate"><span class="pre">dmc.qsub.in</span></code>), you will note that rather than operating on an
+XML input file, <code class="docutils literal notranslate"><span class="pre">qmcapp</span></code> is targeting a text file called <code class="docutils literal notranslate"><span class="pre">dmc.in</span></code>.
+This file is a simple text file that contains the names of the eight XML
+input files needed for this job, one for each twist. When operated in
+this mode, QMCPACK will use MPI groups to run multiple copies of itself
+within the same MPI context. This is often useful both in terms of
+organizing calculations and for taking advantage of the large job sizes
+that computer centers often encourage.</p>
+<p>The DMC calculations in this case are designed to complete in a few
+minutes. When they have finished running, first look at the
+<code class="docutils literal notranslate"><span class="pre">scalar.dat</span></code> files corresponding to the DMC calculations at the
+various twists in <code class="docutils literal notranslate"><span class="pre">dmc-2at_222</span></code>. Using a command such as
+<code class="docutils literal notranslate"><span class="pre">qmca</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">-e</span> <span class="pre">32</span> <span class="pre">*.s001.scalar.dat</span></code> (with a suitably chosen number of
+blocks for the equilibration), you will see that the DMC energy in each
+calculation is nearly identical within the statistical uncertainty of
+the calculations. In the case of a large supercell, this is often
+indicative of a situation where the Brillouin zone is so small that the
+1-body finite-size effects are nearly converged without any twist
+averaging. In this case, however, this is because of the symmetry of the
+system. For this cubic supercell, all of the twist angles chosen in this
+shifted <span class="math notranslate nohighlight">\(2\times2\times2\)</span> grid are equivalent by symmetry. In the
+case where substantial resources are required to equilibrate the DMC
+calculations, it can be beneficial to avoid repeating such twists and
+instead simply weight them properly. In this case, however, where the
+equilibration is inexpensive, there is no benefit to adding such
+complexity as the calculations can simply be averaged together and the
+result is equivalent to performing a single longer calculation.</p>
+<p>Using the command <code class="docutils literal notranslate"><span class="pre">qmc</span> <span class="pre">-a</span> <span class="pre">-q</span> <span class="pre">ev</span> <span class="pre">-e</span> <span class="pre">16</span> <span class="pre">*.s001.scalar.dat</span></code>, average the
+DMC energies in <code class="docutils literal notranslate"><span class="pre">dmc-2at_222</span> <span class="pre">and</span> <span class="pre">dmc-2at_333</span></code> to see whether the
+1-body finite-size effects are converged with a <span class="math notranslate nohighlight">\(3\times3\times3\)</span>
+grid of twists. When using beryllium as a metal, the convergence is
+quite poor (0.025 Ha/Be or 0.7 eV/Be). If this were a production
+calculation it would be necessary to perform calculations on much larger
+grids of supercell twists to eliminate the 1-body finite-size effects.</p>
+<p>In this case there are several other calculations that would warrant a
+high priority. Script <code class="docutils literal notranslate"><span class="pre">Be-16at-qmc.py</span></code> has been provided in which you
+can input the appropriate tiling matrix for a 16-atom cell and perform
+calculations to estimate the 2-body finite-size effects, which will also
+be quite large in the 2-atom calculations. This script will take
+approximately 30 minutes to run to completion, so depending on your
+interest, you can either run it or work to modify the scripts to address
+the other technical issues that would be necessary for a production
+calculation such as calculating the population bias or the time step
+error in the DMC calculations.</p>
+<p>Another useful exercise would be to attempt to validate this PP by
+calculating the ionization potential and electron affinity of the
+isolated atom and compare it with the experimental values: IP = 9.3227
+eV , EA = 2.4 eV.</p>
+</div>
+<div class="section" id="handling-a-2d-system-graphene">
+<h2>Handling a 2D system: graphene<a class="headerlink" href="#handling-a-2d-system-graphene" title="Permalink to this headline">¶</a></h2>
+<p>In this section we examine a calculation of an isolated sheet of
+graphene. Because graphene is a 2D system, we will take advantage of
+QMCPACK’s capability to mix periodic and open boundary conditions to
+eliminate and spurious interaction of the sheet with its images in the z
+direction. Run the script <code class="docutils literal notranslate"><span class="pre">graphene-setup.py</span></code>, which will generate the
+wavefunction and optimize one and two body jastrow factors. In the
+script; notice line 160: bconds = ’ppn’ in the generate_qmcpack
+function, which specifies this mix of open and periodic boundary
+conditions. Consequently, the atoms will need to be kept away from this
+open boundary in the z direction as the electronic wavefunction will not
+be defined outside of the simulation box in this direction. For this
+reason, all of the atom positions at the beginning of the file have z
+coordinates 7.5. At this point, run the script <code class="docutils literal notranslate"><span class="pre">graphene-setup.py</span></code>.</p>
+<p>Aside from the change in boundary conditions, the main thing that
+distinguishes this kind of calculation from the previous beryllium
+example is the large amount of vacuum in the cell. Although this is a
+very small calculation designed to run quickly in the tutorial, in
+general a more converged calculation would quickly become memory limited
+on an architecture like BG/Q. When the initial wavefunction optimization
+has completed to your satisfaction, run the script
+<code class="docutils literal notranslate"><span class="pre">graphene-loop-mesh.py</span></code>. This examines within VMC an approach to
+reducing the memory required to store the wavefunction. In
+<code class="docutils literal notranslate"><span class="pre">graphene-loop-mesh.py</span></code>, the spacing between the B-spline points is
+varied uniformly. The mesh spacing is a prefactor to the linear spacing
+between the spline points, so the memory use goes as the cube of the
+meshfactor. When you run the calculations, examine the
+<code class="docutils literal notranslate"><span class="pre">.s000.scalar.dat</span></code> files with <code class="docutils literal notranslate"><span class="pre">qmca</span></code> to determine the lowest
+possible mesh spacing that preserves both the VMC energy and the
+variance.</p>
+<p>Finally, edit the file <code class="docutils literal notranslate"><span class="pre">graphene-final.py</span></code>, which will perform two DMC
+calculations. In the first, (qmc1) replace the following lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">meshfactor</span>   <span class="o">=</span> <span class="n">xxx</span><span class="p">,</span>
+<span class="n">precision</span>    <span class="o">=</span> <span class="s1">&#39;---&#39;</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>with the values you have determined will perform the calculation with as small as possible wavefunction.  Note that we can also use single precision arithmetic to store the wavefunction by specifying precision=`single.’  When you run the script, compare the output of the two DMC calculations in terms of energy and variance.  Also, see if you can calculate the fraction of memory that you were able to save by using a meshfactor other than 1 and single precision arithmetic.</p>
+</div>
+<div class="section" id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>Upon completion of this lab, you should be able to use Nexus to perform DMC calculations on periodic solids when provided with a PP.  You should also be able to reduce the size of the wavefunction in a solid-state calculation in cases where memory is a limiting factor.</p>
 </div>
 </div>
 
@@ -250,6 +497,8 @@ wavefunction in the primitive cell at <span class="math notranslate nohighlight"
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lab_excited.html" class="btn btn-neutral float-right" title="Lab 5: Excited state calculations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="lab_advanced_molecules.html" class="btn btn-neutral float-left" title="Lab 3: Advanced molecular calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
