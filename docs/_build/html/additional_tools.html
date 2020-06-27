@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Additional Tools &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Lab 5: Excited state calculations" href="lab_excited.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Additional Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#initialization">Initialization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qmc-get-supercell">qmc-get-supercell</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#postprocessing">Postprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qmca">qmca</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#qmc-fit">qmc-fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#qdens">qdens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#qmcfinitesize">qmcfinitesize</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#converters">Converters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convert4qmc">convert4qmc</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#general-use">General use</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#command-line-options">Command line options</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Additional Tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/additional_tools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="additional-tools">
+<span id="id1"></span><h1>Additional Tools<a class="headerlink" href="#additional-tools" title="Permalink to this headline">¶</a></h1>
+<p>QMCPACK provides a set of lightweight executables that address certain
+common problems in QMC workflow and analysis.  These range from conversion utilities between
+different file formats and QMCPACK (e.g., <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> and <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code>),
+(qmc-extract-eshdf-kvectors) to postprocessing utilities (<code class="docutils literal notranslate"><span class="pre">trace-density</span></code> and <code class="docutils literal notranslate"><span class="pre">qmcfinitesize</span></code>) to many others.  In this section, we cover the use cases, syntax, and features of all additional tools provided with QMCPACK.</p>
+<div class="section" id="initialization">
+<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qmc-get-supercell">
+<h3>qmc-get-supercell<a class="headerlink" href="#qmc-get-supercell" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="qmca">
+<h3>qmca<a class="headerlink" href="#qmca" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">qmca</span></code> is a versatile tool to analyze and plot the raw data from QMCPACK <code class="docutils literal notranslate"><span class="pre">*.scalar.dat</span></code> files.
+It is a Python executable and part of the Nexus suite of tools.  It can be found in
+<code class="docutils literal notranslate"><span class="pre">qmcpack/nexus/executables</span></code>. For details, see <a class="reference internal" href="analyzing.html#qmca"><span class="std std-ref">Using the qmca tool to obtain total energies and related quantities</span></a>.</p>
+</div>
+<div class="section" id="qmc-fit">
+<h3>qmc-fit<a class="headerlink" href="#qmc-fit" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">qmc-fit</span></code> is a curve fitting tool used to obtain statistical error bars on fitted parameters.
+It is useful for DMC time step extrapolation.  For details, see <a class="reference internal" href="analyzing.html#qmcfit"><span class="std std-ref">Using the qmc-fit tool for statistical time step extrapolation and curve fitting</span></a>.</p>
+</div>
+<div class="section" id="qdens">
+<h3>qdens<a class="headerlink" href="#qdens" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">qdens</span></code> is a command line tool to produce density files from QMCPACK’s <code class="docutils literal notranslate"><span class="pre">stat.h5</span></code> output files.  For details, see <a class="reference internal" href="analyzing.html#qdens"><span class="std std-ref">Using the qdens tool to obtain electron densities</span></a>.</p>
+</div>
+<div class="section" id="qmcfinitesize">
+<h3>qmcfinitesize<a class="headerlink" href="#qmcfinitesize" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">qmcfinitesize</span></code> is a utility to compute many-body finite-size corrections to the energy.  It
+is a C++ executable that is built alongside the QMCPACK executable.  It can be found in
+<code class="docutils literal notranslate"><span class="pre">build/bin</span></code>.</p>
+</div>
+</div>
+<div class="section" id="converters">
+<h2>Converters<a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="convert4qmc">
+<span id="id2"></span><h3>convert4qmc<a class="headerlink" href="#convert4qmc" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Convert4qmc</span></code> allows conversion of orbitals and wavefunctions from
+quantum chemistry output files to QMCPACK XML and HDF5 input files.
+It is a small C++ executable that is built alongside the QMCPACK
+executable and can be found in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code>.</p>
+<p>To date, <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> supports the following codes:
+GAMESS <a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id3">[SBB+93]</a>, PySCF <a class="bibtex reference internal" href="LCAO.html#sun2018" id="id4">[SBB+18]</a>, QP <a class="bibtex reference internal" href="sCI.html#qp" id="id5">[Sce17]</a>
+and GAMESS-FMO <span class="bibtex" id="id6">[Fedorov2004]</span><a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id7">[SBB+93]</a>.</p>
+<div class="section" id="general-use">
+<h4>General use<a class="headerlink" href="#general-use" title="Permalink to this headline">¶</a></h4>
+<p>General use of <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> can be prompted by running with no options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">convert4qmc</span>
+
+<span class="n">Defaults</span> <span class="p">:</span> <span class="o">-</span><span class="n">gridtype</span> <span class="n">log</span> <span class="o">-</span><span class="n">first</span> <span class="mf">1e-6</span> <span class="o">-</span><span class="n">last</span> <span class="mi">100</span> <span class="o">-</span><span class="n">size</span> <span class="mi">1001</span> <span class="o">-</span><span class="n">ci</span> <span class="n">required</span> <span class="o">-</span><span class="n">threshold</span> <span class="mf">0.01</span> <span class="o">-</span><span class="n">TargetState</span> <span class="mi">0</span> <span class="o">-</span><span class="n">prefix</span> <span class="n">sample</span>
+
+ <span class="n">convert</span> <span class="p">[</span><span class="o">-</span><span class="n">gaussian</span><span class="o">|-</span><span class="n">casino</span><span class="o">|-</span><span class="n">gamesxml</span><span class="o">|-</span><span class="n">gamess</span><span class="o">|-</span><span class="n">gamessFMO</span><span class="o">|-</span><span class="n">QP</span><span class="o">|-</span><span class="n">pyscf</span><span class="o">|-</span><span class="n">orbitals</span><span class="p">]</span>
+ <span class="n">filename</span>
+<span class="p">[</span><span class="o">-</span><span class="n">nojastrow</span> <span class="o">-</span><span class="n">hdf5</span> <span class="o">-</span><span class="n">prefix</span> <span class="n">title</span> <span class="o">-</span><span class="n">addCusp</span> <span class="o">-</span><span class="n">production</span> <span class="o">-</span><span class="n">NbImages</span> <span class="n">NimageX</span> <span class="n">NimageY</span> <span class="n">NimageZ</span><span class="p">]</span>
+<span class="p">[</span><span class="o">-</span><span class="n">psi_tag</span> <span class="n">psi0</span> <span class="o">-</span><span class="n">ion_tag</span> <span class="n">ion0</span> <span class="o">-</span><span class="n">gridtype</span> <span class="n">log</span><span class="o">|</span><span class="n">log0</span><span class="o">|</span><span class="n">linear</span> <span class="o">-</span><span class="n">first</span> <span class="n">ri</span> <span class="o">-</span><span class="n">last</span> <span class="n">rf</span><span class="p">]</span>
+<span class="p">[</span><span class="o">-</span><span class="n">size</span> <span class="n">npts</span> <span class="o">-</span><span class="n">ci</span> <span class="n">file</span><span class="o">.</span><span class="n">out</span> <span class="o">-</span><span class="n">threshold</span> <span class="n">cimin</span> <span class="o">-</span><span class="n">TargetState</span> <span class="n">state_number</span>
+<span class="o">-</span><span class="n">NaturalOrbitals</span> <span class="n">NumToRead</span> <span class="o">-</span><span class="n">optDetCoeffs</span><span class="p">]</span>
+<span class="n">Defaults</span> <span class="p">:</span> <span class="o">-</span><span class="n">gridtype</span> <span class="n">log</span> <span class="o">-</span><span class="n">first</span> <span class="mf">1e-6</span> <span class="o">-</span><span class="n">last</span> <span class="mi">100</span> <span class="o">-</span><span class="n">size</span> <span class="mi">1001</span> <span class="o">-</span><span class="n">ci</span> <span class="n">required</span>
+<span class="o">-</span><span class="n">threshold</span> <span class="mf">0.01</span> <span class="o">-</span><span class="n">TargetState</span> <span class="mi">0</span> <span class="o">-</span><span class="n">prefix</span> <span class="n">sample</span>
+<span class="n">When</span> <span class="n">the</span> <span class="nb">input</span> <span class="nb">format</span> <span class="ow">is</span> <span class="n">missing</span><span class="p">,</span> <span class="n">the</span>  <span class="n">extension</span> <span class="n">of</span> <span class="n">filename</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">determine</span>
+<span class="n">the</span> <span class="nb">format</span>
+ <span class="o">*.</span><span class="n">Fchk</span> <span class="o">-&gt;</span> <span class="n">gaussian</span><span class="p">;</span> <span class="o">*.</span><span class="n">out</span> <span class="o">-&gt;</span> <span class="n">gamess</span><span class="p">;</span> <span class="o">*.</span><span class="n">data</span> <span class="o">-&gt;</span> <span class="n">casino</span><span class="p">;</span> <span class="o">*.</span><span class="n">xml</span> <span class="o">-&gt;</span> <span class="n">gamesxml</span>
+</pre></div>
+</div>
+<p>As an example, to convert a GAMESS calculation using a single determinant, the following use is sufficient:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">gamess</span> <span class="n">MyGamessOutput</span><span class="o">.</span><span class="n">out</span>
+</pre></div>
+</div>
+<p>By default, the converter will generate multiple files:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> output:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 14%" />
+<col style="width: 12%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>output</strong></p></th>
+<th class="head"><p><strong>file type</strong></p></th>
+<th class="head"><p><strong>default</strong></p></th>
+<th class="head"><p><strong>description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">*.qmc.in-wfs.xml</span></code></p></td>
+<td><p>XML</p></td>
+<td><p>default</p></td>
+<td><p>Main input file for QMCPACK</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">*.qmc.in-wfnoj.xml</span></code></p></td>
+<td><p>XML</p></td>
+<td><p>default</p></td>
+<td><p>Main input file for QMCPACK</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">*.structure.xml</span></code></p></td>
+<td><p>XML</p></td>
+<td><p>default</p></td>
+<td><p>File containing the structure of the system</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">*.wfj.xml</span></code></p></td>
+<td><p>XML</p></td>
+<td><p>default</p></td>
+<td><p>Wavefunction file with 1-, 2-, and 3-body Jastrows</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">*.wfnoj.xml</span></code></p></td>
+<td><p>XML</p></td>
+<td><p>default</p></td>
+<td><p>Wavefunction file with no Jastrows</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">*.orbs.h5</span></code></p></td>
+<td><p>HDF5</p></td>
+<td><p>with -hdf5</p></td>
+<td><p>HDF5 file containing all wavefunction data</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<p>If no <code class="docutils literal notranslate"><span class="pre">-prefix</span></code> option is specified, the prefix is taken from
+the input file name. For instance, if the GAMESS output file is
+<code class="docutils literal notranslate"><span class="pre">Mysim</span></code>.out, the files generated by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will use the
+prefix <code class="docutils literal notranslate"><span class="pre">Mysim</span></code> and output files will be
+<code class="docutils literal notranslate"><span class="pre">Mysim.qmc.in-wfs.xml</span></code>, <code class="docutils literal notranslate"><span class="pre">Mysim.structure.xml</span></code>, and so on.</p>
+<ul>
+<li><p>Files <code class="docutils literal notranslate"><span class="pre">.in-wfs.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">.in-wfnoj.xml</span></code></p>
+<p>These
+are the input files for QMCPACK.  The geometry and the
+wavefunction are stored in external files <code class="docutils literal notranslate"><span class="pre">*.structure.xml</span></code>
+and <code class="docutils literal notranslate"><span class="pre">*.wfj.xml</span></code> (referenced from <code class="docutils literal notranslate"><span class="pre">*.in-wfs.xml</span></code>) or
+<code class="docutils literal notranslate"><span class="pre">*.qmc.wfnoj.xml</span></code> (referenced from
+<code class="docutils literal notranslate"><span class="pre">*.qmc.in-wfnoj.xml</span></code>). The Hamiltonian section is included,
+and the presence or lack of presence of an ECP is detected during the
+conversion. If use of an ECP is detected, a default ECP name is
+added (e.g., <code class="docutils literal notranslate"><span class="pre">H.qmcpp.xml</span></code>), and it is the responsibility of
+the user to modify the ECP name to match the one used to generate
+the wavefunction.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  &lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;simulation&gt;
+  &lt;!--
+
+Example QMCPACK input file produced by convert4qmc
+
+It is recommend to start with only the initial VMC block and adjust
+parameters based on the measured energies, variance, and statistics.
+
+--&gt;
+  &lt;!--Name and Series number of the project.--&gt;
+  &lt;project id=&quot;gms&quot; series=&quot;0&quot;/&gt;
+  &lt;!--Link to the location of the Atomic Coordinates and the location of
+      the Wavefunction.--&gt;
+  &lt;include href=&quot;gms.structure.xml&quot;/&gt;
+  &lt;include href=&quot;gms.wfnoj.xml&quot;/&gt;
+  &lt;!--Hamiltonian of the system. Default ECP filenames are assumed.--&gt;
+  &lt;hamiltonian name=&quot;h0&quot; type=&quot;generic&quot; target=&quot;e&quot;&gt;
+    &lt;pairpot name=&quot;ElecElec&quot; type=&quot;coulomb&quot; source=&quot;e&quot; target=&quot;e&quot;
+                                                   physical=&quot;true&quot;/&gt;
+    &lt;pairpot name=&quot;IonIon&quot; type=&quot;coulomb&quot; source=&quot;ion0&quot; target=&quot;ion0&quot;/&gt;
+    &lt;pairpot name=&quot;PseudoPot&quot; type=&quot;pseudo&quot; source=&quot;ion0&quot; wavefunction=&quot;psi0&quot;
+                                                           format=&quot;xml&quot;&gt;
+      &lt;pseudo elementType=&quot;H&quot; href=&quot;H.qmcpp.xml&quot;/&gt;
+      &lt;pseudo elementType=&quot;Li&quot; href=&quot;Li.qmcpp.xml&quot;/&gt;
+    &lt;/pairpot&gt;
+  &lt;/hamiltonian&gt;
+
+The ``qmc.in-wfnoj.xml`` file will have one VMC block with a
+minimum number of blocks to reproduce the HF/DFT energy used to
+generate the trial wavefunction.
+
+::
+
+    &lt;qmc method=&quot;vmc&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot;&gt;
+      &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+      &lt;parameter name=&quot;warmupSteps&quot;&gt;100&lt;/parameter&gt;
+      &lt;parameter name=&quot;blocks&quot;&gt;20&lt;/parameter&gt;
+      &lt;parameter name=&quot;steps&quot;&gt;50&lt;/parameter&gt;
+      &lt;parameter name=&quot;substeps&quot;&gt;8&lt;/parameter&gt;
+      &lt;parameter name=&quot;timestep&quot;&gt;0.5&lt;/parameter&gt;
+      &lt;parameter name=&quot;usedrift&quot;&gt;no&lt;/parameter&gt;
+    &lt;/qmc&gt;
+  &lt;/simulation&gt;
+</pre></div>
+</div>
+<p>If the <code class="docutils literal notranslate"><span class="pre">qmc.in-wfj.xml</span></code> file is used, Jastrow optimization
+blocks followed by a VMC and DMC block are included. These blocks
+contain default values to allow the user to test the accuracy of a
+system; however, they need to be updated and optimized for each
+system. The initial values might only be suitable for a small molecule.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  &lt;loop max=&quot;4&quot;&gt;
+    &lt;qmc method=&quot;linear&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot;&gt;
+      &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+      &lt;parameter name=&quot;warmupSteps&quot;&gt;100&lt;/parameter&gt;
+      &lt;parameter name=&quot;blocks&quot;&gt;20&lt;/parameter&gt;
+      &lt;parameter name=&quot;timestep&quot;&gt;0.5&lt;/parameter&gt;
+      &lt;parameter name=&quot;walkers&quot;&gt;1&lt;/parameter&gt;
+      &lt;parameter name=&quot;samples&quot;&gt;16000&lt;/parameter&gt;
+      &lt;parameter name=&quot;substeps&quot;&gt;4&lt;/parameter&gt;
+      &lt;parameter name=&quot;usedrift&quot;&gt;no&lt;/parameter&gt;
+      &lt;parameter name=&quot;MinMethod&quot;&gt;OneShiftOnly&lt;/parameter&gt;
+      &lt;parameter name=&quot;minwalkers&quot;&gt;0.0001&lt;/parameter&gt;
+    &lt;/qmc&gt;
+  &lt;/loop&gt;
+  &lt;!--
+
+Example follow-up VMC optimization using more samples for greater accuracy:
+
+--&gt;
+  &lt;loop max=&quot;10&quot;&gt;
+    &lt;qmc method=&quot;linear&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot;&gt;
+      &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+      &lt;parameter name=&quot;warmupSteps&quot;&gt;100&lt;/parameter&gt;
+      &lt;parameter name=&quot;blocks&quot;&gt;20&lt;/parameter&gt;
+      &lt;parameter name=&quot;timestep&quot;&gt;0.5&lt;/parameter&gt;
+      &lt;parameter name=&quot;walkers&quot;&gt;1&lt;/parameter&gt;
+      &lt;parameter name=&quot;samples&quot;&gt;64000&lt;/parameter&gt;
+      &lt;parameter name=&quot;substeps&quot;&gt;4&lt;/parameter&gt;
+      &lt;parameter name=&quot;usedrift&quot;&gt;no&lt;/parameter&gt;
+      &lt;parameter name=&quot;MinMethod&quot;&gt;OneShiftOnly&lt;/parameter&gt;
+      &lt;parameter name=&quot;minwalkers&quot;&gt;0.3&lt;/parameter&gt;
+    &lt;/qmc&gt;
+  &lt;/loop&gt;
+  &lt;!--
+
+Production VMC and DMC:
+
+Examine the results of the optimization before running these blocks.
+For example, choose the best optimized jastrow from all obtained, put in the
+wavefunction file, and do not reoptimize.
+
+--&gt;
+  &lt;qmc method=&quot;vmc&quot; move=&quot;pbyp&quot; checkpoint=&quot;-1&quot;&gt;
+    &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+    &lt;parameter name=&quot;warmupSteps&quot;&gt;100&lt;/parameter&gt;
+    &lt;parameter name=&quot;blocks&quot;&gt;200&lt;/parameter&gt;
+    &lt;parameter name=&quot;steps&quot;&gt;50&lt;/parameter&gt;
+    &lt;parameter name=&quot;substeps&quot;&gt;8&lt;/parameter&gt;
+    &lt;parameter name=&quot;timestep&quot;&gt;0.5&lt;/parameter&gt;
+    &lt;parameter name=&quot;usedrift&quot;&gt;no&lt;/parameter&gt;
+    &lt;!--Sample count should match targetwalker count for
+      DMC. Will be obtained from all nodes.--&gt;
+    &lt;parameter name=&quot;samples&quot;&gt;16000&lt;/parameter&gt;
+  &lt;/qmc&gt;
+  &lt;qmc method=&quot;dmc&quot; move=&quot;pbyp&quot; checkpoint=&quot;20&quot;&gt;
+    &lt;estimator name=&quot;LocalEnergy&quot; hdf5=&quot;no&quot;/&gt;
+    &lt;parameter name=&quot;targetwalkers&quot;&gt;16000&lt;/parameter&gt;
+    &lt;parameter name=&quot;reconfiguration&quot;&gt;no&lt;/parameter&gt;
+    &lt;parameter name=&quot;warmupSteps&quot;&gt;100&lt;/parameter&gt;
+    &lt;parameter name=&quot;timestep&quot;&gt;0.005&lt;/parameter&gt;
+    &lt;parameter name=&quot;steps&quot;&gt;100&lt;/parameter&gt;
+    &lt;parameter name=&quot;blocks&quot;&gt;100&lt;/parameter&gt;
+    &lt;parameter name=&quot;nonlocalmoves&quot;&gt;yes&lt;/parameter&gt;
+  &lt;/qmc&gt;
+&lt;/simulation&gt;
+</pre></div>
+</div>
+</li>
+<li><p>File <code class="docutils literal notranslate"><span class="pre">.structure.xml</span></code></p>
+<p>This file will be referenced from the main QMCPACK input. It contains the geometry of the system, position of the atoms, number of atoms, atomic types and charges, and number of electrons.</p>
+</li>
+<li><p>Files <code class="docutils literal notranslate"><span class="pre">.wfj.xml</span></code> and <code class="docutils literal notranslate"><span class="pre">.wfnoj.xml</span></code></p>
+<p>These files contain the basis set detail, orbital coefficients, and
+the 1-, 2-, and 3-body Jastrow (in the case of <code class="docutils literal notranslate"><span class="pre">.wfj.xml</span></code>). If the
+wavefunction is multideterminant, the expansion will be at the end of
+the file. We recommend using the option <code class="docutils literal notranslate"><span class="pre">-hdf5</span></code> when large molecules
+are studied to store the data more compactly in an HDF5 file.</p>
+</li>
+<li><p>File <code class="docutils literal notranslate"><span class="pre">.orbs.h5</span></code>
+This file is generated only if the option <code class="docutils literal notranslate"><span class="pre">-hdf5</span></code> is added as
+follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">gamess</span> <span class="n">MyGamessOutput</span><span class="o">.</span><span class="n">out</span> <span class="o">-</span><span class="n">hdf5</span>
+</pre></div>
+</div>
+<p>In this case, the <code class="docutils literal notranslate"><span class="pre">.wfj.xml</span></code> or <code class="docutils literal notranslate"><span class="pre">.wfnoj.xml</span></code> files will point to
+this HDF file. Information about the basis set, orbital coefficients,
+and the multideterminant expansion is put in this file and removed from
+the wavefunction files, making them smaller.</p>
+</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> input type:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 67%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>option name</strong></p></th>
+<th class="head"><p><strong>description</strong></p></th>
+<th class="head"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">orbitals</span></code></p></td>
+<td><p>Generic HDF5 input file. Mainly automatically generated from QP and PySCF.</p></td>
+<td><p>Actively maintained</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-pyscf</span></code></p></td>
+<td><p>PySCF code</p></td>
+<td><p>Actively maintained</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">QP</span></code></p></td>
+<td><p>QP code</p></td>
+<td><p>Actively maintained</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-gamess</span></code></p></td>
+<td><p>Gamess code</p></td>
+<td><p>Maintained</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-gamesFMO</span></code></p></td>
+<td><p>Gamess FMO</p></td>
+<td><p>Maintained</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-gaussian</span></code></p></td>
+<td><p>Gaussian code</p></td>
+<td><p>Obsolete/untested</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-casino</span></code></p></td>
+<td><p>Casino code</p></td>
+<td><p>Obsolete/untested</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-gamesxml</span></code></p></td>
+<td><p>Gamess xml format code</p></td>
+<td><p>Obsolete/untested</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="command-line-options">
+<h4>Command line options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> command line options:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 11%" />
+<col style="width: 13%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Option Name</strong></p></th>
+<th class="head"><p><strong>Value</strong></p></th>
+<th class="head"><p><strong>default</strong></p></th>
+<th class="head"><p><strong>description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-nojastrow</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Force no Jastrow. <code class="docutils literal notranslate"><span class="pre">qmc.in.wfj</span></code> will not be generated</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-hdf5</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Force the wf to be in HDF5 format</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-prefix</span></code></p></td>
+<td><p>string</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>All created files will have the name of the string</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-multidet</span></code></p></td>
+<td><p>string</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>HDF5 file containing a multideterminant expansion</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-addCusp</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Force to add orbital cusp correction (ONLY for all-electron)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-production</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>Generates specific blocks in the input</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-psi_tag</span></code></p></td>
+<td><p>string</p></td>
+<td><p>psi0</p></td>
+<td><p>Name of the electrons particles inside QMCPACK</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-ion_tag</span></code></p></td>
+<td><p>string</p></td>
+<td><p>ion0</p></td>
+<td><p>Name of the ion particles inside QMCPACK</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-multidet</span></code></p>
+<p>This option is to be used when a multideterminant expansion (mainly a CI expansion) is present in an HDF5 file. The trial wavefunction file will not display the full list of multideterminants and will add a path to the HDF5 file as follows (full example for the C2 molecule in qmcpack/tests/molecules/C2_pp).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;qmcsystem&gt;
+  &lt;wavefunction name=&quot;psi0&quot; target=&quot;e&quot;&gt;
+    &lt;determinantset type=&quot;MolecularOrbital&quot; name=&quot;LCAOBSet&quot; source=&quot;ion0&quot; transform=&quot;yes&quot; href=&quot;C2.h5&quot;&gt;
+      &lt;sposet basisset=&quot;LCAOBSet&quot; name=&quot;spo-up&quot; size=&quot;58&quot;&gt;
+        &lt;occupation mode=&quot;ground&quot;/&gt;
+        &lt;coefficient size=&quot;58&quot; spindataset=&quot;0&quot;/&gt;
+      &lt;/sposet&gt;
+      &lt;sposet basisset=&quot;LCAOBSet&quot; name=&quot;spo-dn&quot; size=&quot;58&quot;&gt;
+        &lt;occupation mode=&quot;ground&quot;/&gt;
+        &lt;coefficient size=&quot;58&quot; spindataset=&quot;0&quot;/&gt;
+      &lt;/sposet&gt;
+      &lt;multideterminant optimize=&quot;no&quot; spo_up=&quot;spo-up&quot; spo_dn=&quot;spo-dn&quot;&gt;
+        &lt;detlist size=&quot;202&quot; type=&quot;DETS&quot; nca=&quot;0&quot; ncb=&quot;0&quot; nea=&quot;4&quot; neb=&quot;4&quot; nstates=&quot;58&quot; cutoff=&quot;1e-20&quot; href=&quot;C2.h5&quot;/&gt;
+      &lt;/multideterminant&gt;
+    &lt;/determinantset&gt;
+  &lt;/wavefunction&gt;
+&lt;/qmcsystem&gt;
+</pre></div>
+</div>
+<p>To generate such trial wavefunction, the converter has to be invoked as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">convert4qmc</span> <span class="o">-</span><span class="n">orbitals</span> <span class="n">C2</span><span class="o">.</span><span class="n">h5</span> <span class="o">-</span><span class="n">multidet</span> <span class="n">C2</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-nojastrow</span></code></p>
+<p>This option generates only an input file, <code class="docutils literal notranslate"><span class="pre">*.qmc.in.wfnoj.xml</span></code>, containing no Jastrow optimization blocks and references a wavefunction file, <code class="docutils literal notranslate"><span class="pre">*.wfnoj.xml</span></code>, containing no Jastrow section.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-hdf5</span></code></p>
+<p>This option generates the <code class="docutils literal notranslate"><span class="pre">*.orbs.h5</span></code> HDF5 file containing the basis set and the orbital coefficients. If the wavefunction contains a multideterminant expansion from QP, it will also be stored in this file. This option minimizes the size of the <code class="docutils literal notranslate"><span class="pre">*.wfj.xml</span></code> file, which points to the HDF file, as in the following example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> &lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;qmcsystem&gt;
+  &lt;wavefunction name=&quot;psi0&quot; target=&quot;e&quot;&gt;
+    &lt;determinantset type=&quot;MolecularOrbital&quot; name=&quot;LCAOBSet&quot; source=&quot;ion0&quot;
+       transform=&quot;yes&quot; href=&quot;test.orbs.h5&quot;&gt;
+      &lt;slaterdeterminant&gt;
+        &lt;determinant id=&quot;updet&quot; size=&quot;39&quot;&gt;
+          &lt;occupation mode=&quot;ground&quot;/&gt;
+          &lt;coefficient size=&quot;411&quot; spindataset=&quot;0&quot;/&gt;
+        &lt;/determinant&gt;
+        &lt;determinant id=&quot;downdet&quot; size=&quot;35&quot;&gt;
+          &lt;occupation mode=&quot;ground&quot;/&gt;
+          &lt;coefficient size=&quot;411&quot; spindataset=&quot;0&quot;/&gt;
+        &lt;/determinant&gt;
+      &lt;/slaterdeterminant&gt;
+    &lt;/determinantset&gt;
+  &lt;/wavefunction&gt;
+&lt;/qmcsystem&gt;
+</pre></div>
+</div>
+<p>Jastrow functions will be included if the option “-nojastrow” was
+not specified. Note that when initially optimization a wavefunction, we recommend
+temporarily removing/disabling the 3-body Jastrow.</p>
+</li>
+<li><p><strong>-prefix</strong></p>
+<p>Sets the prefix for all output generated by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code>.
+If not specified, <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will use the defaults for the
+following:</p>
+<ul class="simple">
+<li><p><strong>Gamess</strong> If the Gamess output file is named “<strong>Name</strong>.out” or
+“<strong>Name</strong>.output,” all files generated by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will carry
+<strong>Name</strong> as a prefix (i.e., <strong>Name</strong>.qmc.in.xml).</p></li>
+<li><p><strong>PySCF</strong> If the PySCF output file is named “<strong>Name</strong>.H5,” all files
+generated by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will carry <strong>Name</strong> as a prefix (i.e.,
+<strong>Name</strong>.qmc.in.xml).</p></li>
+<li><p><strong>QP</strong> If the QP output file is named “<strong>Name</strong>.dump,” all files
+generated by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will carry <strong>Name</strong> as a prefix (i.e.,
+<strong>Name</strong>.qmc.in.xml).</p></li>
+<li><p><strong>Generic HDF5 input</strong> If a generic HDF5 file (either from PySCF or
+QP in the HDF5 format) is named “<strong>Name</strong>.H5,” all files generated by
+<code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> will carry <strong>Name</strong> as a prefix (i.e.,
+<strong>Name</strong>.qmc.in.xml).</p></li>
+</ul>
+</li>
+<li><p><strong>-addCusp</strong></p>
+<p>This option is very important for all-electron (AE) calculations. In
+this case, orbitals have to be corrected for the electron-nuclear
+cusp. The cusp correction scheme follows the algorithm described by Ma
+et al. <span class="bibtex" id="id8">[Ma2005]</span> When this option is present, the
+wavefunction file has a new set of tags:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmcsystem</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">wavefunction</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">determinantset</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;MolecularOrbital&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LCAOBSet&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span>
+     <span class="n">transform</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span> <span class="n">cuspCorrection</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">basisset</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LCAOBSet&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The tag “cuspCorrection” in the <code class="docutils literal notranslate"><span class="pre">wfj.xml</span></code> (or <code class="docutils literal notranslate"><span class="pre">wfnoj.xml</span></code>)
+wavefunction file will force correction of the orbitals at the
+beginning of the run.
+In the “orbitals“ section of the wavefunction file, a new tag
+“cuspInfo” will be added for orbitals spin-up and orbitals spin-down:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="o">&lt;</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;updet&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span>
+          <span class="n">cuspInfo</span><span class="o">=</span><span class="s2">&quot;../CuspCorrection/updet.cuspInfo.xml&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span><span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">coefficient</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;135&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;updetC&quot;</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;downdet&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span>
+         <span class="n">cuspInfo</span><span class="o">=</span><span class="s2">&quot;../CuspCorrection/downdet.cuspInfo.xml&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span><span class="o">/&gt;</span>
+        <span class="o">&lt;</span><span class="n">coefficient</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;135&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;downdetC&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>These tags will point to the files <code class="docutils literal notranslate"><span class="pre">updet.cuspInfo.xml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">downdet.cuspInfo.xml</span></code>. By default, the converter assumes that
+the files are located in the relative path
+<code class="docutils literal notranslate"><span class="pre">../CuspCorrection/</span></code>. If the directory
+<code class="docutils literal notranslate"><span class="pre">../CuspCorrection</span></code> does not exist, or if the files are not
+present in that directory, QMCPACK will run the cusp correction
+algorithm to generate both files.  If the files exist, then QMCPACK
+will apply the corrections to the orbitals.</p>
+<p><strong>Important notes:</strong></p>
+<p>The cusp correction implementations has been parallelized and performance improved.  However, since the correction needs
+to be applied for every ion and then for every orbital on that ion, this operation can be costly (slow) for large
+systems. We recommend saving and reusing the computed cusp correction files <code class="docutils literal notranslate"><span class="pre">updet.cuspInfo.xml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">downdet.cuspInfo.xml</span></code>, and transferring them between computer systems where relevant.</p>
+</li>
+<li><p><strong>-psi_tag</strong></p>
+<p>QMCPACK builds the wavefunction as a named object. In the vast majority of cases, one wavefunction is simulated at a time, but there may be situations where we want to distinguish different parts of a wavefunction, or even use multiple wavefunctions. This option can change the name for these cases.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">wavefunction</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>-ion_tag</strong></p>
+<p>Although similar to <strong>-psi_tag</strong>, this is used for the type of ions.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">particleset</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>-production</strong></p>
+<p>Without this option, input files with standard optimization, VMC, and
+DMC blocks are generated. When the “-production” option is
+specified, an input file containing complex options that may be
+more suitable for large runs at HPC centers is generated. This option
+is for users who are already familiar with QMC and QMCPACK. We encourage feedback
+on the standard and production sample inputs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="lab_excited.html" class="btn btn-neutral float-left" title="Lab 5: Excited state calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

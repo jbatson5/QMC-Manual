@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Additional Tools" href="additional_tools.html" />
     <link rel="prev" title="Lab 4: Condensed Matter Calculations" href="lab_condensed_matter.html" /> 
 </head>
 
@@ -108,10 +109,17 @@
 <li class="toctree-l2"><a class="reference internal" href="#basics-and-excited-state-experiments">Basics and excited state experiments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#preparation-for-the-excited-state-calculations">Preparation for the excited state calculations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lab-ex-highk">Identifying high-symmetry k-points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dft-band-structure-calculation-along-high-symmetry-paths">DFT band structure calculation along high-symmetry paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">DFT band structure calculation along high-symmetry paths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#finding-a-supertwist-that-includes-all-the-k-points-of-interest">Finding a supertwist that includes all the k-points of interest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#identifying-the-indexing-of-k-points-of-interest-in-the-supertwist">Identifying the indexing of k-points of interest in the supertwist</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#quasiparticle-electronic-gap-calculations">Quasiparticle (electronic) gap calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optical-gap-calculations">Optical gap calculations</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
 </ul>
 
             
@@ -226,9 +234,9 @@ negatively charged system (or the energy required to convert a
 negatively charged system to a neutral system), known as electron
 affinity (EA), is available from inverse photoemission experiments.
 Outlines of these experiments are shown in <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>.</p>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id6">
 <span id="fig22"></span><a class="reference internal image-reference" href="_images/lab_excited_experiments.png"><img alt="_images/lab_excited_experiments.png" src="_images/lab_excited_experiments.png" style="width: 500px;" /></a>
-<p class="caption"><span class="caption-number">Fig. 22 </span><span class="caption-text">Direct and inverse photoemission experiments involve charged excitations, whereas optical absorption experiments involve excitations that are just enough to be excited to the conduction band. From <span class="bibtex" id="id1">[Onida2002a]</span></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-number">Fig. 22 </span><span class="caption-text">Direct and inverse photoemission experiments involve charged excitations, whereas optical absorption experiments involve excitations that are just enough to be excited to the conduction band. From <a class="bibtex reference internal" href="#onida2002a" id="id1">[ORR02]</a></span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <p>Following the explanation in the previous paragraph and <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>, the <em>quasiparticle</em> band gap of a material can be defined as:</p>
 <div class="math notranslate nohighlight" id="equation-eq76">
@@ -308,7 +316,447 @@ irreducible Brillouin Zone (iBZ). If we choose a series of paths of
 high-symmetry k-points that encapsulates the iBZ, we can determine the
 band gap and electronic structure of the material. For more discussion,
 please refer to any solid-state physics textbook.</p>
+<p>There are multiple practical ways to find the high-symmetry k-point path.
+For example, pymatgen, <a class="bibtex reference internal" href="#ong2013" id="id2">[ORJ+13]</a> XCRYSDEN <a class="bibtex reference internal" href="#kokalj1999" id="id3">[Kok99]</a> or SeeK-path <a class="bibtex reference internal" href="#hinuma2017" id="id4">[HPK+17]</a> can be used.</p>
+<p><a class="reference internal" href="#fig23"><span class="std std-numref">Fig. 23</span></a> shows the procedure for visualizing the Brillouin Zone using XCRYSDEN after the structure file is loaded.
+However, the primitive cell is not unique, and the actual shape of the BZ can depend on the structure used.
+In our example, we use the Python libraries of SeeK-path, using a wrapper written in Nexus.</p>
+<a class="reference internal image-reference" href="_images/lab_excited_xcrysden1.png"><img alt="_images/lab_excited_xcrysden1.png" class="align-center" src="_images/lab_excited_xcrysden1.png" style="width: 500px;" /></a>
+<div class="figure align-center" id="id7">
+<span id="fig23"></span><a class="reference internal image-reference" href="_images/lab_excited_xcrysden2.png"><img alt="_images/lab_excited_xcrysden2.png" src="_images/lab_excited_xcrysden2.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 23 </span><span class="caption-text">Visualizing the Brillouin Zone using XCRYSDEN.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
+<p>SeeK-path includes routines to standardize primitive cells, which will be useful for our work.</p>
+<p>SeeK-path can be installed easily using <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">seekpath</span>
+</pre></div>
+</div>
+<p>In the <code class="docutils literal notranslate"><span class="pre">band.py</span></code> script, identification of high-symmetry k-points and band structure calculations are done within the workflow.
+In the script, where the <code class="docutils literal notranslate"><span class="pre">dia</span></code> PhysicalSystem object is used as the input structure, <code class="docutils literal notranslate"><span class="pre">dia2_structure</span></code> is the standardized primitive cell and <code class="docutils literal notranslate"><span class="pre">dia2_kpath</span></code> is the respective k-path around the iBZ.
+<code class="docutils literal notranslate"><span class="pre">dia2_kpath</span></code> has a dictionary of the k-path in various coordinate systems; please make sure you are using the right one.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">structure</span> <span class="kn">import</span> <span class="n">get_primitive_cell</span><span class="p">,</span> <span class="n">get_kpath</span>
+<span class="n">dia2_structure</span>   <span class="o">=</span> <span class="n">get_primitive_cell</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">dia</span><span class="o">.</span><span class="n">structure</span><span class="p">)[</span><span class="s1">&#39;structure&#39;</span><span class="p">]</span>
+<span class="n">dia2_kpath</span>       <span class="o">=</span> <span class="n">get_kpath</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">dia2_structure</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dft-band-structure-calculation-along-high-symmetry-paths">
+<h3>DFT band structure calculation along high-symmetry paths<a class="headerlink" href="#dft-band-structure-calculation-along-high-symmetry-paths" title="Permalink to this headline">¶</a></h3>
+<p>After the high-symmetry k-points are identified, band structure calculations can be performed in DFT.
+For an insulating structure, DFT can provide VBM and CBM wavevectors, which would be of interest to the DMC calculations.
+However, if available, CBM and VBM from DFT would need to be compared with the experiments.
+Basically,  <code class="docutils literal notranslate"><span class="pre">band.py</span></code> will do the following:</p>
+<ol class="arabic simple">
+<li><p>Perform an SCF calculation in QE using a high-density reciprocal
+grid.</p></li>
+<li><p>Identify the high-symmetry k-points on the iBZ and provide a k-path.</p></li>
+<li><p>Perform a “band” calculation in QE, explicitly writing all the
+k-points on the path. (Make sure to add extra unoccupied bands.)</p></li>
+<li><p>Plot the band structure curves and location of VBM/CBM if available.</p></li>
+</ol>
+<p>In <a class="reference internal" href="#fig24"><span class="std std-numref">Fig. 24</span></a>, C-diamond is shown to have an indirect
+band gap between the red and green dots (CBM and VBM, respectively). VBM
+is located at <span class="math notranslate nohighlight">\(\Gamma\)</span>. CBM is not located on a high-symmetry
+k-point in this case. Therefore, we can use the symbol <span class="math notranslate nohighlight">\(\Delta\)</span> to
+denote the CBM wavevector in the rest of this document. In <code class="docutils literal notranslate"><span class="pre">band.py</span></code>
+script, once the band structure calculation is finished, you can use the
+following lines to get the exact location of VBM and CBM using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">load_analyzer_image</span><span class="p">()</span>
+<span class="nb">print</span> <span class="s2">&quot;VBM:</span><span class="se">\n</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">vbm</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s2">&quot;CBM:</span><span class="se">\n</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">cbm</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output must be the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">VBM</span><span class="p">:</span>
+  <span class="n">band_number</span>     <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">energy</span>          <span class="o">=</span> <span class="mf">13.2874</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+
+<span class="n">CBM</span><span class="p">:</span>
+  <span class="n">band_number</span>     <span class="o">=</span> <span class="mi">4</span>
+  <span class="n">energy</span>          <span class="o">=</span> <span class="mf">17.1545</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">51</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.1095605</span> <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.3695652</span> <span class="mf">0.</span>        <span class="mf">0.3695652</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id8">
+<span id="fig24"></span><a class="reference internal image-reference" href="_images/lab_excited_band_si.png"><img alt="_images/lab_excited_band_si.png" src="_images/lab_excited_band_si.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 24 </span><span class="caption-text">Band structure calculation of C-diamond performed at the DFT-LDA level.
+CBMs are shown with red points, and the VBMs are shown with the green
+points, both at <span class="math notranslate nohighlight">\(\Gamma\)</span>. DFT-LDA calculations suggest that the
+material has an indirect band gap from
+<span class="math notranslate nohighlight">\(\Gamma\rightarrow{\Delta}\)</span>. However,
+<span class="math notranslate nohighlight">\(\Gamma\rightarrow{\Gamma}\)</span> transition can also be investigated
+for more complete check.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="id5">
+<h3>DFT band structure calculation along high-symmetry paths<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>After the high-symmetry k-points are identified, band structure calculations can be performed in DFT.
+For an insulating structure, DFT can provide VBM and CBM wavevectors, which would be of interest to the DMC calculations.
+However, if available, CBM and VBM from DFT would need to be compared with the experiments.
+Basically,  <code class="docutils literal notranslate"><span class="pre">band.py</span></code> will do the following:</p>
+<ol class="arabic simple">
+<li><p>Perform an SCF calculation in QE using a high-density reciprocal
+grid.</p></li>
+<li><p>Identify the high-symmetry k-points on the iBZ and provide a k-path.</p></li>
+<li><p>Perform a “band” calculation in QE, explicitly writing all the
+k-points on the path. (Make sure to add extra unoccupied bands.)</p></li>
+<li><p>Plot the band structure curves and location of VBM/CBM if available.</p></li>
+</ol>
+<p>In <a class="reference internal" href="#fig24"><span class="std std-numref">Fig. 24</span></a>, C-diamond is shown to have an indirect
+band gap between the red and green dots (CBM and VBM, respectively). VBM
+is located at <span class="math notranslate nohighlight">\(\Gamma\)</span>. CBM is not located on a high-symmetry
+k-point in this case. Therefore, we can use the symbol <span class="math notranslate nohighlight">\(\Delta\)</span> to
+denote the CBM wavevector in the rest of this document. In script, once
+the band structure calculation is finished, you can use the following
+lines to get the exact location of VBM and CBM using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">load_analyzer_image</span><span class="p">()</span>
+<span class="nb">print</span> <span class="s2">&quot;VBM:</span><span class="se">\n</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">vbm</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s2">&quot;CBM:</span><span class="se">\n</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">cbm</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output must be the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">VBM</span><span class="p">:</span>
+  <span class="n">band_number</span>     <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">energy</span>          <span class="o">=</span> <span class="mf">13.2874</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+
+<span class="n">CBM</span><span class="p">:</span>
+  <span class="n">band_number</span>     <span class="o">=</span> <span class="mi">4</span>
+  <span class="n">energy</span>          <span class="o">=</span> <span class="mf">17.1545</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">51</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.1095605</span> <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.3695652</span> <span class="mf">0.</span>        <span class="mf">0.3695652</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="finding-a-supertwist-that-includes-all-the-k-points-of-interest">
+<h3>Finding a supertwist that includes all the k-points of interest<a class="headerlink" href="#finding-a-supertwist-that-includes-all-the-k-points-of-interest" title="Permalink to this headline">¶</a></h3>
+<p>Using the VBM and CBM wavevectors defined in the previous section, we
+now construct the supertwist, which will hopefully contain both VBM and
+CBM. In <a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a>, we provide a simple example using
+2D rectangular lattice. Let us assume that we are interested in the
+indirect transition, <span class="math notranslate nohighlight">\(\Gamma \rightarrow X_1\)</span>. In
+<a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a> a, the first BZ of the primitive cell is
+shown as the square centered on <span class="math notranslate nohighlight">\(\Gamma\)</span>, which is drawn using
+dashed lines. Because of the periodicity of the lattice, this primitive
+cell BZ repeats itself with spacings equal to the reciprocal lattice
+vectors: (2<span class="math notranslate nohighlight">\(\pi\)</span>/a, 0) and (0, 2<span class="math notranslate nohighlight">\(\pi\)</span>/a) or (1,0) and
+(0,1) in crystal coordinates. We are interested in the first BZ, where
+<span class="math notranslate nohighlight">\(X_1\)</span> is at (0,0.5). In <a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a> b, the first
+BZ of the <span class="math notranslate nohighlight">\(2\times2\)</span> supercell is the smaller square, drawn using
+solid lines. In <a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a> c, the BZ of the
+<span class="math notranslate nohighlight">\(2\times2\)</span> supercell also repeats in the space, similar to
+<a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a> a. Therefore, in the <span class="math notranslate nohighlight">\(2\times2\)</span>
+supercell, <span class="math notranslate nohighlight">\(X_1\)</span>, <span class="math notranslate nohighlight">\(X_2\)</span>, and <span class="math notranslate nohighlight">\(R\)</span> are only the periodic
+images of <span class="math notranslate nohighlight">\(\Gamma\)</span>. The <span class="math notranslate nohighlight">\(2\times2\)</span> supercell calculation can
+be performed in reciprocal space using a [2,2] tiling matrix. Therefore,
+individual k-points (twists) of the primitive cell are combined in the
+supercell calculation, which are then called as supertwists. In more
+complex primitive cells (hence BZ), more general criteria would be
+constructing a set of supercell reciprocal lattice vectors that contain
+the <span class="math notranslate nohighlight">\(\Gamma \rightarrow X_1\)</span> (e.g., <span class="math notranslate nohighlight">\(G_1\)</span> in
+<a class="reference internal" href="#fig25"><span class="std std-numref">Fig. 25</span></a>) vector within their convex hull. Under this
+constraint, the Wigner-Seitz radius of the simulation cell can be
+maximized in an effort to reduce finite-size errors.</p>
+<div class="figure align-center" id="id9">
+<span id="fig25"></span><a class="reference internal image-reference" href="_images/lab_excited_twists.png"><img alt="_images/lab_excited_twists.png" src="_images/lab_excited_twists.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 25 </span><span class="caption-text">a) First BZ of the primitive cell centered on <span class="math notranslate nohighlight">\(\Gamma\)</span>. Dashed
+lines indicate zone boundaries. b) First BZ of the <span class="math notranslate nohighlight">\(2\times2\)</span>
+supercell inside the first BZ of the primitive cell. First BZ boundaries
+of the supercell are shown using solid lines. c) Periodic translations
+of the first BZ of the supercell showing that <span class="math notranslate nohighlight">\(\Gamma\)</span> and
+<span class="math notranslate nohighlight">\(X_1\)</span> are periodic images of each other given the supercell BZ.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+<p>For the case of the indirect band gap in Diamond, several approximations
+might be needed to generate a supertwist that corresponds to a
+reasonable simulation cell. In the Diamond band gap, <span class="math notranslate nohighlight">\(\Delta\)</span> is
+at . In your calculations, the <span class="math notranslate nohighlight">\(\Delta\)</span> wavevector and the
+eigenvalues you find can be slightly different in value. The closest
+simple fraction to this number with the smallest denominator is 1/3. If
+we use <span class="math notranslate nohighlight">\(\Delta'=[1/3, 0., 1/3]\)</span>, we could use a
+<span class="math notranslate nohighlight">\(3\times1\times3\)</span> supercell as the simple choice and include both
+<span class="math notranslate nohighlight">\(\Delta'\)</span> and <span class="math notranslate nohighlight">\(\Gamma\)</span> in the same supertwist exactly. Near
+<span class="math notranslate nohighlight">\(\Delta\)</span>, the LDA band curvature is very low and using
+<span class="math notranslate nohighlight">\(\Delta'\)</span> can be a good approximation. We can compare the
+eigenvalues using their index numbers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">51</span><span class="p">]</span> <span class="c1">## CBM, $\Delta$ ##</span>
+<span class="go">  eigs            = [-3.2076  4.9221  7.5433  7.5433 17.1545 19.7598 28.3242 28.3242]</span>
+<span class="go">  index           = 51</span>
+<span class="go">  kpoint_2pi_alat = [0.        0.1095605 0.       ]</span>
+<span class="go">  kpoint_rel      = [0.3695652 0.        0.3695652]</span>
+<span class="go">  occs            = [1. 1. 1. 1. 0. 0. 0. 0.]</span>
+<span class="go">  pol             = up</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">46</span><span class="p">]</span> <span class="c1">## $\Delta&#39;$ ##</span>
+<span class="go">  eigs            = [-4.0953  6.1376  7.9247  7.9247 17.1972 20.6393 27.3653 27.3653]</span>
+<span class="go">  index           = 46</span>
+<span class="go">  kpoint_2pi_alat = [0.        0.0988193 0.       ]</span>
+<span class="go">  kpoint_rel      = [0.3333333 0.        0.3333333]</span>
+<span class="go">  occs            = [1. 1. 1. 1. 0. 0. 0. 0.]</span>
+<span class="go">  pol             = up</span>
+</pre></div>
+</div>
+<p>This shows that the eigenvalues of the first unoccupied bands in
+<span class="math notranslate nohighlight">\(\Delta\)</span> and <span class="math notranslate nohighlight">\(\Delta'\)</span> are 17.1545 and 17.1972 eV,
+respectively, meaning that according to LDA, a correction of nearly -40
+meV is obtained. After electronic transitions between <span class="math notranslate nohighlight">\(\Gamma\)</span> and
+<span class="math notranslate nohighlight">\(\Delta'\)</span> are studied using DMC, the LDA correction can be applied
+to extrapolate the results to <span class="math notranslate nohighlight">\(\Gamma\)</span> and <span class="math notranslate nohighlight">\(\Delta\)</span>
+transitions.</p>
+</div>
+<div class="section" id="identifying-the-indexing-of-k-points-of-interest-in-the-supertwist">
+<h3>Identifying the indexing of k-points of interest in the supertwist<a class="headerlink" href="#identifying-the-indexing-of-k-points-of-interest-in-the-supertwist" title="Permalink to this headline">¶</a></h3>
+<p>At this stage, we must have performed an <em>scf</em> calculation using a
+converged k-point grid and then an <em>nscf</em> calculation using the
+supertwist k-points given previously. We will be using the orbitals from
+neutral DFT calculations; therefore, we need to explicitly define the
+band and twist indexes of the excitations in QMCPACK (e.g., to define
+electron promotion). In C-diamond, we can give an example by finding the
+band and twist indexes of <span class="math notranslate nohighlight">\(\Gamma\)</span> and <span class="math notranslate nohighlight">\(\Delta'\)</span>. For this
+end, a mock VMC calculation can be run and the <code class="docutils literal notranslate"><span class="pre">einspline.tile_300010003</span></code> <code class="docutils literal notranslate"><span class="pre">.spin_0.tw_0.g0.bandinfo.dat</span></code> file read. The Einspline
+file prints out the eigenstates information from DFT calculations.
+Therefore, we can obtain the band and the state index from this file,
+which can later be used to define the electron promotion. You can see in
+the following an explanation of how the band and twist indexes are
+defined using a portion of the <code class="docutils literal notranslate"><span class="pre">einspline.tile_300010003.spin_0.tw_0.g0.bandinfo.dat</span></code> file. Spin_0 in the file name suggests
+that we are reading the spin-up eigenstates. Band, state, twistindex,
+and bandindex numbers all start from zero. We know we have 72 electrons
+in the simulation cell, with 36 of them spin-up polarized. Since the
+state number starts from zero, state number 35 must be occupied while
+state 36 should be unoccupied. States 35 and 36 have the same reciprocal
+crystal coordinates (K1,K2,K3) as <span class="math notranslate nohighlight">\(\Gamma\)</span> and <span class="math notranslate nohighlight">\(\Delta'\)</span>,
+respectively. Therefore, an electron should be promoted from state
+number 35 to 36 to study the indirect band gap here.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#  Band State TwistIndex BandIndex Energy Kx Ky Kz K1 K2 K3 KmK</span>
+<span class="mi">33</span> <span class="mi">33</span> <span class="mi">0</span>  <span class="mi">1</span>     <span class="mf">0.488302</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span>      <span class="mi">1</span>
+<span class="mi">34</span> <span class="mi">34</span> <span class="mi">0</span>  <span class="mi">2</span>     <span class="mf">0.488302</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span>      <span class="mi">1</span>
+<span class="mi">35</span> <span class="mi">35</span> <span class="mi">0</span>  <span class="mi">3</span>     <span class="mf">0.488302</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span>      <span class="mi">1</span>
+<span class="mi">36</span> <span class="mi">36</span> <span class="mi">4</span>  <span class="mi">4</span>     <span class="mf">0.631985</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6209</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.3333</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.3333</span>      <span class="mi">1</span>
+<span class="mi">37</span> <span class="mi">37</span> <span class="mi">8</span>  <span class="mi">4</span>     <span class="mf">0.631985</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">1.2418</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6667</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6667</span>      <span class="mi">1</span>
+<span class="mi">38</span> <span class="mi">38</span> <span class="mi">0</span>  <span class="mi">4</span>     <span class="mf">0.691907</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.0000</span>      <span class="mi">1</span>
+</pre></div>
+</div>
+<p>However, we should always check whether this is really what we want. It
+can be seen that bands 33, 34, and 35 are degenerate (energy eigenvalues
+are listed in the 5th column), but they also have the same reciprocal
+coordinates in (K1,K2,K3). This is actually expected as one can see from
+<a class="reference internal" href="#fig24"><span class="std std-numref">Fig. 24</span></a>, in the band diagram the band structure is
+threefold degenerate at <span class="math notranslate nohighlight">\(\Gamma\)</span>. Here, we can choose the state
+with the largest band index: (0,3). Following the (twistindex,
+bandindex) notation, we can say that <span class="math notranslate nohighlight">\(\Gamma\)</span> to <span class="math notranslate nohighlight">\(\Delta'\)</span>
+transition can be defined as from (0,3) to (4,4).</p>
+<p>Alternatively, we can also read the band and twist indexes using PwscfAnalyzer and determine the band/twist indexes on the go:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">nscf</span><span class="o">.</span><span class="n">load_analyzer_image</span><span class="p">()</span>
+<span class="nb">print</span> <span class="s1">&#39;band information&#39;</span>
+<span class="nb">print</span> <span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span>
+<span class="nb">print</span> <span class="s1">&#39;twist 0 k-point:&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">kpoint_rel</span>
+<span class="nb">print</span> <span class="s1">&#39;twist 4 k-point:&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">kpoint_rel</span>
+<span class="nb">print</span> <span class="s1">&#39;twist 0 band 3 eigenvalue:&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">eigs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span> <span class="s1">&#39;twist 4 band 4 eigenvalue:&#39;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">bands</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">eigs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Giving output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">8.0883</span> <span class="mf">13.2874</span> <span class="mf">13.2874</span> <span class="mf">13.2874</span> <span class="mf">18.8277</span> <span class="mf">18.8277</span> <span class="mf">18.8277</span> <span class="mf">25.9151</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">1</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0893</span>  <span class="mf">3.8761</span> <span class="mf">10.9518</span> <span class="mf">10.9518</span> <span class="mf">21.5031</span> <span class="mf">21.5031</span> <span class="mf">21.5361</span> <span class="mf">28.2574</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.0494096</span>  <span class="mf">0.0494096</span>  <span class="mf">0.0494096</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.3333333</span> <span class="mf">0.</span>        <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">2</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0893</span>  <span class="mf">3.8761</span> <span class="mf">10.9518</span> <span class="mf">10.9518</span> <span class="mf">21.5031</span> <span class="mf">21.5031</span> <span class="mf">21.5361</span> <span class="mf">28.2574</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">2</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.0988193</span>  <span class="mf">0.0988193</span>  <span class="mf">0.0988193</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.6666667</span> <span class="mf">0.</span>        <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">3</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0893</span>  <span class="mf">3.8761</span> <span class="mf">10.9518</span> <span class="mf">10.9518</span> <span class="mf">21.5031</span> <span class="mf">21.5031</span> <span class="mf">21.5361</span> <span class="mf">28.2574</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.0494096</span>  <span class="mf">0.0494096</span> <span class="o">-</span><span class="mf">0.0494096</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.</span>        <span class="mf">0.3333333</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">4</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">4.0954</span>  <span class="mf">6.1375</span>  <span class="mf">7.9247</span>  <span class="mf">7.9247</span> <span class="mf">17.1972</span> <span class="mf">20.6393</span> <span class="mf">27.3652</span> <span class="mf">27.3652</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">4</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.0988193</span> <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.3333333</span> <span class="mf">0.</span>        <span class="mf">0.3333333</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">5</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.6681</span>  <span class="mf">2.3791</span>  <span class="mf">3.7836</span>  <span class="mf">8.5596</span> <span class="mf">19.3423</span> <span class="mf">26.2181</span> <span class="mf">26.6666</span> <span class="mf">28.0506</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">5</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.0494096</span>  <span class="mf">0.1482289</span>  <span class="mf">0.0494096</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.6666667</span> <span class="mf">0.</span>        <span class="mf">0.3333333</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">6</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0893</span>  <span class="mf">3.8761</span> <span class="mf">10.9518</span> <span class="mf">10.9518</span> <span class="mf">21.5031</span> <span class="mf">21.5031</span> <span class="mf">21.5361</span> <span class="mf">28.2574</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">6</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.0988193</span>  <span class="mf">0.0988193</span> <span class="o">-</span><span class="mf">0.0988193</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.</span>        <span class="mf">0.6666667</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">7</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.6681</span>  <span class="mf">2.3791</span>  <span class="mf">3.7836</span>  <span class="mf">8.5596</span> <span class="mf">19.3423</span> <span class="mf">26.2181</span> <span class="mf">26.6666</span> <span class="mf">28.0506</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">7</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.0494096</span>  <span class="mf">0.1482289</span> <span class="o">-</span><span class="mf">0.0494096</span><span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.3333333</span> <span class="mf">0.</span>        <span class="mf">0.6666667</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+<span class="mi">8</span>
+  <span class="n">eigs</span>            <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">4.0954</span>  <span class="mf">6.1375</span>  <span class="mf">7.9247</span>  <span class="mf">7.9247</span> <span class="mf">17.1972</span> <span class="mf">20.6393</span> <span class="mf">27.3652</span> <span class="mf">27.3652</span><span class="p">]</span>
+  <span class="n">index</span>           <span class="o">=</span> <span class="mi">8</span>
+  <span class="n">kpoint_2pi_alat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span>        <span class="mf">0.1976385</span> <span class="mf">0.</span>       <span class="p">]</span>
+  <span class="n">kpoint_rel</span>      <span class="o">=</span> <span class="p">[</span><span class="mf">0.6666667</span> <span class="mf">0.</span>        <span class="mf">0.6666667</span><span class="p">]</span>
+  <span class="n">occs</span>            <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+  <span class="n">pol</span>             <span class="o">=</span> <span class="n">up</span>
+
+<span class="n">twist</span> <span class="mi">0</span> <span class="n">k</span><span class="o">-</span><span class="n">point</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">twist</span> <span class="mi">4</span> <span class="n">k</span><span class="o">-</span><span class="n">point</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3333333</span> <span class="mf">0.</span>        <span class="mf">0.3333333</span><span class="p">]</span>
+<span class="n">twist</span> <span class="mi">0</span> <span class="n">band</span> <span class="mi">3</span> <span class="n">eigenvalue</span><span class="p">:</span> <span class="mf">13.2874</span>
+<span class="n">twist</span> <span class="mi">4</span> <span class="n">band</span> <span class="mi">4</span> <span class="n">eigenvalue</span><span class="p">:</span> <span class="mf">17.1972</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="quasiparticle-electronic-gap-calculations">
+<span id="lab-ex-qp"></span><h2>Quasiparticle (electronic) gap calculations<a class="headerlink" href="#quasiparticle-electronic-gap-calculations" title="Permalink to this headline">¶</a></h2>
+<p>In quasiparticle calculations, it is essential to work with reasonably large sized supercells to avoid spurious “1/N effects.”
+Since quasiparticle calculations involve charged cells, large simulation cells ensure that the extra charge is diluted over the simulation cell. Coulombic interactions are conditionally convergent for neutral periodic systems, but they are divergent for the charged systems.
+A typical workflow for a quasiparticle calculation includes the following:</p>
+<ol class="arabic simple">
+<li><p>Run an SCF calculation in a neutral charged cell with QE using a
+high-density reciprocal grid.</p></li>
+<li><p>Choose a tiling matrix that will at least approximately include VBM
+and CBM k-points.</p></li>
+<li><p>Run ‘nscf’/‘p2q’ calculations using the tiling matrix.</p></li>
+<li><p>Run VMC/DMC calculations for the neutral and positively and
+negatively charged cells in QMCPACK.</p></li>
+<li><p>Check the convergence of the quasiparticle gap with respect to the
+simulation cell size.</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">particleset</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;e&quot;</span> <span class="n">random</span><span class="o">=</span><span class="s2">&quot;yes&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">group</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;36&quot;</span> <span class="n">mass</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="o">&gt;</span> <span class="c1">##Change size to 35</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;charge&quot;</span>              <span class="o">&gt;</span>    <span class="o">-</span><span class="mi">1</span>                    <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mass&quot;</span>                <span class="o">&gt;</span>    <span class="mf">1.0</span>                   <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">group</span><span class="o">&gt;</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="o">&lt;</span><span class="n">determinantset</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;updet&quot;</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">sposet</span><span class="o">=</span><span class="s2">&quot;spo_u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;36&quot;</span><span class="o">&gt;</span> <span class="c1">##Change size to 35</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;downdet&quot;</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">sposet</span><span class="o">=</span><span class="s2">&quot;spo_d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;36&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">determinantset</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Going back to <a class="reference internal" href="#equation-eq77">(77)</a>, we can see that it is essential to include VBM and CBM wavevectors in the same twist for quasiparticle calculations as well.
+Therefore, the added electron will sit at CBM while the subtracted electron will be removed from VBM.
+However, for the charged cell calculations, we may need to make changes in the input files for the fourth step.  Alternatively, in the quasiparticle.py file, the changes in the QMC input are shown for a negatively charged system:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmc</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">qmcsystem</span><span class="o">.</span><span class="n">particlesets</span><span class="o">.</span><span class="n">e</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">size</span> <span class="o">+=</span><span class="mi">1</span>
+<span class="p">(</span><span class="n">qmc</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">simulation</span><span class="o">.</span><span class="n">qmcsystem</span><span class="o">.</span><span class="n">wavefunction</span><span class="o">.</span><span class="n">determinantset</span>
+ <span class="o">.</span><span class="n">slaterdeterminant</span><span class="o">.</span><span class="n">determinants</span><span class="o">.</span><span class="n">updet</span><span class="o">.</span><span class="n">size</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, the number of up electrons are increased by one (negatively charged system), and QMCPACK is instructed to read more one orbital in the up channel from the <code class="docutils literal notranslate"><span class="pre">.h5</span></code> file.</p>
+<p>QE uses symmetry to reduce the number of k-points required for the calculation.
+Therefore, all symmetry tags in QE (<code class="docutils literal notranslate"><span class="pre">nosym</span></code>, <code class="docutils literal notranslate"><span class="pre">noinv</span></code>, and <code class="docutils literal notranslate"><span class="pre">nosym_evc</span></code>) must be set to false.
+An easy way to check whether this is the case is to see that all KmK values <code class="docutils literal notranslate"><span class="pre">einspline</span></code> files are equal to 1.
+Previously, the input for the neutral cell is given, while the changes are denoted as comments for the positively charged cell.
+Note that we have used <code class="docutils literal notranslate"><span class="pre">det_format</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">=</span> <span class="pre">&quot;old&quot;</span></code> in the <code class="docutils literal notranslate"><span class="pre">vmc_+/-e.py</span></code> files.</p>
+</div>
+<div class="section" id="optical-gap-calculations">
+<h2>Optical gap calculations<a class="headerlink" href="#optical-gap-calculations" title="Permalink to this headline">¶</a></h2>
+<p>Routines for the optical gap calculations are very similar to the
+quasiparticle gap calculations. The first three items in the
+quasiparticle band gap calculations can be reused for the optical gap
+calculations. However, at the VMC/DMC level, the electronic transitions
+performed should be explicitly stated. Therefore, compared with the
+quasiparticle calculations, only item number 4 is different for optical
+gap calculations. Here, the modified input file is given for the
+<span class="math notranslate nohighlight">\(\Gamma\rightarrow\Delta'\)</span> transition, which can be compared with
+the ground state input file in the previous section.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">determinantset</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;updet&quot;</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;u&quot;</span> <span class="n">sposet</span><span class="o">=</span><span class="s2">&quot;spo_u&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;36&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;excited&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;band&quot;</span> <span class="n">pairs</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">&gt;</span>
+        <span class="mi">0</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">4</span>
+      <span class="o">&lt;/</span><span class="n">occupation</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">determinant</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;downdet&quot;</span> <span class="n">group</span><span class="o">=</span><span class="s2">&quot;d&quot;</span> <span class="n">sposet</span><span class="o">=</span><span class="s2">&quot;spo_d&quot;</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;36&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">occupation</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;ground&quot;</span> <span class="n">spindataset</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">determinant</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">slaterdeterminant</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">determinantset</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>We have used the (twistindex, bandindex) notation in the annihilaion/creation order for the up-spin electrons.
+After resubmitting the batch job, in the output, you should be able to see the following lines in the <code class="docutils literal notranslate"><span class="pre">vmc.out</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sorting</span> <span class="n">the</span> <span class="n">bands</span> <span class="n">now</span><span class="p">:</span>
+  <span class="n">Occupying</span> <span class="n">bands</span> <span class="n">based</span> <span class="n">on</span> <span class="p">(</span><span class="n">ti</span><span class="p">,</span><span class="n">bi</span><span class="p">)</span> <span class="n">data</span><span class="o">.</span>
+<span class="n">removing</span> <span class="n">orbital</span> <span class="mi">35</span>
+<span class="n">adding</span> <span class="n">orbital</span> <span class="mi">36</span>
+<span class="n">We</span> <span class="n">will</span> <span class="n">read</span> <span class="mi">36</span> <span class="n">distinct</span> <span class="n">orbitals</span><span class="o">.</span>
+<span class="n">There</span> <span class="n">are</span> <span class="mi">0</span> <span class="n">core</span> <span class="n">states</span> <span class="ow">and</span> <span class="mi">36</span> <span class="n">valence</span> <span class="n">states</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>And the <code class="docutils literal notranslate"><span class="pre">einspline.tile_300010003.spin_0.tw_0.g0.bandinfo.dat</span></code> file must be changed in the following way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#  Band State TwistIndex BandIndex Energy Kx Ky Kz K1 K2 K3 KmK</span>
+<span class="mi">33</span> <span class="mi">33</span> <span class="mi">0</span>       <span class="mi">1</span> <span class="mf">0.499956</span>      <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mi">1</span>
+<span class="mi">34</span> <span class="mi">34</span> <span class="mi">0</span>       <span class="mi">2</span> <span class="mf">0.500126</span>      <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mi">1</span>
+<span class="mi">35</span> <span class="mi">35</span> <span class="mi">4</span>       <span class="mi">4</span> <span class="mf">0.637231</span>      <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6209</span> <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.3333</span> <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.3333</span> <span class="mi">1</span>
+<span class="mi">36</span> <span class="mi">36</span> <span class="mi">0</span>       <span class="mi">3</span> <span class="mf">0.502916</span>      <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mi">1</span>
+<span class="mi">37</span> <span class="mi">37</span> <span class="mi">8</span>       <span class="mi">4</span> <span class="mf">0.637231</span>      <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">1.2418</span> <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6667</span> <span class="mf">0.0000</span> <span class="o">-</span><span class="mf">0.6667</span> <span class="mi">1</span>
+<span class="mi">38</span> <span class="mi">38</span> <span class="mi">0</span>       <span class="mi">4</span> <span class="mf">0.699993</span>      <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mf">0.0000</span>  <span class="mf">0.0000</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Alternatively, the excitations within Nexus can be defined as shown in the <code class="docutils literal notranslate"><span class="pre">optical.py</span></code> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmc</span> <span class="o">=</span> <span class="n">generate_qmcpack</span><span class="p">(</span>
+    <span class="o">...</span>
+    <span class="n">excitation</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;0 3 4 4&#39;</span><span class="p">],</span> <span class="c1"># (ti, bi) notation</span>
+    <span class="c1">#excitation = [&#39;up&#39;, &#39;-35 + 36&#39;], # Orbital (state) index notation</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p id="bibtex-bibliography-lab_excited-0"><dl class="citation">
+<dt class="bibtex label" id="hinuma2017"><span class="brackets"><a class="fn-backref" href="#id4">HPK+17</a></span></dt>
+<dd><p>Yoyo Hinuma, Giovanni Pizzi, Yu Kumagai, Fumiyasu Oba, and Isao Tanaka. Band structure diagram paths based on crystallography. <em>Computational Materials Science</em>, 128:140–184, 2017. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0927025616305110">http://www.sciencedirect.com/science/article/pii/S0927025616305110</a>, <a class="reference external" href="https://doi.org/10.1016/j.commatsci.2016.10.015">doi:10.1016/j.commatsci.2016.10.015</a>.</p>
+</dd>
+<dt class="bibtex label" id="kokalj1999"><span class="brackets"><a class="fn-backref" href="#id3">Kok99</a></span></dt>
+<dd><p>Anton Kokalj. XCrySDen—a new program for displaying crystalline structures and electron densities. <em>Journal of Molecular Graphics and Modelling</em>, 17(3):176–179, 1999. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S1093326399000285">http://www.sciencedirect.com/science/article/pii/S1093326399000285</a>, <a class="reference external" href="https://doi.org/10.1016/S1093-3263(99)00028-5">doi:10.1016/S1093-3263(99)00028-5</a>.</p>
+</dd>
+<dt class="bibtex label" id="ong2013"><span class="brackets"><a class="fn-backref" href="#id2">ORJ+13</a></span></dt>
+<dd><p>Shyue Ping Ong, William Davidson Richards, Anubhav Jain, Geoffroy Hautier, Michael Kocher, Shreyas Cholia, Dan Gunter, Vincent L. Chevrier, Kristin A. Persson, and Gerbrand Ceder. Python Materials Genomics (pymatgen): A robust, open-source python library for materials analysis. <em>Computational Materials Science</em>, 68:314–319, 2013. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0927025612006295">http://www.sciencedirect.com/science/article/pii/S0927025612006295</a>, <a class="reference external" href="https://doi.org/10.1016/j.commatsci.2012.10.028">doi:10.1016/j.commatsci.2012.10.028</a>.</p>
+</dd>
+<dt class="bibtex label" id="onida2002a"><span class="brackets"><a class="fn-backref" href="#id1">ORR02</a></span></dt>
+<dd><p>Giovanni Onida, Lucia Reining, and Angel Rubio. Electronic excitations: density-functional versus many-body Green’s-function approaches. <em>Reviews of Modern Physics</em>, 74(2):601–659, 2002. <a class="reference external" href="https://doi.org/10.1103/RevModPhys.74.601">doi:10.1103/RevModPhys.74.601</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 
@@ -319,6 +767,8 @@ please refer to any solid-state physics textbook.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="additional_tools.html" class="btn btn-neutral float-right" title="Additional Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="lab_condensed_matter.html" class="btn btn-neutral float-left" title="Lab 4: Condensed Matter Calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
