@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>User’s Guide and Developer’s Manual for &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>User’s Guide and Developer’s Manual &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -104,6 +104,12 @@
 <li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -149,7 +155,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>User’s Guide and Developer’s Manual for</li>
+      <li>User’s Guide and Developer’s Manual</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,8 +174,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="user-s-guide-and-developer-s-manual-for">
-<h1>User’s Guide and Developer’s Manual for<a class="headerlink" href="#user-s-guide-and-developer-s-manual-for" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="user-s-guide-and-developer-s-manual">
+<h1>User’s Guide and Developer’s Manual<a class="headerlink" href="#user-s-guide-and-developer-s-manual" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://qmcpack.org/"><img alt="_images/QMCPACK_logo.png" src="_images/QMCPACK_logo.png" style="width: 80.0%;" /></a>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
@@ -354,6 +360,54 @@
 <li class="toctree-l2"><a class="reference internal" href="additional_tools.html#initialization">Initialization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="additional_tools.html#postprocessing">Postprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="additional_tools.html#converters">Converters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="additional_tools.html#obtaining-pseudopotentials">Obtaining pseudopotentials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="external_tools.html#llvm-sanitizer-libraries">LLVM Sanitizer Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_tools.html#intel-vtune">Intel VTune</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_tools.html#nvidia-tools-extensions">NVIDIA Tools Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="external_tools.html#scitools-understand">Scitools Understand</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html#unit-testing-framework">Unit testing framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html#unit-test-organization">Unit test organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html#adding-tests">Adding tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_testing.html#testing-with-random-numbers">Testing with random numbers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#qmcpack-design">QMCPACK design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-optimized-long-range-breakup-ewald">Feature: Optimized long-range breakup (Ewald)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-optimized-long-range-breakup-ewald-2">Feature: Optimized long-range breakup (Ewald) 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-cubic-spline-interpolation">Feature: Cubic spline interpolation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-b-spline-orbital-tiling-band-unfolding">Feature: B-spline orbital tiling (band unfolding)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-hybrid-orbital-representation">Feature: Hybrid orbital representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-electron-electron-ion-jastrow-factor">Feature: Electron-electron-ion Jastrow factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="design_features.html#feature-reciprocal-space-jastrow-factors">Feature: Reciprocal-space Jastrow factors</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#qmcpack-coding-standards">QMCPACK coding standards</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#files">Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#naming">Naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#formatting-and-style">Formatting and “style”</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#qmcpack-c-guidance">QMCPACK C++ guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#scalar-estimator-implementation">Scalar estimator implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#estimator-output">Estimator output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#slater-backflow-wavefunction-implementation-details">Slater-backflow wavefunction implementation details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#particles-and-distance-tables">Particles and distance tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#adding-a-wavefunction">Adding a wavefunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developing.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#appendix-a-derivation-of-twist-averaging-efficiency">Appendix A: Derivation of twist averaging efficiency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="appendices.html#appendix-b-qmcpack-papers">Appendix B: QMCPACK papers</a></li>
 </ul>
 </li>
 </ul>

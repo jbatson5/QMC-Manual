@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Trial wavefunction specificaion &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Trial wavefunction specificaion &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -157,6 +157,16 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -2223,7 +2233,7 @@ Jastrows).</p>
 <p>Here <span class="math notranslate nohighlight">\(\rho_G\)</span> is the Fourier transform of the instantaneous electron density:</p>
 <div class="math notranslate nohighlight" id="equation-eq17">
 <span class="eqno">(17)<a class="headerlink" href="#equation-eq17" title="Permalink to this equation">¶</a></span>\[\rho_G=\sum_{n\in electrons}e^{iG\cdot r_n}\]</div>
-<p>and <span class="math notranslate nohighlight">\(\rho_G^I\)</span> has the same form, but for the fixed ions. In both cases the coefficients are restricted to be real, though in general the coefficients for the one-body term need not be.  See <span class="xref std std-ref">feature-kspace-jastrow</span> for more detail.</p>
+<p>and <span class="math notranslate nohighlight">\(\rho_G^I\)</span> has the same form, but for the fixed ions. In both cases the coefficients are restricted to be real, though in general the coefficients for the one-body term need not be.  See <a class="reference internal" href="design_features.html#feature-kspace-jastrow"><span class="std std-ref">Feature: Reciprocal-space Jastrow factors</span></a> for more detail.</p>
 <p>Input for the k-space Jastrow follows the familar nesting of <code class="docutils literal notranslate"><span class="pre">jastrow-correlation-coefficients</span></code> elements, with attributes unique to the k-space Jastrow at the <code class="docutils literal notranslate"><span class="pre">correlation</span></code> input level.</p>
 <p><code class="docutils literal notranslate"><span class="pre">jastrow</span> <span class="pre">type=kSpace</span></code> element:</p>
 <blockquote>

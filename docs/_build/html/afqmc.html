@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Auxiliary-Field Quantum Monte Carlo &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Auxiliary-Field Quantum Monte Carlo &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -108,6 +108,16 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -550,17 +560,17 @@ additional constant terms which have to be added to the total energy.
 tensor-hypercontraction <a class="bibtex reference internal" href="#hohensteinthci2012" id="id10">[HPMartinez12]</a><a class="bibtex reference internal" href="#parrishthcii2012" id="id11">[PHMartinezS12]</a><a class="bibtex reference internal" href="#hohensteinthciii2012" id="id12">[HPSMartinez12]</a> (THC) approach for use in AFQMCcite{MaloneISDF2019}. Within the THC approach we
 can approximate the orbital products entering the ERIs as</p>
 <div class="math notranslate nohighlight" id="equation-eq59">
-<span class="eqno">(59)<a class="headerlink" href="#equation-eq59" title="Permalink to this equation">¶</a></span>\[\varphi^{*}_p(\mathbf{r})\varphi_r(\mathbf{r}) \approx \sum_\mu^{N_\mu} \zeta_\mu(\mathbf{r}) \varphi^*_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu),\label{eq:orb_prod}\]</div>
+<span class="eqno">(59)<a class="headerlink" href="#equation-eq59" title="Permalink to this equation">¶</a></span>\[\varphi^{*}_p(\mathbf{r})\varphi_r(\mathbf{r}) \approx \sum_\mu^{N_\mu} \zeta_\mu(\mathbf{r}) \varphi^*_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu),\]</div>
 <p>where <span class="math notranslate nohighlight">\(\varphi_p(\mathbf{r})\)</span> are the one-electron orbitals and
 <span class="math notranslate nohighlight">\(\mathbf{r}_\mu\)</span> are a set of specially selected interpolating
 points, <span class="math notranslate nohighlight">\(\zeta_\mu(\mathbf{r})\)</span> are a set of interpolating vectors
 and <span class="math notranslate nohighlight">\(N_\mu = x_\mu M\)</span>. We can then write the ERI tensor as a
 product of rank-2 tensors</p>
 <div class="math notranslate nohighlight" id="equation-eq60">
-<span class="eqno">(60)<a class="headerlink" href="#equation-eq60" title="Permalink to this equation">¶</a></span>\[v_{pqrs} \approx \sum_{\mu\nu} \varphi^{*}_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu) M_{\mu\nu} \varphi^{*}_q(\mathbf{r}_\nu)\varphi_s(\mathbf{r}_\nu)\label{eq:4ix_thc},\]</div>
+<span class="eqno">(60)<a class="headerlink" href="#equation-eq60" title="Permalink to this equation">¶</a></span>\[v_{pqrs} \approx \sum_{\mu\nu} \varphi^{*}_p(\mathbf{r}_\mu)\varphi_r(\mathbf{r}_\mu) M_{\mu\nu} \varphi^{*}_q(\mathbf{r}_\nu)\varphi_s(\mathbf{r}_\nu),\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight" id="equation-eq61">
-<span class="eqno">(61)<a class="headerlink" href="#equation-eq61" title="Permalink to this equation">¶</a></span>\[M_{\mu\nu} = \int d\mathbf{r}d\mathbf{r}' \zeta_\mu(\mathbf{r})\frac{1}{|\mathbf{r}-\mathbf{r}'|}\zeta^{*}_\nu(\mathbf{r}')\label{eq:mmat}.\]</div>
+<span class="eqno">(61)<a class="headerlink" href="#equation-eq61" title="Permalink to this equation">¶</a></span>\[M_{\mu\nu} = \int d\mathbf{r}d\mathbf{r}' \zeta_\mu(\mathbf{r})\frac{1}{|\mathbf{r}-\mathbf{r}'|}\zeta^{*}_\nu(\mathbf{r}').\]</div>
 <p>We also require the half-rotated versions of these quantities which live
 on a different set of <span class="math notranslate nohighlight">\(\tilde{N}_\mu\)</span> interpolating points
 <span class="math notranslate nohighlight">\(\tilde{\mathbf{r}}_\mu\)</span> (see <a class="bibtex reference internal" href="#maloneisdf2019" id="id13">[MZM19]</a>). The file format for THC
@@ -619,7 +629,7 @@ and not used.</p></li>
 </ul>
 <p>Finally, we have implemented an explicitly <span class="math notranslate nohighlight">\(k\)</span>-point dependent factorization for periodic systems <a class="bibtex reference internal" href="#mottakpoint2019" id="id14">[MZC19]</a><a class="bibtex reference internal" href="#malonegpu2020" id="id15">[MZM20]</a></p>
 <div class="math notranslate nohighlight" id="equation-eq62">
-<span class="eqno">(62)<a class="headerlink" href="#equation-eq62" title="Permalink to this equation">¶</a></span>\[\begin{split}v_{pqrs} = \sum_{\substack{n\textbf{Q}\textbf{k}\textbf{k}' \\ pqrs\sigma\sigma'}} L^{\textbf{Q},\textbf{k}}_{pr,n} {L^{\textbf{Q},\textbf{k}'}_{sq,n}}^{*}\label{eq:kp_h2}\end{split}\]</div>
+<span class="eqno">(62)<a class="headerlink" href="#equation-eq62" title="Permalink to this equation">¶</a></span>\[\begin{split}v_{pqrs} = \sum_{\substack{n\textbf{Q}\textbf{k}\textbf{k}' \\ pqrs\sigma\sigma'}} L^{\textbf{Q},\textbf{k}}_{pr,n} {L^{\textbf{Q},\textbf{k}'}_{sq,n}}^{*}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\textbf{k}\)</span>, <span class="math notranslate nohighlight">\(\textbf{k}'\)</span> and <span class="math notranslate nohighlight">\(\textbf{Q}\)</span> are
 vectors in the first Brillouin zone. The one-body Hamiltonian is block
 diagonal in <span class="math notranslate nohighlight">\(\textbf{k}\)</span> and in <a class="reference internal" href="#equation-eq62">(62)</a> we have used

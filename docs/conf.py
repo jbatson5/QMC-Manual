@@ -22,7 +22,7 @@ copyright = '2020, QMCPACK Developers'
 author = 'QMCPACK Developers'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+
 
 
 # -- General configuration ---------------------------------------------------

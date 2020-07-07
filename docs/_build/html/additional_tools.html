@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Additional Tools &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Additional Tools &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="External Tools" href="external_tools.html" />
     <link rel="prev" title="Lab 5: Excited state calculations" href="lab_excited.html" /> 
 </head>
 
@@ -119,12 +120,31 @@
 <li class="toctree-l3"><a class="reference internal" href="#convert4qmc">convert4qmc</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#general-use">General use</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#command-line-options">Command line options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grid-options">Grid options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#supported-codes">Supported codes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pw2qmcpack-x">pw2qmcpack.x</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convertpw4qmc">convertpw4qmc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ppconvert">ppconvert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#obtaining-pseudopotentials">Obtaining pseudopotentials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pseudopotentiallibrary-org">Pseudopotentiallibrary.org</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opium">Opium</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#burkatzki-filippi-dolg">Burkatzki-Filippi-Dolg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#casino">CASINO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wftester">wftester</a></li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -234,8 +254,8 @@ quantum chemistry output files to QMCPACK XML and HDF5 input files.
 It is a small C++ executable that is built alongside the QMCPACK
 executable and can be found in <code class="docutils literal notranslate"><span class="pre">build/bin</span></code>.</p>
 <p>To date, <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> supports the following codes:
-GAMESS <a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id3">[SBB+93]</a>, PySCF <a class="bibtex reference internal" href="LCAO.html#sun2018" id="id4">[SBB+18]</a>, QP <a class="bibtex reference internal" href="sCI.html#qp" id="id5">[Sce17]</a>
-and GAMESS-FMO <span class="bibtex" id="id6">[Fedorov2004]</span><a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id7">[SBB+93]</a>.</p>
+GAMESS <a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id3">[SBB+93]</a>, PySCF <a class="bibtex reference internal" href="#sun2018" id="id4">[SBB+18]</a>, QP <a class="bibtex reference internal" href="sCI.html#qp" id="id5">[Sce17]</a>
+and GAMESS-FMO <a class="bibtex reference internal" href="#fedorov2004" id="id6">[FOK+04]</a><a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id7">[SBB+93]</a>.</p>
 <div class="section" id="general-use">
 <h4>General use<a class="headerlink" href="#general-use" title="Permalink to this headline">¶</a></h4>
 <p>General use of <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> can be prompted by running with no options:</p>
@@ -698,7 +718,7 @@ QP in the HDF5 format) is named “<strong>Name</strong>.H5,” all files genera
 <p>This option is very important for all-electron (AE) calculations. In
 this case, orbitals have to be corrected for the electron-nuclear
 cusp. The cusp correction scheme follows the algorithm described by Ma
-et al. <span class="bibtex" id="id8">[Ma2005]</span> When this option is present, the
+et al. <a class="bibtex reference internal" href="#ma2005" id="id8">[MTDN05]</a> When this option is present, the
 wavefunction file has a new set of tags:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qmcsystem</span><span class="o">&gt;</span>
  <span class="o">&lt;</span><span class="n">wavefunction</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;e&quot;</span><span class="o">&gt;</span>
@@ -759,7 +779,530 @@ is for users who are already familiar with QMC and QMCPACK. We encourage feedbac
 on the standard and production sample inputs.</p>
 </li>
 </ul>
+<p>The following options are specific to using MCSCF multideterminants from Gamess.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> MCSCF arguments:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 12%" />
+<col style="width: 14%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Option Name</strong></p></th>
+<th class="head"><p><strong>Value</strong></p></th>
+<th class="head"><p><strong>default</strong></p></th>
+<th class="head"><p><strong>description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-ci</span></code></p></td>
+<td><p>String</p></td>
+<td><p>none</p></td>
+<td><p>Name of the file containing the CI expansion</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-threshold</span></code></p></td>
+<td><p>double</p></td>
+<td><p>1e-20</p></td>
+<td><p>Cutoff of the weight of the determinants</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-TargetState</span></code></p></td>
+<td><p>int</p></td>
+<td><p>none</p></td>
+<td><p>?</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-NaturalOrbitals</span></code></p></td>
+<td><p>int</p></td>
+<td><p>none</p></td>
+<td><p>?</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-optDetCoeffs</span></code></p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><p>no</p></td>
+<td><p>Enables the optimization of CI coefficients</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<ul class="simple">
+<li><p>keyword <strong>-ci</strong> Path/name of the file containing the CI expansion in
+a Gamess Format.</p></li>
+<li><p>keyword <strong>-threshold</strong> The CI expansion contains coefficients
+(weights) for each determinant. This option sets the maximum
+coefficient to include in the QMC run. By default it is set to 1e-20
+(meaning all determinants in an expansion are taken into account). At
+the same time, if the threshold is set to a different value, for
+example <span class="math notranslate nohighlight">\(1e-5\)</span>, any determinant with a weight
+<span class="math notranslate nohighlight">\(|weight| &lt; 1e-5\)</span> will be discarded and the determinant will
+not be considered.</p></li>
+<li><p>keyword <strong>-TargetState</strong> ?</p></li>
+<li><p>keyword <strong>-NaturalOrbitals</strong> ?</p></li>
+<li><p>keyword <strong>-optDetCoeffs</strong> This flag enables optimization of the CI
+expansion coefficients. By default, optimization of the coefficients
+is disabled during wavefunction optimization runs.</p></li>
+</ul>
+<p>Examples and more thorough descriptions of these options can be found in the lab section of this manual: <a class="reference internal" href="lab_advanced_molecules.html#lab-advanced-molecules"><span class="std std-ref">Lab 3: Advanced molecular calculations</span></a>.</p>
 </div>
+<div class="section" id="grid-options">
+<h4>Grid options<a class="headerlink" href="#grid-options" title="Permalink to this headline">¶</a></h4>
+<p>These parameters control how the basis set is projected on a grid. The default parameters are chosen to be very efficient. Unless you have a very good reason, we do not recommend modifying them.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 40%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Tags</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>keyword</strong></p></td>
+<td><p><strong>Value</strong></p></td>
+<td><p><strong>default</strong></p></td>
+<td><p><strong>description</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-gridtype</span></code></p></td>
+<td><p>log|log0|linear</p></td>
+<td><p>log</p></td>
+<td><p>Grid type</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-first</span></code></p></td>
+<td><p>double</p></td>
+<td><p>1e-6</p></td>
+<td><p>First point of the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-last</span></code></p></td>
+<td><p>double</p></td>
+<td><p>100</p></td>
+<td><p>Last point of the grid</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-size</span></code></p></td>
+<td><p>int</p></td>
+<td><p>1001</p></td>
+<td><p>Number of point in the grid</p></td>
+</tr>
+</tbody>
+</table>
+<ul class="simple">
+<li><p><strong>-gridtype</strong> Grid type can be logarithmic, logarithmic base 10, or
+linear</p></li>
+<li><p><strong>-first</strong> First value of the grid</p></li>
+<li><p><strong>-last</strong> Last value of the grid</p></li>
+<li><p><strong>-size</strong> Number of points in the grid between “first” and “last.”</p></li>
+</ul>
+</div>
+<div class="section" id="supported-codes">
+<h4>Supported codes<a class="headerlink" href="#supported-codes" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p><strong>PySCF</strong></p>
+<p>PySCF <a class="bibtex reference internal" href="#sun2018" id="id9">[SBB+18]</a> is an all-purpose quantum chemistry
+code that can run calculations from simple Hartree-Fock to DFT, MCSCF,
+and CCSD, and for both isolated systems and periodic boundary
+conditions. PySCF can be downloaded from <a class="reference external" href="https://github.com/sunqm/pyscf">https://github.com/sunqm/pyscf</a>.
+Many examples and tutorials can be found on the PySCF website, and all
+types of single determinants calculations are compatible with , thanks
+to active support from the authors of PySCF. A few additional steps are
+necessary to generate an output readable by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code>.</p>
+<p>This example shows how to run a Hartree-Fock calculation for the <span class="math notranslate nohighlight">\(LiH\)</span>
+dimer molecule from PySCF and convert the wavefunction for QMCPACK.</p>
+<ul>
+<li><p><strong>Python path</strong></p>
+<p>PySCF is a Python-based code. A Python module named <strong>PyscfToQmcpack</strong>
+containing the function <strong>savetoqmcpack</strong> is provided by and is located
+at <code class="docutils literal notranslate"><span class="pre">qmcpack/src/QMCTools/PyscfToQmcpack.py</span></code>. To be accessible to the
+PySCF script, this path must be added to the PYTHONPATH environment
+variable. For the bash shell, this can be done as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PYTHONPATH=/PATH_TO_QMCPACK/qmcpack/src/QMCTools:\$PYTHONPATH
+</pre></div>
+</div>
+</li>
+<li><p><strong>PySCF Input File</strong></p>
+<p>Copy and paste the following code in a file named LiH.py.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python3</span>
+<span class="kn">from</span> <span class="nn">pyscf</span> <span class="kn">import</span> <span class="n">gto</span><span class="p">,</span> <span class="n">scf</span><span class="p">,</span> <span class="n">df</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">cell</span> <span class="o">=</span> <span class="n">gto</span><span class="o">.</span><span class="n">M</span><span class="p">(</span>
+   <span class="n">atom</span> <span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">Li 0.0 0.0 0.0</span>
+<span class="s1">H  0.0 0.0 3.0139239778&#39;&#39;&#39;</span><span class="p">,</span>
+   <span class="n">basis</span> <span class="o">=</span><span class="s1">&#39;cc-pv5z&#39;</span><span class="p">,</span>
+   <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;bohr&quot;</span><span class="p">,</span>
+   <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+   <span class="n">verbose</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+   <span class="n">cart</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">mf</span> <span class="o">=</span> <span class="n">scf</span><span class="o">.</span><span class="n">ROHF</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+<span class="n">mf</span><span class="o">.</span><span class="n">kernel</span><span class="p">()</span>
+
+<span class="c1">###SPECIFIC TO QMCPACK###</span>
+<span class="n">title</span><span class="o">=</span><span class="s1">&#39;LiH&#39;</span>
+<span class="kn">from</span> <span class="nn">PyscfToQmcpack</span> <span class="kn">import</span> <span class="n">savetoqmcpack</span>
+
+<span class="n">savetoqmcpack</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span><span class="n">mf</span><span class="p">,</span><span class="n">title</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The arguments to the function <strong>savetoqmcpack</strong> are:</p>
+<ul class="simple">
+<li><p><strong>cell</strong> This is the object returned from gto.M, containing the type
+of atoms, geometry, basisset, spin, etc.</p></li>
+<li><p><strong>mf</strong> This is an object representing the PySCF level of theory, in
+this example, ROHF. This object contains the orbital coefficients of
+the calculations.</p></li>
+<li><p><strong>title</strong> The name of the output file generated by PySCF. By default,
+the name of the generated file will be “default” if nothing is
+specified.</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>By adding the three lines below the “SPECIFIC TO QMCPACK” comment in the
+input file, the script will dump all the necessary data for QMCPACK into
+an HDF5 file using the value of “title” as an output name. PySCF is run
+as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span><span class="n">python</span> <span class="n">LiH</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>The generated HDF5 can be read by <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> to generate the
+appropriate QMCPACK input files.</p>
+</li>
+<li><p><strong>Generating input files</strong></p>
+<p>As described in the previous section, generating input files for PySCF is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">convert4qmc</span> <span class="o">-</span><span class="n">pyscf</span> <span class="n">LiH</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>The HDF5 file produced by “savetoqmcpack” contains the wavefunction in a
+form directly readable by QMCPACK. The wavefunction files from
+<code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> reference this HDF file as if the “-hdf5” option were
+specified (converting from PySCF implies the “-hdf5” option is always
+present).</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>An implementation of periodic boundary conditions with Gaussian orbitals from PySCF is under development.</p>
+<ul>
+<li><p><strong>Quantum Package</strong></p>
+<p>QP <a class="bibtex reference internal" href="sCI.html#qp" id="id10">[Sce17]</a> is a quantum chemistry code developed by the
+LCPQ laboratory in Toulouse, France. It can be downloaded from
+<a class="reference external" href="https://github.com/LCPQ/quantum_package">https://github.com/LCPQ/quantum_package</a>, and the tutorial within is
+quite extensive. The tutorial section of QP can guide you on how to
+install and run the code.</p>
+<p>After a QP calculation, the data needed for <code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> can be
+generated through</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qp_run</span> <span class="n">save_for_qmcpack</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">ezfio</span> <span class="o">&amp;&gt;</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">dump</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">convert4qmc</span></code> can read this format and generate QMCPACK input files in XML and HDF5 format.  For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">QP</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">dump</span>
+</pre></div>
+</div>
+<p>The main reason to use QP is to access the CIPSI algorithm to generate a
+multideterminant wavefunction. CIPSI is the preferred choice for
+generating a selected CI trial wavefunction for QMCPACK. An example on
+how to use QP for Hartree-Fock and selected CI can be found in
+<a class="reference internal" href="sCI.html#cipsi"><span class="std std-ref">CIPSI wavefunction interface</span></a> of this manual. The converter code is actively
+maintained and codeveloped by both QMCPACK and QP developers.</p>
+<p>We recommend using a trial wavefunction stored in HDF5 format to reduce the reading time when a multideterminant expansion is too large (more than 1K determinants). This can be done with two paths:</p>
+<p>using the <em>-hdf5</em> option in the converter as follows:</p>
+</li>
+<li><p><strong>Using -hdf5 tag</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">QP</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">dump</span> <span class="o">-</span><span class="n">hdf5</span>
+</pre></div>
+</div>
+<p>This will read the multideterminant expansion in the <code class="docutils literal notranslate"><span class="pre">Myrun.dump</span></code> file
+and store it in <code class="docutils literal notranslate"><span class="pre">Myrun.dump.orbs.h5</span></code>. Note that this method will be
+deprecated as QP automatically generates a compatible HDF5 file usable
+by QMCPACK directly.</p>
+</li>
+<li><p><strong>Using h5 file</strong></p>
+<p>QP version 2.0 (released in 2019) directly generates an HDF5 file that completely mimics the QMCPACK readable format. This file can be generated after a CIPSI, Hartree-Fock, or range-separated DFT in QP as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">qp_run</span> <span class="n">save_for_qmcpack</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">ezfio</span> <span class="o">&gt;</span> <span class="n">Myrun</span><span class="o">.</span><span class="n">dump</span>
+</pre></div>
+</div>
+<p>In addition to <code class="docutils literal notranslate"><span class="pre">Myrun.dump</span></code>, an HDF5 file always named <code class="docutils literal notranslate"><span class="pre">QMC.h5</span></code> is
+created containing all relevant information to start a QMC run. Input
+files can be generated as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convert4qmc</span> <span class="o">-</span><span class="n">orbitals</span> <span class="n">QMC</span><span class="o">.</span><span class="n">h5</span> <span class="o">-</span><span class="n">multidet</span> <span class="n">QMC</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Note that the <code class="docutils literal notranslate"><span class="pre">QMC.h5</span></code> combined with the tags <code class="docutils literal notranslate"><span class="pre">-orbitals</span></code> and
+<code class="docutils literal notranslate"><span class="pre">-multidet</span></code> allows the user to choose orbitals from a different code
+such as PYSCF and the multideterminant section from QP. These two codes
+are fully compatible, and this route is also the only possible route for
+multideterminants for solids.</p>
+</li>
+<li><p><strong>GAMESS</strong></p>
+<p>QMCPACK can use the output of GAMESS <a class="bibtex reference internal" href="intro_wavefunction.html#schmidt93" id="id11">[SBB+93]</a> for any type of single determinant calculation (HF or DFT) or multideterminant (MCSCF) calculation. A description with an example can be found in the Advanced Molecular Calculations Lab (<a class="reference internal" href="lab_advanced_molecules.html#lab-advanced-molecules"><span class="std std-ref">Lab 3: Advanced molecular calculations</span></a>).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="pw2qmcpack-x">
+<span id="pw2qmcpack"></span><h3>pw2qmcpack.x<a class="headerlink" href="#pw2qmcpack-x" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> is an executable that converts PWSCF wavefunctions to QMCPACK readable
+HDF5 format.  This utility is built alongside the QE postprocessing utilities.
+This utility is written in Fortran90 and is distributed as a patch of the QE
+source code.  The patch, as well as automated QE download and patch scripts, can be found in
+<code class="docutils literal notranslate"><span class="pre">qmcpack/external_codes/quantum_espresso</span></code>.</p>
+<p>pw2qmcpack can be used in serial in small systems and should be used in parallel with large systems for best performance. The K_POINT gamma optimization is not supported.</p>
+<div class="literal-block-wrapper docutils container" id="listing-66">
+<div class="code-block-caption"><span class="caption-number">Listing 66 </span><span class="caption-text">Sample <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> input file <code class="docutils literal notranslate"><span class="pre">p2q.in</span></code></span><a class="headerlink" href="#listing-66" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">inputpp</span>
+  <span class="n">prefix</span>     <span class="o">=</span> <span class="s1">&#39;bulk_silicon&#39;</span>
+  <span class="n">outdir</span>     <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+  <span class="n">write_psir</span> <span class="o">=</span> <span class="o">.</span><span class="n">false</span><span class="o">.</span>
+<span class="o">/</span>
+</pre></div>
+</div>
+</div>
+<p>This example will cause <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> to convert wavefunctions saved from
+PWSCF with the prefix “bulk_silicon.” Perform the conversion via, for
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="mi">1</span> <span class="n">pw2qmcpack</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">p2q</span><span class="o">.</span><span class="ow">in</span><span class="o">&gt;&amp;</span> <span class="n">p2q</span><span class="o">.</span><span class="n">out</span>
+</pre></div>
+</div>
+<p>Because of the large plane-wave energy cutoffs in the pw.x calculation required by accurate PPs and the large system sizes of interest, one limitation of QE can be easily reached:
+that <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> results in problems of writing and loading correct plane-wave coefficients on disks by pw.x because of the 32 bit integer limits. Thus, <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> fails to convert the orbitals for QMCPACK. Since the release of QE v5.3.0, the converter has been fully parallelized to overcome this limitation completely.</p>
+<p>By setting <code class="docutils literal notranslate"><span class="pre">wf_collect=.false.</span></code> (by default <code class="docutils literal notranslate"><span class="pre">.false.</span></code> in v6.1 and before and <code class="docutils literal notranslate"><span class="pre">.true.</span></code> since v6.2), pw.x does not collect the whole wavefunction into individual files for each k-point but instead writes one smaller file for each processor.
+By running <code class="docutils literal notranslate"><span class="pre">pw2qmcpack.x</span></code> in the same parallel setup (MPI tasks and k-pools) as the last scf/nscf calculation with pw.x,
+the orbitals distributed among processors will first be aggregated by the converter into individual temporal HDF5 files for each k-pool and then merged into the final file.
+In large calculations, users should benefit from a significant reduction of time in writing the wavefunction by pw.x thanks to avoiding the wavefunction collection.</p>
+<p>pw2qmcpack has been included in the test suite of QMCPACK (see instructions about how to activate the tests in <a class="reference internal" href="installation.html#buildqe"><span class="std std-ref">Installing and patching Quantum ESPRESSO</span></a>).
+There are tests labeled “no-collect” running the pw.x with the setting <code class="docutils literal notranslate"><span class="pre">wf_collect=.false.</span></code>
+The input files are stored at <code class="docutils literal notranslate"><span class="pre">examples/solids/dft-inputs-polarized-no-collect</span></code>.
+The scf, nscf, and pw2qmcpack runs are performed on 16, 12, and 12 MPI tasks with 16, 2, and 2 k-pools respectively.</p>
+</div>
+<div class="section" id="convertpw4qmc">
+<h3>convertpw4qmc<a class="headerlink" href="#convertpw4qmc" title="Permalink to this headline">¶</a></h3>
+<p>Convertpw4qmc is an executable that reads xml from a plane wave based DFT code and produces a QMCPACK readable
+HDF5 format wavefunction.  For the moment, this supports both QBox and Quantum Epresso</p>
+<p>In order to save the wavefunction from QBox so that convertpw4qmc can work on it, one needs to add a line to the
+QBox input like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">save</span> <span class="o">-</span><span class="n">text</span> <span class="o">-</span><span class="n">serial</span> <span class="n">basename</span><span class="o">.</span><span class="n">sample</span>
+</pre></div>
+</div>
+<p>after the end of a converged dft calculation.  This will write an ascii wavefunction file and will avoid
+QBox’s optimized parallel IO (which is not currently supported).</p>
+<p>After the wavefunction file is written (basename.sample in this case) one can use convertpw4qmc as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convertpw4qmc</span> <span class="n">basename</span><span class="o">.</span><span class="n">sample</span> <span class="o">-</span><span class="n">o</span> <span class="n">qmcpackWavefunction</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>This reads the Qbox wavefunction and performs the Fourier transform before saving to a QMCPACK eshdf format wavefunction.  Currently multiple k-points are supported, but due to difficulties with the qbox wavefunction file format, the single particle orbitals do not have their proper energies associated with them.  This means that when tiling from a primitive cell to a supercell, the lowest n single particle orbitals from all necessary k-points will be used.  This can be problematic in the case of a metal and this feature should be used with EXTREME caution.</p>
+<p>In the case of quantum espresso, QE must be compiled with HDF support.  If this is the case, then an eshdf file can be generated by targeting the data-file-schema.xml file
+generated in the output of quantum espresso.  For example, if one is running a calculation with outdir = ‘out’ and prefix=’Pt’ then the converter can be invoked as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">convertpw4qmc</span> <span class="n">out</span><span class="o">/</span><span class="n">Pt</span><span class="o">.</span><span class="n">save</span><span class="o">/</span><span class="n">data</span><span class="o">-</span><span class="n">file</span><span class="o">-</span><span class="n">schema</span><span class="o">.</span><span class="n">xml</span> <span class="o">-</span><span class="n">o</span> <span class="n">qmcpackWavefunction</span><span class="o">.</span><span class="n">h5</span>
+</pre></div>
+</div>
+<p>Note that this method is insensitive to parallelization options given to quantum espresso.  Additionally, it supports noncollinear magnetism and can be used to generate
+wavefunctions suitable for qmcpack calculations with spin-orbit coupling.</p>
+</div>
+<div class="section" id="ppconvert">
+<span id="id12"></span><h3>ppconvert<a class="headerlink" href="#ppconvert" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> is a utility to convert PPs between different commonly used formats.
+It is a stand-alone C++ executable that is not built by default but that is accessible via adding
+<code class="docutils literal notranslate"><span class="pre">-DBUILD_PPCONVERT=1</span></code> to CMake and then typing <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ppconvert</span></code>.
+Currently it converts CASINO, FHI, UPF (generated by OPIUM), BFD, and GAMESS formats to several other formats
+including XML (QMCPACK) and UPF (QE). See all the formats via <code class="docutils literal notranslate"><span class="pre">ppconvert</span> <span class="pre">-h</span></code>.
+For output formats requiring Kleinman-Bylander projectors, the atom will be solved with DFT
+if the projectors are not provided in the input formats.</p>
+<p>This requires providing reference states and sometimes needs extra tuning for heavy elements.
+To avoid ghost states, the local channel can be changed via the <code class="docutils literal notranslate"><span class="pre">--local_channel</span></code> option. Ghost state considerations are similar to those of DFT calculations but could be worse if ghost states were not considered during the original PP construction.
+To make the self-consistent calculation converge, the density mixing parameter may need to be reduced
+via the <code class="docutils literal notranslate"><span class="pre">--density_mix</span></code> option.
+Note that the reference state should include only the valence electrons.
+One reference state should be included for each channel in the PP.</p>
+<p>For example, for a sodium atom with a neon core, the reference state would be “1s(1).”
+<code class="docutils literal notranslate"><span class="pre">--s_ref</span></code> needs to include a 1s state, <code class="docutils literal notranslate"><span class="pre">--p_ref</span></code> needs to include a 2p state,
+<code class="docutils literal notranslate"><span class="pre">--d_ref</span></code> needs to include a 3d state, etc. If not specified, a corresponding state with zero occupation is added.
+If the reference state is chosen as the neon core, setting empty reference states “” is technically correct.
+In practice, reasonable reference states should be picked with care.
+For PP with semi-core electrons in the valence, the reference state can be long.
+For example, Ti PP has 12 valence electrons. When using the neutral atom state,
+<code class="docutils literal notranslate"><span class="pre">--s_ref</span></code>, <code class="docutils literal notranslate"><span class="pre">--p_ref</span></code>, and <code class="docutils literal notranslate"><span class="pre">--d_ref</span></code> are all set as “1s(2)2p(6)2s(2)3d(2).”
+When using an ionized state, the three reference states are all set as “1s(2)2p(6)2s(2)” or “1s(2)2p(6)2s(2)3d(0).”</p>
+<p>Unfortunately, if the generated UPF file is used in QE, the calculation may be incorrect because of the presence of “ghost” states. Potentially these can be removed by adjusting the local channel (e.g., by setting <code class="docutils literal notranslate"><span class="pre">--local_channel</span> <span class="pre">1</span></code>, which chooses the p channel as the local channel instead of d.
+For this reason, validation of UPF PPs is always required from the third row and is strongly encouraged in general. For example, check that the expected ionization potential and electron affinities are obtained for the atom and that dimer properties are consistent with those obtained by a quantum chemistry code or a plane-wave code that does not use the Kleinman-Bylander projectors.</p>
+</div>
+</div>
+<div class="section" id="obtaining-pseudopotentials">
+<h2>Obtaining pseudopotentials<a class="headerlink" href="#obtaining-pseudopotentials" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pseudopotentiallibrary-org">
+<h3>Pseudopotentiallibrary.org<a class="headerlink" href="#pseudopotentiallibrary-org" title="Permalink to this headline">¶</a></h3>
+<p>An open website collecting community developed and tested
+pseudopotentials for QMC and other many-body calculations is being
+developed at <a class="reference external" href="https://pseudopotentiallibrary.org">https://pseudopotentiallibrary.org</a>. This site
+includes potentials in QMCPACK format and an increasing range of
+electronic structure and quantum chemistry codes. We recommend using
+potentials from this site if available and suitable for your science
+application.</p>
+</div>
+<div class="section" id="opium">
+<span id="id13"></span><h3>Opium<a class="headerlink" href="#opium" title="Permalink to this headline">¶</a></h3>
+<p>Opium is a pseudopotential generation code available from the website <a class="reference external" href="http://opium.sourceforge.net/">http://opium.sourceforge.net/</a>.  Opium can generate pseudopotentials with either Hartree-Fock or DFT methods.  Once you have a useable pseudopotential param file (for example, Li.param), generate pseudopotentials for use in Quantum ESPRESSO with the upf format as follows:</p>
+<p>This generates a UPF-formatted pseudopotential (<code class="docutils literal notranslate"><span class="pre">Li.upf</span></code>, in this case) for use in Quantum ESPRESSO.  The pseudopotential conversion tool <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> can then convert UPF to FSAtom xml format for use in QMCPACK:</p>
+<div class="literal-block-wrapper docutils container" id="listing-68">
+<div class="code-block-caption"><span class="caption-number">Listing 67 </span><span class="caption-text">Convert UPF-formatted pseudopotential to FSAtom xml format</span><a class="headerlink" href="#listing-68" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">upf_pot</span> <span class="n">Li</span><span class="o">.</span><span class="n">upf</span> <span class="o">--</span><span class="n">xml</span> <span class="n">Li</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="burkatzki-filippi-dolg">
+<span id="bfd"></span><h3>Burkatzki-Filippi-Dolg<a class="headerlink" href="#burkatzki-filippi-dolg" title="Permalink to this headline">¶</a></h3>
+<p>Burkatzki <em>et al.</em> developed a set of energy-consistent pseudopotenitals
+for use in QMC <a class="bibtex reference internal" href="#burkatzki07" id="id14">[BFD07]</a><a class="bibtex reference internal" href="#burkatzki08" id="id15">[BFD08]</a>, available at
+<a class="reference external" href="http://www.burkatzki.com/pseudos/index.2.html">http://www.burkatzki.com/pseudos/index.2.html</a>. To convert for use in
+QMCPACK, select a pseudopotential (choice of basis set is irrelevant to
+conversion) in GAMESS format and copy the ending (pseudopotential) lines
+beginning with(element symbol)-QMC GEN:</p>
+<div class="literal-block-wrapper docutils container" id="listing-69">
+<div class="code-block-caption"><span class="caption-number">Listing 68 </span><span class="caption-text">BFD Li pseudopotential in GAMESS format</span><a class="headerlink" href="#listing-69" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Li</span><span class="o">-</span><span class="n">QMC</span> <span class="n">GEN</span> <span class="mi">2</span> <span class="mi">1</span>
+<span class="mi">3</span>
+<span class="mf">1.00000000</span> <span class="mi">1</span> <span class="mf">5.41040609</span>
+<span class="mf">5.41040609</span> <span class="mi">3</span> <span class="mf">2.70520138</span>
+<span class="o">-</span><span class="mf">4.60151975</span> <span class="mi">2</span> <span class="mf">2.07005488</span>
+<span class="mi">1</span>
+<span class="mf">7.09172172</span> <span class="mi">2</span> <span class="mf">1.34319829</span>
+</pre></div>
+</div>
+</div>
+<p>Save these lines to a file (here, named <code class="docutils literal notranslate"><span class="pre">Li.BFD.gamess</span></code>; the exact name may be anything as long as it is passed to <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> after –gamess_pot).  Then, convert using <code class="docutils literal notranslate"><span class="pre">ppconvert</span></code> with the following:</p>
+<div class="literal-block-wrapper docutils container" id="listing-70">
+<div class="code-block-caption"><span class="caption-number">Listing 69 </span><span class="caption-text">Convert GAMESS-formatted pseudopotential to FSAtom xml format</span><a class="headerlink" href="#listing-70" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">gamess_pot</span> <span class="n">Li</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">gamess</span> <span class="o">--</span><span class="n">s_ref</span> <span class="s2">&quot;2s(1)&quot;</span> <span class="o">--</span><span class="n">p_ref</span> <span class="s2">&quot;2p(0)&quot;</span> <span class="o">--</span><span class="n">xml</span> <span class="n">Li</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="listing-71">
+<div class="code-block-caption"><span class="caption-number">Listing 70 </span><span class="caption-text">Convert GAMESS-formatted pseudopotential to Quantum ESPRESSO UPF format</span><a class="headerlink" href="#listing-71" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">gamess_pot</span> <span class="n">Li</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">gamess</span> <span class="o">--</span><span class="n">s_ref</span> <span class="s2">&quot;2s(1)&quot;</span> <span class="o">--</span><span class="n">p_ref</span> <span class="s2">&quot;2p(0)&quot;</span> <span class="o">--</span><span class="n">log_grid</span> <span class="o">--</span><span class="n">upf</span> <span class="n">Li</span><span class="o">.</span><span class="n">BFD</span><span class="o">.</span><span class="n">upf</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="casino">
+<span id="id16"></span><h3>CASINO<a class="headerlink" href="#casino" title="Permalink to this headline">¶</a></h3>
+<p>The QMC code CASINO also makes available its pseudopotentials available at the website <a class="reference external" href="https://vallico.net/casinoqmc/pplib/">https://vallico.net/casinoqmc/pplib/</a>. To use one in QMCPACK, select a pseudopotential and download its summary file (<code class="docutils literal notranslate"><span class="pre">summary.txt</span></code>), its tabulated form (<code class="docutils literal notranslate"><span class="pre">pp.data</span></code>), and (for ppconvert to construct the projectors to convert to Quantum ESPRESSO’s UPF format) a CASINO atomic wavefunction for each angular momentum channel (<code class="docutils literal notranslate"><span class="pre">awfn.data_*</span></code>).  Then, to convert using ppconvert, issue the following command:</p>
+<div class="literal-block-wrapper docutils container" id="listing-72">
+<div class="code-block-caption"><span class="caption-number">Listing 71 </span><span class="caption-text">Convert CASINO-formatted pseudopotential to Quantum ESPRESSO UPF format</span><a class="headerlink" href="#listing-72" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ppconvert</span> <span class="o">--</span><span class="n">casino_pot</span> <span class="n">pp</span><span class="o">.</span><span class="n">data</span> <span class="o">--</span><span class="n">casino_us</span> <span class="n">awfn</span><span class="o">.</span><span class="n">data_s1_2S</span> <span class="o">--</span><span class="n">casino_up</span> <span class="n">awfn</span><span class="o">.</span><span class="n">data_p1_2P</span> <span class="o">--</span><span class="n">casino_ud</span> <span class="n">awfn</span><span class="o">.</span><span class="n">data_d1_2D</span> <span class="o">--</span><span class="n">upf</span> <span class="n">Li</span><span class="o">.</span><span class="n">TN</span><span class="o">-</span><span class="n">DF</span><span class="o">.</span><span class="n">upf</span>
+</pre></div>
+</div>
+</div>
+<p>QMCPACK can directly read in the CASINO-formated pseudopotential (<code class="docutils literal notranslate"><span class="pre">pp.data</span></code>), but four parameters found in the pseudopotential summary file must be specified in the pseudo element (<code class="docutils literal notranslate"><span class="pre">l-local</span></code>, <code class="docutils literal notranslate"><span class="pre">lmax</span></code>, <code class="docutils literal notranslate"><span class="pre">nrule</span></code>, <code class="docutils literal notranslate"><span class="pre">cutoff</span></code>)[see <a class="reference internal" href="hamiltonianobservable.html#nlpp"><span class="std std-ref">Pseudopotentials</span></a> for details]:</p>
+<div class="literal-block-wrapper docutils container" id="listing-73">
+<div class="code-block-caption"><span class="caption-number">Listing 72 </span><span class="caption-text">XML syntax to use CASINO-formatted pseudopotentials in QMCPACK</span><a class="headerlink" href="#listing-73" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">pairpot</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;pseudo&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PseudoPot&quot;</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;ion0&quot;</span> <span class="n">wavefunction</span><span class="o">=</span><span class="s2">&quot;psi0&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xml&quot;</span><span class="o">&gt;</span>
+   <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;Li&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;Li.pp.data&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;casino&quot;</span> <span class="n">l</span><span class="o">-</span><span class="n">local</span><span class="o">=</span><span class="s2">&quot;s&quot;</span> <span class="n">lmax</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">nrule</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">cutoff</span><span class="o">=</span><span class="s2">&quot;2.19&quot;</span><span class="o">/&gt;</span>
+   <span class="o">&lt;</span><span class="n">pseudo</span> <span class="n">elementType</span><span class="o">=</span><span class="s2">&quot;H&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;H.pp.data&quot;</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;casino&quot;</span> <span class="n">l</span><span class="o">-</span><span class="n">local</span><span class="o">=</span><span class="s2">&quot;s&quot;</span> <span class="n">lmax</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">nrule</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">cutoff</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">pairpot</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="wftester">
+<span id="id17"></span><h3>wftester<a class="headerlink" href="#wftester" title="Permalink to this headline">¶</a></h3>
+<p>While not really a stand-alone application, wftester (short for “Wave
+Function Tester”) is a helpful tool for testing pre-existing and
+experimental estimators and observables. It provides the user with
+derived quantities from the Hamiltonian and wave function, but evaluated
+at a small set of configurations.</p>
+<p>The wftester is implemented as a QMCDriver, so one invokes QMCPACK in
+the normal manner with a correct input XML, the difference being the
+addition of an additional qmc input block. This is the main advantage of
+this tool–it allows testing of realistic systems and realistic
+combinations of observables. It can also be invoked before launching
+into optimization, VMC, or DMC runs, as it is a valid &lt;qmc&gt; block.</p>
+<p>As an example, the following code generates a random walker configuration and compares the trial wave function ratio computed in two different ways:</p>
+<div class="literal-block-wrapper docutils container" id="listing-74">
+<div class="code-block-caption"><span class="caption-number">Listing 73 </span><span class="caption-text">The following executes the wavefunction ratio test in “wftester”</span><a class="headerlink" href="#listing-74" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">qmc</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;wftester&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ratio&quot;</span><span class="o">&gt;</span>    <span class="n">yes</span>    <span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">qmc</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<p>Here’s a summary of some of the tests provided:</p>
+<ul>
+<li><p>Ratio Test. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ratio&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This computes the implemented wave function ratio associated with a
+single-particle move using two different methods.</p>
+</li>
+<li><p>Clone Test. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;clone&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This checks the cloning of TrialWaveFunction, ParticleSet,
+Hamiltonian, and Walkers.</p>
+</li>
+<li><p>Elocal Test. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;printEloc&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>For an input electron configuration (can be random), print the value
+of TrialWaveFunction, LocalEnergy, and all local observables for this
+configuration.</p>
+</li>
+<li><p>Derivative Test. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ratio&quot;</span><span class="o">&gt;</span><span class="n">deriv</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Computes electron gradients, laplacians, and wave function parameter
+derivatives using implemented calls and compares them to
+finite-difference results.</p>
+</li>
+<li><p>Ion Gradient Test. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;source&quot;</span><span class="o">&gt;</span><span class="n">ion0</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Calls the implemented evaluateGradSource functions and compares them
+against finite-difference results.</p>
+</li>
+<li><p>“Basic Test”. Invoked with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">parameter</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;basic&quot;</span><span class="o">&gt;</span><span class="n">yes</span><span class="o">&lt;/</span><span class="n">parameter</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Performs ratio, gradient, and laplacian tests against
+finite-difference and direct computation of wave function values.</p>
+</li>
+</ul>
+<p>The output of the various tests will be to standard out or “wftest.000” after successful execution of qmcpack.</p>
+<p id="bibtex-bibliography-additional_tools-0"><dl class="citation">
+<dt class="bibtex label" id="burkatzki07"><span class="brackets"><a class="fn-backref" href="#id14">BFD07</a></span></dt>
+<dd><p>M. Burkatzki, C. Filippi, and M. Dolg. Energy-consistent pseudopotentials for quantum monte carlo calculations. <em>The Journal of Chemical Physics</em>, 126(23):–, 2007. <a class="reference external" href="https://doi.org/10.1063/1.2741534">doi:10.1063/1.2741534</a>.</p>
+</dd>
+<dt class="bibtex label" id="burkatzki08"><span class="brackets"><a class="fn-backref" href="#id15">BFD08</a></span></dt>
+<dd><p>M. Burkatzki, Claudia Filippi, and M. Dolg. Energy-consistent small-core pseudopotentials for 3d-transition metals adapted to quantum monte carlo calculations. <em>The Journal of Chemical Physics</em>, 129(16):–, 2008. <a class="reference external" href="https://doi.org/10.1063/1.2987872">doi:10.1063/1.2987872</a>.</p>
+</dd>
+<dt class="bibtex label" id="fedorov2004"><span class="brackets"><a class="fn-backref" href="#id6">FOK+04</a></span></dt>
+<dd><p>Dmitri G. Fedorov, Ryan M. Olson, Kazuo Kitaura, Mark S. Gordon, and Shiro Koseki. A new hierarchical parallelization scheme: generalized distributed data interface (gddi), and an application to the fragment molecular orbital method (fmo). <em>Journal of Computational Chemistry</em>, 25(6):872–880, 2004. <a class="reference external" href="https://doi.org/10.1002/jcc.20018">doi:10.1002/jcc.20018</a>.</p>
+</dd>
+<dt class="bibtex label" id="ma2005"><span class="brackets"><a class="fn-backref" href="#id8">MTDN05</a></span></dt>
+<dd><p>A. Ma, M. D. Towler, N. D. Drummond, and R. J. Needs. Scheme for adding electron–nucleus cusps to gaussian orbitals. <em>The Journal of Chemical Physics</em>, 122(22):224322, 2005. <a class="reference external" href="https://arxiv.org/abs/https://doi.org/10.1063/1.1940588">arXiv:https://doi.org/10.1063/1.1940588</a>, <a class="reference external" href="https://doi.org/10.1063/1.1940588">doi:10.1063/1.1940588</a>.</p>
+</dd>
+<dt class="bibtex label" id="qp"><span class="brackets">Sce17</span><span class="fn-backref">(<a href="#id5">1</a>,<a href="#id10">2</a>)</span></dt>
+<dd><p>A. Scemamma. Quantum package. <span><a class="reference external" href="#"></a></span>https://github.com/LCPQ/quantum_package, 2013–2017.</p>
+</dd>
+<dt class="bibtex label" id="schmidt93"><span class="brackets">SBB+93</span><span class="fn-backref">(<a href="#id3">1</a>,<a href="#id7">2</a>,<a href="#id11">3</a>)</span></dt>
+<dd><p>Michael W. Schmidt, Kim K. Baldridge, Jerry A. Boatz, Steven T. Elbert, Mark S. Gordon, Jan H. Jensen, Shiro Koseki, Nikita Matsunaga, Kiet A. Nguyen, Shujun Su, Theresa L. Windus, Michel Dupuis, and John A. Montgomery. General atomic and molecular electronic structure system. <em>Journal of Computational Chemistry</em>, 14(11):1347–1363, 1993. <a class="reference external" href="https://doi.org/10.1002/jcc.540141112">doi:10.1002/jcc.540141112</a>.</p>
+</dd>
+<dt class="bibtex label" id="sun2018"><span class="brackets">SBB+18</span><span class="fn-backref">(<a href="#id4">1</a>,<a href="#id9">2</a>)</span></dt>
+<dd><p>Qiming Sun, Timothy C. Berkelbach, Nick S. Blunt, George H. Booth, Sheng Guo, Zhendong Li, Junzi Liu, James D. McClain, Elvira R. Sayfutyarova, Sandeep Sharma, Sebastian Wouters, and Garnet Kin-Lic Chan. Pyscf: the python-based simulations of chemistry framework. <em>Wiley Interdisciplinary Reviews: Computational Molecular Science</em>, 8(1):n/a–n/a, 2018. <a class="reference external" href="https://doi.org/10.1002/wcms.1340">doi:10.1002/wcms.1340</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 </div>
@@ -771,6 +1314,8 @@ on the standard and production sample inputs.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="external_tools.html" class="btn btn-neutral float-right" title="External Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="lab_excited.html" class="btn btn-neutral float-left" title="Lab 5: Excited state calculations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

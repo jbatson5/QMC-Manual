@@ -1,0 +1,514 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Quickstart and a first QMCPACK calculation}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Authors and History}{4}{section.1.2}
+\contentsline {section}{\numberline {1.3}Support and Contacting the Developers}{5}{section.1.3}
+\contentsline {section}{\numberline {1.4}Performance}{5}{section.1.4}
+\contentsline {section}{\numberline {1.5}Open Source License}{6}{section.1.5}
+\contentsline {section}{\numberline {1.6}Contributing to QMCPACK}{7}{section.1.6}
+\contentsline {section}{\numberline {1.7}QMCPACK Roadmap}{7}{section.1.7}
+\contentsline {subsection}{\numberline {1.7.1}Code}{7}{subsection.1.7.1}
+\contentsline {subsection}{\numberline {1.7.2}Documentation}{8}{subsection.1.7.2}
+\contentsline {chapter}{\numberline {2}Features of QMCPACK}{9}{chapter.2}
+\contentsline {section}{\numberline {2.1}Production\sphinxhyphen {}level features}{9}{section.2.1}
+\contentsline {section}{\numberline {2.2}SoA optimizations and improved algorithms}{10}{section.2.2}
+\contentsline {section}{\numberline {2.3}Supported GPU features}{10}{section.2.3}
+\contentsline {section}{\numberline {2.4}Beta test features}{11}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Auxiliary\sphinxhyphen {}Field Quantum Monte Carlo}{11}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Sharing of spline data across multiple GPUs}{11}{subsection.2.4.2}
+\contentsline {chapter}{\numberline {3}Obtaining, installing, and validating QMCPACK}{13}{chapter.3}
+\contentsline {section}{\numberline {3.1}Installation steps}{13}{section.3.1}
+\contentsline {section}{\numberline {3.2}Obtaining the latest release version}{14}{section.3.2}
+\contentsline {section}{\numberline {3.3}Obtaining the latest development version}{14}{section.3.3}
+\contentsline {section}{\numberline {3.4}Prerequisites}{14}{section.3.4}
+\contentsline {section}{\numberline {3.5}C++ 14 standard library}{15}{section.3.5}
+\contentsline {subsection}{\numberline {3.5.1}Intel compiler}{15}{subsection.3.5.1}
+\contentsline {section}{\numberline {3.6}Building with CMake}{15}{section.3.6}
+\contentsline {subsection}{\numberline {3.6.1}Quick build instructions (try first)}{16}{subsection.3.6.1}
+\contentsline {subsection}{\numberline {3.6.2}Environment variables}{16}{subsection.3.6.2}
+\contentsline {subsection}{\numberline {3.6.3}Configuration Options}{17}{subsection.3.6.3}
+\contentsline {subsection}{\numberline {3.6.4}Installation from CMake}{19}{subsection.3.6.4}
+\contentsline {subsection}{\numberline {3.6.5}Role of QMC\_DATA}{19}{subsection.3.6.5}
+\contentsline {subsection}{\numberline {3.6.6}Configure and build using CMake and make}{20}{subsection.3.6.6}
+\contentsline {subsection}{\numberline {3.6.7}Example configure and build}{20}{subsection.3.6.7}
+\contentsline {subsection}{\numberline {3.6.8}Build scripts}{20}{subsection.3.6.8}
+\contentsline {subsection}{\numberline {3.6.9}Using vendor\sphinxhyphen {}optimized numerical libraries (e.g., Intel MKL)}{21}{subsection.3.6.9}
+\contentsline {subsubsection}{Using Intel MKL with non\sphinxhyphen {}Intel compilers}{21}{subsubsection*.3}
+\contentsline {subsubsection}{Serial or multithreaded library}{21}{subsubsection*.4}
+\contentsline {subsection}{\numberline {3.6.10}Cross compiling}{22}{subsection.3.6.10}
+\contentsline {section}{\numberline {3.7}Installation instructions for common workstations and supercomputers}{22}{section.3.7}
+\contentsline {subsection}{\numberline {3.7.1}Installing on Ubuntu Linux or other apt\sphinxhyphen {}get\textendash {}based distributions}{22}{subsection.3.7.1}
+\contentsline {subsection}{\numberline {3.7.2}Installing on CentOS Linux or other yum\sphinxhyphen {}based distributions}{23}{subsection.3.7.2}
+\contentsline {subsection}{\numberline {3.7.3}Installing on Mac OS X using Macports}{23}{subsection.3.7.3}
+\contentsline {subsection}{\numberline {3.7.4}Installing on Mac OS X using Homebrew (brew)}{24}{subsection.3.7.4}
+\contentsline {subsection}{\numberline {3.7.5}Installing on ALCF Theta, Cray XC40}{25}{subsection.3.7.5}
+\contentsline {subsection}{\numberline {3.7.6}Installing on ORNL OLCF Summit}{25}{subsection.3.7.6}
+\contentsline {subsubsection}{Building QMCPACK}{25}{subsubsection*.5}
+\contentsline {subsubsection}{Building Quantum Espresso}{25}{subsubsection*.6}
+\contentsline {subsection}{\numberline {3.7.7}Installing on NERSC Cori, Haswell Partition, Cray XC40}{25}{subsection.3.7.7}
+\contentsline {subsection}{\numberline {3.7.8}Installing on NERSC Cori, Xeon Phi KNL partition, Cray XC40}{27}{subsection.3.7.8}
+\contentsline {subsection}{\numberline {3.7.9}Installing on systems with ARMv8\sphinxhyphen {}based processors}{27}{subsection.3.7.9}
+\contentsline {subsection}{\numberline {3.7.10}Installing on Windows}{28}{subsection.3.7.10}
+\contentsline {section}{\numberline {3.8}Installing via Spack}{28}{section.3.8}
+\contentsline {subsection}{\numberline {3.8.1}Known limitations}{28}{subsection.3.8.1}
+\contentsline {subsection}{\numberline {3.8.2}Setting up the Spack environment}{29}{subsection.3.8.2}
+\contentsline {subsection}{\numberline {3.8.3}Building QMCPACK}{31}{subsection.3.8.3}
+\contentsline {subsection}{\numberline {3.8.4}Loading QMCPACK into your environment}{33}{subsection.3.8.4}
+\contentsline {subsection}{\numberline {3.8.5}Dependencies that need to be compiled with GCC}{33}{subsection.3.8.5}
+\contentsline {subsection}{\numberline {3.8.6}Installing QMCPACK with Spack on Linux}{33}{subsection.3.8.6}
+\contentsline {subsection}{\numberline {3.8.7}Installing QMCPACK with Spack on Mac OS X}{33}{subsection.3.8.7}
+\contentsline {subsection}{\numberline {3.8.8}Installing QMCPACK with Spack on Cray Supercomputers}{33}{subsection.3.8.8}
+\contentsline {subsection}{\numberline {3.8.9}Installing Quantum\sphinxhyphen {}Espresso with Spack}{34}{subsection.3.8.9}
+\contentsline {subsection}{\numberline {3.8.10}Reporting Bugs}{34}{subsection.3.8.10}
+\contentsline {section}{\numberline {3.9}Testing and validation of QMCPACK}{34}{section.3.9}
+\contentsline {subsection}{\numberline {3.9.1}Deterministic and unit tests}{36}{subsection.3.9.1}
+\contentsline {subsection}{\numberline {3.9.2}Integration tests with Quantum Espresso}{37}{subsection.3.9.2}
+\contentsline {subsection}{\numberline {3.9.3}Performance tests}{37}{subsection.3.9.3}
+\contentsline {subsubsection}{NiO performance tests}{37}{subsubsection*.7}
+\contentsline {subsection}{\numberline {3.9.4}Troubleshooting tests}{38}{subsection.3.9.4}
+\contentsline {subsection}{\numberline {3.9.5}Slow testing with OpenMPI}{38}{subsection.3.9.5}
+\contentsline {section}{\numberline {3.10}Automated testing of QMCPACK}{38}{section.3.10}
+\contentsline {section}{\numberline {3.11}Building ppconvert, a pseudopotential format converter}{38}{section.3.11}
+\contentsline {section}{\numberline {3.12}Installing and patching Quantum ESPRESSO}{40}{section.3.12}
+\contentsline {section}{\numberline {3.13}How to build the fastest executable version of QMCPACK}{40}{section.3.13}
+\contentsline {section}{\numberline {3.14}Troubleshooting the installation}{41}{section.3.14}
+\contentsline {chapter}{\numberline {4}Running QMCPACK}{43}{chapter.4}
+\contentsline {section}{\numberline {4.1}Command line options}{43}{section.4.1}
+\contentsline {section}{\numberline {4.2}Input files}{43}{section.4.2}
+\contentsline {section}{\numberline {4.3}Output files}{44}{section.4.3}
+\contentsline {section}{\numberline {4.4}Running in parallel with MPI}{44}{section.4.4}
+\contentsline {section}{\numberline {4.5}Using OpenMP threads}{44}{section.4.5}
+\contentsline {subsection}{\numberline {4.5.1}Nested OpenMP threads}{44}{subsection.4.5.1}
+\contentsline {subsection}{\numberline {4.5.2}Performance considerations}{45}{subsection.4.5.2}
+\contentsline {subsection}{\numberline {4.5.3}Memory considerations}{46}{subsection.4.5.3}
+\contentsline {section}{\numberline {4.6}Running on GPU machines}{46}{section.4.6}
+\contentsline {subsection}{\numberline {4.6.1}Performance considerations}{46}{subsection.4.6.1}
+\contentsline {subsection}{\numberline {4.6.2}Memory considerations}{47}{subsection.4.6.2}
+\contentsline {chapter}{\numberline {5}Units used in QMCPACK}{49}{chapter.5}
+\contentsline {chapter}{\numberline {6}Input file overview}{51}{chapter.6}
+\contentsline {section}{\numberline {6.1}Project}{53}{section.6.1}
+\contentsline {section}{\numberline {6.2}Random number initialization}{53}{section.6.2}
+\contentsline {chapter}{\numberline {7}Specifying the system to be simulated}{55}{chapter.7}
+\contentsline {section}{\numberline {7.1}Specifying the Simulation Cell}{55}{section.7.1}
+\contentsline {subsection}{\numberline {7.1.1}Lattice}{56}{subsection.7.1.1}
+\contentsline {subsection}{\numberline {7.1.2}Boundary conditions}{56}{subsection.7.1.2}
+\contentsline {subsection}{\numberline {7.1.3}Vacuum}{56}{subsection.7.1.3}
+\contentsline {subsection}{\numberline {7.1.4}LR\_dim\_cutoff}{57}{subsection.7.1.4}
+\contentsline {section}{\numberline {7.2}Specifying the particle set}{57}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}Input specification}{57}{subsection.7.2.1}
+\contentsline {subsection}{\numberline {7.2.2}Detailed attribute description}{57}{subsection.7.2.2}
+\contentsline {subsubsection}{Required particleset attributes}{57}{subsubsection*.8}
+\contentsline {subsubsection}{Optional particleset attributes}{58}{subsubsection*.9}
+\contentsline {subsubsection}{Required name attributes}{59}{subsubsection*.10}
+\contentsline {subsubsection}{Optional group attributes}{59}{subsubsection*.11}
+\contentsline {subsection}{\numberline {7.2.3}Example use cases}{59}{subsection.7.2.3}
+\contentsline {chapter}{\numberline {8}Trial wavefunction specificaion}{61}{chapter.8}
+\contentsline {section}{\numberline {8.1}Introduction}{61}{section.8.1}
+\contentsline {section}{\numberline {8.2}Single determinant wavefunctons}{61}{section.8.2}
+\contentsline {section}{\numberline {8.3}Single\sphinxhyphen {}particle orbitals}{62}{section.8.3}
+\contentsline {subsection}{\numberline {8.3.1}Spline basis sets}{62}{subsection.8.3.1}
+\contentsline {subsection}{\numberline {8.3.2}Gaussian basis tests}{64}{subsection.8.3.2}
+\contentsline {subsubsection}{Detailed description of attributes:}{67}{subsubsection*.19}
+\contentsline {subsection}{\numberline {8.3.3}Hybrid orbital representation}{68}{subsection.8.3.3}
+\contentsline {subsection}{\numberline {8.3.4}Plane\sphinxhyphen {}wave basis sets}{71}{subsection.8.3.4}
+\contentsline {subsection}{\numberline {8.3.5}Homogeneous electron gas}{71}{subsection.8.3.5}
+\contentsline {section}{\numberline {8.4}Jastrow Factors}{72}{section.8.4}
+\contentsline {subsection}{\numberline {8.4.1}One\sphinxhyphen {}body Jastrow functions}{72}{subsection.8.4.1}
+\contentsline {subsubsection}{Input Specification}{72}{subsubsection*.20}
+\contentsline {paragraph}{Spline form}{73}{paragraph*.21}
+\contentsline {paragraph}{Example use cases}{74}{paragraph*.22}
+\contentsline {paragraph}{Pade form}{74}{paragraph*.23}
+\contentsline {paragraph}{Example use case}{75}{paragraph*.24}
+\contentsline {paragraph}{Short Range Cusp Form}{75}{paragraph*.25}
+\contentsline {subsection}{\numberline {8.4.2}Two\sphinxhyphen {}body Jastrow functions}{76}{subsection.8.4.2}
+\contentsline {subsubsection}{Input Specification}{77}{subsubsection*.26}
+\contentsline {paragraph}{Spline form}{77}{paragraph*.27}
+\contentsline {paragraph}{Example use cases}{78}{paragraph*.28}
+\contentsline {subsection}{\numberline {8.4.3}User defined functional form}{78}{subsection.8.4.3}
+\contentsline {subsection}{\numberline {8.4.4}Long\sphinxhyphen {}ranged Jastrow factors}{79}{subsection.8.4.4}
+\contentsline {subsubsection}{Long\sphinxhyphen {}ranged Jastrow: k\sphinxhyphen {}space Jastrow}{79}{subsubsection*.29}
+\contentsline {paragraph}{Long\sphinxhyphen {}ranged Jastrows: Gaskell RPA and Yukawa forms}{81}{paragraph*.30}
+\contentsline {subsection}{\numberline {8.4.5}Three\sphinxhyphen {}body Jastrow functions}{83}{subsection.8.4.5}
+\contentsline {subsubsection}{Example use case}{83}{subsubsection*.31}
+\contentsline {section}{\numberline {8.5}Multideterminant wavefunctions}{84}{section.8.5}
+\contentsline {section}{\numberline {8.6}Backflow Wavefunctions}{84}{section.8.6}
+\contentsline {subsection}{\numberline {8.6.1}Input specifications}{85}{subsection.8.6.1}
+\contentsline {subsection}{\numberline {8.6.2}Example Use Case}{85}{subsection.8.6.2}
+\contentsline {subsection}{\numberline {8.6.3}Optimization Tips}{86}{subsection.8.6.3}
+\contentsline {subsubsection}{Get a good starting guess for \(\Psi _T\):}{86}{subsubsection*.32}
+\contentsline {subsubsection}{Optimizing Backflow Terms}{87}{subsubsection*.33}
+\contentsline {subsubsection}{Tweaking the Optimization Run}{87}{subsubsection*.34}
+\contentsline {section}{\numberline {8.7}Finite\sphinxhyphen {}difference linear response wave functions}{87}{section.8.7}
+\contentsline {subsection}{\numberline {8.7.1}Input specifications}{88}{subsection.8.7.1}
+\contentsline {subsection}{\numberline {8.7.2}Example Use Case}{88}{subsection.8.7.2}
+\contentsline {section}{\numberline {8.8}Gaussian Product Wavefunction}{89}{section.8.8}
+\contentsline {subsection}{\numberline {8.8.1}Example Use Case}{90}{subsection.8.8.1}
+\contentsline {chapter}{\numberline {9}Hamiltonian and Observables}{91}{chapter.9}
+\contentsline {section}{\numberline {9.1}The Hamiltonian}{91}{section.9.1}
+\contentsline {section}{\numberline {9.2}Pair potentials}{92}{section.9.2}
+\contentsline {subsection}{\numberline {9.2.1}Coulomb potentials}{93}{subsection.9.2.1}
+\contentsline {subsection}{\numberline {9.2.2}Pseudopotentials}{95}{subsection.9.2.2}
+\contentsline {subsection}{\numberline {9.2.3}MPC Interaction/correction}{97}{subsection.9.2.3}
+\contentsline {section}{\numberline {9.3}General estimators}{98}{section.9.3}
+\contentsline {subsection}{\numberline {9.3.1}Chiesa\sphinxhyphen {}Ceperley\sphinxhyphen {}Martin\sphinxhyphen {}Holzmann kinetic energy correction}{99}{subsection.9.3.1}
+\contentsline {subsection}{\numberline {9.3.2}Density estimator}{99}{subsection.9.3.2}
+\contentsline {subsection}{\numberline {9.3.3}Spin density estimator}{100}{subsection.9.3.3}
+\contentsline {subsection}{\numberline {9.3.4}Pair correlation function, \(g(r)\)}{102}{subsection.9.3.4}
+\contentsline {subsection}{\numberline {9.3.5}Static structure factor, \(S(k)\)}{103}{subsection.9.3.5}
+\contentsline {subsection}{\numberline {9.3.6}Static structure factor, \sphinxstyleliteralintitle {\sphinxupquote {SkAll}}}{104}{subsection.9.3.6}
+\contentsline {subsection}{\numberline {9.3.7}Species kinetic energy}{105}{subsection.9.3.7}
+\contentsline {subsection}{\numberline {9.3.8}Lattice deviation estimator}{105}{subsection.9.3.8}
+\contentsline {subsection}{\numberline {9.3.9}Energy density estimator}{106}{subsection.9.3.9}
+\contentsline {subsection}{\numberline {9.3.10}One body density matrix}{111}{subsection.9.3.10}
+\contentsline {section}{\numberline {9.4}Forward\sphinxhyphen {}Walking Estimators}{114}{section.9.4}
+\contentsline {section}{\numberline {9.5}\IeC {\textquotedblleft }Force\IeC {\textquotedblright } estimators}{115}{section.9.5}
+\contentsline {chapter}{\numberline {10}Quantum Monte Carlo Methods}{117}{chapter.10}
+\contentsline {section}{\numberline {10.1}Variational Monte Carlo}{118}{section.10.1}
+\contentsline {section}{\numberline {10.2}Wavefunction optimization}{120}{section.10.2}
+\contentsline {subsection}{\numberline {10.2.1}VMC run for the optimization}{121}{subsection.10.2.1}
+\contentsline {subsection}{\numberline {10.2.2}Correlated sampling and cost function}{121}{subsection.10.2.2}
+\contentsline {subsection}{\numberline {10.2.3}Optimizers}{122}{subsection.10.2.3}
+\contentsline {subsection}{\numberline {10.2.4}OneShiftOnly Optimizer}{122}{subsection.10.2.4}
+\contentsline {subsection}{\numberline {10.2.5}Adaptive Organizer}{124}{subsection.10.2.5}
+\contentsline {subsection}{\numberline {10.2.6}Descent Optimizer}{126}{subsection.10.2.6}
+\contentsline {subsection}{\numberline {10.2.7}Hybrid Optimizer}{128}{subsection.10.2.7}
+\contentsline {subsection}{\numberline {10.2.8}Quartic Optimizer}{130}{subsection.10.2.8}
+\contentsline {subsection}{\numberline {10.2.9}General Recommendations}{130}{subsection.10.2.9}
+\contentsline {subsubsection}{Optimization of CI coefficients}{131}{subsubsection*.36}
+\contentsline {section}{\numberline {10.3}Diffusion Monte Carlo}{131}{section.10.3}
+\contentsline {section}{\numberline {10.4}Reptation Monte Carlo}{135}{section.10.4}
+\contentsline {chapter}{\numberline {11}Output Overview}{137}{chapter.11}
+\contentsline {section}{\numberline {11.1}The .scalar.dat file}{137}{section.11.1}
+\contentsline {section}{\numberline {11.2}The .opt.xml file}{138}{section.11.2}
+\contentsline {section}{\numberline {11.3}The .qmc.xml file}{138}{section.11.3}
+\contentsline {section}{\numberline {11.4}The .dmc.dat file}{138}{section.11.4}
+\contentsline {section}{\numberline {11.5}The .bandinfo.dat file}{138}{section.11.5}
+\contentsline {section}{\numberline {11.6}Checkpoint and restart files}{138}{section.11.6}
+\contentsline {subsection}{\numberline {11.6.1}The .cont.xml file}{138}{subsection.11.6.1}
+\contentsline {subsection}{\numberline {11.6.2}The .config.h5 file}{139}{subsection.11.6.2}
+\contentsline {subsection}{\numberline {11.6.3}The .random.h5 file}{139}{subsection.11.6.3}
+\contentsline {chapter}{\numberline {12}Analyzing QMCPACK data}{141}{chapter.12}
+\contentsline {section}{\numberline {12.1}Using the qmca tool to obtain total energies and related quantities}{141}{section.12.1}
+\contentsline {subsection}{\numberline {12.1.1}Obtaining a statistically correct mean and error bar}{142}{subsection.12.1.1}
+\contentsline {subsection}{\numberline {12.1.2}Judging wavefunction optimization}{144}{subsection.12.1.2}
+\contentsline {subsection}{\numberline {12.1.3}Judging diffusion Monte Carlo runs}{146}{subsection.12.1.3}
+\contentsline {subsection}{\numberline {12.1.4}Obtaining other quantities}{149}{subsection.12.1.4}
+\contentsline {subsection}{\numberline {12.1.5}Processing multiple files}{151}{subsection.12.1.5}
+\contentsline {subsection}{\numberline {12.1.6}Twist averaging}{152}{subsection.12.1.6}
+\contentsline {subsection}{\numberline {12.1.7}Setting output units}{154}{subsection.12.1.7}
+\contentsline {subsection}{\numberline {12.1.8}Speeding up trace plotting}{154}{subsection.12.1.8}
+\contentsline {subsection}{\numberline {12.1.9}Short usage examples}{155}{subsection.12.1.9}
+\contentsline {subsection}{\numberline {12.1.10}Production quality checklist}{156}{subsection.12.1.10}
+\contentsline {section}{\numberline {12.2}Using the qmc\sphinxhyphen {}fit tool for statistical time step extrapolation and curve fitting}{157}{section.12.2}
+\contentsline {subsection}{\numberline {12.2.1}The jackknife statistical technique}{157}{subsection.12.2.1}
+\contentsline {subsection}{\numberline {12.2.2}Performing time step extrapolation}{158}{subsection.12.2.2}
+\contentsline {section}{\numberline {12.3}Using the qdens tool to obtain electron densities}{160}{section.12.3}
+\contentsline {subsection}{\numberline {12.3.1}Usage examples}{160}{subsection.12.3.1}
+\contentsline {subsection}{\numberline {12.3.2}Files produced}{161}{subsection.12.3.2}
+\contentsline {chapter}{\numberline {13}Periodic LCAO for Solids}{163}{chapter.13}
+\contentsline {section}{\numberline {13.1}Introduction}{163}{section.13.1}
+\contentsline {section}{\numberline {13.2}Generating and using periodic Gaussian\sphinxhyphen {}type wavefunctions using PySCF}{164}{section.13.2}
+\contentsline {chapter}{\numberline {14}Selected Configuration Interaction}{169}{chapter.14}
+\contentsline {section}{\numberline {14.1}Theoretical background}{169}{section.14.1}
+\contentsline {subsection}{\numberline {14.1.1}CIPSI wavefunction interface}{170}{subsection.14.1.1}
+\contentsline {chapter}{\numberline {15}Auxiliary\sphinxhyphen {}Field Quantum Monte Carlo}{177}{chapter.15}
+\contentsline {section}{\numberline {15.1}Theoretical Background}{177}{section.15.1}
+\contentsline {section}{\numberline {15.2}Input}{177}{section.15.2}
+\contentsline {section}{\numberline {15.3}File formats}{181}{section.15.3}
+\contentsline {section}{\numberline {15.4}Advice/Useful Information}{185}{section.15.4}
+\contentsline {section}{\numberline {15.5}Using PySCF to generate integrals for AFQMC}{186}{section.15.5}
+\contentsline {chapter}{\numberline {16}Examples}{189}{chapter.16}
+\contentsline {section}{\numberline {16.1}Using QMCPACK directly}{189}{section.16.1}
+\contentsline {section}{\numberline {16.2}Using Nexus}{189}{section.16.2}
+\contentsline {chapter}{\numberline {17}Lab 1: MC Statistical Analysis}{191}{chapter.17}
+\contentsline {section}{\numberline {17.1}Topics covered in this lab}{191}{section.17.1}
+\contentsline {section}{\numberline {17.2}Lab directories and files}{191}{section.17.2}
+\contentsline {section}{\numberline {17.3}Atomic units}{193}{section.17.3}
+\contentsline {section}{\numberline {17.4}Reviewing statistics}{193}{section.17.4}
+\contentsline {section}{\numberline {17.5}Inspecting MC Data}{195}{section.17.5}
+\contentsline {section}{\numberline {17.6}Averaging quantities in the MC data}{196}{section.17.6}
+\contentsline {section}{\numberline {17.7}Evaluating MC simulation quality}{197}{section.17.7}
+\contentsline {subsection}{\numberline {17.7.1}Tracing MC quantities}{197}{subsection.17.7.1}
+\contentsline {subsection}{\numberline {17.7.2}Blocking away autocorrelation}{198}{subsection.17.7.2}
+\contentsline {subsection}{\numberline {17.7.3}Balancing autocorrelation and acceptance ratio}{200}{subsection.17.7.3}
+\contentsline {subsection}{\numberline {17.7.4}Considering variance}{201}{subsection.17.7.4}
+\contentsline {section}{\numberline {17.8}Reducing statistical error bars}{201}{section.17.8}
+\contentsline {subsection}{\numberline {17.8.1}Increasing MC sampling}{201}{subsection.17.8.1}
+\contentsline {subsection}{\numberline {17.8.2}Improving the basis sets}{203}{subsection.17.8.2}
+\contentsline {subsection}{\numberline {17.8.3}Adding a Jastrow factor}{204}{subsection.17.8.3}
+\contentsline {section}{\numberline {17.9}Scaling to larger numbers of electrons}{204}{section.17.9}
+\contentsline {subsection}{\numberline {17.9.1}Calculating the efficiency}{204}{subsection.17.9.1}
+\contentsline {subsection}{\numberline {17.9.2}Scaling up}{204}{subsection.17.9.2}
+\contentsline {chapter}{\numberline {18}Lab 2: QMC Basics}{207}{chapter.18}
+\contentsline {section}{\numberline {18.1}Topics covered in this lab}{207}{section.18.1}
+\contentsline {section}{\numberline {18.2}Lab outline}{207}{section.18.2}
+\contentsline {section}{\numberline {18.3}Lab directories and files}{208}{section.18.3}
+\contentsline {section}{\numberline {18.4}Obtaining and converting a pseudopotential for oxygen}{208}{section.18.4}
+\contentsline {section}{\numberline {18.5}DFT with QE to obtain the orbital part of the wavefunction}{209}{section.18.5}
+\contentsline {section}{\numberline {18.6}Optimization with QMCPACK to obtain the correlated part of the wavefunction}{211}{section.18.6}
+\contentsline {section}{\numberline {18.7}DMC timestep extrapolation I: neutral oxygen atom}{215}{section.18.7}
+\contentsline {section}{\numberline {18.8}DMC time step extrapolation II: oxygen atom ionization potential}{217}{section.18.8}
+\contentsline {section}{\numberline {18.9}DMC workflow automation with Nexus}{219}{section.18.9}
+\contentsline {section}{\numberline {18.10}Automated binding curve of the oxygen dimer}{221}{section.18.10}
+\contentsline {section}{\numberline {18.11}(Optional) Running your system with QMCPACK}{227}{section.18.11}
+\contentsline {section}{\numberline {18.12}Appendix A: Basic Python constructs}{229}{section.18.12}
+\contentsline {subsection}{\numberline {18.12.1}Intrinsic types: \sphinxstyleliteralintitle {\sphinxupquote {int, float, str}}}{229}{subsection.18.12.1}
+\contentsline {subsection}{\numberline {18.12.2}Container types: \sphinxstyleliteralintitle {\sphinxupquote {tuple, list, array, dict, obj}}}{229}{subsection.18.12.2}
+\contentsline {subsection}{\numberline {18.12.3}Conditional Statements: \sphinxstyleliteralintitle {\sphinxupquote {if/elif/else}}}{231}{subsection.18.12.3}
+\contentsline {subsection}{\numberline {18.12.4}Iteration: \sphinxstyleliteralintitle {\sphinxupquote {for}}}{231}{subsection.18.12.4}
+\contentsline {subsection}{\numberline {18.12.5}Functions: \sphinxstyleliteralintitle {\sphinxupquote {def}}, argument syntax}{232}{subsection.18.12.5}
+\contentsline {chapter}{\numberline {19}Lab 3: Advanced molecular calculations}{233}{chapter.19}
+\contentsline {section}{\numberline {19.1}Topics covered in this lab}{233}{section.19.1}
+\contentsline {section}{\numberline {19.2}Lab directories and files}{233}{section.19.2}
+\contentsline {section}{\numberline {19.3}Exercise \#1: Basics}{234}{section.19.3}
+\contentsline {section}{\numberline {19.4}Generation of a Hartree\sphinxhyphen {}Fock wavefunction with GAMESS}{234}{section.19.4}
+\contentsline {subsection}{\numberline {19.4.1}Optimize the wavefunction}{235}{subsection.19.4.1}
+\contentsline {subsection}{\numberline {19.4.2}Time\sphinxhyphen {}step study}{236}{subsection.19.4.2}
+\contentsline {subsection}{\numberline {19.4.3}Walker population study}{237}{subsection.19.4.3}
+\contentsline {section}{\numberline {19.5}Exercise \#2: Slater\sphinxhyphen {}Jastrow wavefunction options}{238}{section.19.5}
+\contentsline {subsection}{\numberline {19.5.1}Influence of Jastrow on VMC energy with HF wavefunction}{239}{subsection.19.5.1}
+\contentsline {subsection}{\numberline {19.5.2}Generation of wavefunctions from DFT using GAMESS}{239}{subsection.19.5.2}
+\contentsline {subsection}{\numberline {19.5.3}Optimization and DMC calculations with DFT wavefunctions}{240}{subsection.19.5.3}
+\contentsline {section}{\numberline {19.6}Exercise \#3: Multideterminant wavefunctions}{240}{section.19.6}
+\contentsline {subsection}{\numberline {19.6.1}Generation of a CISD wavefunctions using GAMESS}{241}{subsection.19.6.1}
+\contentsline {subsection}{\numberline {19.6.2}Optimization of a multideterminant wavefunction}{241}{subsection.19.6.2}
+\contentsline {subsection}{\numberline {19.6.3}CISD, CASCI, and SOCI}{242}{subsection.19.6.3}
+\contentsline {section}{\numberline {19.7}Appendix A: GAMESS input}{243}{section.19.7}
+\contentsline {subsection}{\numberline {19.7.1}HF input}{243}{subsection.19.7.1}
+\contentsline {subsection}{\numberline {19.7.2}DFT calculations}{243}{subsection.19.7.2}
+\contentsline {subsection}{\numberline {19.7.3}MCSCF}{244}{subsection.19.7.3}
+\contentsline {subsection}{\numberline {19.7.4}CI}{244}{subsection.19.7.4}
+\contentsline {subsection}{\numberline {19.7.5}GUGA: Unitary group CI package}{244}{subsection.19.7.5}
+\contentsline {subsubsection}{GUGA\sphinxhyphen {}MCSCF}{244}{subsubsection*.42}
+\contentsline {subsubsection}{GUGA\sphinxhyphen {}CASCI}{244}{subsubsection*.43}
+\contentsline {subsubsection}{GUGA\sphinxhyphen {}truncated CI}{245}{subsubsection*.44}
+\contentsline {subsubsection}{GUGA\sphinxhyphen {}SOCI}{245}{subsubsection*.45}
+\contentsline {subsection}{\numberline {19.7.6}ECP}{245}{subsection.19.7.6}
+\contentsline {section}{\numberline {19.8}Appendix B: convert4qmc}{246}{section.19.8}
+\contentsline {subsection}{\numberline {19.8.1}Useful notes}{247}{subsection.19.8.1}
+\contentsline {section}{\numberline {19.9}Appendix C: Wavefunction optimization XML block}{247}{section.19.9}
+\contentsline {section}{\numberline {19.10}Appendix D: VMC and DMC XML block}{248}{section.19.10}
+\contentsline {section}{\numberline {19.11}Appendix E: Wavefunction XML block}{249}{section.19.11}
+\contentsline {chapter}{\numberline {20}Lab 4: Condensed Matter Calculations}{255}{chapter.20}
+\contentsline {section}{\numberline {20.1}Topics covered in this lab}{255}{section.20.1}
+\contentsline {section}{\numberline {20.2}Lab directories and files}{255}{section.20.2}
+\contentsline {section}{\numberline {20.3}Preliminaries}{256}{section.20.3}
+\contentsline {section}{\numberline {20.4}Total energy of BCC beryllium}{256}{section.20.4}
+\contentsline {section}{\numberline {20.5}Handling a 2D system: graphene}{259}{section.20.5}
+\contentsline {section}{\numberline {20.6}Conclusion}{260}{section.20.6}
+\contentsline {chapter}{\numberline {21}Lab 5: Excited state calculations}{261}{chapter.21}
+\contentsline {section}{\numberline {21.1}Topics covered in this lab}{261}{section.21.1}
+\contentsline {section}{\numberline {21.2}Lab directories and files}{261}{section.21.2}
+\contentsline {section}{\numberline {21.3}Basics and excited state experiments}{261}{section.21.3}
+\contentsline {section}{\numberline {21.4}Preparation for the excited state calculations}{263}{section.21.4}
+\contentsline {subsection}{\numberline {21.4.1}Identifying high\sphinxhyphen {}symmetry k\sphinxhyphen {}points}{263}{subsection.21.4.1}
+\contentsline {subsection}{\numberline {21.4.2}DFT band structure calculation along high\sphinxhyphen {}symmetry paths}{264}{subsection.21.4.2}
+\contentsline {subsection}{\numberline {21.4.3}DFT band structure calculation along high\sphinxhyphen {}symmetry paths}{266}{subsection.21.4.3}
+\contentsline {subsection}{\numberline {21.4.4}Finding a supertwist that includes all the k\sphinxhyphen {}points of interest}{267}{subsection.21.4.4}
+\contentsline {subsection}{\numberline {21.4.5}Identifying the indexing of k\sphinxhyphen {}points of interest in the supertwist}{268}{subsection.21.4.5}
+\contentsline {section}{\numberline {21.5}Quasiparticle (electronic) gap calculations}{270}{section.21.5}
+\contentsline {section}{\numberline {21.6}Optical gap calculations}{271}{section.21.6}
+\contentsline {chapter}{\numberline {22}Additional Tools}{273}{chapter.22}
+\contentsline {section}{\numberline {22.1}Initialization}{273}{section.22.1}
+\contentsline {subsection}{\numberline {22.1.1}qmc\sphinxhyphen {}get\sphinxhyphen {}supercell}{273}{subsection.22.1.1}
+\contentsline {section}{\numberline {22.2}Postprocessing}{273}{section.22.2}
+\contentsline {subsection}{\numberline {22.2.1}qmca}{273}{subsection.22.2.1}
+\contentsline {subsection}{\numberline {22.2.2}qmc\sphinxhyphen {}fit}{273}{subsection.22.2.2}
+\contentsline {subsection}{\numberline {22.2.3}qdens}{273}{subsection.22.2.3}
+\contentsline {subsection}{\numberline {22.2.4}qmcfinitesize}{274}{subsection.22.2.4}
+\contentsline {section}{\numberline {22.3}Converters}{274}{section.22.3}
+\contentsline {subsection}{\numberline {22.3.1}convert4qmc}{274}{subsection.22.3.1}
+\contentsline {subsubsection}{General use}{274}{subsubsection*.46}
+\contentsline {subsubsection}{Command line options}{278}{subsubsection*.47}
+\contentsline {subsubsection}{Grid options}{282}{subsubsection*.48}
+\contentsline {subsubsection}{Supported codes}{282}{subsubsection*.49}
+\contentsline {subsection}{\numberline {22.3.2}pw2qmcpack.x}{284}{subsection.22.3.2}
+\contentsline {subsection}{\numberline {22.3.3}convertpw4qmc}{285}{subsection.22.3.3}
+\contentsline {subsection}{\numberline {22.3.4}ppconvert}{286}{subsection.22.3.4}
+\contentsline {section}{\numberline {22.4}Obtaining pseudopotentials}{286}{section.22.4}
+\contentsline {subsection}{\numberline {22.4.1}Pseudopotentiallibrary.org}{286}{subsection.22.4.1}
+\contentsline {subsection}{\numberline {22.4.2}Opium}{287}{subsection.22.4.2}
+\contentsline {subsection}{\numberline {22.4.3}Burkatzki\sphinxhyphen {}Filippi\sphinxhyphen {}Dolg}{287}{subsection.22.4.3}
+\contentsline {subsection}{\numberline {22.4.4}CASINO}{288}{subsection.22.4.4}
+\contentsline {subsection}{\numberline {22.4.5}wftester}{288}{subsection.22.4.5}
+\contentsline {chapter}{\numberline {23}External Tools}{291}{chapter.23}
+\contentsline {section}{\numberline {23.1}LLVM Sanitizer Libraries}{291}{section.23.1}
+\contentsline {section}{\numberline {23.2}Intel VTune}{291}{section.23.2}
+\contentsline {subsection}{\numberline {23.2.1}VTune API}{291}{subsection.23.2.1}
+\contentsline {section}{\numberline {23.3}NVIDIA Tools Extensions}{292}{section.23.3}
+\contentsline {subsection}{\numberline {23.3.1}NVTX API}{292}{subsection.23.3.1}
+\contentsline {subsection}{\numberline {23.3.2}Timers as Tasks}{292}{subsection.23.3.2}
+\contentsline {section}{\numberline {23.4}Scitools Understand}{292}{section.23.4}
+\contentsline {chapter}{\numberline {24}Contributing to the Manual}{293}{chapter.24}
+\contentsline {chapter}{\numberline {25}Unit Testing}{297}{chapter.25}
+\contentsline {section}{\numberline {25.1}Unit testing framework}{297}{section.25.1}
+\contentsline {section}{\numberline {25.2}Unit test organization}{297}{section.25.2}
+\contentsline {section}{\numberline {25.3}Example}{298}{section.25.3}
+\contentsline {subsection}{\numberline {25.3.1}Expected output}{298}{subsection.25.3.1}
+\contentsline {section}{\numberline {25.4}Adding tests}{299}{section.25.4}
+\contentsline {subsection}{\numberline {25.4.1}Adding a test to existing file}{299}{subsection.25.4.1}
+\contentsline {subsection}{\numberline {25.4.2}Adding a test file}{299}{subsection.25.4.2}
+\contentsline {subsection}{\numberline {25.4.3}Adding a test directory}{299}{subsection.25.4.3}
+\contentsline {section}{\numberline {25.5}Testing with random numbers}{299}{section.25.5}
+\contentsline {chapter}{\numberline {26}QMCPACK Design and Feature Documentation}{301}{chapter.26}
+\contentsline {section}{\numberline {26.1}QMCPACK design}{301}{section.26.1}
+\contentsline {section}{\numberline {26.2}Feature: Optimized long\sphinxhyphen {}range breakup (Ewald)}{301}{section.26.2}
+\contentsline {subsection}{\numberline {26.2.1}The long\sphinxhyphen {}range problem}{301}{subsection.26.2.1}
+\contentsline {subsection}{\numberline {26.2.2}Reciprocal\sphinxhyphen {}space sums}{302}{subsection.26.2.2}
+\contentsline {subsubsection}{Heterologous terms}{302}{subsubsection*.50}
+\contentsline {subsubsection}{Homologous terms}{303}{subsubsection*.51}
+\contentsline {subsubsection}{Madelung terms}{303}{subsubsection*.52}
+\contentsline {subsubsection}{\(\mathbf {k}=\mathbf {0}\) terms}{304}{subsubsection*.53}
+\contentsline {subsubsection}{Neutralizing background terms}{304}{subsubsection*.54}
+\contentsline {subsection}{\numberline {26.2.3}Combining terms}{305}{subsection.26.2.3}
+\contentsline {subsection}{\numberline {26.2.4}Computing the reciprocal potential}{305}{subsection.26.2.4}
+\contentsline {subsection}{\numberline {26.2.5}The Coulomb potential}{305}{subsection.26.2.5}
+\contentsline {subsection}{\numberline {26.2.6}Efficient calculation methods}{306}{subsection.26.2.6}
+\contentsline {subsubsection}{Fast computation of \(\rho _\mathbf {k}\)}{306}{subsubsection*.55}
+\contentsline {subsection}{\numberline {26.2.7}Gaussian charge screening breakup}{306}{subsection.26.2.7}
+\contentsline {subsection}{\numberline {26.2.8}Optimized breakup method}{307}{subsection.26.2.8}
+\contentsline {subsubsection}{Solution by SVD}{309}{subsubsection*.56}
+\contentsline {subsubsection}{Constraining Values}{309}{subsubsection*.57}
+\contentsline {subsubsection}{The LPQHI basis}{310}{subsubsection*.58}
+\contentsline {subsubsection}{Fourier coefficients}{310}{subsubsection*.59}
+\contentsline {subsubsection}{Enumerating \(k\)\sphinxhyphen {}points}{312}{subsubsection*.60}
+\contentsline {subsubsection}{Calculating \(x_k\)\IeC {\textquoteright }s}{312}{subsubsection*.61}
+\contentsline {paragraph}{The Coulomb potential}{312}{paragraph*.62}
+\contentsline {paragraph}{The \(1/r^2\) potential}{313}{paragraph*.63}
+\contentsline {paragraph}{The \(1/r^3\) potential}{313}{paragraph*.64}
+\contentsline {paragraph}{The \(1/r^4\) potential}{313}{paragraph*.65}
+\contentsline {section}{\numberline {26.3}Feature: Optimized long\sphinxhyphen {}range breakup (Ewald) 2}{313}{section.26.3}
+\contentsline {subsection}{\numberline {26.3.1}Basis functions}{314}{subsection.26.3.1}
+\contentsline {subsection}{\numberline {26.3.2}Fourier components of the basis functions in 3D}{315}{subsection.26.3.2}
+\contentsline {subsubsection}{\(k\not =0\), non\sphinxhyphen {}Coulomb case}{315}{subsubsection*.66}
+\contentsline {subsubsection}{\(k\not =0\), Coulomb case}{316}{subsubsection*.67}
+\contentsline {subsubsection}{\(k=0\) Coulomb and non\sphinxhyphen {}Coulomb case}{316}{subsubsection*.68}
+\contentsline {subsection}{\numberline {26.3.3}Fourier components of the basis functions in 2D}{316}{subsection.26.3.3}
+\contentsline {subsection}{\numberline {26.3.4}Construction of the matrix elements}{317}{subsection.26.3.4}
+\contentsline {section}{\numberline {26.4}Feature: Cubic spline interpolation}{317}{section.26.4}
+\contentsline {subsection}{\numberline {26.4.1}One dimension}{317}{subsection.26.4.1}
+\contentsline {subsubsection}{Hermite interpolants}{317}{subsubsection*.69}
+\contentsline {subsubsection}{Periodic boundary conditions}{318}{subsubsection*.70}
+\contentsline {subsubsection}{Complete boundary conditions}{319}{subsubsection*.71}
+\contentsline {subsubsection}{Natural boundary conditions}{319}{subsubsection*.72}
+\contentsline {subsection}{\numberline {26.4.2}Bicubic splines}{319}{subsection.26.4.2}
+\contentsline {subsubsection}{Construction bicubic splines}{320}{subsubsection*.73}
+\contentsline {subsection}{\numberline {26.4.3}Tricubic splines}{320}{subsection.26.4.3}
+\contentsline {section}{\numberline {26.5}Feature: B\sphinxhyphen {}spline orbital tiling (band unfolding)}{321}{section.26.5}
+\contentsline {subsection}{\numberline {26.5.1}The mathematics}{322}{subsection.26.5.1}
+\contentsline {subsection}{\numberline {26.5.2}Example: FeO}{322}{subsection.26.5.2}
+\contentsline {subsubsection}{The k\sphinxhyphen {}point mesh}{322}{subsubsection*.74}
+\contentsline {subsubsection}{Formulae}{323}{subsubsection*.75}
+\contentsline {section}{\numberline {26.6}Feature: Hybrid orbital representation}{323}{section.26.6}
+\contentsline {subsection}{\numberline {26.6.1}Real spherical harmonics}{324}{subsection.26.6.1}
+\contentsline {subsection}{\numberline {26.6.2}Projecting to atomic orbitals}{324}{subsection.26.6.2}
+\contentsline {section}{\numberline {26.7}Feature: Electron\sphinxhyphen {}electron\sphinxhyphen {}ion Jastrow factor}{325}{section.26.7}
+\contentsline {section}{\numberline {26.8}Feature: Reciprocal\sphinxhyphen {}space Jastrow factors}{326}{section.26.8}
+\contentsline {subsection}{\numberline {26.8.1}Two\sphinxhyphen {}body Jastrow}{326}{subsection.26.8.1}
+\contentsline {subsection}{\numberline {26.8.2}One\sphinxhyphen {}body Jastrow}{327}{subsection.26.8.2}
+\contentsline {subsection}{\numberline {26.8.3}Symmetry considerations}{327}{subsection.26.8.3}
+\contentsline {subsection}{\numberline {26.8.4}Gradients and Laplacians}{327}{subsection.26.8.4}
+\contentsline {chapter}{\numberline {27}Development Guide}{329}{chapter.27}
+\contentsline {section}{\numberline {27.1}QMCPACK coding standards}{329}{section.27.1}
+\contentsline {section}{\numberline {27.2}Files}{329}{section.27.2}
+\contentsline {subsection}{\numberline {27.2.1}File organization}{330}{subsection.27.2.1}
+\contentsline {subsection}{\numberline {27.2.2}File names}{330}{subsection.27.2.2}
+\contentsline {subsection}{\numberline {27.2.3}Header files}{330}{subsection.27.2.3}
+\contentsline {subsection}{\numberline {27.2.4}Includes}{330}{subsection.27.2.4}
+\contentsline {section}{\numberline {27.3}Naming}{331}{section.27.3}
+\contentsline {subsection}{\numberline {27.3.1}Namespace names}{331}{subsection.27.3.1}
+\contentsline {subsection}{\numberline {27.3.2}Type and class names}{331}{subsection.27.3.2}
+\contentsline {subsection}{\numberline {27.3.3}Variable names}{331}{subsection.27.3.3}
+\contentsline {subsection}{\numberline {27.3.4}Class data members}{331}{subsection.27.3.4}
+\contentsline {subsection}{\numberline {27.3.5}(Member) function names}{331}{subsection.27.3.5}
+\contentsline {subsection}{\numberline {27.3.6}Lambda expressions}{331}{subsection.27.3.6}
+\contentsline {subsection}{\numberline {27.3.7}Macro names}{331}{subsection.27.3.7}
+\contentsline {subsection}{\numberline {27.3.8}Test case and test names}{332}{subsection.27.3.8}
+\contentsline {section}{\numberline {27.4}Comments}{332}{section.27.4}
+\contentsline {subsection}{\numberline {27.4.1}Comment style}{332}{subsection.27.4.1}
+\contentsline {subsection}{\numberline {27.4.2}Documentation}{332}{subsection.27.4.2}
+\contentsline {subsubsection}{File docs}{332}{subsubsection*.76}
+\contentsline {subsubsection}{Class docs}{333}{subsubsection*.77}
+\contentsline {subsubsection}{Function docs}{333}{subsubsection*.78}
+\contentsline {subsubsection}{Variable documentation}{333}{subsubsection*.79}
+\contentsline {subsection}{\numberline {27.4.3}Golden rule of comments}{333}{subsection.27.4.3}
+\contentsline {section}{\numberline {27.5}Formatting and \IeC {\textquotedblleft }style\IeC {\textquotedblright }}{333}{section.27.5}
+\contentsline {subsection}{\numberline {27.5.1}Indentation}{334}{subsection.27.5.1}
+\contentsline {subsection}{\numberline {27.5.2}Line length}{334}{subsection.27.5.2}
+\contentsline {subsection}{\numberline {27.5.3}Horizontal spacing}{334}{subsection.27.5.3}
+\contentsline {subsection}{\numberline {27.5.4}Preprocessor directives}{334}{subsection.27.5.4}
+\contentsline {subsection}{\numberline {27.5.5}Binary operators}{334}{subsection.27.5.5}
+\contentsline {subsection}{\numberline {27.5.6}Unary operators}{334}{subsection.27.5.6}
+\contentsline {subsection}{\numberline {27.5.7}Types}{334}{subsection.27.5.7}
+\contentsline {subsection}{\numberline {27.5.8}Pointers and references}{334}{subsection.27.5.8}
+\contentsline {subsection}{\numberline {27.5.9}Templates}{335}{subsection.27.5.9}
+\contentsline {subsection}{\numberline {27.5.10}Vertical spacing}{335}{subsection.27.5.10}
+\contentsline {subsection}{\numberline {27.5.11}Variable declarations and definitions}{335}{subsection.27.5.11}
+\contentsline {subsection}{\numberline {27.5.12}Function declarations and definitions}{336}{subsection.27.5.12}
+\contentsline {subsection}{\numberline {27.5.13}Conditionals}{336}{subsection.27.5.13}
+\contentsline {subsection}{\numberline {27.5.14}Switch statement}{336}{subsection.27.5.14}
+\contentsline {subsection}{\numberline {27.5.15}Loops}{337}{subsection.27.5.15}
+\contentsline {subsection}{\numberline {27.5.16}Class format}{337}{subsection.27.5.16}
+\contentsline {subsubsection}{Constructor initializer lists}{338}{subsubsection*.80}
+\contentsline {subsection}{\numberline {27.5.17}Namespace formatting}{339}{subsection.27.5.17}
+\contentsline {section}{\numberline {27.6}QMCPACK C++ guidance}{339}{section.27.6}
+\contentsline {subsection}{\numberline {27.6.1}Encapsulation}{339}{subsection.27.6.1}
+\contentsline {subsection}{\numberline {27.6.2}Casting}{340}{subsection.27.6.2}
+\contentsline {subsection}{\numberline {27.6.3}Pre\sphinxhyphen {}increment and pre\sphinxhyphen {}decrement}{340}{subsection.27.6.3}
+\contentsline {subsection}{\numberline {27.6.4}Alternative operator representations}{340}{subsection.27.6.4}
+\contentsline {subsection}{\numberline {27.6.5}Use of const}{341}{subsection.27.6.5}
+\contentsline {section}{\numberline {27.7}Scalar estimator implementation}{341}{section.27.7}
+\contentsline {subsection}{\numberline {27.7.1}Introduction: Life of a specialized OperatorBase}{341}{subsection.27.7.1}
+\contentsline {subsubsection}{Initialization}{341}{subsubsection*.81}
+\contentsline {subsubsection}{Cloning}{342}{subsubsection*.82}
+\contentsline {subsubsection}{Evaluate}{342}{subsubsection*.83}
+\contentsline {subsubsection}{Collection}{343}{subsubsection*.84}
+\contentsline {subsection}{\numberline {27.7.2}Single scalar estimator implementation guide}{343}{subsection.27.7.2}
+\contentsline {subsubsection}{Barebone}{343}{subsubsection*.85}
+\contentsline {subsubsection}{Evaluate}{345}{subsubsection*.86}
+\contentsline {subsubsection}{Parse extra input}{346}{subsubsection*.87}
+\contentsline {subsection}{\numberline {27.7.3}Multiple scalars}{348}{subsection.27.7.3}
+\contentsline {subsection}{\numberline {27.7.4}HDF5 output}{350}{subsection.27.7.4}
+\contentsline {section}{\numberline {27.8}Estimator output}{351}{section.27.8}
+\contentsline {subsection}{\numberline {27.8.1}Estimator definition}{351}{subsection.27.8.1}
+\contentsline {subsection}{\numberline {27.8.2}Class relations}{352}{subsection.27.8.2}
+\contentsline {subsection}{\numberline {27.8.3}Estimator output stages}{352}{subsection.27.8.3}
+\contentsline {subsubsection}{Collect stage}{352}{subsubsection*.88}
+\contentsline {subsubsection}{Unload ensemble stage}{353}{subsubsection*.89}
+\contentsline {subsubsection}{Load ensemble stage}{354}{subsubsection*.90}
+\contentsline {subsubsection}{Evaluate stage}{355}{subsubsection*.91}
+\contentsline {subsection}{\numberline {27.8.4}Estimator use cases}{356}{subsection.27.8.4}
+\contentsline {subsubsection}{VMCSingleOMP pseudo code}{356}{subsubsection*.92}
+\contentsline {subsubsection}{DMCOMP pseudo code}{356}{subsubsection*.93}
+\contentsline {subsection}{\numberline {27.8.5}Summary}{357}{subsection.27.8.5}
+\contentsline {subsection}{\numberline {27.8.6}Appendix: dmc.dat}{357}{subsection.27.8.6}
+\contentsline {section}{\numberline {27.9}Slater\sphinxhyphen {}backflow wavefunction implementation details}{358}{section.27.9}
+\contentsline {subsection}{\numberline {27.9.1}Value}{358}{subsection.27.9.1}
+\contentsline {subsection}{\numberline {27.9.2}Gradient}{358}{subsection.27.9.2}
+\contentsline {subsection}{\numberline {27.9.3}Laplacian}{359}{subsection.27.9.3}
+\contentsline {subsection}{\numberline {27.9.4}Wavefunction parameter derivative}{361}{subsection.27.9.4}
+\contentsline {section}{\numberline {27.10}Particles and distance tables}{362}{section.27.10}
+\contentsline {subsection}{\numberline {27.10.1}ParticleSets}{362}{subsection.27.10.1}
+\contentsline {subsubsection}{Groups}{362}{subsubsection*.94}
+\contentsline {subsection}{\numberline {27.10.2}Distance tables}{362}{subsection.27.10.2}
+\contentsline {subsection}{\numberline {27.10.3}Looping over particles}{362}{subsection.27.10.3}
+\contentsline {section}{\numberline {27.11}Adding a wavefunction}{363}{section.27.11}
+\contentsline {subsection}{\numberline {27.11.1}Mathematical preliminaries}{363}{subsection.27.11.1}
+\contentsline {subsection}{\numberline {27.11.2}Wavefunction evaluation}{364}{subsection.27.11.2}
+\contentsline {subsection}{\numberline {27.11.3}Function use}{364}{subsection.27.11.3}
+\contentsline {subsection}{\numberline {27.11.4}Particle distances}{364}{subsection.27.11.4}
+\contentsline {subsection}{\numberline {27.11.5}Setup}{365}{subsection.27.11.5}
+\contentsline {subsection}{\numberline {27.11.6}Caching values}{365}{subsection.27.11.6}
+\contentsline {subsection}{\numberline {27.11.7}Threading}{365}{subsection.27.11.7}
+\contentsline {subsection}{\numberline {27.11.8}Parameter optimization}{365}{subsection.27.11.8}
+\contentsline {subsection}{\numberline {27.11.9}Helium Wavefunction Example}{365}{subsection.27.11.9}
+\contentsline {section}{\numberline {27.12}Linear Algebra}{366}{section.27.12}
+\contentsline {subsection}{\numberline {27.12.1}Real space QMC}{366}{subsection.27.12.1}
+\contentsline {subsubsection}{Single particle orbitals}{366}{subsubsection*.95}
+\contentsline {subsubsection}{Slater determinants}{366}{subsubsection*.96}
+\contentsline {subsubsection}{Wavefunction optimizer}{367}{subsubsection*.97}
+\contentsline {subsection}{\numberline {27.12.2}Auxiliary field QMC}{367}{subsection.27.12.2}
+\contentsline {chapter}{\numberline {28}Appendices}{369}{chapter.28}
+\contentsline {section}{\numberline {28.1}Appendix A: Derivation of twist averaging efficiency}{369}{section.28.1}
+\contentsline {section}{\numberline {28.2}Appendix B: QMCPACK papers}{371}{section.28.2}
+\contentsline {chapter}{Bibliography}{373}{chapter*.98}

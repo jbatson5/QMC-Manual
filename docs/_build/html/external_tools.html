@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>External Tools &mdash; QMCPACK Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to the Manual" href="contributing.html" />
+    <link rel="prev" title="Additional Tools" href="additional_tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">External Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#llvm-sanitizer-libraries">LLVM Sanitizer Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#intel-vtune">Intel VTune</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vtune-api">VTune API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nvidia-tools-extensions">NVIDIA Tools Extensions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nvtx-api">NVTX API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timers-as-tasks">Timers as Tasks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scitools-understand">Scitools Understand</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>External Tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/external_tools.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="external-tools">
+<span id="id1"></span><h1>External Tools<a class="headerlink" href="#external-tools" title="Permalink to this headline">¶</a></h1>
+<p>This chapter provides some information on using QMCPACK with external tools.</p>
+<div class="section" id="llvm-sanitizer-libraries">
+<span id="id2"></span><h2>LLVM Sanitizer Libraries<a class="headerlink" href="#llvm-sanitizer-libraries" title="Permalink to this headline">¶</a></h2>
+<p>Using CMake, set one of these flags for using the clang sanitizer libraries with or without lldb.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DLLVM_SANITIZE_ADDRESS</span>    <span class="n">link</span> <span class="k">with</span> <span class="n">the</span> <span class="n">Clang</span> <span class="n">address</span> <span class="n">sanitizer</span> <span class="n">library</span>
+<span class="o">-</span><span class="n">DLLVM_SANITIZE_MEMORY</span>     <span class="n">link</span> <span class="k">with</span> <span class="n">the</span> <span class="n">Clang</span> <span class="n">memory</span> <span class="n">sanitizer</span> <span class="n">library</span>
+</pre></div>
+</div>
+<p>These set the basic flags required to build with either of these sanitizer libraries. They require a build of clang with dynamic libraries somehow visible (i.e., through <code class="docutils literal notranslate"><span class="pre">LD_FLAGS=-L/your/path/to/llvm/lib</span></code>). You must link through clang, which is generally the default when building with it. Depending on your system and linker, this may be incompatible with the “Release” build, so set <code class="docutils literal notranslate"><span class="pre">-DCMAKE_BUILD_TYPE=Debug</span></code>. They have been tested with the default spack install of <a class="reference external" href="mailto:llvm&#37;&#52;&#48;7&#46;0&#46;0">llvm<span>&#64;</span>7<span>&#46;</span>0<span>&#46;</span>0</a> and been manually built with llvm 7.0.1. See the following links for additional information on use, run time, and build options of the sanitizers: <a class="reference external" href="https://clang.llvm.org/docs/AddressSanitizer.html">https://clang.llvm.org/docs/AddressSanitizer.html</a> &amp; <a class="reference external" href="https://clang.llvm.org/docs/MemorySanitizer.html">https://clang.llvm.org/docs/MemorySanitizer.html</a>.</p>
+<p>In general, the address sanitizer libraries will catch most pointer-based errors. ASAN can also catch memory links but requires that additional options be set. MSAN will catch more subtle memory management errors but is difficult to use without a full set of MSAN-instrumented libraries.</p>
+</div>
+<div class="section" id="intel-vtune">
+<h2>Intel VTune<a class="headerlink" href="#intel-vtune" title="Permalink to this headline">¶</a></h2>
+<p>Intel’s VTune profiler has an API that allows program control over collection (pause/resume) and can add information to the profile data (e.g., delineating tasks).</p>
+<div class="section" id="vtune-api">
+<h3>VTune API<a class="headerlink" href="#vtune-api" title="Permalink to this headline">¶</a></h3>
+<p>If the variable <code class="docutils literal notranslate"><span class="pre">USE_VTUNE_API</span></code> is set, QMCPACK will check that the
+include file (<code class="docutils literal notranslate"><span class="pre">ittnotify.h</span></code>) and the library (<code class="docutils literal notranslate"><span class="pre">libittnotify.a</span></code>) can
+be found.
+To provide CMake with the VTune paths, add the include path to <code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_FLAGS</span></code> and the library path to <code class="docutils literal notranslate"><span class="pre">CMAKE_LIBRARY_PATH</span></code>.</p>
+<p>An example of options to be passed to CMake:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">DCMAKE_CXX_FLAGS</span><span class="o">=-</span><span class="n">I</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">vtune_amplifier_xe</span><span class="o">/</span><span class="n">include</span> \
+<span class="o">-</span><span class="n">DCMAKE_LIBRARY_PATH</span><span class="o">=/</span><span class="n">opt</span><span class="o">/</span><span class="n">intel</span><span class="o">/</span><span class="n">vtune_amplifier_xe</span><span class="o">/</span><span class="n">lib64</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="nvidia-tools-extensions">
+<h2>NVIDIA Tools Extensions<a class="headerlink" href="#nvidia-tools-extensions" title="Permalink to this headline">¶</a></h2>
+<p>NVIDIA’s Tools Extensions (NVTX) API enables programmers to annotate their source code when used with the NVIDIA profilers.</p>
+<div class="section" id="nvtx-api">
+<h3>NVTX API<a class="headerlink" href="#nvtx-api" title="Permalink to this headline">¶</a></h3>
+<p>If the variable <code class="docutils literal notranslate"><span class="pre">USE_NVTX_API</span></code> is set, QMCPACK will add the library (<code class="docutils literal notranslate"><span class="pre">libnvToolsExt.so</span></code>) to the QMCPACK target. To add NVTX annotations
+to a function, it is necessary to include the <code class="docutils literal notranslate"><span class="pre">nvToolsExt.h</span></code> header file and then make the appropriate calls into the NVTX API. For more information
+about the NVTX API, see <a class="reference external" href="https://docs.nvidia.com/cuda/profiler-users-guide/index.html#nvtx">https://docs.nvidia.com/cuda/profiler-users-guide/index.html#nvtx</a>. Any additional calls to the NVTX API should be guarded by
+the <code class="docutils literal notranslate"><span class="pre">USE_NVTX_API</span></code> compiler define.</p>
+</div>
+<div class="section" id="timers-as-tasks">
+<h3>Timers as Tasks<a class="headerlink" href="#timers-as-tasks" title="Permalink to this headline">¶</a></h3>
+<p>To aid in connecting the timers in the code to the profile data, the start/stop of
+timers will be recorded as a task if <code class="docutils literal notranslate"><span class="pre">USE_VTUNE_TASKS</span></code> is set.</p>
+<p>In addition to compiling with <code class="docutils literal notranslate"><span class="pre">USE_VTUNE_TASKS</span></code>, an option needs to be set at run time to collect the task API data.
+In the graphical user interface (GUI), select the checkbox labeled “Analyze user tasks” when setting up the analysis type.
+For the command line, set the <code class="docutils literal notranslate"><span class="pre">enable-user-tasks</span></code> knob to <code class="docutils literal notranslate"><span class="pre">true</span></code>. For example,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">amplxe</span><span class="o">-</span><span class="n">cl</span> <span class="o">-</span><span class="n">collect</span> <span class="n">hotspots</span> <span class="o">-</span><span class="n">knob</span> <span class="n">enable</span><span class="o">-</span><span class="n">user</span><span class="o">-</span><span class="n">tasks</span><span class="o">=</span><span class="n">true</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>Collection with the timers set at “fine” can generate too much task data in the profile.
+Collection with the timers at “medium” collects a more reasonable amount of task data.</p>
+</div>
+</div>
+<div class="section" id="scitools-understand">
+<h2>Scitools Understand<a class="headerlink" href="#scitools-understand" title="Permalink to this headline">¶</a></h2>
+<p>Scitools Understand (<a class="reference external" href="https://scitools.com/">https://scitools.com/</a>) is a tool for static
+code analysis. The easiest configuration route is to use the JSON output
+from CMake, which the Understand project importer can read directly:</p>
+<ol class="arabic">
+<li><p>Configure QMCPACK by running CMake with <code class="docutils literal notranslate"><span class="pre">CMAKE_EXPORT_COMPILE_COMMANDS=ON</span></code>, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=</span><span class="n">clang</span> <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=</span><span class="n">clang</span><span class="o">++</span>
+<span class="o">-</span><span class="n">DQMC_MPI</span><span class="o">=</span><span class="mi">0</span> <span class="o">-</span><span class="n">DCMAKE_EXPORT_COMPILE_COMMANDS</span><span class="o">=</span><span class="n">ON</span> <span class="o">../</span><span class="n">qmcpack</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+<li><p>Run Understand and create a new C++ project. At the import files
+and settings dialog, import the texttt{compile_commands.json} created by
+CMake in the build directory.</p></li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing to the Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="additional_tools.html" class="btn btn-neutral float-left" title="Additional Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

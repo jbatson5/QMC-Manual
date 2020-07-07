@@ -1,0 +1,551 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contributing to the Manual &mdash; QMCPACK Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Unit Testing" href="unit_testing.html" />
+    <link rel="prev" title="External Tools" href="external_tools.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Contributing to the Manual</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="contributing-to-the-manual">
+<span id="contrib"></span><h1>Contributing to the Manual<a class="headerlink" href="#contributing-to-the-manual" title="Permalink to this headline">¶</a></h1>
+<p>This section briefly describes how to contribute to the manual and is primarily “by developers, for developers.”   This section should iterate until a consistent view on style/contents is reached.</p>
+<p><strong>Desirable:</strong></p>
+<ul>
+<li><p>Use the following table templates when describing XML input.</p></li>
+<li><p>Instead of <code class="docutils literal notranslate"><span class="pre">\texttt</span></code> or <code class="docutils literal notranslate"><span class="pre">\verb</span></code> use</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">\ishell</span></code> for shell text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\ixml</span></code> for xml text</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\icode</span></code> for C++ text</p></li>
+</ul>
+<p><strong>Except within tabularx or math environments</strong></p>
+</li>
+<li><p>Instead of <code class="docutils literal notranslate"><span class="pre">\begin{verbatim}</span></code> environments, use the appropriate <code class="docutils literal notranslate"><span class="pre">\begin{lstlisting}[style=&lt;see</span> <span class="pre">qmcpack_listings.sty&gt;]</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\begin{shade}</span> <span class="pre">can</span> <span class="pre">be</span> <span class="pre">used</span> <span class="pre">in</span> <span class="pre">place</span> <span class="pre">of</span> <span class="pre">``\begin{lstlisting}[style=SHELL]</span></code>.</p></li>
+<li><p>Unicode rules</p>
+<ul class="simple">
+<li><p>Do not use characters for which well-established latex idiom
+exists, especially dashes, quotes, and apostrophes.</p></li>
+<li><p>Use math mode markup instead of unicode characters for equations.</p></li>
+<li><p>Be cautious of WYSIWYG word processors; cutting and pasting can
+pickup characters promoted to unicode by the program.</p></li>
+<li><p>Take a look at your text multibyte expanded; that is open it in
+(emacs and ‘esc-x toggle-enable-multibyte-characters’)—see any
+unicode you did not intend?</p></li>
+</ul>
+</li>
+<li><p>Place unformatted text targeted at developers working on the LaTeX in
+comments. Include generously.</p></li>
+<li><p>Encapsulate formatted text aimed at developers (like this entire
+chapter), in <code class="docutils literal notranslate"><span class="pre">\dev{}</span></code>. Text encapsulated in this way will be removed from the
+user version of the manual by editing the definition of <code class="docutils literal notranslate"><span class="pre">\dev{}</span></code> in <code class="docutils literal notranslate"><span class="pre">qmcpack_manual.tex</span></code>. Existing
+but deprecated or partially functioning features fall in this
+category.</p></li>
+<li><p>Newly added entries to a Bib file should be as complete as possible.
+Use a tool such as JabRef or Zotero that can automate creation of
+these entries from just a DOI.</p></li>
+</ul>
+<p><strong>Forbidden:</strong></p>
+<ul class="simple">
+<li><p>Including images instead of using lstlisting sections for text.</p></li>
+<li><p>Using packages the LaTeX community considers <a class="reference external" href="https://latex.org/forum/viewtopic.php?f=37&amp;t=6637">deprecated</a>.</p></li>
+<li><p>Using packages, features, or fonts not included in texlive 2017
+unless you ensure they degrade reasonably for 2017.</p></li>
+<li><p>Adding packages unless they bring great value and are supported by
+tex4ht (unless you are willing to add the support).</p></li>
+<li><p>Saving Tex files and Bib files in encodings other than UTF8. Some may
+report being ASCII encoded since they contain no unicode characters.</p></li>
+</ul>
+<p><strong>Missing sections (these are opinions, not decided priorities):</strong></p>
+<ul class="simple">
+<li><p>Description of XML input in general. Discuss XML format, use of
+attributes and <code class="docutils literal notranslate"><span class="pre">&lt;parameter/&gt;</span></code> s in general, case sensitivity
+(input is generally case sensitive), and behavior of when
+unrecognized XML elements are encountered (they are generally ignored
+without notification).</p></li>
+<li><p>Overview of the input file in general, broad structure, and at least
+one full example that works in isolation.</p></li>
+</ul>
+<p><strong>Information currently missing for a complete reference
+specification:</strong></p>
+<ul class="simple">
+<li><p>Noting how many instances of each child element are allowed.
+Examples: <code class="docutils literal notranslate"><span class="pre">simulation</span></code>–1 only, <code class="docutils literal notranslate"><span class="pre">method</span></code>–1 or more, <code class="docutils literal notranslate"><span class="pre">jastrow</span></code>–0
+or more.</p></li>
+</ul>
+<p>Table templates follow for describing XML elements in reference fashion.
+A number of examples can be found in, for example,
+<a class="reference internal" href="hamiltonianobservable.html#hamiltobs"><span class="std std-ref">Hamiltonian and Observables</span></a>. Preliminary style is (please weigh in with
+opinions): typewriter text (<code class="docutils literal notranslate"><span class="pre">\texttt\{}</span></code>) for XML elements, attributes, and
+parameter names; normal text for literal information in the datatype,
+values, and default columns; bold (<code class="docutils literal notranslate"><span class="pre">\textbf{}</span></code>) text if an attribute or parameter
+must take on a particular value (values column); italics (<code class="docutils literal notranslate"><span class="pre">\textit{}</span></code>) for
+descriptive (nonliteral) information in the values column (e.g.,
+<em>anything</em>, <em>non-zero</em>); and required/optional attributes or parameters
+noted by <code class="docutils literal notranslate"><span class="pre">some_attr</span></code> <span class="math notranslate nohighlight">\(^r\)</span>/<code class="docutils literal notranslate"><span class="pre">some_attr</span></code> <span class="math notranslate nohighlight">\(^r\)</span> superscripts. Valid datatypes
+are text, integer, real, Boolean, and arrays of each. Fixed length
+arrays can be noted, for example, by “real array(3).”</p>
+<p>Template for a generic XML element:</p>
+<p><code class="docutils literal notranslate"><span class="pre">generic</span></code> element:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">parent1</span></code> <code class="docutils literal notranslate"><span class="pre">parent2</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">child1</span></code> <code class="docutils literal notranslate"><span class="pre">child2</span></code> <code class="docutils literal notranslate"><span class="pre">child3</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><p>attributes:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 14%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr1</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr2</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr3</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>real</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr4</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>boolean</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr5</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr6</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr7</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>real array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr8</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>boolean array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 16%" />
+<col style="width: 13%" />
+<col style="width: 14%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param1</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param2</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param3</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>real</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param4</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>boolean</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param5</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param6</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">param7</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>real array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">param8</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>boolean array</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>body text: Long form description of body text format</p>
+</div></blockquote>
+<p>“Factory” elements are XML elements that share a tag but whose contents
+change based on the value an attribute, or sometimes multiple
+attributes, take. The attribute(s) that determines the allowed content
+is subsequently referred to as the “type selector” (e.g., for
+<code class="docutils literal notranslate"><span class="pre">&lt;estimator/&gt;</span></code> elements, the type selector is usually the <code class="docutils literal notranslate"><span class="pre">type</span></code>
+attribute). These types of elements are frequently encountered as they
+correspond (sometimes loosely, sometimes literally) to polymorphic
+classes in QMCPACK that are built in “factories.” This name is true to
+the underlying code but may be obscure to the general user (is there a
+better name to retain the general meaning?).</p>
+<p>The following template should be provided each time a new “factory” type
+is encountered (such as <code class="docutils literal notranslate"><span class="pre">&lt;estimator/&gt;</span></code>). The table lists all types of
+possible elements (see “type options” in the template) and any
+attributes that are common to all possible related elements. Specific
+“derived” elements are then described one at a time with the previous
+template, noting the type selector in addition to the XML tag (e.g.,
+“<code class="docutils literal notranslate"><span class="pre">estimator</span> <span class="pre">type=density</span></code> element”).</p>
+<p>Template for shared information about “factory” elements.</p>
+<p><code class="docutils literal notranslate"><span class="pre">generic</span></code> factory element:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 65%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>parent elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">parent1</span></code> <code class="docutils literal notranslate"><span class="pre">parent2</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>child elements:</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">child1</span></code> <code class="docutils literal notranslate"><span class="pre">child2</span></code> <code class="docutils literal notranslate"><span class="pre">child3</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>type selector</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">some</span></code> attribute</p></td>
+</tr>
+<tr class="row-even"><td><p>type options</p></td>
+<td><p>Selection 1</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>Selection 2</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p>Selection 3</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p>…</p></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div><p>shared attributes:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 14%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Datatype</strong></p></th>
+<th class="head"><p><strong>Values</strong></p></th>
+<th class="head"><p><strong>Default</strong></p></th>
+<th class="head"><p><strong>Description</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attr1</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>text</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attr2</span></code><span class="math notranslate nohighlight">\(^r\)</span></p></td>
+<td><p>integer</p></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="unit_testing.html" class="btn btn-neutral float-right" title="Unit Testing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="external_tools.html" class="btn btn-neutral float-left" title="External Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

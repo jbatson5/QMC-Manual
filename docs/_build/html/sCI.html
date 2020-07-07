@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Selected Configuration Interaction &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Selected Configuration Interaction &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -107,6 +107,16 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -189,7 +199,7 @@ provides a direct route to systematically improving the wavefunction.</p>
 multideterminantal expansions of the ground-state wavefunction
 <span class="math notranslate nohighlight">\(\Psi_T\)</span> are written as a linear combination of Slater determinants</p>
 <div class="math notranslate nohighlight" id="equation-eq51">
-<span class="eqno">(51)<a class="headerlink" href="#equation-eq51" title="Permalink to this equation">¶</a></span>\[\sum_k c_k \sum_q d_{k,q}D_{k,q\uparrow } (r^{\uparrow})D_{k,q\downarrow}(r^{\downarrow})\:, %$\ket{D_i}$\]</div>
+<span class="eqno">(51)<a class="headerlink" href="#equation-eq51" title="Permalink to this equation">¶</a></span>\[\sum_k c_k \sum_q d_{k,q}D_{k,q\uparrow } (r^{\uparrow})D_{k,q\downarrow}(r^{\downarrow})\:,\]</div>
 <p>where each determinant corresponds to a given occupation by the
 <span class="math notranslate nohighlight">\(N_{\alpha}\)</span> and <span class="math notranslate nohighlight">\(N_{\beta}\)</span> electrons of
 <span class="math notranslate nohighlight">\(N=N_{\alpha}+N_{\beta}\)</span> orbitals among a set of M spin-orbitals
@@ -264,7 +274,7 @@ to the FCI solution.</p></li>
 </ul>
 <div class="section" id="cipsi-wavefunction-interface">
 <span id="cipsi"></span><h3>CIPSI wavefunction interface<a class="headerlink" href="#cipsi-wavefunction-interface" title="Permalink to this headline">¶</a></h3>
-<p>The CIPSI method is implemented in the QP code:cite:<cite>QP</cite> developed by the Caffarel group. Once the trial wavefunction is generated, QP is able to produce output readable by the QMCPACK converter as described in <span class="xref std std-ref">convert4qmc</span>. QP can be installed with multiple plugins for different levels of theory in quantum chemistry. When installing the “QMC” plugin, QP can save the wavefunction in a format readable by the QMCPACK converter.</p>
+<p>The CIPSI method is implemented in the QP code:cite:<cite>QP</cite> developed by the Caffarel group. Once the trial wavefunction is generated, QP is able to produce output readable by the QMCPACK converter as described in <a class="reference internal" href="additional_tools.html#convert4qmc"><span class="std std-ref">convert4qmc</span></a>. QP can be installed with multiple plugins for different levels of theory in quantum chemistry. When installing the “QMC” plugin, QP can save the wavefunction in a format readable by the QMCPACK converter.</p>
 <p>In the following we use the <span class="math notranslate nohighlight">\(C_2O_2H_3N\)</span> molecule
 (<a class="reference internal" href="#fig13"><span class="std std-numref">Fig. 13</span></a>) as an example of how to run a multireference
 calculation with CIPSI as a trial wavefunction for . The choice of this

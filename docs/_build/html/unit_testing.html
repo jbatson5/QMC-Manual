@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Unit Testing &mdash; QMCPACK Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="QMCPACK Design and Feature Documentation" href="design_features.html" />
+    <link rel="prev" title="Contributing to the Manual" href="contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Unit Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unit-testing-framework">Unit testing framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unit-test-organization">Unit test organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#expected-output">Expected output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-tests">Adding tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-test-to-existing-file">Adding a test to existing file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-test-file">Adding a test file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-test-directory">Adding a test directory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-with-random-numbers">Testing with random numbers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Unit Testing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/unit_testing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="unit-testing">
+<span id="id1"></span><h1>Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h1>
+<p>Unit testing is a standard software engineering practice to aid in ensuring a quality product. A good suite of unit tests provides confidence in refactoring and changing code, furnishes some documentation on how classes and functions are used, and can drive a more decoupled design.</p>
+<p>If unit tests do not already exist for a section of code, you are encouraged to add them when modifying that section of code.  New code additions should also include unit tests.
+When possible, fixes for specific bugs should also include a unit test that would have caught the bug.</p>
+<div class="section" id="unit-testing-framework">
+<h2>Unit testing framework<a class="headerlink" href="#unit-testing-framework" title="Permalink to this headline">¶</a></h2>
+<p>The Catch framework is used for unit testing.
+See the project site for a tutorial and documentation: <a class="reference external" href="https://github.com/philsquared/Catch">https://github.com/philsquared/Catch</a>.</p>
+<p>Catch consists solely of header files. It is distributed as a single include file about 400 KB in size.  In QMCPACK, it is stored in <code class="docutils literal notranslate"><span class="pre">external_codes/catch</span></code>.</p>
+</div>
+<div class="section" id="unit-test-organization">
+<h2>Unit test organization<a class="headerlink" href="#unit-test-organization" title="Permalink to this headline">¶</a></h2>
+<p>The source for the unit tests is located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory under each directory in <code class="docutils literal notranslate"><span class="pre">src</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">src/QMCWavefunctions/tests</span></code>).
+All of the tests in each <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory get compiled into an executable.
+After building the project, the individual unit test executables can be found in <code class="docutils literal notranslate"><span class="pre">build/tests/bin</span></code>.
+For example, the tests in <code class="docutils literal notranslate"><span class="pre">src/QMCWavefunctions/tests</span></code> are compiled into <code class="docutils literal notranslate"><span class="pre">build/tests/bin/test_wavefunction</span></code>.</p>
+<p>All the unit test executables are collected under ctest with the <code class="docutils literal notranslate"><span class="pre">unit</span></code> label.
+When checking the whole code, it is useful to run through CMake (<code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">-L</span> <span class="pre">unit</span></code>).
+When working on an individual directory, it is useful to run the individual executable.</p>
+<p>Some of the tests reference input files. The unit test CMake setup places those input files in particular locations under the <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory (e.g., <code class="docutils literal notranslate"><span class="pre">tests/xml_test</span></code>).  The individual test needs to be run from that directory to find the expected input files.</p>
+<p>Command line options are available on the unit test executables.  Some of the more useful ones are</p>
+<ul class="simple">
+<li><p>List command line options.</p></li>
+<li><p>List all the tests in the executable.</p></li>
+</ul>
+<p>A test name can be given on the command line to execute just that test.  This is useful when iterating
+on a particular test or when running in the debugger.   Test names often contain spaces, so most command line environments require enclosing the test name in single or double quotes.</p>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>The first example is one test from <code class="docutils literal notranslate"><span class="pre">src/Numerics/tests/test_grid_functor.cpp</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="listing-75">
+<div class="code-block-caption"><span class="caption-number">Listing 74 </span><span class="caption-text">Unit test example using Catch.</span><a class="headerlink" href="#listing-75" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TEST_CASE</span><span class="p">(</span><span class="s2">&quot;double_1d_grid_functor&quot;</span><span class="p">,</span> <span class="s2">&quot;[numerics]&quot;</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">LinearGrid</span><span class="o">&lt;</span><span class="n">double</span><span class="o">&gt;</span> <span class="n">grid</span><span class="p">;</span>
+  <span class="n">OneDimGridFunctor</span><span class="o">&lt;</span><span class="n">double</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="o">&amp;</span><span class="n">grid</span><span class="p">);</span>
+
+  <span class="n">grid</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">);</span>
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">rmin</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">);</span>
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">rmax</span><span class="p">()</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">);</span>
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">dh</span><span class="p">()</span> <span class="o">==</span> <span class="n">Approx</span><span class="p">(</span><span class="mf">0.5</span><span class="p">));</span>
+  <span class="n">REQUIRE</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">dr</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Approx</span><span class="p">(</span><span class="mf">0.5</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<p>The test function declaration is
+<code class="docutils literal notranslate"><span class="pre">TEST_CASE(&quot;double_1d_grid_functor&quot;,&quot;[numerics]&quot;)</span></code>.
+The first argument is the test name, and it must be unique in the test suite.
+The second argument is an optional list of tags.  Each tag is a name surrounded by brackets (<code class="docutils literal notranslate"><span class="pre">&quot;[tag1][tag2]&quot;</span></code>).  It can also be the empty string.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">REQUIRE</span></code> macro accepts expressions with C++ comparison operators and records an error if the value of the expression is false.</p>
+<p>Floating point numbers may have small differences due to roundoff, etc.   The <code class="docutils literal notranslate"><span class="pre">Approx</span></code> class adds some tolerance to the comparison.  Place it on either side of the comparison (e.g., <code class="docutils literal notranslate"><span class="pre">Approx(a)</span> <span class="pre">==</span> <span class="pre">0.3</span></code> or <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">Approx(0.3)</span></code>).   To adjust the tolerance, use the <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code> methods to <code class="docutils literal notranslate"><span class="pre">Approx</span></code> (<code class="docutils literal notranslate"><span class="pre">REQUIRE(Approx(a).epsilon(0.001)</span> <span class="pre">=</span> <span class="pre">0.3);</span></code>.</p>
+<div class="section" id="expected-output">
+<h3>Expected output<a class="headerlink" href="#expected-output" title="Permalink to this headline">¶</a></h3>
+<p>When running the test executables individually, the output of a run with no failures should look like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">===============================================================================</span>
+<span class="n">All</span> <span class="n">tests</span> <span class="n">passed</span> <span class="p">(</span><span class="mi">26</span> <span class="n">assertions</span> <span class="ow">in</span> <span class="mi">4</span> <span class="n">test</span> <span class="n">cases</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A test with failures will look like</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test_numerics is a Catch v1.4.0 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+double_1d_grid_functor
+-------------------------------------------------------------------------------
+/home/user/qmcpack/src/Numerics/tests/test_grid_functor.cpp:29
+...............................................................................
+
+/home/user/qmcpack/src/Numerics/tests/test_grid_functor.cpp:39: FAILED:
+  REQUIRE( grid.dh() == Approx(0.6) )
+with expansion:
+  0.5 == Approx( 0.6 )
+
+===============================================================================
+test cases:  4 |  3 passed | 1 failed
+assertions: 25 | 24 passed | 1 failed
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="adding-tests">
+<h2>Adding tests<a class="headerlink" href="#adding-tests" title="Permalink to this headline">¶</a></h2>
+<p>Three scenarios are covered here: adding a new test in an existing file, adding a new test file, and adding a new <code class="docutils literal notranslate"><span class="pre">test</span></code> directory.</p>
+<div class="section" id="adding-a-test-to-existing-file">
+<h3>Adding a test to existing file<a class="headerlink" href="#adding-a-test-to-existing-file" title="Permalink to this headline">¶</a></h3>
+<p>Copy an existing test or from the example shown here.  Be sure to change the test name.</p>
+</div>
+<div class="section" id="adding-a-test-file">
+<h3>Adding a test file<a class="headerlink" href="#adding-a-test-file" title="Permalink to this headline">¶</a></h3>
+<p>When adding a new test file,
+create a file in the test directory, or copy from an existing file.  Add the file name to the <code class="docutils literal notranslate"><span class="pre">ADD_EXECUTABLE</span></code> in the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file in that directory.</p>
+<p>One (and only one) file must define the <code class="docutils literal notranslate"><span class="pre">main</span></code> function for the test executable by defining <code class="docutils literal notranslate"><span class="pre">CATCH_CONFIG_MAIN</span></code> before including the Catch header.  If more than one file defines this value, there will be linking errors about multiply defined values.</p>
+<p>Some of the tests need to shut down MPI properly to avoid extraneous error messages. Those tests include <code class="docutils literal notranslate"><span class="pre">Message/catch_mpi_main.hpp</span></code> instead of defining <code class="docutils literal notranslate"><span class="pre">CATCH_CONFIG_MAIN</span></code>.</p>
+</div>
+<div class="section" id="adding-a-test-directory">
+<h3>Adding a test directory<a class="headerlink" href="#adding-a-test-directory" title="Permalink to this headline">¶</a></h3>
+<p>Copy the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> file from an existing <code class="docutils literal notranslate"><span class="pre">tests</span></code> directory.
+Change the <code class="docutils literal notranslate"><span class="pre">SRC_DIR</span></code> name and the  files in the <code class="docutils literal notranslate"><span class="pre">ADD_EXECUTABLES</span></code> line.  The libraries to link in <code class="docutils literal notranslate"><span class="pre">TARGET_LINK_LIBRARIES</span></code> may need to be updated.</p>
+<p>Add the new test directory to <code class="docutils literal notranslate"><span class="pre">src/CMakeLists.txt</span></code> in the <code class="docutils literal notranslate"><span class="pre">BUILD_UNIT_TESTS</span></code> section near the end.</p>
+</div>
+</div>
+<div class="section" id="testing-with-random-numbers">
+<h2>Testing with random numbers<a class="headerlink" href="#testing-with-random-numbers" title="Permalink to this headline">¶</a></h2>
+<p>Many algorithms and parts of the code depend on random numbers, which makes validating the results difficult.
+One solution is to verify that certain properties hold for any random number.
+This approach is valuable at some levels of testing, but is unsatisfying at the unit test level.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Utilities</span></code> directory contains a “fake” random number generator that can be used for deterministic tests of these parts of the code.
+Currently it outputs a single, fixed value every time it is called, but it could be expanded to produce more varied, but still deterministic, sequences.
+See <code class="docutils literal notranslate"><span class="pre">src/QMCDrivers/test_vmc.cpp</span></code> for an example of using the fake random number generator.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="design_features.html" class="btn btn-neutral float-right" title="QMCPACK Design and Feature Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing to the Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

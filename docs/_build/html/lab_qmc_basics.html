@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lab 2: QMC Basics &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Lab 2: QMC Basics &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab 3: Advanced molecular calculations" href="lab_advanced_molecules.html" />
     <link rel="prev" title="Lab 1: MC Statistical Analysis" href="lab_qmc_statistics.html" /> 
 </head>
 
@@ -121,6 +122,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -303,7 +314,7 @@ step, preconverted pseudopotential files are located in the <code class="docutil
 and also in <a class="reference internal" href="#listing-58"><span class="std std-ref">Listing 58</span></a>.  Setting <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> instructs QE to write the
 orbitals to disk at the end of the run. Option <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> could be a potential problem
 in large simulations; therefore, we recommend avoiding it and using the converter pw2qmcpack in parallel
-(see details in <span class="xref std std-ref">pw2qmcpack</span>).
+(see details in <a class="reference internal" href="additional_tools.html#pw2qmcpack"><span class="std std-ref">pw2qmcpack.x</span></a>).
 Note that the plane-wave energy cutoff has been set to a reasonable value of 300 Ry here (<code class="docutils literal notranslate"><span class="pre">ecutwfc=300</span></code>).
 This value depends on the pseudopotentials used, and, in general,
 should be selected by running DFT <span class="math notranslate nohighlight">\(\rightarrow\)</span> (orbital conversion) <span class="math notranslate nohighlight">\(\rightarrow\)</span> VMC with
@@ -1576,6 +1587,8 @@ and QMCPACK. Enter the <code class="docutils literal notranslate"><span class="p
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lab_advanced_molecules.html" class="btn btn-neutral float-right" title="Lab 3: Advanced molecular calculations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="lab_qmc_statistics.html" class="btn btn-neutral float-left" title="Lab 1: MC Statistical Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

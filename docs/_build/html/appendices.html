@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Appendices &mdash; QMCPACK Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Development Guide" href="developing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Appendices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#appendix-a-derivation-of-twist-averaging-efficiency">Appendix A: Derivation of twist averaging efficiency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#appendix-b-qmcpack-papers">Appendix B: QMCPACK papers</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Appendices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/appendices.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="appendices">
+<span id="id1"></span><h1>Appendices<a class="headerlink" href="#appendices" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="appendix-a-derivation-of-twist-averaging-efficiency">
+<span id="appendix-a"></span><h2>Appendix A: Derivation of twist averaging efficiency<a class="headerlink" href="#appendix-a-derivation-of-twist-averaging-efficiency" title="Permalink to this headline">¶</a></h2>
+<p>In this appendix we derive the relative statistical efficiency of twist
+averaging with an irreducible (weighted) set of k-points versus using
+uniform weights over an unreduced set of k-points (e.g., a full
+Monkhorst-Pack mesh).</p>
+<p>Consider the weighted average of a set of statistical variables
+<span class="math notranslate nohighlight">\(\{x_m\}\)</span> with weights <span class="math notranslate nohighlight">\(\{w_m\}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq266">
+<span class="eqno">(266)<a class="headerlink" href="#equation-eq266" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   x_{TA} = \frac{\sum_mw_mx_m}{\sum_mw_m}\:.\end{aligned}\]</div>
+<p>If produced by a finite QMC run at a set of twist angles/k-points
+<span class="math notranslate nohighlight">\(\{k_m\}\)</span>, each variable mean <span class="math notranslate nohighlight">\(\langle{x_m}\rangle\)</span> has a statistical
+error bar <span class="math notranslate nohighlight">\(\sigma_m\)</span>, and we can also obtain the statistical error
+bar of the mean of the twist-averaged quantity <span class="math notranslate nohighlight">\(\langle{x_{TA}\rangle}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq267">
+<span class="eqno">(267)<a class="headerlink" href="#equation-eq267" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \sigma_{TA} = \frac{\left(\sum_mw_m^2\sigma_m^2\right)^{1/2}}{\sum_mw_m}\:.\end{aligned}\]</div>
+<p>The error bar of each individual twist <span class="math notranslate nohighlight">\(\sigma_m\)</span> is related to
+the autocorrelation time <span class="math notranslate nohighlight">\(\kappa_m\)</span>, intrinsic variance
+<span class="math notranslate nohighlight">\(v_m\)</span>, and the number of postequilibration MC steps
+<span class="math notranslate nohighlight">\(N_{step}\)</span> in the following way:</p>
+<div class="math notranslate nohighlight" id="equation-eq268">
+<span class="eqno">(268)<a class="headerlink" href="#equation-eq268" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \sigma_m^2=\frac{\kappa_mv_m}{N_{step}}\:.\end{aligned}\]</div>
+<p>In the setting of twist averaging, the autocorrelation time and variance
+for different twist angles are often very similar across twists, and we
+have</p>
+<div class="math notranslate nohighlight" id="equation-eq269">
+<span class="eqno">(269)<a class="headerlink" href="#equation-eq269" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \sigma_m^2=\sigma^2=\frac{\kappa v}{N_{step}}\:.\end{aligned}\]</div>
+<p>If we define the total weight as <span class="math notranslate nohighlight">\(W\)</span>, that is,
+<span class="math notranslate nohighlight">\(W\equiv\sum_{m=1}^Mw_m\)</span>, for the weighted case with <span class="math notranslate nohighlight">\(M\)</span>
+irreducible twists, the error bar is</p>
+<div class="math notranslate nohighlight" id="equation-eq270">
+<span class="eqno">(270)<a class="headerlink" href="#equation-eq270" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \sigma_{TA}^{weighted}=\frac{\left(\sum_{m=1}^Mw_m^2\right)^{1/2}}{W}\sigma\:.\end{aligned}\]</div>
+<p>For uniform weighting with <span class="math notranslate nohighlight">\(w_m=1\)</span>, the number of twists is
+<span class="math notranslate nohighlight">\(W\)</span> and we have</p>
+<div class="math notranslate nohighlight" id="equation-eq271">
+<span class="eqno">(271)<a class="headerlink" href="#equation-eq271" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \sigma_{TA}^{uniform}=\frac{1}{\sqrt{W}}\sigma\:.\end{aligned}\]</div>
+<p>We are interested in comparing the efficiency of choosing weights
+uniformly or based on the irreducible multiplicity of each twist angle
+for a given target error bar <span class="math notranslate nohighlight">\(\sigma_{target}\)</span>. The number of MC
+steps required to reach this target for uniform weighting is</p>
+<div class="math notranslate nohighlight" id="equation-eq272">
+<span class="eqno">(272)<a class="headerlink" href="#equation-eq272" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   N_{step}^{uniform} = \frac{1}{W}\frac{\kappa v}{\sigma_{target}^2}\:,\end{aligned}\]</div>
+<p>while for nonuniform weighting we have</p>
+<div class="math notranslate nohighlight" id="equation-eq273">
+<span class="eqno">(273)<a class="headerlink" href="#equation-eq273" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \label{eq:weighted_step}
+   N_{step}^{weighted} &amp;= \frac{\sum_{m=1}^Mw_m^2}{W^2}\frac{\kappa v}{\sigma_{target}^2} \nonumber\:,\\
+                   &amp;=\frac{\sum_{m=1}^Mw_m^2}{W}N_{step}^{uniform}\:.\end{aligned}\end{split}\]</div>
+<p>The MC efficiency is defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq274">
+<span class="eqno">(274)<a class="headerlink" href="#equation-eq274" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   \xi = \frac{1}{\sigma^2t}\:,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\sigma\)</span> is the error bar and <span class="math notranslate nohighlight">\(t\)</span> is the total CPU
+time required for the MC run.</p>
+<p>The main advantage made possible by irreducible twist weighting is to
+reduce the equilibration time overhead by having fewer twists and,
+hence, fewer MC runs to equilibrate. In the context of twist averaging,
+the total CPU time for a run can be considered to be</p>
+<div class="math notranslate nohighlight" id="equation-eq275">
+<span class="eqno">(275)<a class="headerlink" href="#equation-eq275" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   t=N_{twist}(N_{eq}+N_{step})t_{step}\:,\end{aligned}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N_{twist}\)</span> is the number of twists, <span class="math notranslate nohighlight">\(N_{eq}\)</span> is the
+number of MC steps required to reach equilibrium, <span class="math notranslate nohighlight">\(N_{step}\)</span> is
+the number of MC steps included in the statistical averaging as before,
+and <span class="math notranslate nohighlight">\(t_{step}\)</span> is the wall clock time required to complete a
+single MC step. For uniform weighting <span class="math notranslate nohighlight">\(N_{twist}=W\)</span>; while for
+irreducible weighting <span class="math notranslate nohighlight">\(N_{twist}=M\)</span>.</p>
+<p>We can now calculate the relative efficiency (<span class="math notranslate nohighlight">\(\eta\)</span>) of
+irreducible vs. uniform twist weighting with the aim of obtaining a
+target error bar <span class="math notranslate nohighlight">\(\sigma_{target}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq276">
+<span class="eqno">(276)<a class="headerlink" href="#equation-eq276" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+   \eta &amp;= \frac{\xi_{TA}^{weighted}}{\xi_{TA}^{uniform}} \nonumber\:, \\
+        &amp;= \frac{\sigma_{target}^2t_{TA}^{uniform}}{\sigma_{target}^2t_{TA}^{weighted}} \nonumber\:, \\
+        &amp;= \frac{W(N_{eq}+N_{step}^{uniform})}{M(N_{eq}+N_{step}^{weighted})} \nonumber\:, \\
+        &amp;= \frac{W(N_{eq}+N_{step}^{uniform})}{M(N_{eq}+\frac{\sum_{m=1}^Mw_m^2}{W}N_{step}^{uniform})} \nonumber\:, \\
+        &amp;= \frac{W}{M}\frac{1+f}{1+\frac{\sum_{m=1}^Mw_m^2}{W}f}\:.\end{aligned}\end{split}\]</div>
+<p>In this last expression, <span class="math notranslate nohighlight">\(f\)</span> is the ratio of the number of usable
+MC steps to the number that must be discarded during equilibration
+(<span class="math notranslate nohighlight">\(f=N_{step}^{uniform}/N_{eq}\)</span>); and as before,
+<span class="math notranslate nohighlight">\(W=\sum_mw_m\)</span>, which is the number of twist angles in the uniform
+weighting case. It is important to recall that
+<span class="math notranslate nohighlight">\(N_{step}^{uniform}\)</span> in <span class="math notranslate nohighlight">\(f\)</span> is defined relative to uniform
+weighting and is the number of MC steps required to reach a target
+accuracy in the case of uniform twist weights.</p>
+<p>The formula for <span class="math notranslate nohighlight">\(\eta\)</span> in the preceding can be easily changed with
+the help of <a class="reference internal" href="#equation-eq273">(273)</a> to reflect the number of MC
+steps obtained in an irreducibly weighted run instead. A good exercise
+is to consider runs that have already completed with either uniform or
+irreducible weighting and calculate the expected efficiency change had
+the opposite type of weighting been used.</p>
+<p>The break even point <span class="math notranslate nohighlight">\((\eta=1)\)</span> can be found at a usable step
+fraction of</p>
+<div class="math notranslate nohighlight" id="equation-eq277">
+<span class="eqno">(277)<a class="headerlink" href="#equation-eq277" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+   f=\frac{W-M}{M\frac{\sum_{m=1}^Mw_m^2}{W}-W}\:.\end{aligned}\]</div>
+<p>The relative efficiency <span class="math notranslate nohighlight">\((\eta)\)</span> is useful to consider in view of
+certain scenarios. An important case is where the number of required
+sampling steps is no larger than the number of equilibration steps
+(i.e., <span class="math notranslate nohighlight">\(f\approx 1\)</span>). For a very simple case with eight uniform
+twists with irreducible multiplicities of <span class="math notranslate nohighlight">\(w_m\in\{1,3,3,1\}\)</span>
+(<span class="math notranslate nohighlight">\(W=8\)</span>, <span class="math notranslate nohighlight">\(M=4\)</span>), the relative efficiency of irreducible vs.
+uniform weighting is
+<span class="math notranslate nohighlight">\(\eta=\frac{8}{4}\frac{2}{1+20/8}\approx 1.14\)</span>. In this case,
+irreducible weighting is about <span class="math notranslate nohighlight">\(14\)</span>% more efficient than uniform
+weighting.</p>
+<p>Another interesting case is one in which the number of sampling steps
+you can reach with uniform twists before wall clock time runs out is
+small relative to the number of equilibration steps
+(<span class="math notranslate nohighlight">\(f\rightarrow 0\)</span>). In this limit, <span class="math notranslate nohighlight">\(\eta\approx W/M\)</span>. For
+our eight-uniform-twist example, this would result in a relative
+efficiency of <span class="math notranslate nohighlight">\(\eta=8/4=2\)</span>, making irreducible weighting twice as
+efficient.</p>
+<p>A final case of interest is one in which the equilibration time is short
+relative to the available sampling time <span class="math notranslate nohighlight">\((f\rightarrow\infty)\)</span>,
+giving <span class="math notranslate nohighlight">\(\eta\approx W^2/(M\sum_{m=1}^Mw_m^2)\)</span>. Again, for our
+simple example we find <span class="math notranslate nohighlight">\(\eta=8^2/(4\times 20)\approx 0.8\)</span>, with
+uniform weighting being <span class="math notranslate nohighlight">\(25\)</span>% more efficient than irreducible
+weighting. For this example, the crossover point for irreducible
+weighting being more efficient than uniform weighting is <span class="math notranslate nohighlight">\(f&lt;2\)</span>,
+that is, when the available sampling period is less than twice the
+length of the equilibration period. The expected efficiency ratio and
+crossover point should be checked for the particular case under
+consideration to inform the choice between twist averaging methods.</p>
+</div>
+<div class="section" id="appendix-b-qmcpack-papers">
+<span id="appendixb"></span><h2>Appendix B: QMCPACK papers<a class="headerlink" href="#appendix-b-qmcpack-papers" title="Permalink to this headline">¶</a></h2>
+<p>The following is a list of all papers, theses, and book chapters
+known to use QMCPACK. Please let the developers know if your paper
+is missing, you know of other works, or an entry is incorrect. We
+list papers whether or not they cite QMCPACK directly. This list
+will be placed on the <a class="reference external" href="http://www.qmcpack.org">http://www.qmcpack.org</a> website.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="developing.html" class="btn btn-neutral float-left" title="Development Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

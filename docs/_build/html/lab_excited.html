@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Lab 5: Excited state calculations &mdash; QMCPACK Manual 0.0.1 documentation</title>
+  <title>Lab 5: Excited state calculations &mdash; QMCPACK Manual  documentation</title>
   
 
   
@@ -120,6 +120,12 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="design_features.html">QMCPACK Design and Feature Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
 </ul>
 
             
@@ -240,7 +246,7 @@ Outlines of these experiments are shown in <a class="reference internal" href="#
 </div>
 <p>Following the explanation in the previous paragraph and <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>, the <em>quasiparticle</em> band gap of a material can be defined as:</p>
 <div class="math notranslate nohighlight" id="equation-eq76">
-<span class="eqno">(76)<a class="headerlink" href="#equation-eq76" title="Permalink to this equation">¶</a></span>\[E_g=EA-IP=(E_{N+1}^{CBM}-E_{N}^{K'})-(E_{N}^{K'}-E_{N-1}^{VBM})=E_{N+1}^{CBM}+E_{N-1}^{VBM}-2*E_{N}^{K'}\label{eq:qp}\:,\]</div>
+<span class="eqno">(76)<a class="headerlink" href="#equation-eq76" title="Permalink to this equation">¶</a></span>\[E_g=EA-IP=(E_{N+1}^{CBM}-E_{N}^{K'})-(E_{N}^{K'}-E_{N-1}^{VBM})=E_{N+1}^{CBM}+E_{N-1}^{VBM}-2*E_{N}^{K'},\]</div>
 <p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of electrons in the neutral system and
 <span class="math notranslate nohighlight">\(E_{N}\)</span> is the ground state energy of the neutral system. CBM and
 VBM stand for the conduction band minimum and valence band maximum,
@@ -262,7 +268,7 @@ previously. This process is also known as <em>optical</em> excitation, which is
 schematically shown in <a class="reference internal" href="#fig22"><span class="std std-numref">Fig. 22</span></a>, under “Absorption.” The
 optical gap can be formulated as follows:</p>
 <div class="math notranslate nohighlight" id="equation-eq77">
-<span class="eqno">(77)<a class="headerlink" href="#equation-eq77" title="Permalink to this equation">¶</a></span>\[E_g^{K_1 {\rightarrow} K_2}=E^{K_1 {\rightarrow} K_2}- E_{0}\label{eq:optical}\:,\]</div>
+<span class="eqno">(77)<a class="headerlink" href="#equation-eq77" title="Permalink to this equation">¶</a></span>\[E_g^{K_1 {\rightarrow} K_2}=E^{K_1 {\rightarrow} K_2}- E_{0},\]</div>
 <p>where <span class="math notranslate nohighlight">\(E^{K_1 {\rightarrow} K_2}\)</span> is the energy of the system when
 a valence electron at wavevector <span class="math notranslate nohighlight">\(K_1\)</span> is promoted to the
 conduction band at wavevector <span class="math notranslate nohighlight">\(K_2\)</span>. Therefore, the
@@ -307,7 +313,7 @@ translation operations, <span class="math notranslate nohighlight">\(R_n\)</span
 Thanks to the periodicity of the Bravais lattice, a crystal can also be
 represented using periodic functions in the reciprocal space:</p>
 <div class="math notranslate nohighlight" id="equation-eq79">
-<span class="eqno">(79)<a class="headerlink" href="#equation-eq79" title="Permalink to this equation">¶</a></span>\[f({\bf R_n + r})= \sum_{m}f_me^{iG_m({\bf R_n+r})}\label{eqn:lab_ex_rec_real}\:,\]</div>
+<span class="eqno">(79)<a class="headerlink" href="#equation-eq79" title="Permalink to this equation">¶</a></span>\[f({\bf R_n + r})= \sum_{m}f_me^{iG_m({\bf R_n+r})},\]</div>
 <p>where <span class="math notranslate nohighlight">\(G_m\)</span> are called as the reciprocal lattice vectors.
 <a class="reference internal" href="#equation-eq79">(79)</a> also satisfies the equality
 <span class="math notranslate nohighlight">\(G_m\cdot{R_n}=2{\pi}N\)</span>. High-symmetry structures can be

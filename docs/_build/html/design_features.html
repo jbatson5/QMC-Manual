@@ -1,0 +1,1961 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>QMCPACK Design and Feature Documentation &mdash; QMCPACK Manual  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development Guide" href="developing.html" />
+    <link rel="prev" title="Unit Testing" href="unit_testing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features of QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Obtaining, installing, and validating QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units used in QMCPACK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input_overview.html">Input file overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulationcell.html">Specifying the system to be simulated</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro_wavefunction.html">Trial wavefunction specificaion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hamiltonianobservable.html">Hamiltonian and Observables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="methods.html">Quantum Monte Carlo Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_overview.html">Output Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analyzing.html">Analyzing QMCPACK data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LCAO.html">Periodic LCAO for Solids</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sCI.html">Selected Configuration Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="afqmc.html">Auxiliary-Field Quantum Monte Carlo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_statistics.html">Lab 1: MC Statistical Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_qmc_basics.html">Lab 2: QMC Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_advanced_molecules.html">Lab 3: Advanced molecular calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_condensed_matter.html">Lab 4: Condensed Matter Calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lab_excited.html">Lab 5: Excited state calculations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="additional_tools.html">Additional Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="external_tools.html">External Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to the Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unit_testing.html">Unit Testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">QMCPACK Design and Feature Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#qmcpack-design">QMCPACK design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-optimized-long-range-breakup-ewald">Feature: Optimized long-range breakup (Ewald)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-long-range-problem">The long-range problem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reciprocal-space-sums">Reciprocal-space sums</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#heterologous-terms">Heterologous terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#homologous-terms">Homologous terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#madelung-terms">Madelung terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mathbf-k-mathbf-0-terms"><span class="math notranslate nohighlight">\(\mathbf{k}=\mathbf{0}\)</span> terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neutralizing-background-terms">Neutralizing background terms</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#combining-terms">Combining terms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computing-the-reciprocal-potential">Computing the reciprocal potential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-coulomb-potential">The Coulomb potential</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#efficient-calculation-methods">Efficient calculation methods</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fast-computation-of-rho-mathbf-k">Fast computation of <span class="math notranslate nohighlight">\(\rho_\mathbf{k}\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#gaussian-charge-screening-breakup">Gaussian charge screening breakup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optimized-breakup-method">Optimized breakup method</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#solution-by-svd">Solution by SVD</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constraining-values">Constraining Values</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-lpqhi-basis">The LPQHI basis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fourier-coefficients">Fourier coefficients</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#enumerating-k-points">Enumerating <span class="math notranslate nohighlight">\(k\)</span>-points</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#calculating-x-k-s">Calculating <span class="math notranslate nohighlight">\(x_k\)</span>’s</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-optimized-long-range-breakup-ewald-2">Feature: Optimized long-range breakup (Ewald) 2</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basis-functions">Basis functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fourier-components-of-the-basis-functions-in-3d">Fourier components of the basis functions in 3D</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#k-ne-0-non-coulomb-case"><span class="math notranslate nohighlight">\(k\ne 0\)</span>, non-Coulomb case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#k-ne-0-coulomb-case"><span class="math notranslate nohighlight">\(k\ne 0\)</span>, Coulomb case</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#k-0-coulomb-and-non-coulomb-case"><span class="math notranslate nohighlight">\(k=0\)</span> Coulomb and non-Coulomb case</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#fourier-components-of-the-basis-functions-in-2d">Fourier components of the basis functions in 2D</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#construction-of-the-matrix-elements">Construction of the matrix elements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-cubic-spline-interpolation">Feature: Cubic spline interpolation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#one-dimension">One dimension</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hermite-interpolants">Hermite interpolants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#periodic-boundary-conditions">Periodic boundary conditions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#complete-boundary-conditions">Complete boundary conditions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#natural-boundary-conditions">Natural boundary conditions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#bicubic-splines">Bicubic splines</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#construction-bicubic-splines">Construction bicubic splines</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tricubic-splines">Tricubic splines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-b-spline-orbital-tiling-band-unfolding">Feature: B-spline orbital tiling (band unfolding)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-mathematics">The mathematics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-feo">Example: FeO</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#the-k-point-mesh">The k-point mesh</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#formulae">Formulae</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-hybrid-orbital-representation">Feature: Hybrid orbital representation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#real-spherical-harmonics">Real spherical harmonics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#projecting-to-atomic-orbitals">Projecting to atomic orbitals</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-electron-electron-ion-jastrow-factor">Feature: Electron-electron-ion Jastrow factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-reciprocal-space-jastrow-factors">Feature: Reciprocal-space Jastrow factors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#two-body-jastrow">Two-body Jastrow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#one-body-jastrow">One-body Jastrow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#symmetry-considerations">Symmetry considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gradients-and-laplacians">Gradients and Laplacians</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developing.html">Development Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="appendices.html">Appendices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMCPACK Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>QMCPACK Design and Feature Documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/design_features.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="qmcpack-design-and-feature-documentation">
+<span id="design-features"></span><h1>QMCPACK Design and Feature Documentation<a class="headerlink" href="#qmcpack-design-and-feature-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This section contains information on the overall design of QMCPACK.  Also included are detailed explanations/derivations of major features and algorithms present in the code.</p>
+<div class="section" id="qmcpack-design">
+<h2>QMCPACK design<a class="headerlink" href="#qmcpack-design" title="Permalink to this headline">¶</a></h2>
+<p>TBD.</p>
+</div>
+<div class="section" id="feature-optimized-long-range-breakup-ewald">
+<h2>Feature: Optimized long-range breakup (Ewald)<a class="headerlink" href="#feature-optimized-long-range-breakup-ewald" title="Permalink to this headline">¶</a></h2>
+<p>Consider a group of particles interacting with long-range central
+potentials, <span class="math notranslate nohighlight">\(v^{\alpha \beta}(|r^{\alpha}_i - r^{\beta}_j|)\)</span>,
+where the Greek superscripts represent the particle species (e.g.,
+<span class="math notranslate nohighlight">\(\alpha=\text{electron}\)</span>, <span class="math notranslate nohighlight">\(\beta=\text{proton}\)</span>), and Roman
+subscripts refer to particle number within a species. We can then write
+the total interaction energy for the system as</p>
+<div class="math notranslate nohighlight" id="equation-eq80">
+<span class="eqno">(80)<a class="headerlink" href="#equation-eq80" title="Permalink to this equation">¶</a></span>\[V = \sum_\alpha \left\{\sum_{i&lt;j} v^{\alpha\alpha}(|\mathbf{r}^\alpha_i - \mathbf{r}^\alpha_j|) +
+\sum_{\beta&lt;\alpha}
+\sum_{i,j} v^{\alpha \beta}(|\mathbf{r}^{\alpha}_i - \mathbf{r}^{\beta}_j|) \right\}\]</div>
+<div class="section" id="the-long-range-problem">
+<h3>The long-range problem<a class="headerlink" href="#the-long-range-problem" title="Permalink to this headline">¶</a></h3>
+<p>Consider such a system in periodic boundary conditions in a cell defined
+by primitive lattice vectors <span class="math notranslate nohighlight">\(\mathbf{a}_1\)</span>, <span class="math notranslate nohighlight">\(\mathbf{a}_2\)</span>,
+and <span class="math notranslate nohighlight">\(\mathbf{a}_3\)</span>. Let
+<span class="math notranslate nohighlight">\(\mathbf{L}\equiv n_1 \mathbf{a}_1 + n_2 \mathbf{a}_2 + n_3\mathbf{a}_3\)</span>
+be a direct lattice vector. Then the interaction energy per cell for the
+periodic system is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq81">
+<span class="eqno">(81)<a class="headerlink" href="#equation-eq81" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{split}
+V = &amp; \sum_\mathbf{L}\sum_\alpha \left\{
+\overbrace{\sum_{i&lt;j} v^{\alpha\alpha}(|\mathbf{r}^\alpha_i - \mathbf{r}^\alpha_j + \mathbf{L}|)}^{\text{homologous}} +
+\overbrace{\sum_{\beta&lt;\alpha}
+\sum_{i,j} v^{\alpha \beta}(|\mathbf{r}^{\alpha}_i - \mathbf{r}^{\beta}_j+\mathbf{L}|)}^{\text{heterologous}}
+\right\}  \\
+&amp; + \underbrace{\sum_{\mathbf{L}\neq \mathbf{0}} \sum_\alpha N^\alpha v^{\alpha \alpha} (|\mathbf{L}|)}_\text{Madelung}\:.
+\end{split}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(N^\alpha\)</span> is the number particles of species
+<span class="math notranslate nohighlight">\(\alpha\)</span>. If the potentials <span class="math notranslate nohighlight">\(v^{\alpha\beta}(r)\)</span> are indeed
+long-range, the summation over direct lattice vectors will not converge
+in this naive form. A solution to the problem was posited by Ewald. We
+break the central potentials into two pieces—a short-range and a
+long-range part defined by</p>
+<div class="math notranslate nohighlight" id="equation-eq82">
+<span class="eqno">(82)<a class="headerlink" href="#equation-eq82" title="Permalink to this equation">¶</a></span>\[v^{\alpha \beta}(r) = v_s^{\alpha\beta}(r) + v_l^{\alpha \beta}(r)\:.\]</div>
+<p>We will perform the summation over images for the short-range part in
+real space, while performing the sum for the long-range part in
+reciprocal space. For simplicity, we choose
+<span class="math notranslate nohighlight">\(v^{\alpha \beta}_s(r)\)</span> so that it is identically zero at the
+half-the-box length. This eliminates the need to sum over images in real
+space.</p>
+</div>
+<div class="section" id="reciprocal-space-sums">
+<h3>Reciprocal-space sums<a class="headerlink" href="#reciprocal-space-sums" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="heterologous-terms">
+<h4>Heterologous terms<a class="headerlink" href="#heterologous-terms" title="Permalink to this headline">¶</a></h4>
+<p>We begin with eq:<cite>eq81</cite>, starting with the heterologous terms (i.e., the terms involving particles of different species).  The
+short-range terms are trivial, so we neglect them here.</p>
+<div class="math notranslate nohighlight" id="equation-eq83">
+<span class="eqno">(83)<a class="headerlink" href="#equation-eq83" title="Permalink to this equation">¶</a></span>\[\text{heterologous} = \frac{1}{2} \sum_{\alpha \neq \beta} \sum_{i,j} \sum_\mathbf{L}
+ v^{\alpha\beta}_l(\mathbf{r}_i^\alpha - \mathbf{r}_j^\beta + \mathbf{L})\:.\]</div>
+<p>We insert the resolution of unity in real space twice:</p>
+<div class="math notranslate nohighlight" id="equation-eq84">
+<span class="eqno">(84)<a class="headerlink" href="#equation-eq84" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+ \text{heterologous} &amp; = &amp; \frac{1}{2}\sum_{\alpha \neq \beta} \int_\text{cell} d\mathbf{r}\, d\mathbf{r}' \, \sum_{i,j}
+ \delta(\mathbf{r}_i^\alpha - \mathbf{r}) \delta(\mathbf{r}_j^\beta-\mathbf{r}') \sum_\mathbf{L}
+ v^{\alpha\beta}_l(|\mathbf{r}- \mathbf{r}' + \mathbf{L}|)\:, \\
+ &amp; = &amp; \frac{1}{2\Omega^2}\sum_{\alpha \neq \beta} \int_\text{cell} d\mathbf{r}\, d\mathbf{r}' \, \sum_{\mathbf{k}, \mathbf{k}', i, j} e^{i\mathbf{k}\cdot(\mathbf{r}_i^\alpha
+   - \mathbf{r})} e^{i\mathbf{k}'\cdot(\mathbf{r}_j^\beta - \mathbf{r}')} \sum_\mathbf{L}
+ v^{\alpha\beta}_l(|\mathbf{r}- \mathbf{r}' + \mathbf{L}|) \nonumber\:, \\
+ &amp; = &amp; \frac{1}{2\Omega^2} \sum_{\alpha \neq \beta} \int_\text{cell} d\mathbf{r}\, d\mathbf{r}'\,
+ \sum_{\mathbf{k}, \mathbf{k}', \mathbf{k}'', i, j} e^{i\mathbf{k}\cdot(\mathbf{r}_i^\alpha - \mathbf{r})}
+ e^{i\mathbf{k}'\cdot(\mathbf{r}_j^\beta-\mathbf{r}')} e^{i\mathbf{k}''\cdot(\mathbf{r}-\mathbf{r}')}
+ v^{\alpha\beta}_{\mathbf{k}''}\nonumber\:.\end{aligned}\end{split}\]</div>
+<p>Here, the <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> summations are over reciprocal lattice
+vectors given by
+<span class="math notranslate nohighlight">\(\mathbf{k}= m_1 \mathbf{b}_1 + m_2\mathbf{b}_2 + m_3\mathbf{b}_3\)</span>,
+where</p>
+<div class="math notranslate nohighlight" id="equation-eq85">
+<span class="eqno">(85)<a class="headerlink" href="#equation-eq85" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\mathbf{b}_1 &amp; = &amp; 2\pi \frac{\mathbf{a}_2 \times \mathbf{a}_3}{\mathbf{a}_1 \cdot (\mathbf{a}_2 \times
+  \mathbf{a}_3)} \nonumber\:, \\
+\mathbf{b}_2 &amp; = &amp; 2\pi \frac{\mathbf{a}_3 \times \mathbf{a}_1}{\mathbf{a}_1 \cdot (\mathbf{a}_2 \times
+  \mathbf{a}_3)}\:, \\
+\mathbf{b}_3 &amp; = &amp; 2\pi \frac{\mathbf{a}_1 \times \mathbf{a}_2}{\mathbf{a}_1 \cdot (\mathbf{a}_2 \times
+  \mathbf{a}_3)} \nonumber\:.\end{aligned}\end{split}\]</div>
+<p>We note that <span class="math notranslate nohighlight">\(\mathbf{k}\cdot \mathbf{L}= 2\pi(n_1 m_1 + n_2 m_2 + n_3 m_3)\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq86">
+<span class="eqno">(86)<a class="headerlink" href="#equation-eq86" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+v_{k''}^{\alpha \beta} &amp; = &amp;
+\frac{1}{\Omega} \int_{\text{cell}} d\mathbf{r}'' \sum_\mathbf{L}
+e^{-i\mathbf{k}''\cdot(|\mathbf{r}''+\mathbf{L}|)} v^{\alpha\beta}(|\mathbf{r}''+\mathbf{L}|)\:, \\
+&amp; = &amp; \frac{1}{\Omega} \int_\text{all space} d\tilde{\mathbf{r}} \,
+    e^{-i\mathbf{k}'' \cdot \tilde{\mathbf{r}}} v^{\alpha\beta}(\tilde{r})\:, \end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Omega\)</span> is the volume of the cell. Here we have used the
+fact that summing over all cells of the integral over the cell is
+equivalent to integrating over all space.</p>
+<div class="math notranslate nohighlight" id="equation-eq87">
+<span class="eqno">(87)<a class="headerlink" href="#equation-eq87" title="Permalink to this equation">¶</a></span>\[\text{hetero} = \frac{1}{2\Omega^2} \sum_{\alpha \neq \beta}
+\int_\text{cell} d\mathbf{r}\, d\mathbf{r}' \, \sum_{\mathbf{k}, \mathbf{k}', \mathbf{k}'', i, j}
+e^{i(\mathbf{k}\cdot \mathbf{r}_i^\alpha + \mathbf{k}' \cdot\mathbf{r}_j^\beta)} e^{i(\mathbf{k}''-\mathbf{k})\cdot \mathbf{r}}
+e^{-i(\mathbf{k}'' + \mathbf{k}')\cdot \mathbf{r}'} v^{\alpha \beta}_{\mathbf{k}''}\:.\]</div>
+<p>We have</p>
+<div class="math notranslate nohighlight" id="equation-eq88">
+<span class="eqno">(88)<a class="headerlink" href="#equation-eq88" title="Permalink to this equation">¶</a></span>\[\frac{1}{\Omega} \int d\mathbf{r}\  e^{i(\mathbf{k}-\mathbf{k}')\cdot \mathbf{r}} =
+\delta_{\mathbf{k},\mathbf{k}'}\:.\]</div>
+<p>Then, performing the integrations we have</p>
+<div class="math notranslate nohighlight" id="equation-eq89">
+<span class="eqno">(89)<a class="headerlink" href="#equation-eq89" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+\text{hetero} = \frac{1}{2} \sum_{\alpha \neq \beta}
+\sum_{\mathbf{k}, \mathbf{k}', \mathbf{k}'', i, j}
+e^{i(\mathbf{k}\cdot \mathbf{r}_i^\alpha + \mathbf{k}' \cdot\mathbf{r}_j^\beta)} \delta_{\mathbf{k},\mathbf{k}''}
+\delta_{-\mathbf{k}', \mathbf{k}''} v^{\alpha \beta}_{\mathbf{k}''}\:.\end{aligned}\]</div>
+<p>We now separate the summations, yielding</p>
+<div class="math notranslate nohighlight" id="equation-eq90">
+<span class="eqno">(90)<a class="headerlink" href="#equation-eq90" title="Permalink to this equation">¶</a></span>\[\text{hetero} = \frac{1}{2} \sum_{\alpha \neq \beta} \sum_{\mathbf{k}, \mathbf{k}'}
+\underbrace{\left[\sum_i e^{i\mathbf{k}\cdot \mathbf{r}_i^\alpha} \rule{0cm}{0.705cm}
+    \right]}_{\rho_\mathbf{k}^\alpha}
+\underbrace{\left[\sum_j e^{i\mathbf{k}' \cdot \mathbf{r}_j^\beta} \right]}_{\rho_{\mathbf{k}'}^\beta}
+ \delta_{\mathbf{k},\mathbf{k}''} \delta_{-\mathbf{k}', \mathbf{k}''} v^{\alpha
+  \beta}_{\mathbf{k}''}\:.\]</div>
+<p>Summing over <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{k}'\)</span>, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq91">
+<span class="eqno">(91)<a class="headerlink" href="#equation-eq91" title="Permalink to this equation">¶</a></span>\[\text{hetero} = \frac{1}{2} \sum_{\alpha \neq \beta} \sum_{\mathbf{k}''}
+\rho_{\mathbf{k}''}^\alpha \, \rho_{-\mathbf{k}''}^\beta v_{k''}^{\alpha \beta}\:.\]</div>
+<p>We can simplify the calculation a bit further by rearranging the
+sums over species:</p>
+<div class="math notranslate nohighlight" id="equation-eq92">
+<span class="eqno">(92)<a class="headerlink" href="#equation-eq92" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\text{hetero} &amp; = &amp; \frac{1}{2} \sum_{\alpha &gt; \beta} \sum_{\mathbf{k}}
+\left(\rho^\alpha_\mathbf{k}\rho^\beta_{-\mathbf{k}} + \rho^\alpha_{-\mathbf{k}}
+\rho^\beta_\mathbf{k}\right) v_{k}^{\alpha\beta}\:, \\
+&amp; = &amp; \sum_{\alpha &gt; \beta} \sum_\mathbf{k}\mathcal{R}e\left(\rho_\mathbf{k}^\alpha
+\rho_{-\mathbf{k}}^\beta\right)v_k^{\alpha\beta} .\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="homologous-terms">
+<h4>Homologous terms<a class="headerlink" href="#homologous-terms" title="Permalink to this headline">¶</a></h4>
+<p>We now consider the terms involving particles of the same species
+interacting with each other.  The algebra is very similar to the
+preceding, with the slight difficulty of avoiding the self-interaction term.</p>
+<div class="math notranslate nohighlight" id="equation-eq93">
+<span class="eqno">(93)<a class="headerlink" href="#equation-eq93" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\text{homologous} &amp; = &amp; \sum_\alpha \sum_L \sum_{i&lt;j} v_l^{\alpha
+  \alpha}(|\mathbf{r}_i^\alpha - \mathbf{r}_j^\alpha + \mathbf{L}|)\:, \\
+ &amp; = &amp; \frac{1}{2} \sum_\alpha \sum_L \sum_{i\neq j} v_l^{\alpha
+  \alpha}(|\mathbf{r}_i^\alpha - \mathbf{r}_j^\alpha + \mathbf{L}|)\:. \end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq94">
+<span class="eqno">(94)<a class="headerlink" href="#equation-eq94" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\text{homologous} &amp; = &amp; \frac{1}{2} \sum_\alpha \sum_L
+\left[
+-N^\alpha v_l^{\alpha \alpha}(|\mathbf{L}|)  + \sum_{i,j} v^{\alpha \alpha}_l(|\mathbf{r}_i^\alpha - \mathbf{r}_j^\alpha + \mathbf{L}|)
+  \right]\:, \\
+&amp; = &amp; \frac{1}{2} \sum_\alpha \sum_\mathbf{k}\left(|\rho_k^\alpha|^2 - N
+\right) v_k^{\alpha \alpha}\:.\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="madelung-terms">
+<h4>Madelung terms<a class="headerlink" href="#madelung-terms" title="Permalink to this headline">¶</a></h4>
+<p>Let us now consider the Madelung term for a single particle of species
+<span class="math notranslate nohighlight">\(\alpha\)</span>. This term corresponds to the interaction of a particle
+with all of its periodic images.</p>
+<div class="math notranslate nohighlight" id="equation-eq95">
+<span class="eqno">(95)<a class="headerlink" href="#equation-eq95" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+v_M^{\alpha} &amp; = &amp; \frac{1}{2} \sum_{\mathbf{L}\neq \mathbf{0}} v^{\alpha
+  \alpha}(|\mathbf{L}|)\:, \\
+&amp; = &amp; \frac{1}{2} \left[ -v_l^{\alpha \alpha}(0) + \sum_\mathbf{L}v^{\alpha
+  \alpha}(|\mathbf{L}|) \right]\:, \\
+&amp; = &amp; \frac{1}{2} \left[ -v_l^{\alpha \alpha}(0) + \sum_\mathbf{k}v^{\alpha
+  \alpha}_\mathbf{k}\right]\:.  \end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="mathbf-k-mathbf-0-terms">
+<h4><span class="math notranslate nohighlight">\(\mathbf{k}=\mathbf{0}\)</span> terms<a class="headerlink" href="#mathbf-k-mathbf-0-terms" title="Permalink to this headline">¶</a></h4>
+<p>Thus far, we have neglected what happens at the special point
+<span class="math notranslate nohighlight">\(\mathbf{k}=
+\mathbf{0}\)</span>. For many long-range potentials, such as the Coulomb
+potential, <span class="math notranslate nohighlight">\(v_k^{\alpha \alpha}\)</span> diverges for <span class="math notranslate nohighlight">\(k=0\)</span>.
+However, we recognize that for a charge-neutral system, the divergent
+part of the terms cancel each other. If all the potential in the system
+were precisely Coulomb, the <span class="math notranslate nohighlight">\(\mathbf{k}=\mathbf{0}\)</span> terms would
+cancel precisely, yielding zero. For systems involving PPs, however, it
+may be that the resulting term is finite, but nonzero. Consider the
+terms from <span class="math notranslate nohighlight">\(\mathbf{k}=\mathbf{0}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq96">
+<span class="eqno">(96)<a class="headerlink" href="#equation-eq96" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+V_{k=0} &amp; = &amp; \sum_{\alpha&gt;\beta} N^\alpha N^\beta v^{\alpha \beta}_{k=0}
++ \frac{1}{2} \sum_\alpha \left(N^{\alpha}\right)^2 v^{\alpha\alpha}_{k=0}\:, \\
+&amp; = &amp; \frac{1}{2} \sum_{\alpha,\beta} N^\alpha N^\beta v^{\alpha
+  \beta}_{k=0}\:.
+\end{aligned}\end{split}\]</div>
+<p>Next, we must compute <span class="math notranslate nohighlight">\(v^{\alpha \beta}_{k=0}\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq97">
+<span class="eqno">(97)<a class="headerlink" href="#equation-eq97" title="Permalink to this equation">¶</a></span>\[v^{\alpha \beta}_{k=0} = \frac{4 \pi}{\Omega} \int_0^\infty dr\ r^2
+v_l^{\alpha \beta}(r)\:.\]</div>
+<p>We recognize that this integral will not converge because of the
+large-<span class="math notranslate nohighlight">\(r\)</span> behavior. However, we recognize that when we do the sum
+in <a class="reference internal" href="#equation-eq96">(96)</a>, the large-<span class="math notranslate nohighlight">\(r\)</span> parts of the integrals
+will cancel precisely. Therefore, we define</p>
+<div class="math notranslate nohighlight" id="equation-eq98">
+<span class="eqno">(98)<a class="headerlink" href="#equation-eq98" title="Permalink to this equation">¶</a></span>\[\tilde{v}^{\alpha \beta}_{k=0} = \frac{4 \pi}{\Omega}
+\int_0^{r_\text{end}} dr\ r^2 v_l^{\alpha \beta}(r)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(r_{\text{end}}\)</span> is some cutoff value after which the
+potential tails precisely cancel.</p>
+</div>
+<div class="section" id="neutralizing-background-terms">
+<h4>Neutralizing background terms<a class="headerlink" href="#neutralizing-background-terms" title="Permalink to this headline">¶</a></h4>
+<p>For systems with a net charge, such as the one-component plasma
+(jellium), we add a uniform background charge, which makes the system
+neutral.  When we do this, we must add a term that comes from the
+interaction of the particle with the neutral background.  It is a
+constant term, independent of the particle positions.  In general, we
+have a compensating background for each species, which largely cancels
+out for neutral systems.</p>
+<div class="math notranslate nohighlight" id="equation-eq99">
+<span class="eqno">(99)<a class="headerlink" href="#equation-eq99" title="Permalink to this equation">¶</a></span>\[V_\text{background} = -\frac{1}{2} \sum_\alpha \left(N^\alpha\right)^2
+v^{\alpha \alpha}_{s\mathbf{0}}
+-\sum_{\alpha &gt; \beta} N_\alpha N_\beta
+v^{\alpha\beta}_{s\mathbf{0}}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(v^{\alpha \beta}_{s\mathbf{0}}\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq100">
+<span class="eqno">(100)<a class="headerlink" href="#equation-eq100" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+v^{\alpha \beta}_{s\mathbf{0}} &amp; = &amp; \frac{1}{\Omega} \int_0^{r_c} d^3 r\
+v^{\alpha \beta}_s(r)\:, \\
+&amp; = &amp; \frac{4 \pi}{\Omega} \int_0^{r_c} r^2 v_s(r) \ dr \nonumber\:.\end{aligned}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="combining-terms">
+<h3>Combining terms<a class="headerlink" href="#combining-terms" title="Permalink to this headline">¶</a></h3>
+<p>Here, we sum all of the terms we computed in the previous sections:</p>
+<div class="math notranslate nohighlight" id="equation-eq101">
+<span class="eqno">(101)<a class="headerlink" href="#equation-eq101" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+V &amp; = &amp; \sum_{\alpha &gt; \beta} \left[\sum_{i,j} v_s(|\mathbf{r}_i^\alpha
+  -\mathbf{r}_j^\beta|) + \sum_\mathbf{k}\mathcal{R}e\left(\rho_\mathbf{k}^\alpha
+  \rho_{-\mathbf{k}}^\beta\right)v^{\alpha\beta}_k  -N^\alpha N^\beta
+  v^{\alpha \beta}_{s\mathbf{0}}  \right] \nonumber\:, \\
+&amp; + &amp; \sum_\alpha \left[ N^\alpha v_M^\alpha + \sum_{i&gt;j} v_s(|\mathbf{r}_i^\alpha -
+  \mathbf{r}_j^\alpha|) + \frac{1}{2} \sum_\mathbf{k}\left( |\rho_\mathbf{k}^\alpha|^2 -
+  N\right) v^{\alpha\alpha}_\mathbf{k}-\frac{1}{2}\left(N_\alpha\right)^2 v_{s\mathbf{0}}^{\alpha\alpha}\right] \nonumber\:, \\
+&amp; = &amp; \sum_{\alpha &gt; \beta} \left[\sum_{i,j} v_s(|\mathbf{r}_i^\alpha
+  -\mathbf{r}_j^\beta|) + \sum_\mathbf{k}\mathcal{R}e\left(\rho_\mathbf{k}^\alpha
+  \rho_{-\mathbf{k}}^\beta\right) v^{\alpha \beta}_k   -N^\alpha N^\beta
+  v^{\alpha \beta}_{s\mathbf{0}}  +\tilde{V}_{k=0} \right]\:, \\
+&amp; + &amp; \sum_\alpha \left[ -\frac{N^\alpha v_l^{\alpha \alpha}(0)}{2}  + \sum_{i&gt;j} v_s(|\mathbf{r}_i^\alpha -
+  \mathbf{r}_j^\alpha|) + \frac{1}{2} \sum_\mathbf{k}|\rho_\mathbf{k}^\alpha|^2 v^{\alpha\alpha}_\mathbf{k}- \frac{1}{2}\left(N_\alpha\right)^2
+  v_{s\mathbf{0}}^{\alpha\alpha} +\tilde{V}_{k=0}\right]  \nonumber\:.\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="computing-the-reciprocal-potential">
+<h3>Computing the reciprocal potential<a class="headerlink" href="#computing-the-reciprocal-potential" title="Permalink to this headline">¶</a></h3>
+<p>Now we return to <a class="reference internal" href="#equation-eq86">(86)</a>. Without loss of generality, we
+define for convenience <span class="math notranslate nohighlight">\(\mathbf{k}= k\hat{\mathbf{z}}\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq102">
+<span class="eqno">(102)<a class="headerlink" href="#equation-eq102" title="Permalink to this equation">¶</a></span>\[v^{\alpha \beta}_k = \frac{2\pi}{\Omega} \int_0^\infty dr \int_{-1}^1
+  d\cos(\theta) \ r^2 e^{-i k r \cos(\theta)} v_l^{\alpha \beta}(r)\:.\]</div>
+<p>We do the angular integral first.  By inversion symmetry, the
+imaginary part of the integral vanishes, yielding</p>
+<div class="math notranslate nohighlight" id="equation-eq103">
+<span class="eqno">(103)<a class="headerlink" href="#equation-eq103" title="Permalink to this equation">¶</a></span>\[v^{\alpha \beta}_k = \frac{4\pi}{\Omega k}\int _0^\infty dr\ r \sin(kr)
+v^{\alpha \beta}_l(r)\:.\]</div>
+</div>
+<div class="section" id="the-coulomb-potential">
+<h3>The Coulomb potential<a class="headerlink" href="#the-coulomb-potential" title="Permalink to this headline">¶</a></h3>
+<p>For the case of the Coulomb potential, the preceding integral is not
+formally convergent if we do the integral naively. We may remedy the
+situation by including a convergence factor, <span class="math notranslate nohighlight">\(e^{-k_0 r}\)</span>. For a
+potential of the form <span class="math notranslate nohighlight">\(v^{\text{coul}}(r) = q_1 q_2/r\)</span>, this
+yields</p>
+<div class="math notranslate nohighlight" id="equation-eq104">
+<span class="eqno">(104)<a class="headerlink" href="#equation-eq104" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+v^{\text{screened coul}}_k &amp; = &amp; \frac{4\pi q_1 q_2}{\Omega k} \int_0^\infty dr\ \sin(kr)
+e^{-k_0r}\:, \\
+&amp; = &amp; \frac{4\pi q_1 q_2}{\Omega (k^2 + k_0^2)}\:.\end{aligned}\end{split}\]</div>
+<p>Allowing the convergence factor to tend to zero, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq105">
+<span class="eqno">(105)<a class="headerlink" href="#equation-eq105" title="Permalink to this equation">¶</a></span>\[v_k^\text{coul} = \frac{4 \pi q_1 q_2}{\Omega k^2}\:.\]</div>
+<p>For more generalized potentials with a Coulomb tail, we cannot
+evaluate <a class="reference internal" href="#equation-eq103">(103)</a> numerically but must handle the coulomb part
+analytically.  In this case, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq106">
+<span class="eqno">(106)<a class="headerlink" href="#equation-eq106" title="Permalink to this equation">¶</a></span>\[v_k^{\alpha \beta} = \frac{4\pi}{\Omega}
+\left\{ \frac{q_1 q_2}{k^2} + \int_0^\infty dr \ r \sin(kr) \left[ v_l^{\alpha \beta}(r) -
+  \frac{q_1 q_2}{r} \right] \right\}\:.\]</div>
+</div>
+<div class="section" id="efficient-calculation-methods">
+<h3>Efficient calculation methods<a class="headerlink" href="#efficient-calculation-methods" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="fast-computation-of-rho-mathbf-k">
+<h4>Fast computation of <span class="math notranslate nohighlight">\(\rho_\mathbf{k}\)</span><a class="headerlink" href="#fast-computation-of-rho-mathbf-k" title="Permalink to this headline">¶</a></h4>
+<p>We wish to quickly calculate the quantity</p>
+<div class="math notranslate nohighlight" id="equation-eq107">
+<span class="eqno">(107)<a class="headerlink" href="#equation-eq107" title="Permalink to this equation">¶</a></span>\[\rho_\mathbf{k}^\alpha \equiv \sum_i e^{i\mathbf{k}\cdot r_i^\alpha}\:.\]</div>
+<p>First, we write</p>
+<div class="math notranslate nohighlight" id="equation-eq108">
+<span class="eqno">(108)<a class="headerlink" href="#equation-eq108" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\mathbf{k}&amp; = &amp; m_1 \mathbf{b}_1 + m_2 \mathbf{b}_2 + m_3 \mathbf{b}_3\:, \\
+\mathbf{k}\cdot \mathbf{r}_i^\alpha &amp; = &amp;  m_1 \mathbf{b}_1 \cdot \mathbf{r}_i^\alpha +
+m_2 \mathbf{b}_2 \cdot \mathbf{r}_i^\alpha + m_3 \mathbf{b}_3 \cdot \mathbf{r}_i^\alpha\:, \\
+e^{i\mathbf{k}\cdot r_i^\alpha} &amp; = &amp;
+{\underbrace{\left[e^{i \mathbf{b}_1 \cdot\mathbf{r}_i^\alpha}\right]}_{C^{i\alpha}_1}}^{m_1}
+{\underbrace{\left[e^{i \mathbf{b}_2 \cdot\mathbf{r}_i^\alpha}\right]}_{C^{i\alpha}_2}}^{m_2}
+{\underbrace{\left[e^{i \mathbf{b}_3 \cdot\mathbf{r}_i^\alpha}\right]}_{C^{i\alpha}_3}}^{m_3}\:.\end{aligned}\end{split}\]</div>
+<p>Now, we note that</p>
+<div class="math notranslate nohighlight" id="equation-eq109">
+<span class="eqno">(109)<a class="headerlink" href="#equation-eq109" title="Permalink to this equation">¶</a></span>\[^{m_1} = C^{i\alpha}_1 [C^{i\alpha}]^{(m_1-1)}\:.\]</div>
+<p>This allows us to recursively build up an array of the
+<span class="math notranslate nohighlight">\(C^{i\alpha}\)</span>s and then compute <span class="math notranslate nohighlight">\(\rho_\mathbf{k}\)</span> for all
+<span class="math notranslate nohighlight">\(\mathbf{k}\)</span>-vectors by looping over all k-vectors, requiring only
+two complex multiplies per particle per <span class="math notranslate nohighlight">\(\mathbf{k}\)</span>.</p>
+<p class="centered">
+<strong>Algorithm to quickly calculate <span class="math notranslate nohighlight">\(\rho_\mathbf{k}^\alpha\)</span>.</strong></p><div class="line-block">
+<div class="line">Create list of <span class="math notranslate nohighlight">\(\mathbf{k}\)</span>-vectors and corresponding <span class="math notranslate nohighlight">\((m_1, m_2, m_3)\)</span> indices.</div>
+<div class="line"><strong>for all</strong> <span class="math notranslate nohighlight">\(\alpha \in\)</span> species</div>
+<div class="line-block">
+<div class="line">Zero out <span class="math notranslate nohighlight">\(\rho_\mathbf{k}^\alpha\)</span></div>
+<div class="line"><strong>for all</strong> <span class="math notranslate nohighlight">\(i \in\)</span> particles <strong>do</strong></div>
+<div class="line-block">
+<div class="line"><strong>for</strong> <span class="math notranslate nohighlight">\(j \in [1\cdots3]\)</span> <strong>do</strong></div>
+<div class="line-block">
+<div class="line">Compute <span class="math notranslate nohighlight">\(C^{i \alpha}_j \equiv e^{i \mathbf{b}_j \cdot  \mathbf{r}^{\alpha}_i}\)</span></div>
+<div class="line"><strong>for</strong> <span class="math notranslate nohighlight">\(m \in [-m_{\text{max}}\dots m_{\text{max}}]\)</span> <strong>do</strong></div>
+<div class="line-block">
+<div class="line">Compute <span class="math notranslate nohighlight">\([C^{i \alpha}_j]^m\)</span> and store in array</div>
+</div>
+<div class="line"><strong>end for</strong></div>
+</div>
+<div class="line"><strong>end for</strong></div>
+<div class="line"><strong>for all</strong> <span class="math notranslate nohighlight">\((m_1, m_2, m_3) \in\)</span> index list <strong>do</strong></div>
+<div class="line-block">
+<div class="line">Compute <span class="math notranslate nohighlight">\(e^{i \mathbf{k}\cdot r^\alpha_i} = [C^{i\alpha}_1]^{m_1} [C^{i\alpha}_2]^{m_2}[C^{i\alpha}_3]^{m_3}\)</span> from array</div>
+</div>
+<div class="line"><strong>end for</strong></div>
+</div>
+<div class="line"><strong>end for</strong></div>
+</div>
+<div class="line"><strong>end for</strong></div>
+</div>
+</div>
+</div>
+<div class="section" id="gaussian-charge-screening-breakup">
+<h3>Gaussian charge screening breakup<a class="headerlink" href="#gaussian-charge-screening-breakup" title="Permalink to this headline">¶</a></h3>
+<p>This original approach to the short- and long-range breakup adds an
+opposite screening charge of Gaussian shape around each point charge.
+It then removes the charge in the long-range part of the potential.
+In this potential,</p>
+<div class="math notranslate nohighlight" id="equation-eq110">
+<span class="eqno">(110)<a class="headerlink" href="#equation-eq110" title="Permalink to this equation">¶</a></span>\[v_{\text{long}}(r) = \frac{q_1 q_2}{r} \text{erf}(\alpha r)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is an adjustable parameter used to control how
+short ranged the potential should be. If the box size is <span class="math notranslate nohighlight">\(L\)</span>, a
+typical value for <span class="math notranslate nohighlight">\(\alpha\)</span> might be <span class="math notranslate nohighlight">\(7/(Lq_1 q_2)\)</span>. We
+should note that this form for the long-range potential should also work
+for any general potential with a Coulomb tail (e.g., pseudo-Hamiltonian
+potentials. For this form of the long-range potential, we have in
+<span class="math notranslate nohighlight">\(k\)</span>-space</p>
+<div class="math notranslate nohighlight" id="equation-eq111">
+<span class="eqno">(111)<a class="headerlink" href="#equation-eq111" title="Permalink to this equation">¶</a></span>\[v_k = \frac{4\pi q_1 q_2 \exp\left[\frac{-k^2}{4\alpha^2}\right]}{\Omega k^2}\:.\]</div>
+</div>
+<div class="section" id="optimized-breakup-method">
+<h3>Optimized breakup method<a class="headerlink" href="#optimized-breakup-method" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we undertake the task of choosing a
+long-range/short-range partitioning of the potential, which is optimal
+in that it minimizes the error for given real and <span class="math notranslate nohighlight">\(k\)</span>-space
+cutoffs <span class="math notranslate nohighlight">\(r_c\)</span> and <span class="math notranslate nohighlight">\(k_c\)</span>. Here, we slightly modify the method
+introduced by Natoli and Ceperley <a class="bibtex reference internal" href="#natoli1995" id="id1">[NC95]</a>. We
+choose <span class="math notranslate nohighlight">\(r_c = \frac{1}{2}\min\{L_i\}\)</span> so that we require the nearest image in
+real-space summation. <span class="math notranslate nohighlight">\(k_c\)</span> is then chosen to satisfy our accuracy
+requirements.</p>
+<p>Here we modify our notation slightly to accommodate details not
+previously required. We restrict our discussion to the interaction of
+two particle species (which may be the same), and drop our species
+indices. Thus, we are looking for short- and long-range potentials
+defined by</p>
+<div class="math notranslate nohighlight" id="equation-eq112">
+<span class="eqno">(112)<a class="headerlink" href="#equation-eq112" title="Permalink to this equation">¶</a></span>\[v(r) = v^s(r) + v^\ell(r)\:.\]</div>
+<p>Define <span class="math notranslate nohighlight">\(v^s_k\)</span> and <span class="math notranslate nohighlight">\(v^\ell_k\)</span> to be the respective Fourier
+transforms of the previous equation. The goal is to choose
+<span class="math notranslate nohighlight">\(v_s(r)\)</span> such that its value and first two derivatives vanish at
+<span class="math notranslate nohighlight">\(r_c\)</span>, while making <span class="math notranslate nohighlight">\(v^\ell(r)\)</span> as smooth as possible so
+that <span class="math notranslate nohighlight">\(k\)</span>-space components, <span class="math notranslate nohighlight">\(v^\ell_k\)</span>, are very small for
+<span class="math notranslate nohighlight">\(k&gt;k_c\)</span>. Here, we describe how to do this in an optimal way.</p>
+<p>Define the periodic potential, <span class="math notranslate nohighlight">\(V_p\)</span>, as</p>
+<div class="math notranslate nohighlight" id="equation-eq113">
+<span class="eqno">(113)<a class="headerlink" href="#equation-eq113" title="Permalink to this equation">¶</a></span>\[V_p(\mathbf{r}) = \sum_l v(|\mathbf{r}+ \mathbf{l}|),\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> is the displacement between the two particles
+and <span class="math notranslate nohighlight">\(\mathbf{l}\)</span> is a lattice vector. Let us then define our
+approximation to this potential, <span class="math notranslate nohighlight">\(V_a\)</span>, as</p>
+<div class="math notranslate nohighlight" id="equation-eq114">
+<span class="eqno">(114)<a class="headerlink" href="#equation-eq114" title="Permalink to this equation">¶</a></span>\[V_a(\mathbf{r}) = v^s(r) + \sum_{|\mathbf{k}| &lt; k_c} v^\ell_k e^{i \mathbf{k} \cdot \mathbf{r}}\:.\]</div>
+<p>Now, we seek to minimize the RMS error over the cell,</p>
+<div class="math notranslate nohighlight" id="equation-eq115">
+<span class="eqno">(115)<a class="headerlink" href="#equation-eq115" title="Permalink to this equation">¶</a></span>\[\chi^2 = \frac{1}{\Omega}\int_\Omega d^3 \mathbf{r} \
+\left| V_p(\mathbf{r}) - V_a(\mathbf{r})\right|^2\:.\]</div>
+<p>We may write</p>
+<div class="math notranslate nohighlight" id="equation-eq116">
+<span class="eqno">(116)<a class="headerlink" href="#equation-eq116" title="Permalink to this equation">¶</a></span>\[V_p(\mathbf{r}) = \sum_{\mathbf{k}} v_k e^{i \mathbf{k}\cdot \mathbf{r}}\:,\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-eq117">
+<span class="eqno">(117)<a class="headerlink" href="#equation-eq117" title="Permalink to this equation">¶</a></span>\[v_k = \frac{1}{\Omega} \int d^3\mathbf{r}\ e^{-i\mathbf{k}\cdot\mathbf{r}}v(r)\:.\]</div>
+<p>We now need a basis in which to represent the broken-up potential. We
+may choose to represent either <span class="math notranslate nohighlight">\(v^s(r)\)</span> or <span class="math notranslate nohighlight">\(v^\ell(r)\)</span> in a
+real-space basis. Natoli and Ceperley chose the former in their paper.
+We choose the latter for a number of reasons. First, singular potentials
+are difficult to represent in a linear basis unless the singularity is
+explicitly included. This requires a separate basis for each type of
+singularity. The short-range potential may have an arbitrary number of
+features for <span class="math notranslate nohighlight">\(r&lt;r_c\)</span> and still be a valid potential. By
+construction, however, we desire that <span class="math notranslate nohighlight">\(v^\ell(r)\)</span> be smooth in
+real-space so that its Fourier transform falls off quickly with
+increasing <span class="math notranslate nohighlight">\(k\)</span>. We therefore expect that, in general,
+<span class="math notranslate nohighlight">\(v^\ell(r)\)</span> should be well represented by fewer basis functions
+than <span class="math notranslate nohighlight">\(v^s(r)\)</span>. Therefore, we define</p>
+<div class="math notranslate nohighlight" id="equation-eq118">
+<span class="eqno">(118)<a class="headerlink" href="#equation-eq118" title="Permalink to this equation">¶</a></span>\[\begin{split}v^\ell(r) \equiv
+\begin{cases}
+ \sum_{n=0}^{J-1} t_n h_n(r) &amp; \text{for } r \le r_c \\
+ v(r) &amp; \text{for } r &gt; r_c.
+\end{cases}\:,\end{split}\]</div>
+<p>where the <span class="math notranslate nohighlight">\(h_n(r)\)</span> are a set of <span class="math notranslate nohighlight">\(J\)</span> basis functions. We
+require that the two cases agree on the value and first two derivatives
+at <span class="math notranslate nohighlight">\(r_c\)</span>. We may then define</p>
+<div class="math notranslate nohighlight" id="equation-eq119">
+<span class="eqno">(119)<a class="headerlink" href="#equation-eq119" title="Permalink to this equation">¶</a></span>\[c_{nk} \equiv \frac{1}{\Omega} \int_0^{r_c} d^3 \mathbf{r}\ e^{-i\mathbf{k}\cdot\mathbf{r}} h_n(r)\:.\]</div>
+<p>Similarly, we define</p>
+<div class="math notranslate nohighlight" id="equation-eq120">
+<span class="eqno">(120)<a class="headerlink" href="#equation-eq120" title="Permalink to this equation">¶</a></span>\[x_k \equiv -\frac{1}{\Omega} \int_{r_c}^\infty d^3\mathbf{r}\ e^{-i\mathbf{k}\cdot\mathbf{r}} v(r)\:.\]</div>
+<p>Therefore,</p>
+<div class="math notranslate nohighlight" id="equation-eq121">
+<span class="eqno">(121)<a class="headerlink" href="#equation-eq121" title="Permalink to this equation">¶</a></span>\[v^\ell_k = -x_k + \sum_{n=0}^{J-1} t_n c_{nk}\:.\]</div>
+<p>Because <span class="math notranslate nohighlight">\(v^s(r)\)</span> goes identically to zero at the box edge, inside
+the cell we may write</p>
+<div class="math notranslate nohighlight" id="equation-eq122">
+<span class="eqno">(122)<a class="headerlink" href="#equation-eq122" title="Permalink to this equation">¶</a></span>\[v^s(\mathbf{r}) = \sum_\mathbf{k}v^s_k e^{i\mathbf{k}\cdot \mathbf{r}}\:.\]</div>
+<p>We then write</p>
+<div class="math notranslate nohighlight" id="equation-eq123">
+<span class="eqno">(123)<a class="headerlink" href="#equation-eq123" title="Permalink to this equation">¶</a></span>\[\chi^2 = \frac{1}{\Omega} \int_\Omega d^3 \mathbf{r}\
+\left| \sum_\mathbf{k}e^{i\mathbf{k}\cdot \mathbf{r}} \left(v_k - v^s_k \right)
+-\sum_{|\mathbf{k}| \le k_c} v^\ell_k \right|^2\:.\]</div>
+<p>We see that if we define</p>
+<div class="math notranslate nohighlight" id="equation-eq124">
+<span class="eqno">(124)<a class="headerlink" href="#equation-eq124" title="Permalink to this equation">¶</a></span>\[v^s(r) \equiv v(r) - v^\ell(r)\:.\]</div>
+<p>Then</p>
+<div class="math notranslate nohighlight" id="equation-eq125">
+<span class="eqno">(125)<a class="headerlink" href="#equation-eq125" title="Permalink to this equation">¶</a></span>\[v^\ell_k + v^s_k = v_k\:,\]</div>
+<p>which then cancels out all terms for <span class="math notranslate nohighlight">\(|\mathbf{k}| &lt; k_c\)</span>. Then we
+have</p>
+<div class="math notranslate nohighlight" id="equation-eq126">
+<span class="eqno">(126)<a class="headerlink" href="#equation-eq126" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\chi^2 &amp; = &amp; \frac{1}{\Omega} \int_\Omega d^3 \mathbf{r}\
+\left|\sum_{|\mathbf{k}|&gt;k_c} e^{i\mathbf{k}\cdot\mathbf{r}}
+\left(v_k -v^s_k \right)\right|^2\:, \\
+&amp; = &amp; \frac{1}{\Omega} \int_\Omega d^3 \mathbf{r}\
+\left|\sum_{|\mathbf{k}|&gt;k_c} e^{i\mathbf{k}\cdot\mathbf{r}} v^\ell_k \right|^2\:, \\
+&amp; = &amp;
+\frac{1}{\Omega} \int_\Omega d^3 \mathbf{r}
+\left|\sum_{|\mathbf{k}|&gt;k_c} e^{i\mathbf{k}\cdot\mathbf{r}}\left( -x_k + \sum_{n=0}^{J-1} t_n
+c_{nk}\right) \right|^2\:.\end{aligned}\end{split}\]</div>
+<p>We expand the summation,</p>
+<div class="math notranslate nohighlight" id="equation-eq127">
+<span class="eqno">(127)<a class="headerlink" href="#equation-eq127" title="Permalink to this equation">¶</a></span>\[\chi^2 = \frac{1}{\Omega} \int_\Omega d^3 \mathbf{r}\negthickspace\negthickspace\negthickspace
+\sum_{\{|\mathbf{k}|,|\mathbf{k}'|\}&gt;k_c} \negthickspace\negthickspace\negthickspace\negthickspace\negthickspace
+ e^{i(\mathbf{k}-\mathbf{k}')\cdot \mathbf{r}}
+\left(x_k -\sum_{n=0}^{J-1} t_n c_{nk} \right)
+\left(x_k -\sum_{m=0}^{J-1} t_{m} c_{mk'} \right)\:.\]</div>
+<p>We take the derivative w.r.t. <span class="math notranslate nohighlight">\(t_{m}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq128">
+<span class="eqno">(128)<a class="headerlink" href="#equation-eq128" title="Permalink to this equation">¶</a></span>\[\frac{\partial (\chi^2)}{\partial t_{m}} =
+\frac{2}{\Omega}\int_\Omega d^3 \mathbf{r}\negthickspace\negthickspace\negthickspace
+\sum_{\{|\mathbf{k}|,|\mathbf{k}'|\}&gt;k_c} \negthickspace\negthickspace\negthickspace\negthickspace\negthickspace
+ e^{i(\mathbf{k}-\mathbf{k}')\cdot \mathbf{r}}
+\left(x_k -\sum_{n=0}^{J-1} t_n c_{nk} \right) c_{mk'}\:.\]</div>
+<p>We integrate w.r.t. <span class="math notranslate nohighlight">\(\mathbf{r}\)</span>, yielding a Kronecker
+<span class="math notranslate nohighlight">\(\delta\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq129">
+<span class="eqno">(129)<a class="headerlink" href="#equation-eq129" title="Permalink to this equation">¶</a></span>\[\frac{\partial (\chi^2)}{\partial t_{m}} =
+2 \negthickspace\negthickspace\negthickspace\negthickspace\negthickspace\negthickspace\negthickspace
+\sum_{\ \ \ \ \{|\mathbf{k}|,|\mathbf{k}'|\}&gt;k_c} \negthickspace\negthickspace\negthickspace\negthickspace\negthickspace\negthickspace\negthickspace\delta_{\mathbf{k}, \mathbf{k}'}
+\left(x_k -\sum_{n=0}^{J-1} t_n c_{nk} \right) c_{mk'}\:.\]</div>
+<p>Summing over <span class="math notranslate nohighlight">\(\mathbf{k}'\)</span> and equating the derivative to zero, we
+find the minimum of our error function is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq130">
+<span class="eqno">(130)<a class="headerlink" href="#equation-eq130" title="Permalink to this equation">¶</a></span>\[\sum_{n=0}^{J-1} \sum_{|\mathbf{k}|&gt;k_c} c_{mk}c_{nk} t_n =
+\sum_{|\mathbf{k}|&gt;k_c} x_k c_{mk}\:,\]</div>
+<p>which is equivalent in form to Equation 19 in
+<a class="bibtex reference internal" href="#natoli1995" id="id2">[NC95]</a>, where we have <span class="math notranslate nohighlight">\(x_k\)</span> instead of
+<span class="math notranslate nohighlight">\(V_k\)</span>. Thus, we see that we can optimize the short- or long-range
+potential simply by choosing to use <span class="math notranslate nohighlight">\(V_k\)</span> or <span class="math notranslate nohighlight">\(x_k\)</span> in the
+preceding equation. We now define</p>
+<div class="math notranslate nohighlight" id="equation-eq131">
+<span class="eqno">(131)<a class="headerlink" href="#equation-eq131" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+A_{mn} &amp; \equiv &amp; \sum_{|\mathbf{k}|&gt;k_c} c_{mk} c_{nk}\:, \\
+b_{m} &amp; \equiv &amp; \sum_{|\mathbf{k}|&gt;k_c} x_k c_{mk}\:.\end{aligned}\end{split}\]</div>
+<p>Thus, it becomes clear that our minimization equations can be cast in
+the canonical linear form</p>
+<div class="math notranslate nohighlight" id="equation-eq132">
+<span class="eqno">(132)<a class="headerlink" href="#equation-eq132" title="Permalink to this equation">¶</a></span>\[\mathbf{A}\mathbf{t} = \mathbf{b}\:.\]</div>
+<div class="section" id="solution-by-svd">
+<h4>Solution by SVD<a class="headerlink" href="#solution-by-svd" title="Permalink to this headline">¶</a></h4>
+<p>In practice, we note that the matrix <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> frequently
+becomes singular in practice. For this reason, we use the singular value
+decomposition to solve for <span class="math notranslate nohighlight">\(t_n\)</span>. This factorization decomposes
+<span class="math notranslate nohighlight">\(A\)</span> as</p>
+<div class="math notranslate nohighlight" id="equation-eq133">
+<span class="eqno">(133)<a class="headerlink" href="#equation-eq133" title="Permalink to this equation">¶</a></span>\[\mathbf{A}= \mathbf{U}\mathbf{S}\mathbf{V}^T\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{U}^T\mathbf{U}= \mathbf{V}^T\mathbf{V}= 1\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{S}\)</span> is diagonal. In this form, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq134">
+<span class="eqno">(134)<a class="headerlink" href="#equation-eq134" title="Permalink to this equation">¶</a></span>\[\mathbf{t} = \sum_{i=0}^{J-1} \left( \frac{\mathbf{U}_{(i)} \cdot
+  \mathbf{b}}{\mathbf{S}_{ii}} \right) \mathbf{V}_{(i)}\:,\]</div>
+<p>where the parenthesized subscripts refer to columns. The advantage of
+this form is that if <span class="math notranslate nohighlight">\(\mathbf{S}_{ii}\)</span> is zero or very near zero,
+the contribution of the <span class="math notranslate nohighlight">\(i^{\text{th}}\)</span> of <span class="math notranslate nohighlight">\(\mathbf{V}\)</span> may
+be neglected since it represents a numerical instability and has little
+physical meaning. It represents the fact that the system cannot
+distinguish between two linear combinations of the basis functions.
+Using the SVD in this manner is guaranteed to be stable. This
+decomposition is available in LAPACK in the DGESVD subroutine.</p>
+</div>
+<div class="section" id="constraining-values">
+<span id="constraints"></span><h4>Constraining Values<a class="headerlink" href="#constraining-values" title="Permalink to this headline">¶</a></h4>
+<p>Often, we wish to constrain the value of <span class="math notranslate nohighlight">\(t_n\)</span> to have a fixed
+value to enforce a boundary condition, for example. To do this, we
+define</p>
+<div class="math notranslate nohighlight" id="equation-eq135">
+<span class="eqno">(135)<a class="headerlink" href="#equation-eq135" title="Permalink to this equation">¶</a></span>\[\mathbf{b}' \equiv \mathbf{b}- t_n \mathbf{A}_{(n)}\:.\]</div>
+<p>We then define <span class="math notranslate nohighlight">\(\mathbf{A}^*\)</span> as <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> with the
+<span class="math notranslate nohighlight">\(n^{\text{th}}\)</span> row and column removed and <span class="math notranslate nohighlight">\(\mathbf{b}^*\)</span> as
+<span class="math notranslate nohighlight">\(\mathbf{b}'\)</span> with the <span class="math notranslate nohighlight">\(n^{\text{th}}\)</span> element removed. Then
+we solve the reduced equation
+<span class="math notranslate nohighlight">\(\mathbf{A}^* \mathbf{t}^* = \mathbf{b}^*\)</span> and finally insert
+<span class="math notranslate nohighlight">\(t_n\)</span> back into the appropriate place in <span class="math notranslate nohighlight">\(\mathbf{t}^*\)</span> to
+recover the complete, constrained vector <span class="math notranslate nohighlight">\(\mathbf{t}\)</span>. This may be
+trivially generalized to an arbitrary number of constraints.</p>
+</div>
+<div class="section" id="the-lpqhi-basis">
+<h4>The LPQHI basis<a class="headerlink" href="#the-lpqhi-basis" title="Permalink to this headline">¶</a></h4>
+<p>The preceding discussion is general and independent of the basis used to
+represent <span class="math notranslate nohighlight">\(v^\ell(r)\)</span>. In this section, we introduce a convenient
+basis of localized interpolant functions, similar to those used for
+splines, which have a number of properties that are convenient for our
+purposes.</p>
+<p>First, we divide the region from 0 to <span class="math notranslate nohighlight">\(r_c\)</span> into <span class="math notranslate nohighlight">\(M-1\)</span>
+subregions, bounded above and below by points we term <em>knots</em>, defined
+by <span class="math notranslate nohighlight">\(r_j
+\equiv j\Delta\)</span>, where <span class="math notranslate nohighlight">\(\Delta \equiv r_c/(M-1)\)</span>. We then define
+compact basis elements, <span class="math notranslate nohighlight">\(h_{j\alpha}\)</span>, which span the region
+<span class="math notranslate nohighlight">\([r_{j-1},r_{j+1}]\)</span>, except for <span class="math notranslate nohighlight">\(j=0\)</span> and <span class="math notranslate nohighlight">\(j=M\)</span>. For
+<span class="math notranslate nohighlight">\(j=0\)</span>, only the region <span class="math notranslate nohighlight">\([r_0,r_1]\)</span>, while for <span class="math notranslate nohighlight">\(j=M\)</span>,
+only <span class="math notranslate nohighlight">\([r_{M-1}, r_M]\)</span>. Thus, the index <span class="math notranslate nohighlight">\(j\)</span> identifies the
+knot the element is centered on, while <span class="math notranslate nohighlight">\(\alpha\)</span> is an integer from
+0 to 2 indicating one of three function shapes. The dual index can be
+mapped to the preceding single index by the relation
+<span class="math notranslate nohighlight">\(n = 3j + \alpha\)</span>. The basis functions are then defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq136">
+<span class="eqno">(136)<a class="headerlink" href="#equation-eq136" title="Permalink to this equation">¶</a></span>\[\begin{split}h_{j\alpha}(r) =
+\begin{cases}
+\ \ \ \, \Delta^\alpha \, \, \sum_{n=0}^5 S_{\alpha n}
+\left( \frac{r-r_j}{\Delta}\right)^n,    &amp; r_j &lt; r \le r_{j+1} \\
+(-\Delta)^\alpha \sum_{n=0}^5 S_{\alpha n}
+\left( \frac{r_j-r}{\Delta}\right)^n,    &amp; r_{j-1} &lt; r \le r_j \\
+\quad\quad\quad\quad\quad 0, &amp; \text{otherwise}\:,
+\end{cases}\end{split}\]</div>
+<p>where the matrix <span class="math notranslate nohighlight">\(S_{\alpha n}\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq137">
+<span class="eqno">(137)<a class="headerlink" href="#equation-eq137" title="Permalink to this equation">¶</a></span>\[\begin{split}S =
+\left[\begin{matrix}
+1 &amp; 0 &amp; 0 &amp; -10 &amp; 15 &amp; -6 \\
+0 &amp; 1 &amp; 0 &amp; -6  &amp;  8 &amp; -3 \\
+0 &amp; 0 &amp; \frac{1}{2} &amp; -\frac{3}{2} &amp; \frac{3}{2} &amp; -\frac{1}{2}
+\end{matrix}\right]\:.\end{split}\]</div>
+<p><a class="reference internal" href="#fig26"><span class="std std-numref">Fig. 26</span></a> shows plots of these function shapes.</p>
+<div class="figure align-center" id="id5">
+<span id="fig26"></span><a class="reference internal image-reference" href="_images/LPQHI.png"><img alt="_images/LPQHI.png" src="_images/LPQHI.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-number">Fig. 26 </span><span class="caption-text">Basis functions <span class="math notranslate nohighlight">\(h_{j0}\)</span>, <span class="math notranslate nohighlight">\(h_{j1}\)</span>, and <span class="math notranslate nohighlight">\(h_{j2}\)</span> are
+shown. We note that at the left and right extremes, the values and first
+two derivatives of the functions are zero; while at the center,
+<span class="math notranslate nohighlight">\(h_{j0}\)</span> has a value of 1, <span class="math notranslate nohighlight">\(h_{j1}\)</span> has a first derivative
+of 1, and <span class="math notranslate nohighlight">\(h_{j2}\)</span> has a second derivative of 1.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+<p>The basis functions have the property that at the left and right
+extremes (i.e., <span class="math notranslate nohighlight">\(r_{j-1}\)</span> and <span class="math notranslate nohighlight">\(r_{j+1}\)</span>) their values and
+first two derivatives are zero. At the center, <span class="math notranslate nohighlight">\(r_j\)</span>, we have the
+properties</p>
+<div class="math notranslate nohighlight" id="equation-eq138">
+<span class="eqno">(138)<a class="headerlink" href="#equation-eq138" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+h_{j0}(r_j)=1, &amp; h'_{j0}(r_j)=0, &amp; h''_{j0}(r_j)= 0\:, \\
+h_{j1}(r_j)=0, &amp; h'_{j1}(r_j)=1, &amp; h''_{j1}(r_j)= 0\:, \\
+h_{j2}(r_j)=0, &amp; h'_{j2}(r_j)=0, &amp; h''_{j2}(r_j)= 1\:. \end{aligned}\end{split}\]</div>
+<p>These properties allow the control of the value and first two derivatives
+of the represented function at any knot value simply by setting the
+coefficients of the basis functions centered around that knot.  Used
+in combination with the method described in
+<a class="reference internal" href="#constraints"><span class="std std-ref">Constraining Values</span></a>, boundary conditions can easily be
+enforced.  In our case, we wish require that</p>
+<div class="math notranslate nohighlight" id="equation-eq139">
+<span class="eqno">(139)<a class="headerlink" href="#equation-eq139" title="Permalink to this equation">¶</a></span>\[h_{M0} = v(r_c), \ \ h_{M1} = v'(r_c), \ \ \text{and} \ \  h_{M2} = v''(r_c)\:.\]</div>
+<p>This ensures that <span class="math notranslate nohighlight">\(v^s\)</span> and its first two derivatives vanish at
+<span class="math notranslate nohighlight">\(r_c\)</span>.</p>
+</div>
+<div class="section" id="fourier-coefficients">
+<h4>Fourier coefficients<a class="headerlink" href="#fourier-coefficients" title="Permalink to this headline">¶</a></h4>
+<p>We wish now to calculate the Fourier transforms of the basis
+functions, defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq140">
+<span class="eqno">(140)<a class="headerlink" href="#equation-eq140" title="Permalink to this equation">¶</a></span>\[c_{j\alpha k} \equiv \frac{1}{\Omega} \int_0^{r_c} d^3 \mathbf{r}
+e^{-i \mathbf{k}\cdot \mathbf{r}} h_{j\alpha}(r)\:.\]</div>
+<p>We may then write,</p>
+<div class="math notranslate nohighlight" id="equation-eq141">
+<span class="eqno">(141)<a class="headerlink" href="#equation-eq141" title="Permalink to this equation">¶</a></span>\[\begin{split}c_{j\alpha k} =
+\begin{cases}
+\Delta^\alpha \sum_{n=0}^5 S_{\alpha n} D^+_{0 k n}, &amp; j = 0 \\
+\Delta^\alpha \sum_{n=0}^5 S_{\alpha n} (-1)^{\alpha+n} D^-_{M k n}, &amp;
+j = M \\
+\Delta^\alpha \sum_{n=0}^5 S_{\alpha n}
+\left[ D^+_{j k n} + (-1)^{\alpha+n}D^-_{j k n} \right] &amp; \text{otherwise}\:,
+\end{cases}\end{split}\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-eq142">
+<span class="eqno">(142)<a class="headerlink" href="#equation-eq142" title="Permalink to this equation">¶</a></span>\[D^{\pm}_{jkn} \equiv \frac{1}{\Omega} \int_{r_j}^{r_{j\pm1}} d^3\!\mathbf{r}\
+e^{-i\mathbf{k}\cdot \mathbf{r}} \left( \frac{r-r_j}{\Delta}\right)^n\:.\]</div>
+<p>We then further make the definition that</p>
+<div class="math notranslate nohighlight" id="equation-eq143">
+<span class="eqno">(143)<a class="headerlink" href="#equation-eq143" title="Permalink to this equation">¶</a></span>\[D^{\pm}_{jkn} = \pm \frac{4\pi}{k \Omega}
+\left[ \Delta \text{Im}\left(E^{\pm}_{jk(n+1)}\right) +
+r_j \text{Im}\left(E^{\pm}_{jkn}\right)\right]\:.\]</div>
+<p>It can then be shown that</p>
+<div class="math notranslate nohighlight" id="equation-eq144">
+<span class="eqno">(144)<a class="headerlink" href="#equation-eq144" title="Permalink to this equation">¶</a></span>\[\begin{split}E^{\pm}_{jkn} =
+\begin{cases}
+-\frac{i}{k} e^{ikr_j} \left( e^{\pm i k \Delta} - 1 \right) &amp;
+\text{if } n=0, \\
+-\frac{i}{k}
+\left[ \left(\pm1\right)^n e^{i k (r_j \pm \Delta)} - \frac{n}{\Delta}
+E^\pm_{jk(n-1)}  \right] &amp; \text{otherwise}\:.
+\end{cases}\end{split}\]</div>
+<p>Note that these equations correct typographical errors present in <a class="bibtex reference internal" href="#natoli1995" id="id3">[NC95]</a>.</p>
+</div>
+<div class="section" id="enumerating-k-points">
+<h4>Enumerating <span class="math notranslate nohighlight">\(k\)</span>-points<a class="headerlink" href="#enumerating-k-points" title="Permalink to this headline">¶</a></h4>
+<p>We note that the summations over <span class="math notranslate nohighlight">\(k\)</span>, which are ubiquitous in this
+paper, require enumeration of the <span class="math notranslate nohighlight">\(k\)</span>-vectors. In particular, we
+should sum over all <span class="math notranslate nohighlight">\(|\mathbf{k}| &gt; k_c\)</span>. In practice, we must
+limit our summation to some finite cutoff value
+<span class="math notranslate nohighlight">\(k_c &lt; |\mathbf{k}| &lt; k_{\text{max}}\)</span>, where
+<span class="math notranslate nohighlight">\(k_{\text{max}}\)</span> should be on the order of <span class="math notranslate nohighlight">\(3,000/L\)</span>, where
+<span class="math notranslate nohighlight">\(L\)</span> is the minimum box dimension. Enumerating these vectors in a
+naive fashion even for this finite cutoff would prove quite prohibitive,
+as it would require <span class="math notranslate nohighlight">\(\sim10^9\)</span> vectors.</p>
+<p>Our first optimization comes in realizing that all quantities in this
+calculation require only <span class="math notranslate nohighlight">\(|\mathbf{k}|\)</span> and not <span class="math notranslate nohighlight">\(\mathbf{k}\)</span>
+itself. Thus, we may take advantage of the great degeneracy of
+<span class="math notranslate nohighlight">\(|\mathbf{k}|\)</span>. We create a list of <span class="math notranslate nohighlight">\((k,N)\)</span> pairs, where
+<span class="math notranslate nohighlight">\(N\)</span> is the number of vectors with magnitude <span class="math notranslate nohighlight">\(k\)</span>. We make
+nested loops over <span class="math notranslate nohighlight">\(n_1\)</span>, <span class="math notranslate nohighlight">\(n_2\)</span>, and <span class="math notranslate nohighlight">\(n_3\)</span>, yielding
+<span class="math notranslate nohighlight">\(\mathbf{k}= n_1 \mathbf{b}_1 + n_2 \mathbf{b}_2 + n_3
+\mathbf{b}_3\)</span>. If <span class="math notranslate nohighlight">\(|\mathbf{k}|\)</span> is in the required range, we
+check to see whether there is already an entry with that magnitude on
+our list and increment the corresponding <span class="math notranslate nohighlight">\(N\)</span> if there is, or
+create a new entry if not. Doing so typically saves a factor of
+<span class="math notranslate nohighlight">\(\sim200\)</span> in storage and computation.</p>
+<p>This reduction is not sufficient for large <span class="math notranslate nohighlight">\(k_max\)</span> since it
+requires that we still look over <span class="math notranslate nohighlight">\(10^9\)</span> entries. To further reduce
+costs, we may pick an intermediate cutoff, <span class="math notranslate nohighlight">\(k_{\text{cont}}\)</span>,
+above which we will approximate the degeneracy assuming a continuum of
+<span class="math notranslate nohighlight">\(k\)</span>-points. We stop our exact enumeration at
+<span class="math notranslate nohighlight">\(k_{\text{cont}}\)</span> and then add <span class="math notranslate nohighlight">\(\sim1,000\)</span> points,
+<span class="math notranslate nohighlight">\(k_i\)</span>, uniformly spaced between <span class="math notranslate nohighlight">\(k_{\text{cont}}\)</span> and
+<span class="math notranslate nohighlight">\(k_{\text{max}}\)</span>. We then approximate the degeneracy by</p>
+<div class="math notranslate nohighlight" id="equation-eq145">
+<span class="eqno">(145)<a class="headerlink" href="#equation-eq145" title="Permalink to this equation">¶</a></span>\[N_i = \frac{4 \pi}{3} \frac{\left( k_b^3 -k_a^3\right)}{(2\pi)^3/\Omega}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(k_b = (k_i + k_{i+1})/2\)</span> and <span class="math notranslate nohighlight">\(k_a = (k_i + k_{i-1})\)</span>.
+In doing so, we typically reduce our total number of k-points to sum
+more than <span class="math notranslate nohighlight">\(\sim2,500\)</span> from the <span class="math notranslate nohighlight">\(10^9\)</span> we had to start.</p>
+</div>
+<div class="section" id="calculating-x-k-s">
+<h4>Calculating <span class="math notranslate nohighlight">\(x_k\)</span>’s<a class="headerlink" href="#calculating-x-k-s" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h5>The Coulomb potential<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h5>
+<p>For <span class="math notranslate nohighlight">\(v(r) = \frac{1}{r}\)</span>, <span class="math notranslate nohighlight">\(x_k\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq146">
+<span class="eqno">(146)<a class="headerlink" href="#equation-eq146" title="Permalink to this equation">¶</a></span>\[x_k^{\text{coulomb}} = -\frac{4 \pi}{\Omega k^2} \cos(k r_c)\:.\]</div>
+</div>
+<div class="section" id="the-1-r-2-potential">
+<h5>The <span class="math notranslate nohighlight">\(1/r^2\)</span> potential<a class="headerlink" href="#the-1-r-2-potential" title="Permalink to this headline">¶</a></h5>
+<p>For <span class="math notranslate nohighlight">\(v(r) = \frac{1}{r^2}\)</span>, <span class="math notranslate nohighlight">\(x_k\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq147">
+<span class="eqno">(147)<a class="headerlink" href="#equation-eq147" title="Permalink to this equation">¶</a></span>\[x_k^{1/r^2} = \frac{4 \pi}{\omega k}
+\left[ \text{Si}(k r_c) -\frac{\pi}{2}\right],\]</div>
+<p>where the <em>sin integral</em>, <span class="math notranslate nohighlight">\(\text{Si}(z)\)</span>, is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq148">
+<span class="eqno">(148)<a class="headerlink" href="#equation-eq148" title="Permalink to this equation">¶</a></span>\[\text{Si}(z) \equiv \int_0^z \frac{\sin \ t}{t} dt\:.\]</div>
+</div>
+<div class="section" id="the-1-r-3-potential">
+<h5>The <span class="math notranslate nohighlight">\(1/r^3\)</span> potential<a class="headerlink" href="#the-1-r-3-potential" title="Permalink to this headline">¶</a></h5>
+<p>For <span class="math notranslate nohighlight">\(v(r) = \frac{1}{r^3}\)</span>, <span class="math notranslate nohighlight">\(x_k\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq149">
+<span class="eqno">(149)<a class="headerlink" href="#equation-eq149" title="Permalink to this equation">¶</a></span>\[x_k^{1/r^2} = \frac{4 \pi}{\omega k}
+\left[ \text{Si}(k r_c) -\frac{\pi}{2}\right],\]</div>
+<p>where the <em>cosine integral</em>, <span class="math notranslate nohighlight">\(\text{Ci}(z)\)</span>, is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq150">
+<span class="eqno">(150)<a class="headerlink" href="#equation-eq150" title="Permalink to this equation">¶</a></span>\[\text{Ci}(z) \equiv -\int_z^\infty \frac{\cos t}{t} dt\:.\]</div>
+</div>
+<div class="section" id="the-1-r-4-potential">
+<h5>The <span class="math notranslate nohighlight">\(1/r^4\)</span> potential<a class="headerlink" href="#the-1-r-4-potential" title="Permalink to this headline">¶</a></h5>
+<p>For <span class="math notranslate nohighlight">\(v(r) = \frac{1}{r^4}\)</span>, <span class="math notranslate nohighlight">\(x_k\)</span> is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq151">
+<span class="eqno">(151)<a class="headerlink" href="#equation-eq151" title="Permalink to this equation">¶</a></span>\[x_k^{1/r^4} = -\frac{4 \pi}{\Omega k}
+\left\{
+\frac{k \cos(k r_c)}{2 r_c} + \frac{\sin(k r_c)}{2r_c^2} + \frac{k^2}{2} \left[ \text{Si}(k r_c) - \frac{\pi}{2}\right]\right\}\:.\]</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="feature-optimized-long-range-breakup-ewald-2">
+<h2>Feature: Optimized long-range breakup (Ewald) 2<a class="headerlink" href="#feature-optimized-long-range-breakup-ewald-2" title="Permalink to this headline">¶</a></h2>
+<p>Given a lattice of vectors <span class="math notranslate nohighlight">\(\mathbf{L}\)</span>, its associated reciprocal
+lattice of vectors <span class="math notranslate nohighlight">\(\mathbf{k}\)</span> and a function
+<span class="math notranslate nohighlight">\(\psi(\mathbf{r})\)</span> periodic on the lattice we define its Fourier
+transform <span class="math notranslate nohighlight">\(\widetilde{\psi}(\mathbf{k})\)</span> as</p>
+<div class="math notranslate nohighlight" id="equation-eq152">
+<span class="eqno">(152)<a class="headerlink" href="#equation-eq152" title="Permalink to this equation">¶</a></span>\[\widetilde{\psi}(\mathbf{k})=\frac{1}{\Omega}\int_\Omega d\mathbf{r}\psi(\mathbf{r}) e^{-i\mathbf{k}\mathbf{r}}\:,\]</div>
+<p>where we indicated both the cell domain and the cell volume by
+<span class="math notranslate nohighlight">\(\Omega\)</span>. <span class="math notranslate nohighlight">\(\psi(\mathbf{r})\)</span> can then be expressed as</p>
+<div class="math notranslate nohighlight" id="equation-eq153">
+<span class="eqno">(153)<a class="headerlink" href="#equation-eq153" title="Permalink to this equation">¶</a></span>\[\psi(\mathbf{r})=\sum_{\mathbf{k}} \widetilde{\psi}(\mathbf{k})e^{i\mathbf{k}\mathbf{r}}\:.\]</div>
+<p>The potential generated by charges sitting on the lattice positions at a
+particular point <span class="math notranslate nohighlight">\(\mathbf{r}\)</span> inside the cell is given by</p>
+<div class="math notranslate nohighlight" id="equation-eq154">
+<span class="eqno">(154)<a class="headerlink" href="#equation-eq154" title="Permalink to this equation">¶</a></span>\[V(\mathbf{r})=\sum_{\mathbf{L}}v(|\mathbf{r}+\mathbf{L}|)\:,\]</div>
+<p>and its Fourier transform can be explicitly written as a function of
+<span class="math notranslate nohighlight">\(V\)</span> or <span class="math notranslate nohighlight">\(v\)</span></p>
+<div class="math notranslate nohighlight" id="equation-eq155">
+<span class="eqno">(155)<a class="headerlink" href="#equation-eq155" title="Permalink to this equation">¶</a></span>\[\widetilde{V}(\mathbf{k})=\frac{1}{\Omega}\int_\Omega d\mathbf{r}V(\mathbf{r}) e^{-i\mathbf{k}\mathbf{r}}=
+\frac{1}{\Omega}\int_{\mathbb{R}^3} d\mathbf{r}v(\mathbf{r}) e^{-i\mathbf{k}\mathbf{r}}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbb{R}^3\)</span> denotes the whole 3D space. We now want to
+find the best (“best” to be defined later) approximate potential of the
+form</p>
+<div class="math notranslate nohighlight" id="equation-eq156">
+<span class="eqno">(156)<a class="headerlink" href="#equation-eq156" title="Permalink to this equation">¶</a></span>\[V_a(\mathbf{r})=\sum_{k\le k_c} \widetilde{Y}(k) e^{i\mathbf{k}\mathbf{r}} + W(r)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(W(r)\)</span> has been chosen to go smoothly to <span class="math notranslate nohighlight">\(0\)</span> when
+<span class="math notranslate nohighlight">\(r=r_c\)</span>, being <span class="math notranslate nohighlight">\(r_c\)</span> lower or equal to the Wigner-Seitz
+radius of the cell. Note also the cutoff <span class="math notranslate nohighlight">\(k_c\)</span> on the momentum
+summation.</p>
+<p>The best form of <span class="math notranslate nohighlight">\(\widetilde{Y}(k)\)</span> and <span class="math notranslate nohighlight">\(W(r)\)</span> is given by
+minimizing</p>
+<div class="math notranslate nohighlight" id="equation-eq157">
+<span class="eqno">(157)<a class="headerlink" href="#equation-eq157" title="Permalink to this equation">¶</a></span>\[\chi^2=\frac{1}{\Omega}\int d\mathbf{r}\left(V(\mathbf{r})-W(\mathbf{r})-
+  \sum_{k\le k_c}\widetilde{Y}(k)e^{i\mathbf{k}\mathbf{r}}\right)^2
+  \:,\]</div>
+<p>or the reciprocal space equivalent</p>
+<div class="math notranslate nohighlight" id="equation-eq158">
+<span class="eqno">(158)<a class="headerlink" href="#equation-eq158" title="Permalink to this equation">¶</a></span>\[\chi^2=\sum_{k\le k_c}(\widetilde{V}(k)-\widetilde{W}(k)-\widetilde{Y}(k))^2+\sum_{k&gt;k_c}(\widetilde{V}(k)-\widetilde{W}(k))^2
+  \:.\]</div>
+<p><a class="reference internal" href="#equation-eq158">(158)</a> follows from <a class="reference internal" href="#equation-eq157">(157)</a> and the unitarity
+(norm conservation) of the Fourier transform.</p>
+<p>This last condition is minimized by</p>
+<div class="math notranslate nohighlight" id="equation-eq159">
+<span class="eqno">(159)<a class="headerlink" href="#equation-eq159" title="Permalink to this equation">¶</a></span>\[\widetilde{Y}(k)=\widetilde{V}(k)-\widetilde{W}(k)\qquad \min_{\widetilde{W}(k)}\sum_{k&gt;k_c}(\widetilde{V}(k)-\widetilde{W}(k))^2.\]</div>
+<p>We now use a set of basis function <span class="math notranslate nohighlight">\(c_i(r)\)</span> vanishing smoothly at
+<span class="math notranslate nohighlight">\(r_c\)</span> to expand <span class="math notranslate nohighlight">\(W(r)\)</span>; that is,</p>
+<div class="math notranslate nohighlight" id="equation-eq160">
+<span class="eqno">(160)<a class="headerlink" href="#equation-eq160" title="Permalink to this equation">¶</a></span>\[W(r)=\sum_i t_i c_i(r)\qquad\text{or}\qquad \widetilde{W}(k)=\sum_i t_i \widetilde{c}_i(k)\:.\]</div>
+<p>Inserting the reciprocal space expansion of <span class="math notranslate nohighlight">\(\widetilde{W}\)</span> in the
+second condition of <a class="reference internal" href="#equation-eq159">(159)</a> and minimizing with respect to
+<span class="math notranslate nohighlight">\(t_i\)</span> leads immediately to the linear system
+<span class="math notranslate nohighlight">\(\mathbf{A}\mathbf{t}=\mathbf{b}\)</span> where</p>
+<div class="math notranslate nohighlight" id="equation-eq161">
+<span class="eqno">(161)<a class="headerlink" href="#equation-eq161" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ A_{ij}=\sum_{k&gt;k_c}\widetilde{c}_i(k)\widetilde{c}_j(k)\qquad b_j=\sum_{k&gt;k_c} V(k) \widetilde{c}_j(k)
+ \:.\end{aligned}\]</div>
+<div class="section" id="basis-functions">
+<h3>Basis functions<a class="headerlink" href="#basis-functions" title="Permalink to this headline">¶</a></h3>
+<p>The basis functions are splines. We define a uniform grid with
+<span class="math notranslate nohighlight">\(N_{\text{knot}}\)</span> uniformly spaced knots at position
+<span class="math notranslate nohighlight">\(r_i=i\frac{r_c}{N_{\text{knot}}}\)</span>, where
+<span class="math notranslate nohighlight">\(i\in[0,N_{\text{knot}}-1]\)</span>. On each knot we center <span class="math notranslate nohighlight">\(m+1\)</span>
+piecewise polynomials <span class="math notranslate nohighlight">\(c_{i\alpha}(r)\)</span> with
+<span class="math notranslate nohighlight">\(\alpha\in[0,m]\)</span>, defined as</p>
+<div class="math notranslate nohighlight" id="equation-eq162">
+<span class="eqno">(162)<a class="headerlink" href="#equation-eq162" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ c_{i\alpha}(r)=\begin{cases}
+ \Delta^\alpha \sum_{n=0}^\mathcal{N} S_{\alpha n}(\frac{r-r_i}{\Delta})^n &amp; r_i&lt;r\le r_{i+1} \\
+ \Delta^{-\alpha} \sum_{n=0}^\mathcal{N} S_{\alpha n}(\frac{r_i-r}{\Delta})^n &amp; r_{i-1}&lt;r\le r_i \\
+ 0 &amp; |r-r_i| &gt; \Delta
+ \end{cases}
+ \:.\end{aligned}\end{split}\]</div>
+<p>These functions and their derivatives are, by construction, continuous
+and odd (even) (with respect to <span class="math notranslate nohighlight">\(r-r_i\rightarrow r_i-r\)</span>) when
+<span class="math notranslate nohighlight">\(\alpha\)</span> is odd (even). We further ask them to satisfy</p>
+<div class="math notranslate nohighlight" id="equation-eq163">
+<span class="eqno">(163)<a class="headerlink" href="#equation-eq163" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \left.\frac{d^\beta}{dr^\beta} c_{i\alpha}(r)\right|_{r=r_i}=
+ \delta_{\alpha\beta} \quad \beta\in[0,m]\:,\\
+ \left.\frac{d^{\beta}}{dr^{\beta}} c_{i\alpha}(r)\right|_{r=r_{i+1}}=0\quad \beta\in[0,m]
+ \:.\end{aligned}\end{split}\]</div>
+<p>(The parity of the functions guarantees that the second constraint is
+satisfied at <span class="math notranslate nohighlight">\(r_{i-1}\)</span> as well). These constraints have a simple
+interpretation: the basis functions and their first <span class="math notranslate nohighlight">\(m\)</span>
+derivatives are <span class="math notranslate nohighlight">\(0\)</span> on the boundary of the subinterval where they
+are defined; the only function to have a nonzero <span class="math notranslate nohighlight">\(\beta\)</span>-th
+derivative in <span class="math notranslate nohighlight">\(r_i\)</span> is <span class="math notranslate nohighlight">\(c_{i\beta}\)</span>. These <span class="math notranslate nohighlight">\(2(m+1)\)</span>
+constraints therefore impose <span class="math notranslate nohighlight">\(\mathcal{N}=2m+1\)</span>. Inserting the
+definitions of <a class="reference internal" href="#equation-eq162">(162)</a> in the constraints of
+<a class="reference internal" href="#equation-eq163">(163)</a> leads to the set of <span class="math notranslate nohighlight">\(2(m+1)\)</span> linear equation
+that fixes the value of <span class="math notranslate nohighlight">\(S_{\alpha n}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq164">
+<span class="eqno">(164)<a class="headerlink" href="#equation-eq164" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \Delta^{\alpha-\beta} S_{\alpha\beta} \beta!=\delta_{\alpha\beta}
+ \\
+ \Delta^{\alpha-\beta}\sum_{n=\beta}^{2m+1} S_{\alpha n} \frac{n!}{(n-\beta)!}=0\:.\end{aligned}\end{split}\]</div>
+<p>We can further simplify inserting the first of these equations into the
+second and write the linear system as</p>
+<div class="math notranslate nohighlight" id="equation-eq165">
+<span class="eqno">(165)<a class="headerlink" href="#equation-eq165" title="Permalink to this equation">¶</a></span>\[\begin{split} \sum_{n=m+1}^{2m+1} S_{\alpha n} \frac{n!}{(n-\beta)!}=\begin{cases}
+ -\frac{1}{(\alpha-\beta)!}&amp; \alpha\ge \beta \\
+ 0 &amp; \alpha &lt; \beta
+ \end{cases}
+ \:.\end{split}\]</div>
+</div>
+<div class="section" id="fourier-components-of-the-basis-functions-in-3d">
+<h3>Fourier components of the basis functions in 3D<a class="headerlink" href="#fourier-components-of-the-basis-functions-in-3d" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="k-ne-0-non-coulomb-case">
+<h4><span class="math notranslate nohighlight">\(k\ne 0\)</span>, non-Coulomb case<a class="headerlink" href="#k-ne-0-non-coulomb-case" title="Permalink to this headline">¶</a></h4>
+<p>We now need to evaluate the Fourier transform
+<span class="math notranslate nohighlight">\(\widetilde{c}_{i\alpha}(k)\)</span>. Let us start by writing the
+definition</p>
+<div class="math notranslate nohighlight" id="equation-eq166">
+<span class="eqno">(166)<a class="headerlink" href="#equation-eq166" title="Permalink to this equation">¶</a></span>\[\widetilde{c}_{i\alpha}(k)=\frac{1}{\omega}\int_\Omega d\mathbf{r}e^{-i\mathbf{k}\mathbf{r}} c_{i\alpha}(r)\:.\]</div>
+<p>Because <span class="math notranslate nohighlight">\(c_{i\alpha}\)</span> is different from zero only inside the
+spherical crown defined by <span class="math notranslate nohighlight">\(r_{i-1}&lt;r&lt;r_i\)</span>, we can conveniently
+compute the integral in spherical coordinates as</p>
+<div class="math notranslate nohighlight" id="equation-eq167">
+<span class="eqno">(167)<a class="headerlink" href="#equation-eq167" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ \widetilde{c}_{i\alpha}(k)=\Delta^\alpha\sum_{n=0}^\mathcal{N} S_{\alpha n} \left[
+ D_{in}^+(k) +w_{\text{knot}}(-1)^{\alpha+n}D_{in}^-(k)\right]\:,
+ \end{aligned}\]</div>
+<p>where we used the definition <span class="math notranslate nohighlight">\(w_{\text{knot}}=1-\delta_{i0}\)</span> and</p>
+<div class="math notranslate nohighlight" id="equation-eq168">
+<span class="eqno">(168)<a class="headerlink" href="#equation-eq168" title="Permalink to this equation">¶</a></span>\[ D_{in}^\pm(k)=\pm\frac{4\pi}{k\Omega}\text{Im}\left[\int_{r_i}^{r_i\pm\Delta}
+ dr\left(\frac{r-r_i}{\Delta}\right)^n r e^{ikr}\right]\:,\]</div>
+<p>obtained by integrating the angular part of the Fourier transform. Using
+the identity</p>
+<div class="math notranslate nohighlight" id="equation-eq169">
+<span class="eqno">(169)<a class="headerlink" href="#equation-eq169" title="Permalink to this equation">¶</a></span>\[\left(\frac{r-r_i}{\Delta}\right)^n r=\Delta\left(\frac{r-r_i}{\Delta}\right)^{n+1}+\left(\frac{r-r_i}{\Delta}\right)^n r_i\]</div>
+<p>and the definition</p>
+<div class="math notranslate nohighlight" id="equation-eq170">
+<span class="eqno">(170)<a class="headerlink" href="#equation-eq170" title="Permalink to this equation">¶</a></span>\[ E_{in}^\pm(k)=\int_{r_i}^{r_i\pm\Delta}
+ dr\left(\frac{r-r_i}{\Delta}\right)^n e^{ikr}\:,\]</div>
+<p>we rewrite Equation <a class="reference internal" href="#equation-eq168">(168)</a> as</p>
+<div class="math notranslate nohighlight">
+\[\begin{aligned}
+D_{in}^\pm(k)=\pm\frac{4\pi}{k\Omega}\text{Im}\left[\Delta E_{i(n+1)}^\pm(k)+
+r_i E_{in}^\pm(k)\right]\:.
+\end{aligned}\]</div>
+<p>Finally, using integration by part, we can define <span class="math notranslate nohighlight">\(E^\pm_{in}\)</span>
+recursively as</p>
+<div class="math notranslate nohighlight" id="equation-eq171">
+<span class="eqno">(171)<a class="headerlink" href="#equation-eq171" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ E^\pm_{in}(k)=\frac{1}{ik}\left[(\pm)^ne^{ik(r_i\pm\Delta)}-\frac{n}{\Delta}
+ E^\pm_{i(n-1)}(k)\right]\:.
+ \end{aligned}\]</div>
+<p>Starting from the <span class="math notranslate nohighlight">\(n=0\)</span> term,</p>
+<div class="math notranslate nohighlight" id="equation-eq172">
+<span class="eqno">(172)<a class="headerlink" href="#equation-eq172" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ E^\pm_{i0}(k)=\frac{1}{ik}e^{ikr_i}\left(e^{\pm ik\Delta}-1\right)\:.
+ \end{aligned}\]</div>
+</div>
+<div class="section" id="k-ne-0-coulomb-case">
+<h4><span class="math notranslate nohighlight">\(k\ne 0\)</span>, Coulomb case<a class="headerlink" href="#k-ne-0-coulomb-case" title="Permalink to this headline">¶</a></h4>
+<p>To efficiently treat the Coulomb divergence at the origin, it is
+convenient to use a basis set <span class="math notranslate nohighlight">\(c_{i\alpha}^{\text{coul}}\)</span> of the
+form</p>
+<div class="math notranslate nohighlight" id="equation-eq173">
+<span class="eqno">(173)<a class="headerlink" href="#equation-eq173" title="Permalink to this equation">¶</a></span>\[c_{i\alpha}^{\text{coul}}=\frac{c_{i\alpha}}{r}\:.\]</div>
+<p>An equation identical to <a class="reference internal" href="#equation-eq168">(168)</a> holds but with the modified
+definition</p>
+<div class="math notranslate nohighlight" id="equation-eq174">
+<span class="eqno">(174)<a class="headerlink" href="#equation-eq174" title="Permalink to this equation">¶</a></span>\[ D_{in}^\pm(k)=\pm\frac{4\pi}{k\Omega}\text{Im}\left[\int_{r_i}^{r_i\pm\Delta}
+ dr\left(\frac{r-r_i}{\Delta}\right)^n e^{ikr}\right]\:,\]</div>
+<p>which can be simply expressed using <span class="math notranslate nohighlight">\(E^\pm_{in}(k)\)</span> as</p>
+<div class="math notranslate nohighlight" id="equation-eq175">
+<span class="eqno">(175)<a class="headerlink" href="#equation-eq175" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ D_{in}^\pm(k)=\pm\frac{4\pi}{k\Omega}\text{Im}\left[E_{in}^\pm(k)\right]\:.
+ \end{aligned}\]</div>
+</div>
+<div class="section" id="k-0-coulomb-and-non-coulomb-case">
+<h4><span class="math notranslate nohighlight">\(k=0\)</span> Coulomb and non-Coulomb case<a class="headerlink" href="#k-0-coulomb-and-non-coulomb-case" title="Permalink to this headline">¶</a></h4>
+<p>The definitions of <span class="math notranslate nohighlight">\(D_{in}(k)\)</span> given so far are clearly
+incompatible with the choice <span class="math notranslate nohighlight">\(k=0\)</span> (they involve division by
+<span class="math notranslate nohighlight">\(k\)</span>). For the non-Coulomb case, the starting definition is</p>
+<div class="math notranslate nohighlight" id="equation-eq176">
+<span class="eqno">(176)<a class="headerlink" href="#equation-eq176" title="Permalink to this equation">¶</a></span>\[ D^\pm_{in}(0)=\pm\frac{4\pi}{\Omega}\int_{r_i}^{r_i\pm\Delta}r^2
+ \left(\frac{r-r_i}{\Delta}\right)^ndr\:.\]</div>
+<p>Using the definition <span class="math notranslate nohighlight">\(I_n^\pm=(\pm)^{n+1}\Delta/(n+1)\)</span>, we can
+express this as</p>
+<div class="math notranslate nohighlight" id="equation-eq177">
+<span class="eqno">(177)<a class="headerlink" href="#equation-eq177" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ D^\pm_{in}(0)=\pm\frac{4\pi}{\Omega}\left[\Delta^2 I_{n+2}^\pm
+ +2r_i\Delta I_{n+1}^\pm+2r_i^2I_n^\pm\right]\:.
+ \end{aligned}\]</div>
+<p>For the Coulomb case, we get</p>
+<div class="math notranslate nohighlight" id="equation-eq178">
+<span class="eqno">(178)<a class="headerlink" href="#equation-eq178" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ D^\pm_{in}(0)=\pm\frac{4\pi}{\Omega}\left(
+ \Delta I^\pm_{n+1} + r_i I^\pm_n\right)\:.
+ \end{aligned}\]</div>
+</div>
+</div>
+<div class="section" id="fourier-components-of-the-basis-functions-in-2d">
+<h3>Fourier components of the basis functions in 2D<a class="headerlink" href="#fourier-components-of-the-basis-functions-in-2d" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="#equation-eq167">(167)</a> still holds provided we define</p>
+<div class="math notranslate nohighlight" id="equation-eq179">
+<span class="eqno">(179)<a class="headerlink" href="#equation-eq179" title="Permalink to this equation">¶</a></span>\[ D^\pm_{in}(k)=\pm\frac{2\pi}{\Omega \Delta^n} \sum_{j=0}^n \binom{n}{j}
+ (-r_i)^{n-j}\int_{r_i}^{r_i\pm \Delta}\negthickspace \negthickspace
+ \negthickspace \negthickspace \negthickspace \negthickspace \negthickspace
+ dr r^{j+1-C} J_0(kr)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(C=1(=0)\)</span> for the Coulomb(non-Coulomb) case.
+<a class="reference internal" href="#equation-eq179">(179)</a> is obtained using the integral definition of the
+zero order Bessel function of the first kind:</p>
+<div class="math notranslate nohighlight" id="equation-eq180">
+<span class="eqno">(180)<a class="headerlink" href="#equation-eq180" title="Permalink to this equation">¶</a></span>\[J_0(z)=\frac{1}{\pi}\int_0^\pi e^{iz\cos\theta}d\theta\:,\]</div>
+<p>and the binomial expansion for <span class="math notranslate nohighlight">\((r-r_i)^n\)</span>. The integrals can be
+computed recursively using the following identities:</p>
+<div class="math notranslate nohighlight" id="equation-eq181">
+<span class="eqno">(181)<a class="headerlink" href="#equation-eq181" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ &amp;\int dz J_0(z)=\frac{z}{2}\left[\pi J_1(z)H_0(z)+J_0(z)(2-\pi H_1(z))\right]
+ \:,\\
+ &amp;\int dz z J_0(z)= z J_1(z)
+ \:,\\
+ &amp;\int dz z^n J_0(z)= z^nJ_1(z)+(n-1)x^{n-1}J_0(z)
+ -(n-1)^2\int dz z^{n-2} J_0(z)\:.
+ \end{aligned}\end{split}\]</div>
+<p>The bottom equation of <a class="reference internal" href="#equation-eq181">(181)</a> is obtained using the second equation in the same set, integration by part, and
+the identity <span class="math notranslate nohighlight">\(\int J_1(z) dz =-J_0(z)\)</span>. In the top equation, <span class="math notranslate nohighlight">\(H_0\)</span> and <span class="math notranslate nohighlight">\(H_1\)</span> are Struve functions.</p>
+</div>
+<div class="section" id="construction-of-the-matrix-elements">
+<h3>Construction of the matrix elements<a class="headerlink" href="#construction-of-the-matrix-elements" title="Permalink to this headline">¶</a></h3>
+<p>Using the previous equations, we can construct the matrix elements in
+<a class="reference internal" href="#equation-eq161">(161)</a> and proceed solving for <span class="math notranslate nohighlight">\(t_i\)</span>. It is
+sometimes desirable to put some constraints on the value of <span class="math notranslate nohighlight">\(t_i\)</span>.
+For example, when the Coulomb potential is concerned, we might want to
+set <span class="math notranslate nohighlight">\(t_{0}=1\)</span>. If the first <span class="math notranslate nohighlight">\(g\)</span> variable is constrained by
+<span class="math notranslate nohighlight">\(t_{m}=\gamma_m\)</span> with <span class="math notranslate nohighlight">\(m=[1,g]\)</span>, we can simply redefine
+<a class="reference internal" href="#equation-eq161">(161)</a> as</p>
+<div class="math notranslate nohighlight" id="equation-182">
+<span class="eqno">(182)<a class="headerlink" href="#equation-182" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{split}
+ A_{ij}=&amp;\sum_{k&gt;k_c} \widetilde{c}_i(k)\widetilde{c}_j(k)  \quad i,j\notin[1,g]\:, \\
+ b_j=&amp;\sum_{k&gt;k_c} \left(\widetilde{V}(k)-\sum_{m=1}^g \gamma_m \widetilde{c}_m(k)\right)\widetilde{c}_j(k)\quad j\notin[1,g]\:.
+ \end{split}\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="feature-cubic-spline-interpolation">
+<h2>Feature: Cubic spline interpolation<a class="headerlink" href="#feature-cubic-spline-interpolation" title="Permalink to this headline">¶</a></h2>
+<p>We present the basic equations and algorithms necessary to
+construct and evaluate cubic interpolating splines in one, two, and
+three dimensions.  Equations are provided for both natural and
+periodic boundary conditions.</p>
+<div class="section" id="one-dimension">
+<h3>One dimension<a class="headerlink" href="#one-dimension" title="Permalink to this headline">¶</a></h3>
+<p>Let us consider the problem in which we have a function <span class="math notranslate nohighlight">\(y(x)\)</span>
+specified at a discrete set of points <span class="math notranslate nohighlight">\(x_i\)</span>, such that
+<span class="math notranslate nohighlight">\(y(x_i) = y_i\)</span>. We wish to construct a piecewise cubic polynomial
+interpolating function, <span class="math notranslate nohighlight">\(f(x)\)</span>, which satisfies the following
+conditions:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(f(x_i) = y_i\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(f'(x_i^-) = f'(x_i^+)\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(f''(x_i^-) = f''(x_i+)\)</span>.</p></li>
+</ul>
+<div class="section" id="hermite-interpolants">
+<h4>Hermite interpolants<a class="headerlink" href="#hermite-interpolants" title="Permalink to this headline">¶</a></h4>
+<p>In our piecewise representation, we wish to store only the values
+<span class="math notranslate nohighlight">\(y_i\)</span> and first derivatives, <span class="math notranslate nohighlight">\(y'_i\)</span>, of our function at each
+point <span class="math notranslate nohighlight">\(x_i\)</span>, which we call <em>knots</em>. Given this data, we wish to
+construct the piecewise cubic function to use between <span class="math notranslate nohighlight">\(x_i\)</span> and
+<span class="math notranslate nohighlight">\(x_{i+1}\)</span>, which satisfies the preceding conditions. In
+particular, we wish to find the unique cubic polynomial, <span class="math notranslate nohighlight">\(P(x)\)</span>,
+satisfying</p>
+<div class="math notranslate nohighlight" id="equation-eq183">
+<span class="eqno">(183)<a class="headerlink" href="#equation-eq183" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ P(x_i)      &amp; = &amp; y_i      \:, \\
+ P(x_{i+1})  &amp; = &amp; y_{i+1}  \:, \\
+ P'(x_i)     &amp; = &amp; y'_i     \:, \\
+ P'(x_{i+1}) &amp; = &amp; y'_{i+1} \:.\end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq184">
+<span class="eqno">(184)<a class="headerlink" href="#equation-eq184" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ h_i &amp; \equiv &amp; x_{i+1} - {x_i}\:, \\
+ t &amp; \equiv &amp; \frac{x-x_i}{h_i}\:.\end{aligned}\end{split}\]</div>
+<p>We then define the basis functions,</p>
+<div class="math notranslate nohighlight" id="equation-eq185">
+<span class="eqno">(185)<a class="headerlink" href="#equation-eq185" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ p_1(t) &amp; = &amp; (1+2t)(t-1)^2  \:, \\
+ q_1(t) &amp; = &amp; t (t-1)^2\:,       \\
+ p_2(t) &amp; = &amp; t^2(3-2t)\:,       \\
+ q_2(t) &amp; = &amp; t^2(t-1)\:.       \end{aligned}\end{split}\]</div>
+<p>On the interval, <span class="math notranslate nohighlight">\((x_i, x_{i+1}]\)</span>, we define the interpolating
+function</p>
+<div class="math notranslate nohighlight" id="equation-eq186">
+<span class="eqno">(186)<a class="headerlink" href="#equation-eq186" title="Permalink to this equation">¶</a></span>\[P(x) = y_i p_1(t) + y_{i+1}p_2(t) + h\left[y'_i q_1(t) + y'_{i+1} q_2(t)\right]\:.\]</div>
+<p>It can be easily verified that <span class="math notranslate nohighlight">\(P(x)\)</span> satisfies conditions of
+equations 1 through 3 of <a class="reference internal" href="#equation-eq183">(183)</a>. It is now left to determine the
+proper values for the <span class="math notranslate nohighlight">\(y'_i\,\)</span>s such that the continuity
+conditions given previously are satisfied.</p>
+<p>By construction, the value of the function and derivative will match at
+the knots; that is,</p>
+<div class="math notranslate nohighlight">
+\[P(x_i^-) = P(x_i^+), \ \ \ \ P'(x_i^-) = P'(x_i^+)\:.\]</div>
+<p>Then we must now enforce only the second derivative continuity:</p>
+<div class="math notranslate nohighlight" id="equation-eq187">
+<span class="eqno">(187)<a class="headerlink" href="#equation-eq187" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ P''(x_i^-) &amp; = &amp; P''(x_i^+)\:,  \\
+ \frac{1}{h_{i-1}^2}\left[\rule{0pt}{0.3cm}6 y_{i-1} -6 y_i + h_{i-1}\left(2 y'_{i-1} +4 y'_i\right) \right]&amp; = &amp;
+ \frac{1}{h_i^2}\left[\rule{0pt}{0.3cm}-6 y_i + 6 y_{i+1} +h_i\left( -4 y'_i -2 y'_{i+1} \right)\right] \nonumber\:. \end{aligned}\end{split}\]</div>
+<p>Let us define</p>
+<div class="math notranslate nohighlight" id="equation-eq188">
+<span class="eqno">(188)<a class="headerlink" href="#equation-eq188" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \lambda_i &amp; \equiv &amp; \frac{h_i}{2(h_i+h_{i-1})}\:,  \\
+ \mu_i &amp; \equiv &amp; \frac{h_{i-1}}{2(h_i+h_{i-1})}  = \frac{1}{2} - \lambda_i\:. \end{aligned}\end{split}\]</div>
+<p>Then we may rearrange</p>
+<div class="math notranslate nohighlight" id="equation-eq189">
+<span class="eqno">(189)<a class="headerlink" href="#equation-eq189" title="Permalink to this equation">¶</a></span>\[ \lambda_i y'_{i-1} + y'_i + \mu_i y'_{i+1} = \underbrace{3 \left[\lambda_i \frac{y_i - y_{i-1}}{h_{i-1}} + \mu_i \frac{y_{i+1}
+     - y_i}{h_i} \right] }_{d_i}\:.\]</div>
+<p>This equation holds for all <span class="math notranslate nohighlight">\(0&lt;i&lt;(N-1)\)</span>, so we have a tridiagonal
+set of equations. The equations for <span class="math notranslate nohighlight">\(i=0\)</span> and <span class="math notranslate nohighlight">\(i=N-1\)</span> depend
+on the boundary conditions we are using.</p>
+</div>
+<div class="section" id="periodic-boundary-conditions">
+<h4>Periodic boundary conditions<a class="headerlink" href="#periodic-boundary-conditions" title="Permalink to this headline">¶</a></h4>
+<p>For periodic boundary conditions, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq190">
+<span class="eqno">(190)<a class="headerlink" href="#equation-eq190" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{matrix}
+ y'_0           &amp; +  &amp; \mu_0 y'_1     &amp;   &amp;                   &amp;            &amp; \dots                   &amp; +  \lambda_0 y'_{N-1} &amp; = &amp; d_0\:,  \\
+ \lambda_1 y'_0 &amp; +  &amp; y'_1           &amp; + &amp;  \mu_1 y'_2       &amp;            &amp; \dots                   &amp;                       &amp; = &amp; d_1\:,  \\
+                &amp;    &amp; \lambda_2 y'_1 &amp; + &amp;  y'_2           + &amp; \mu_2 y'_3 &amp; \dots                   &amp;                       &amp; = &amp; d_2\:,  \\
+                &amp;    &amp;                &amp;   &amp;  \vdots           &amp;            &amp;                         &amp;                       &amp;   &amp;     \\
+ \mu_{N-1} y'_0 &amp;    &amp;                &amp;   &amp;                   &amp;            &amp; +\lambda_{N-1} y'_{N-1} &amp; +  y'_{N-2}           &amp; = &amp; d_3\:.
+ \end{matrix}\end{split}\]</div>
+<p>Or, in matrix form, we have</p>
+<div class="math notranslate nohighlight" id="equation-eq191">
+<span class="eqno">(191)<a class="headerlink" href="#equation-eq191" title="Permalink to this equation">¶</a></span>\[\begin{split}   \begin{pmatrix}
+   1         &amp; \mu_0     &amp;    0   &amp;   0           &amp; \dots         &amp;      0        &amp; \lambda_0 \\
+   \lambda_1 &amp;  1        &amp; \mu_1  &amp;   0           &amp; \dots         &amp;      0        &amp;     0     \\
+   0         &amp; \lambda_2 &amp;   1    &amp; \mu_2         &amp; \dots         &amp;      0        &amp;     0     \\
+   \vdots    &amp; \vdots    &amp; \vdots &amp; \vdots        &amp; \ddots        &amp;   \vdots      &amp;  \vdots   \\
+   0         &amp;   0       &amp;   0    &amp; \lambda_{N-3} &amp;      1        &amp; \mu_{N-3}     &amp;    0      \\
+   0         &amp;   0       &amp;   0    &amp;   0           &amp; \lambda_{N-2} &amp;      1        &amp; \mu_{N-2} \\
+   \mu_{N-1} &amp;   0       &amp;   0    &amp;   0           &amp;   0           &amp; \lambda_{N-1} &amp;  1
+   \end{pmatrix}
+   \begin{pmatrix} y'_0 \\ y'_1 \\ y'_2 \\ \vdots \\ y'_{N-3} \\ y'_{N-2} \\ y'_{N-1} \end{pmatrix} =
+   \begin{pmatrix} d_0  \\  d_1 \\  d_2 \\ \vdots \\  d_{N-3} \\  d_{N-2} \\  d_{N-1} \end{pmatrix} .\end{split}\]</div>
+<p>The system is tridiagonal except for the two elements in the upper right
+and lower left corners. These terms complicate the solution a bit,
+although it can still be done in <span class="math notranslate nohighlight">\(\mathcal{O}(N)\)</span> time. We first
+proceed down the rows, eliminating the the first non-zero term in each
+row by subtracting the appropriate multiple of the previous row. At the
+same time, we eliminate the first element in the last row, shifting the
+position of the first non-zero element to the right with each iteration.
+When we get to the final row, we will have the value for
+<span class="math notranslate nohighlight">\(y'_{N-1}\)</span>. We can then proceed back upward, backsubstituting
+values from the rows below to calculate all the derivatives.</p>
+</div>
+<div class="section" id="complete-boundary-conditions">
+<h4>Complete boundary conditions<a class="headerlink" href="#complete-boundary-conditions" title="Permalink to this headline">¶</a></h4>
+<p>If we specify the first derivatives of our function at the end points,
+we have what is known as <em>complete</em> boundary conditions.  The
+equations in that case are trivial to solve:</p>
+<div class="math notranslate nohighlight" id="equation-eq192">
+<span class="eqno">(192)<a class="headerlink" href="#equation-eq192" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{pmatrix}
+ 1         &amp;  0        &amp;    0   &amp;   0           &amp; \dots         &amp;      0        &amp;     0     \\
+ \lambda_1 &amp;  1        &amp; \mu_1  &amp;   0           &amp; \dots         &amp;      0        &amp;     0     \\
+ 0         &amp; \lambda_2 &amp;   1    &amp; \mu_2         &amp; \dots         &amp;      0        &amp;     0     \\
+ \vdots    &amp; \vdots    &amp; \vdots &amp; \vdots        &amp; \ddots        &amp;   \vdots      &amp;  \vdots   \\
+ 0         &amp;   0       &amp;   0    &amp; \lambda_{N-3} &amp;      1        &amp; \mu_{N-3}     &amp;    0      \\
+ 0         &amp;   0       &amp;   0    &amp;   0           &amp; \lambda_{N-2} &amp;      1        &amp; \mu_{N-2} \\
+ 0         &amp;   0       &amp;   0    &amp;   0           &amp;   0           &amp;      0        &amp;  1
+ \end{pmatrix}
+ \begin{pmatrix} y'_0 \\ y'_1 \\ y'_2 \\ \vdots \\ y'_{N-3} \\ y'_{N-2} \\ y'_{N-1} \end{pmatrix} =
+ \begin{pmatrix} d_0  \\  d_1 \\  d_2 \\ \vdots \\  d_{N-3} \\  d_{N-2} \\  d_{N-1} \end{pmatrix} .\end{split}\]</div>
+<p>This system is completely tridiagonal, and we may solve trivially by
+performing row eliminations downward, then proceeding upward as before.</p>
+</div>
+<div class="section" id="natural-boundary-conditions">
+<h4>Natural boundary conditions<a class="headerlink" href="#natural-boundary-conditions" title="Permalink to this headline">¶</a></h4>
+<p>If we do not have information about the derivatives at the boundary
+conditions, we may construct a <em>natural spline</em>, which assumes the
+second derivatives are zero at the end points of our spline. In this
+case our system of equations is the following:</p>
+<div class="math notranslate nohighlight" id="equation-eq193">
+<span class="eqno">(193)<a class="headerlink" href="#equation-eq193" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{pmatrix}
+ 1         &amp; \frac{1}{2} &amp;    0   &amp;   0           &amp; \dots         &amp;      0        &amp;     0     \\
+ \lambda_1 &amp;  1          &amp; \mu_1  &amp;   0           &amp; \dots         &amp;      0        &amp;     0     \\
+ 0         &amp; \lambda_2   &amp;   1    &amp; \mu_2         &amp; \dots         &amp;      0        &amp;     0     \\
+ \vdots    &amp; \vdots      &amp; \vdots &amp; \vdots        &amp; \ddots        &amp;   \vdots      &amp;  \vdots   \\
+ 0         &amp;   0         &amp;   0    &amp; \lambda_{N-3} &amp;      1        &amp; \mu_{N-3}     &amp;    0      \\
+ 0         &amp;   0         &amp;   0    &amp;   0           &amp; \lambda_{N-2} &amp;      1        &amp; \mu_{N-2} \\
+ 0         &amp;   0         &amp;   0    &amp;   0           &amp;   0           &amp;  \frac{1}{2}  &amp;  1
+ \end{pmatrix}
+ \begin{pmatrix} y'_0 \\ y'_1 \\ y'_2 \\ \vdots \\ y'_{N-3} \\ y'_{N-2} \\ y'_{N-1} \end{pmatrix} =
+ \begin{pmatrix} d_0  \\  d_1 \\  d_2 \\ \vdots \\  d_{N-3} \\  d_{N-2} \\  d_{N-1} \end{pmatrix} ,\end{split}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight" id="equation-eq194">
+<span class="eqno">(194)<a class="headerlink" href="#equation-eq194" title="Permalink to this equation">¶</a></span>\[d_0 = \frac{3}{2} \frac{y_1-y_1}{h_0}\:,  \ \ \ \ \ d_{N-1} = \frac{3}{2} \frac{y_{N-1}-y_{N-2}}{h_{N-1}}\:.\]</div>
+</div>
+</div>
+<div class="section" id="bicubic-splines">
+<h3>Bicubic splines<a class="headerlink" href="#bicubic-splines" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to extend the cubic spline interpolation method to
+functions of two variables, that is, <span class="math notranslate nohighlight">\(F(x,y)\)</span>. In this case, we
+have a rectangular mesh of points given by
+<span class="math notranslate nohighlight">\(F_{ij} \equiv F(x_i,y_j)\)</span>. In the case of 1D splines, we needed
+to store the value of the first derivative of the function at each
+point, in addition to the value. In the case of <em>bicubic splines</em>, we
+need to store four quantities for each mesh point:</p>
+<div class="math notranslate nohighlight" id="equation-eq195">
+<span class="eqno">(195)<a class="headerlink" href="#equation-eq195" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ F_{ij}    &amp; \equiv &amp; F(x_i, y_i)\:,             \\
+ F^x_{ij}  &amp; \equiv &amp; \partial_x F(x_i, y_i)\:,  \\
+ F^y_{ij}  &amp; \equiv &amp; \partial_y F(x_i, y_i)\:,  \\
+ F^{xy}    &amp; \equiv &amp; \partial_x \partial_y F(x_i, y_i)\:. \end{aligned}\end{split}\]</div>
+<p>Consider the point <span class="math notranslate nohighlight">\((x,y)\)</span> at which we wish to interpolate
+<span class="math notranslate nohighlight">\(F\)</span>. We locate the rectangle that contains this point, such that
+<span class="math notranslate nohighlight">\(x_i &lt;= x &lt;
+x_{i+1}\)</span> and <span class="math notranslate nohighlight">\(y_i &lt;= x &lt; y_{i+1}\)</span>. Let</p>
+<div class="math notranslate nohighlight" id="equation-eq196">
+<span class="eqno">(196)<a class="headerlink" href="#equation-eq196" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ h &amp; \equiv &amp; x_{i+1}-x_i\:,  \\
+ l &amp; \equiv &amp; y_{i+1}-y_i\:,  \\
+ u &amp; \equiv &amp; \frac{x-x_i}{h}\:,  \\
+ v &amp; \equiv &amp; \frac{y-y_i}{l}\:. \end{aligned}\end{split}\]</div>
+<p>Then, we calculate the interpolated value as</p>
+<div class="math notranslate nohighlight" id="equation-eq197">
+<span class="eqno">(197)<a class="headerlink" href="#equation-eq197" title="Permalink to this equation">¶</a></span>\[\begin{split} F(x,y) =
+ \begin{pmatrix}
+ p_1(u) \\ p_2(u) \\ h q_1(u) \\ h q_2(u)
+ \end{pmatrix}^T
+ \begin{pmatrix}({*{20}{c}})
+ F_{i,j}     &amp; F_{i+1,j}     &amp; F^y_{i,j}      &amp; F^y_{i,j+1}     \\
+ F_{i+1,j}   &amp; F_{i+1,j+1}   &amp; F^y_{i+1,j}    &amp; F^y_{i+1,j+1}   \\
+ F^x_{i,j}   &amp; F^x_{i,j+1}   &amp; F^{xy}_{i,j}   &amp; F^{xy}_{i,j+1}  \\
+ F^x_{i+1,j} &amp; F^x_{i+1,j+1} &amp; F^{xy}_{i+1,j} &amp; F^{xy}_{i+1,j+1}
+ \end{pmatrix}
+ \begin{pmatrix}
+ p_1(v)\\ p_2(v)\\ k q_1(v) \\ k q_2(v)
+ \end{pmatrix}\:.\end{split}\]</div>
+<div class="section" id="construction-bicubic-splines">
+<h4>Construction bicubic splines<a class="headerlink" href="#construction-bicubic-splines" title="Permalink to this headline">¶</a></h4>
+<p>We now address the issue of how to compute the derivatives that are
+needed for the interpolation. The algorithm is quite simple. For every
+<span class="math notranslate nohighlight">\(x_i\)</span>, we perform the tridiagonal solution as we did in the 1D
+splines to compute <span class="math notranslate nohighlight">\(F^y_{ij}\)</span>. Similarly, we perform a tridiagonal
+solve for every value of <span class="math notranslate nohighlight">\(F^x_{ij}\)</span>. Finally, to compute the
+cross-derivative we may <em>either</em> to the tridiagonal solve in the
+<span class="math notranslate nohighlight">\(y\)</span> direction of <span class="math notranslate nohighlight">\(F^x_{ij}\)</span>, <em>or</em> solve in the <span class="math notranslate nohighlight">\(x\)</span>
+direction for <span class="math notranslate nohighlight">\(F^y_{ij}\)</span> to obtain the cross-derivatives
+<span class="math notranslate nohighlight">\(F^{xy}_{ij}\)</span>. Hence, only minor modifications to the <span class="math notranslate nohighlight">\(1D\)</span>
+interpolations are necessary.</p>
+</div>
+</div>
+<div class="section" id="tricubic-splines">
+<h3>Tricubic splines<a class="headerlink" href="#tricubic-splines" title="Permalink to this headline">¶</a></h3>
+<p>Bicubic interpolation required two 4-component vectors and a
+<span class="math notranslate nohighlight">\(4 \times 4\)</span> matrix. By extension, tricubic interpolation requires
+three 4-component vectors and a <span class="math notranslate nohighlight">\(4 \times 4 \times 4\)</span> tensor. We
+summarize the forms of these vectors in the following:</p>
+<div class="math notranslate nohighlight" id="equation-eq198">
+<span class="eqno">(198)<a class="headerlink" href="#equation-eq198" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ h &amp; \equiv &amp; x_{i+1}-x_i\:, \\
+ l &amp; \equiv &amp; y_{i+1}-y_i\:, \\
+ m &amp; \equiv &amp; z_{i+1}-z_i\:, \\
+ u &amp; \equiv &amp; \frac{x-x_i}{h}\:, \\
+ v &amp; \equiv &amp; \frac{y-y_i}{l}\:, \\
+ w &amp; \equiv &amp; \frac{z-z_i}{m}\:.\end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq199">
+<span class="eqno">(199)<a class="headerlink" href="#equation-eq199" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \vec{a} &amp; = &amp;
+ \begin{pmatrix}
+ p_1(u) &amp; p_2(u) &amp; h q_1(u) &amp; h q_2(u)
+ \end{pmatrix}^T\:, \\
+ \vec{b} &amp; = &amp;
+ \begin{pmatrix}
+ p_1(v) &amp; p_2(v) &amp; k q_1(v) &amp; k q_2(v)
+ \end{pmatrix}^T\:, \\
+ \vec{c} &amp; = &amp;
+ \begin{pmatrix}
+ p_1(w) &amp; p_2(w) &amp; l q_1(w) &amp; l q_2(w)
+ \end{pmatrix}^T\:. \end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq200">
+<span class="eqno">(200)<a class="headerlink" href="#equation-eq200" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{pmatrix}
+ A_{000} = F_{i,j,k}     &amp; A_{001}=F_{i,j,k+1}     &amp; A_{002}=F^z_{i,j,k}      &amp; A_{003}=F^z_{i,j,k+1}      \\
+ A_{010} = F_{i,j+1,k}   &amp; A_{011}=F_{i,j+1,k+1}   &amp; A_{012}=F^z_{i,j+1,k}    &amp; A_{013}=F^z_{i,j+1,k+1}    \\
+ A_{020} = F^y_{i,j,k}   &amp; A_{021}=F^y_{i,j,k+1}   &amp; A_{022}=F^{yz}_{i,j,k}   &amp; A_{023}=F^{yz}_{i,j,k+1}   \\
+ A_{030} = F^y_{i,j+1,k} &amp; A_{031}=F^y_{i,j+1,k+1} &amp; A_{032}=F^{yz}_{i,j+1,k} &amp; A_{033}=F^{yz}_{i,j+1,k+1} \\
+                         &amp;                         &amp;                          &amp;                            \\
+ A_{100} = F_{i+1,j,k}     &amp; A_{101}=F_{i+1,j,k+1}     &amp; A_{102}=F^z_{i+1,j,k}      &amp; A_{103}=F^z_{i+1,j,k+1}      \\
+ A_{110} = F_{i+1,j+1,k}   &amp; A_{111}=F_{i+1,j+1,k+1}   &amp; A_{112}=F^z_{i+1,j+1,k}    &amp; A_{113}=F^z_{i+1,j+1,k+1}    \\
+ A_{120} = F^y_{i+1,j,k}   &amp; A_{121}=F^y_{i+1,j,k+1}   &amp; A_{122}=F^{yz}_{i+1,j,k}   &amp; A_{123}=F^{yz}_{i+1,j,k+1}   \\
+ A_{130} = F^y_{i+1,j+1,k} &amp; A_{131}=F^y_{i+1,j+1,k+1} &amp; A_{132}=F^{yz}_{i+1,j+1,k} &amp; A_{133}=F^{yz}_{i+1,j+1,k+1} \\
+                         &amp;                         &amp;                          &amp;                            \\
+ A_{200} = F^x_{i,j,k}      &amp; A_{201}=F^x_{i,j,k+1}      &amp; A_{202}=F^{xz}_{i,j,k}      &amp; A_{203}=F^{xz}_{i,j,k+1}    \\
+ A_{210} = F^x_{i,j+1,k}    &amp; A_{211}=F^x_{i,j+1,k+1}    &amp; A_{212}=F^{xz}_{i,j+1,k}    &amp; A_{213}=F^{xz}_{i,j+1,k+1}  \\
+ A_{220} = F^{xy}_{i,j,k}   &amp; A_{221}=F^{xy}_{i,j,k+1}   &amp; A_{222}=F^{xyz}_{i,j,k}     &amp; A_{223}=F^{xyz}_{i,j,k+1}   \\
+ A_{230} = F^{xy}_{i,j+1,k} &amp; A_{231}=F^{xy}_{i,j+1,k+1} &amp; A_{232}=F^{xyz}_{i,j+1,k}   &amp; A_{233}=F^{xyz}_{i,j+1,k+1} \\
+                         &amp;                         &amp;                          &amp;                                      \\
+ A_{300} = F^x_{i+1,j,k}      &amp; A_{301}=F^x_{i+1,j,k+1}      &amp; A_{302}=F^{xz}_{i+1,j,k}    &amp; A_{303}=F^{xz}_{i+1,j,k+1}   \\
+ A_{310} = F^x_{i+1,j+1,k}    &amp; A_{311}=F^x_{i+1,j+1,k+1}    &amp; A_{312}=F^{xz}_{i+1,j+1,k}  &amp; A_{313}=F^{xz}_{i+1,j+1,k+1} \\
+ A_{320} = F^{xy}_{i+1,j,k}   &amp; A_{321}=F^{xy}_{i+1,j,k+1}   &amp; A_{322}=F^{xyz}_{i+1,j,k}   &amp; A_{323}=F^{xyz}_{i+1,j,k+1}  \\
+ A_{330} = F^{xy}_{i+1,j+1,k} &amp; A_{331}=F^{xy}_{i+1,j+1,k+1} &amp; A_{332}=F^{xyz}_{i+1,j+1,k} &amp; A_{333}=F^{xyz}_{i+1,j+1,k+1}
+ \end{pmatrix}\:.\end{split}\]</div>
+<p>Now, we can write</p>
+<div class="math notranslate nohighlight" id="equation-eq201">
+<span class="eqno">(201)<a class="headerlink" href="#equation-eq201" title="Permalink to this equation">¶</a></span>\[F(x,y,z) = \sum_{i=0}^3 a_i \sum_{j=0}^3 b_j \sum_{k=0}^3 c_k \ A_{i,j,k}\:.\]</div>
+<p>The appropriate derivatives of <span class="math notranslate nohighlight">\(F\)</span> may be computed by a
+generalization of the previous method used for bicubic splines.</p>
+</div>
+</div>
+<div class="section" id="feature-b-spline-orbital-tiling-band-unfolding">
+<h2>Feature: B-spline orbital tiling (band unfolding)<a class="headerlink" href="#feature-b-spline-orbital-tiling-band-unfolding" title="Permalink to this headline">¶</a></h2>
+<p>In continuum QMC simulations, it is necessary to evaluate the electronic
+orbitals of a system at real-space positions hundreds of millions of
+times. It has been found that if these orbitals are represented in a
+localized, B-spline basis, each evaluation takes a small, constant time
+that is independent of system size.</p>
+<p>Unfortunately, the memory required for storing the B-spline grows with
+the second power of the system size. If we are studying perfect
+crystals, however, this can be reduced to linear scaling if we <em>tile</em>
+the primitive cell. In this approach, a supercell is constructed by
+tiling the primitive cell <span class="math notranslate nohighlight">\(N_1 \times N_2 \times N_3\)</span> in the three
+lattice directions. The orbitals are then represented in real space only
+in the primitive cell and an <span class="math notranslate nohighlight">\(N_1 \times N_2 \times N_3\)</span> k-point
+mesh. To evaluate an orbital at any point in the supercell, it is only
+necessary to wrap that point back into the primitive cell, evaluate the
+spline, and then multiply the phase factor,
+<span class="math notranslate nohighlight">\(e^{-i\mathbf{k}\cdot\mathbf{r}}\)</span>.</p>
+<p>Here, we show that this approach can be generalized to a tiling
+constructed with a <span class="math notranslate nohighlight">\(3\times 3\)</span> nonsingular matrix of integers, of
+which the preceding approach is a special case. This generalization
+brings with it a number of advantages. The primary reason for performing
+supercell calculations in QMC is to reduce finite-size errors. These
+errors result from three sources: (1) the quantization of the crystal
+momentum, (2) the unphysical periodicity of the exchange-correlation
+(XC) hole of the electron, and (3) the kinetic-energy contribution from
+the periodicity of the long-range Jastrow correlation functions. The
+first source of error can be largely eliminated by twist averaging. If
+the simulation cell is large enough that XC hole does not “leak” out of
+the simulation cell, the second source can be eliminated either through
+use of the MPC interaction or the <em>a postiori</em> correction of Chiesa et
+al.</p>
+<p>The satisfaction of the leakage requirement is controlled by whether the
+minimum distance, <span class="math notranslate nohighlight">\(L_{\text{min}}\)</span>, from one supercell image to
+the next is greater than the width of the XC hole. Therefore, given a
+choice, it is best to use a cell that is as nearly cubic as possible
+since this choice maximizes <span class="math notranslate nohighlight">\(L_{\text{min}}\)</span> for a given number of
+atoms. Most often, however, the primitive cell is not cubic. In these
+cases, if we wish to choose the optimal supercell to reduce finite-size
+effects, we cannot use the simple primitive tiling scheme. In the
+generalized scheme we present, it is possible to choose far better
+supercells (from the standpoint of finite-size errors), while retaining
+the storage efficiency of the original tiling scheme.</p>
+<div class="section" id="the-mathematics">
+<h3>The mathematics<a class="headerlink" href="#the-mathematics" title="Permalink to this headline">¶</a></h3>
+<p>Consider the set of primitive lattice vectors,
+<span class="math notranslate nohighlight">\(\{\mathbf{a}^{\text{p}}_1, \mathbf{a}^{\text{p}}_2,
+\mathbf{a}^{\text{p}}_3\}\)</span>. We may write these vectors in a matrix,
+<span class="math notranslate nohighlight">\(\mathbf{L}_p\)</span>, whose rows are the primitive lattice vectors.
+Consider a nonsingular matrix of integers, <span class="math notranslate nohighlight">\(\mathbf{S}\)</span>. A
+corresponding set of supercell lattice vectors,
+<span class="math notranslate nohighlight">\(\{\mathbf{a}^{\text{s}}_1, \mathbf{a}^{\text{s}}_2, \mathbf{a}^{\text{s}}_3\}\)</span>,
+can be constructed by the matrix product</p>
+<div class="math notranslate nohighlight" id="equation-eq202">
+<span class="eqno">(202)<a class="headerlink" href="#equation-eq202" title="Permalink to this equation">¶</a></span>\[\mathbf{a}^{\text{s}}_i = S_{ij} \mathbf{a}^{\text{p}}_j\:.\]</div>
+<p>If the primitive cell contains <span class="math notranslate nohighlight">\(N_p\)</span> atoms, the supercell will
+then contain <span class="math notranslate nohighlight">\(N_s = |\det(\mathbf{S})| N_p\)</span> atoms.</p>
+</div>
+<div class="section" id="example-feo">
+<h3>Example: FeO<a class="headerlink" href="#example-feo" title="Permalink to this headline">¶</a></h3>
+<p>As an example, consider the primitive cell for antiferromagnetic FeO
+(wustite) in the rocksalt structure.  The primitive vectors, given in
+units of the lattice constant, are given by</p>
+<div class="math notranslate nohighlight" id="equation-eq203">
+<span class="eqno">(203)<a class="headerlink" href="#equation-eq203" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \mathbf{a}^{\text{p}}_1 &amp; = &amp; \frac{1}{2}\hat{\mathbf{x}}+ \frac{1}{2}\hat{\mathbf{y}}+      \ \   \hat{\mathbf{z}}\:, \\
+ \mathbf{a}^{\text{p}}_2 &amp; = &amp; \frac{1}{2}\hat{\mathbf{x}}+      \ \   \hat{\mathbf{y}}+ \frac{1}{2}\hat{\mathbf{z}}\:, \\
+ \mathbf{a}^{\text{p}}_3 &amp; = &amp;   \ \      \hat{\mathbf{x}}+ \frac{1}{2}\hat{\mathbf{y}}+ \frac{1}{2}\hat{\mathbf{z}}\:. \end{aligned}\end{split}\]</div>
+<p>This primitive cell contains two iron atoms and two oxygen atoms. It is
+a very elongated cell with acute angles and, thus, has a short minimum
+distance between adjacent images.</p>
+<p>The smallest cubic cell consistent with the AFM ordering can be
+constructed with the matrix</p>
+<div class="math notranslate nohighlight" id="equation-eq204">
+<span class="eqno">(204)<a class="headerlink" href="#equation-eq204" title="Permalink to this equation">¶</a></span>\[\begin{split} \mathbf{S}= \left[\begin{array}{rrr}
+   -1 &amp; -1 &amp;  3 \\
+   -1 &amp;  3 &amp; -1 \\
+    3 &amp; -1 &amp; -1
+   \end{array}\right]\:.\end{split}\]</div>
+<p>This cell has <span class="math notranslate nohighlight">\(2|\det(\mathbf{S})| = 32\)</span> iron atoms and 32 oxygen
+atoms. In this example, we may perform the simulation in the 32-iron
+supercell, while storing the orbitals only in the 2-iron primitive cell,
+for a savings of a factor of 16.</p>
+<div class="section" id="the-k-point-mesh">
+<h4>The k-point mesh<a class="headerlink" href="#the-k-point-mesh" title="Permalink to this headline">¶</a></h4>
+<p>To be able to use the generalized tiling scheme, we need to have the
+appropriate number of bands to occupy in the supercell. This may be
+achieved by appropriately choosing the k-point mesh. In this section, we
+explain how these points are chosen.</p>
+<p>For simplicity, let us assume that the supercell calculation will be
+performed at the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point. We can easily lift this
+restriction later. The fact that supercell calculation is performed at
+<span class="math notranslate nohighlight">\(\Gamma\)</span> implies that the k-points used in the primitive-cell
+calculation must be <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>-vectors of the superlattice. This
+still leaves us with an infinite set of vectors. We may reduce this set
+to a finite number by considering that the orbitals must form a linearly
+independent set. Orbitals with k-vectors <span class="math notranslate nohighlight">\(\mathbf{k}^p_1\)</span> and
+<span class="math notranslate nohighlight">\(\mathbf{k}^p_2\)</span> will differ by at most a constant factor of
+<span class="math notranslate nohighlight">\(\mathbf{k}^p_1 - \mathbf{k}^p_2 = \mathbf{G}^p\)</span>, where
+<span class="math notranslate nohighlight">\(\mathbf{G}^p\)</span> is a reciprocal lattice vector of the primitive
+cell.</p>
+<p>Combining these two considerations gives us a prescription for
+generating our k-point mesh. The mesh may be taken to be the set of
+k-point which are G-vectors of the superlattice, reside within the first
+Brillouin zone (FBZ) of the primitive lattice, whose members do not
+differ a G-vector of the primitive lattice. Upon constructing such a
+set, we find that the number of included k-points is equal to
+<span class="math notranslate nohighlight">\(|\det(\mathbf{S})|\)</span>, precisely the number we need. This can by
+considering the fact that the supercell has a volume
+<span class="math notranslate nohighlight">\(|\det(\mathbf{S})|\)</span> times that of the primitive cell. This
+implies that the volume of the supercell’s FBZ is
+<span class="math notranslate nohighlight">\(|\det(\mathbf{S})|^{-1}\)</span> times that of the primitive cell. Hence,
+<span class="math notranslate nohighlight">\(|\det(\mathbf{S})|\)</span> G-vectors of the supercell will fit in the
+FBZ of the primitive cell. Removing duplicate k-vectors, which differ
+from another by a reciprocal lattice vector, avoids double-counting
+vectors that lie on zone faces.</p>
+</div>
+<div class="section" id="formulae">
+<h4>Formulae<a class="headerlink" href="#formulae" title="Permalink to this headline">¶</a></h4>
+<p>Let <span class="math notranslate nohighlight">\(\mathbf{A}\)</span> be the matrix whose rows are the direct lattice
+vectors, <span class="math notranslate nohighlight">\(\{\mathbf{a}_i\}\)</span>. Then, let the matrix
+<span class="math notranslate nohighlight">\(\mathbf{B}\)</span> be defined as <span class="math notranslate nohighlight">\(2\pi(\mathbf{A}^{-1})^\dagger\)</span>.
+Its rows are the primitive reciprocal lattice vectors. Let
+<span class="math notranslate nohighlight">\(\mathbf{A}_p\)</span> and <span class="math notranslate nohighlight">\(\mathbf{A}_s\)</span> represent the primitive
+and superlattice matrices, respectively, and similarly for their
+reciprocals. Then we have</p>
+<div class="math notranslate nohighlight" id="equation-eq205">
+<span class="eqno">(205)<a class="headerlink" href="#equation-eq205" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \mathbf{A}_s &amp; = &amp; \mathbf{S}\mathbf{A}_p\:, \\
+ \mathbf{B}_s &amp; = &amp; 2\pi\left[(\mathbf{S}\mathbf{A}_p)^{-1}\right]^\dagger\:, \\
+         &amp; = &amp; 2\pi\left[\mathbf{A}_p^{-1} \mathbf{S}^{-1}\right]^\dagger\:, \\
+         &amp; = &amp; 2\pi(\mathbf{S}^{-1})^\dagger (\mathbf{A}_p^{-1})^\dagger\:, \\
+         &amp; = &amp; (\mathbf{S}^{-1})^\dagger \mathbf{B}_p\:.\end{aligned}\end{split}\]</div>
+<p>Consider a k-vector, <span class="math notranslate nohighlight">\(\mathbf{k}\)</span>. It may alternatively be written
+in basis of reciprocal lattice vectors as <span class="math notranslate nohighlight">\(\mathbf{t}\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq206">
+<span class="eqno">(206)<a class="headerlink" href="#equation-eq206" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \mathbf{k}&amp; = &amp; (\mathbf{t}^\dagger \mathbf{B})^\dagger\:, \\
+     &amp; = &amp; \mathbf{B}^\dagger \mathbf{t}\:,           \\
+ \mathbf{t}&amp; = &amp; (\mathbf{B}^\dagger)^{-1} \mathbf{k}\:,    \\
+     &amp; = &amp; (\mathbf{B}^{-1})^\dagger \mathbf{k}\:,    \\
+     &amp; = &amp; \frac{\mathbf{A}\mathbf{k}}{2\pi}\:.\end{aligned}\end{split}\]</div>
+<p>We may then express a twist vector of the primitive lattice,
+<span class="math notranslate nohighlight">\(\mathbf{t}_p\)</span>, in terms of the superlattice.</p>
+<div class="math notranslate nohighlight" id="equation-eq207">
+<span class="eqno">(207)<a class="headerlink" href="#equation-eq207" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \mathbf{t}_s &amp; = &amp; \frac{\mathbf{A}_s \mathbf{k}}{2\pi}\:,                           \\
+       &amp; = &amp; \frac{\mathbf{A}_s \mathbf{B}_p^\dagger \mathbf{t}_p}{2\pi}\:,         \\
+       &amp; = &amp; \frac{\mathbf{S}\mathbf{A}_p \mathbf{B}_p^\dagger \mathbf{t}_p}{2\pi}\:,   \\
+       &amp; = &amp; \frac{2\pi \mathbf{S}\mathbf{A}_p \mathbf{A}_p^{-1} \mathbf{t}_p}{2\pi}\:, \\
+       &amp; = &amp; \mathbf{S}\mathbf{t}_p\:.\end{aligned}\end{split}\]</div>
+<p>This gives the simple result that twist vectors transform in precisely
+the same way as direct lattice vectors.</p>
+</div>
+</div>
+</div>
+<div class="section" id="feature-hybrid-orbital-representation">
+<h2>Feature: Hybrid orbital representation<a class="headerlink" href="#feature-hybrid-orbital-representation" title="Permalink to this headline">¶</a></h2>
+<div class="math notranslate nohighlight" id="equation-eq208">
+<span class="eqno">(208)<a class="headerlink" href="#equation-eq208" title="Permalink to this equation">¶</a></span>\[ \phi(\mathbf{r}) = \sum_{\ell=0}^{\ell_\text{max}} \sum_{m=-\ell}^\ell Y_\ell^m (\hat{\Omega})
+ u_{\ell m}(r)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(u_{lm}(r)\)</span> are complex radial functions represented in some
+radial basis (e.g., splines).</p>
+<div class="section" id="real-spherical-harmonics">
+<h3>Real spherical harmonics<a class="headerlink" href="#real-spherical-harmonics" title="Permalink to this headline">¶</a></h3>
+<p>If <span class="math notranslate nohighlight">\(\phi(\mathbf{r})\)</span> can be written as purely real, we can change
+the representation so that</p>
+<div class="math notranslate nohighlight" id="equation-eq209">
+<span class="eqno">(209)<a class="headerlink" href="#equation-eq209" title="Permalink to this equation">¶</a></span>\[ \phi(\mathbf{r}) = \sum_{l=0}^{l_\text{max}} \sum_{m=-\ell}^\ell Y_{\ell m}(\hat{\Omega})
+ \bar{u}_{lm}(r)\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\bar{Y}_\ell^m\)</span> are the <em>real</em> spherical harmonics defined
+by</p>
+<div class="math notranslate nohighlight" id="equation-eq210">
+<span class="eqno">(210)<a class="headerlink" href="#equation-eq210" title="Permalink to this equation">¶</a></span>\[\begin{split} Y_{\ell m} = \begin{cases}
+ Y_\ell^0 &amp; \mbox{if } m=0\\
+ {1\over 2}\left(Y_\ell^m+(-1)^m \, Y_\ell^{-m}\right) \ = \rm Re\left[Y_\ell^m\right]
+ %\sqrt{2} N_{(\ell,m)} P_\ell^m(\cos \theta) \cos m\varphi
+ &amp; \mbox{if } m&gt;0 \\
+ {1\over i 2}\left(Y_\ell^{-m}-(-1)^{m}\, Y_\ell^{m}\right) = \rm Im\left[Y_\ell^{-m}\right]
+ %\sqrt{2} N_{(\ell,m)} P_\ell^{-m}(\cos \theta) \sin m\varphi
+ &amp;\mbox{if } m&lt;0\:.
+ \end{cases}\end{split}\]</div>
+<p>We need then to relate <span class="math notranslate nohighlight">\(\bar{u}_{\ell m}\)</span> to <span class="math notranslate nohighlight">\(u_{\ell m}\)</span>.
+We wish to express</p>
+<div class="math notranslate nohighlight" id="equation-eq211">
+<span class="eqno">(211)<a class="headerlink" href="#equation-eq211" title="Permalink to this equation">¶</a></span>\[ \rm Re\left[\phi(\mathbf{r})\right] = \sum_{\ell=0}^{\ell_\text{max}} \sum_{m=-\ell}^\ell
+ \rm Re\left[Y_\ell^m (\hat{\Omega}) u_{\ell m}(r)\right]\]</div>
+<p>in terms of <span class="math notranslate nohighlight">\(\bar{u}_{\ell m}(r)\)</span> and <span class="math notranslate nohighlight">\(Y_{\ell m}\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq212">
+<span class="eqno">(212)<a class="headerlink" href="#equation-eq212" title="Permalink to this equation">¶</a></span>\[ \begin{aligned}
+ \rm Re\left[Y_\ell^m u_{\ell m}\right] &amp; = &amp; \rm Re\left[Y_\ell^m\right]
+ \rm Re\left[u_{\ell m}\right] - \rm Im\left[Y_\ell^m\right] \rm Im\left[u_{\ell m}\right]\:.\end{aligned}\]</div>
+<p>For <span class="math notranslate nohighlight">\(m&gt;0\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq213">
+<span class="eqno">(213)<a class="headerlink" href="#equation-eq213" title="Permalink to this equation">¶</a></span>\[\rm Re\left[Y_\ell^m\right] = Y_{\ell m} \qquad \text{and} \qquad \rm Im\left[Y_\ell^m\right] = Y_{\ell\,-m}\:.\]</div>
+<p>For <span class="math notranslate nohighlight">\(m&lt;0\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq214">
+<span class="eqno">(214)<a class="headerlink" href="#equation-eq214" title="Permalink to this equation">¶</a></span>\[\rm Re\left[Y_\ell^m\right] = (-1)^m Y_{\ell\, -m} \qquad \text and \qquad \rm Im\left[Y_\ell^m\right] = -(-1)^m Y_{\ell m}\:.\]</div>
+<p>Then for <span class="math notranslate nohighlight">\(m &gt; 0\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq215">
+<span class="eqno">(215)<a class="headerlink" href="#equation-eq215" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \bar{u}_{\ell m} &amp; = &amp; \rm Re\left[u_{\ell m}\right] + (-1)^m \rm Re\left[u_{\ell\,-m}\right]\:, \\
+ \bar{u}_{\ell\, -m} &amp; = &amp; -\rm Im\left[u_{\ell m}\right] + (-1)^m \rm Im\left[u_{\ell\,-m}\right]\:.\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="projecting-to-atomic-orbitals">
+<h3>Projecting to atomic orbitals<a class="headerlink" href="#projecting-to-atomic-orbitals" title="Permalink to this headline">¶</a></h3>
+<p>Inside a muffin tin, orbitals are represented as products of spherical
+harmonics and 1D radial functions, primarily represented by splines. For
+a muffin tin centered at <span class="math notranslate nohighlight">\(\mathbf{I}\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq216">
+<span class="eqno">(216)<a class="headerlink" href="#equation-eq216" title="Permalink to this equation">¶</a></span>\[ \phi_n(\mathbf{r}) = \sum_{\ell,m} Y_\ell^m(\hat{\mathbf{r}-\mathbf{I}})
+ u_{lm}\left(\left|\mathbf{r}- \mathbf{I}\right|\right) \:.\]</div>
+<p>Let use consider the case that our original representation for
+<span class="math notranslate nohighlight">\(\phi(\mathbf{r})\)</span> is of the form</p>
+<div class="math notranslate nohighlight" id="equation-eq217">
+<span class="eqno">(217)<a class="headerlink" href="#equation-eq217" title="Permalink to this equation">¶</a></span>\[\phi_{n,\mathbf{k}}(\mathbf{r}) = \sum_\mathbf{G}c_{\mathbf{G}+\mathbf{k}}^n e^{i(\mathbf{G}+ \mathbf{k})\cdot \mathbf{r}}\:.\]</div>
+<p>Recall that</p>
+<div class="math notranslate nohighlight" id="equation-eq218">
+<span class="eqno">(218)<a class="headerlink" href="#equation-eq218" title="Permalink to this equation">¶</a></span>\[ e^{i\mathbf{k}\cdot\mathbf{r}} = 4\pi \sum_{\ell,m} i^\ell j_\ell(|\mathbf{r}||\mathbf{k}|)
+ Y_\ell^m(\hat{\mathbf{k}}) \left[Y_\ell^m(\hat{\mathbf{r}})\right]^*\:.\]</div>
+<p>Conjugating,</p>
+<div class="math notranslate nohighlight" id="equation-eq219">
+<span class="eqno">(219)<a class="headerlink" href="#equation-eq219" title="Permalink to this equation">¶</a></span>\[ e^{-i\mathbf{k}\cdot\mathbf{r}} = 4\pi\sum_{\ell,m} (-i)^\ell j_\ell(|\mathbf{r}||\mathbf{k}|)
+ \left[Y_\ell^m(\hat{\mathbf{k}})\right]^* Y_\ell^m(\hat{\mathbf{r}})\:.\]</div>
+<p>Setting <span class="math notranslate nohighlight">\(\mathbf{k}\rightarrow -k\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-eq220">
+<span class="eqno">(220)<a class="headerlink" href="#equation-eq220" title="Permalink to this equation">¶</a></span>\[ e^{i\mathbf{k}\cdot\mathbf{r}} = 4\pi\sum_{\ell,m} i^\ell j_\ell(|\mathbf{r}||\mathbf{k}|)
+ \left[Y_\ell^m(\hat{\mathbf{k}})\right]^* Y_\ell^m(\hat{\mathbf{r}})\:.\]</div>
+<p>Then,</p>
+<div class="math notranslate nohighlight" id="equation-eq221">
+<span class="eqno">(221)<a class="headerlink" href="#equation-eq221" title="Permalink to this equation">¶</a></span>\[ e^{i\mathbf{k}\cdot(\mathbf{r}-\mathbf{I})} = 4\pi\sum_{\ell,m} i^\ell j_\ell(|\mathbf{r}-\mathbf{I}||\mathbf{k}|)
+ \left[Y_\ell^m(\hat{\mathbf{k}})\right]^* Y_\ell^m(\hat{\mathbf{r}-\mathbf{I}})\:.\]</div>
+<div class="math notranslate nohighlight" id="equation-eq222">
+<span class="eqno">(222)<a class="headerlink" href="#equation-eq222" title="Permalink to this equation">¶</a></span>\[ e^{i\mathbf{k}\cdot\mathbf{r}} = 4\pi e^{i\mathbf{k}\cdot\mathbf{I}} \-\sum_{\ell,m} i^\ell j_\ell(|\mathbf{r}-\mathbf{I}||\mathbf{k}|)
+ \left[Y_\ell^m(\hat{\mathbf{k}})\right]^* Y_\ell^m(\hat{\mathbf{r}-\mathbf{I}})\:.\]</div>
+<p>Then</p>
+<div class="math notranslate nohighlight" id="equation-eq223">
+<span class="eqno">(223)<a class="headerlink" href="#equation-eq223" title="Permalink to this equation">¶</a></span>\[ \phi_{n,\mathbf{k}}(\mathbf{r}) =  \sum_\mathbf{G}4\pi c_{\mathbf{G}+\mathbf{k}}^n
+ e^{i(\mathbf{G}+\mathbf{k})\cdot\mathbf{I}} \sum_{\ell,m}
+   i^\ell j_\ell(|\mathbf{G}+\mathbf{k}||\mathbf{r}-\mathbf{I}|)
+   \left[Y_\ell^m(\hat{\mathbf{G}+\mathbf{k}})\right]^*
+ Y_\ell^m(\hat{\mathbf{r}- \mathbf{I}})\:.\]</div>
+<p>Comparing with <a class="reference internal" href="#equation-eq216">(216)</a>,</p>
+<div class="math notranslate nohighlight" id="equation-eq224">
+<span class="eqno">(224)<a class="headerlink" href="#equation-eq224" title="Permalink to this equation">¶</a></span>\[ u_{\ell m}^n(r) = 4\pi i^\ell \sum_G c_{\mathbf{G}+\mathbf{k}}^n e^{i(\mathbf{G}+\mathbf{k})\cdot\mathbf{I}}  j_\ell\left(|\mathbf{G}+ \mathbf{k}|r|\right)
+ \left[Y_\ell^m(\hat{\mathbf{G}+ \mathbf{k}})\right]^*\:.\]</div>
+<p>If we had adopted the opposite sign convention for Fourier transforms
+(as is unfortunately the case in wfconvert), we would have</p>
+<div class="math notranslate nohighlight" id="equation-eq225">
+<span class="eqno">(225)<a class="headerlink" href="#equation-eq225" title="Permalink to this equation">¶</a></span>\[ u_{\ell m}^n(r) = 4\pi (-i)^\ell \sum_G c_{\mathbf{G}+\mathbf{k}}^n e^{-i(\mathbf{G}+\mathbf{k})\cdot\mathbf{I}}  j_\ell\left(|\mathbf{G}+ \mathbf{k}|r|\right)
+ \left[Y_\ell^m(\hat{\mathbf{G}+ \mathbf{k}})\right]^*\:.\]</div>
+</div>
+</div>
+<div class="section" id="feature-electron-electron-ion-jastrow-factor">
+<h2>Feature: Electron-electron-ion Jastrow factor<a class="headerlink" href="#feature-electron-electron-ion-jastrow-factor" title="Permalink to this headline">¶</a></h2>
+<p>The general form of the 3-body Jastrow we describe here depends on the
+three interparticle distances, <span class="math notranslate nohighlight">\((r_{ij}, r_{iI}, r_{jI})\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq226">
+<span class="eqno">(226)<a class="headerlink" href="#equation-eq226" title="Permalink to this equation">¶</a></span>\[ J_3 = \sum_{I\in\text{ions}} \sum_{i,j \in\text{elecs};i\neq j} U(r_{ij}, r_{iI},
+ r_{jI})\:.\]</div>
+<p>Note that we constrain the form of <span class="math notranslate nohighlight">\(U\)</span> such that
+<span class="math notranslate nohighlight">\(U(r_{ij}, r_{iI},r_{jI}) = U(r_{ij}, r_{jI},r_{iI})\)</span> to preserve
+the particle symmetry of the wavefunction. We then compute the gradient
+as</p>
+<div class="math notranslate nohighlight" id="equation-eq227">
+<span class="eqno">(227)<a class="headerlink" href="#equation-eq227" title="Permalink to this equation">¶</a></span>\[ \nabla_i J_3 =  \sum_{I\in\text{ions}} \sum_{j \neq i}
+ \left[\frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{ij}}
+   \frac{\mathbf{r}_i - \mathbf{r}_j}{|\mathbf{r}_i - \mathbf{r}_j|}
+ + \frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{iI}}
+   \frac{\mathbf{r}_i - \mathbf{I}}{|\mathbf{r}_i - \mathbf{I}|}  \right]\:.\]</div>
+<p>To compute the Laplacian, we take</p>
+<div class="math notranslate nohighlight" id="equation-eq228">
+<span class="eqno">(228)<a class="headerlink" href="#equation-eq228" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \nabla_i^2 J_3 &amp; = &amp; \nabla_i \cdot \left(\nabla_i J_3\right)\:, \\
+ &amp; = &amp; \sum_{I\in\text{ions}} \sum_{j\neq i } \left[
+ \frac{\partial^2 U}{\partial r_{ij}^2} + \frac{2}{r_{ij}} \frac{\partial
+   U}{\partial r_{ij}} + 2 \frac{\partial^2 U}{\partial r_{ij}\partial
+   r_{iI}}\frac{\mathbf{r}_{ij}\cdot\mathbf{r}_{iI}}{r_{ij}r_{iI}} +\frac{\partial^2 U}{\partial
+   r_{iI}^2}
+ + \frac{2}{r_{iI}}\frac{\partial U}{\partial r_{iI}} \nonumber
+ \right]\:.\end{aligned}\end{split}\]</div>
+<p>We now wish to compute the gradient of these terms w.r.t. the ion
+position, <span class="math notranslate nohighlight">\(I\)</span>.</p>
+<div class="math notranslate nohighlight" id="equation-eq229">
+<span class="eqno">(229)<a class="headerlink" href="#equation-eq229" title="Permalink to this equation">¶</a></span>\[ \nabla_I J_3 = -\sum_{j\neq i} \left[ \frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{iI}}
+   \frac{\mathbf{r}_i - \mathbf{I}}{|\mathbf{r}_i - \mathbf{I}|}
+ +\frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{jI}}
+   \frac{\mathbf{r}_j - \mathbf{I}}{|\mathbf{r}_j - \mathbf{I}|} \right]\:.\]</div>
+<p>For the gradient w.r.t. <span class="math notranslate nohighlight">\(i\)</span> of the gradient w.r.t. <span class="math notranslate nohighlight">\(I\)</span>, the
+result is a tensor:</p>
+<div class="math notranslate nohighlight" id="equation-eq230">
+<span class="eqno">(230)<a class="headerlink" href="#equation-eq230" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \nabla_I \nabla_i J_3 &amp; = &amp; \nabla_I \sum_{j \neq i}
+ \left[\frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{ij}}
+   \frac{\mathbf{r}_i - \mathbf{r}_j}{|\mathbf{r}_i - \mathbf{r}_j|}
+ + \frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{iI}}
+   \frac{\mathbf{r}_i - \mathbf{I}}{|\mathbf{r}_i - \mathbf{I}|}  \right]\:, \\\nonumber \\\nonumber
+ &amp; = &amp; -\sum_{j\neq i} \left[
+ \frac{\partial^2 U}{\partial r_{ij}r_{iI}} \hat{\mathbf{r}}_{ij} \otimes
+ \hat{\mathbf{r}}_{iI} + \left(\frac{\partial^2 U}{\partial r_{iI}^2} -
+ \frac{1}{r_{iI}} \frac{\partial U}{\partial r_{iI}}\right)
+ \hat{\mathbf{r}}_{iI} \otimes \hat{\mathbf{r}}_{iI} \right. + \\\nonumber
+ &amp; &amp; \left. \qquad \ \ \  \frac{\partial^U}{\partial r_{ij}r_{jI}} \hat{\mathbf{r}}_{ij} \otimes \hat{\mathbf{r}}_{jI} + \frac{\partial^2 U}{\partial r_{iI}\partial r_{jI}}
+ \hat{\mathbf{r}}_{iI}\otimes \hat{\mathbf{r}}_{jI}  +
+ \frac{1}{r_{iI}} \frac{\partial U}{\partial r_{iI}} \overleftrightarrow{\mathbf{1}}\right]\:.\end{aligned}\end{split}\]</div>
+<div class="math notranslate nohighlight" id="equation-eq231">
+<span class="eqno">(231)<a class="headerlink" href="#equation-eq231" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \nabla_I \nabla_i J_3 &amp; = &amp; \nabla_I \sum_{j \neq i}
+ \left[\frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{ij}}
+   \frac{\mathbf{r}_i - \mathbf{r}_j}{|\mathbf{r}_i - \mathbf{r}_j|}
+ + \frac{\partial U(r_{ij}, r_{iI},r_{jI})}{\partial r_{iI}}
+   \frac{\mathbf{r}_i - \mathbf{I}}{|\mathbf{r}_i - \mathbf{I}|}  \right]\:, \\\nonumber
+ &amp; = &amp; \sum_{j\neq i} \left[ -\frac{\partial^2 U}{\partial r_{ij}\partial r_{iI}} \hat{\mathbf{r}}_{ij} \otimes \hat{\mathbf{r}}_{iI} +
+ \left(-\frac{\partial^2 U}{\partial r_{iI}^2}  + \frac{1}{r_{iI}}\frac{\partial U}{\partial r_{iI}} \right)
+ \hat{\mathbf{r}}_{iI} \otimes \hat{\mathbf{r}}_{iI} - \frac{1}{r_{iI}}\frac{\partial U}{\partial r_{iI}} \overleftrightarrow{\mathbf{1}}
+ \right]\:.\end{aligned}\end{split}\]</div>
+<p>For the Laplacian,</p>
+<div class="math notranslate nohighlight" id="equation-eq232">
+<span class="eqno">(232)<a class="headerlink" href="#equation-eq232" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \nabla_I \nabla_i^2 J_3 &amp; = &amp; \nabla_I\left[\nabla_i \cdot \left(\nabla_i J_3\right)\right]\:, \\
+ &amp; = &amp; \nabla_I \sum_{j\neq i } \left[
+ \frac{\partial^2 U}{\partial r_{ij}^2} + \frac{2}{r_{ij}} \frac{\partial
+   U}{\partial r_{ij}} + 2 \frac{\partial^2 U}{\partial r_{ij}\partial
+   r_{iI}}\frac{\mathbf{r}_{ij}\cdot\mathbf{r}_{iI}}{r_{ij}r_{iI}} +\frac{\partial^2 U}{\partial
+   r_{iI}^2}
+ + \frac{2}{r_{iI}}\frac{\partial U}{\partial r_{iI}} \nonumber
+ \right]\:, \\
+ &amp; = &amp; \sum_{j\neq i }
+ \left[ \frac{\partial^3 U}{\partial r_{iI} \partial^2 r_{ij}} +
+ \frac{2}{r_{ij}} \frac{\partial^2 U}{\partial r_{iI} \partial r_{ij}}
+ + 2\left(\frac{\partial^3 U}{\partial r_{ij}\partial^2 r_{iI}} -\frac{1}{r_{iI}} \frac{\partial^2 U}{\partial r_{ij}\partial r_{iI}}\right)\frac{\mathbf{r}_{ij}\cdot\mathbf{r}_{iI}}{r_{ij}r_{iI}} + \frac{\partial^3 U}{\partial^3 r_{iI}} - \frac{2}{r_{iI}^2} \frac{\partial U}{ \partial r_{iI}} + \frac{2}{r_{iI}} \frac{\partial^2 U}{\partial^2 r_{iI}}
+ \right] \frac{\mathbf{I} - \mathbf{r}_i}{|\mathbf{I} - \mathbf{r}_i|} + \nonumber \\\nonumber
+  &amp; &amp; \sum_{j\neq i } \left[ \frac{\partial^3U}{\partial r_{ij}^2 \partial r_{jI}} + \frac{2}{r_{ij}}\frac{\partial^2 U}{\partial r_{jI}\partial r_{ij}}
+ + 2\frac{\partial^3 U}{\partial r_{ij}\partial r_{iI}\partial r_{jI}}\frac{\mathbf{r}_{ij}\cdot\mathbf{r}_{iI}}{r_{ij}r_{iI}}
+ +\frac{\partial^3 U}{\partial r_{iI}^2 \partial r_{jI}} + \frac{2}{r_{iI}}\frac{\partial^2 U}{\partial r_{iI}\partial r_{jI}} \right]
+ \frac{\mathbf{I} - \mathbf{r}_j}{|\mathbf{r}_j - \mathbf{I}|} + \\\nonumber
+ &amp; &amp; \sum_{j\neq i } \left[ -\frac{2}{r_{iI}}\frac{\partial^2 U}{\partial r_{ij}\partial r_{iI}}\right] \frac{\mathbf{r}_{ij}}{r_{ij}}\:.\end{aligned}\end{split}\]</div>
+</div>
+<div class="section" id="feature-reciprocal-space-jastrow-factors">
+<span id="feature-kspace-jastrow"></span><h2>Feature: Reciprocal-space Jastrow factors<a class="headerlink" href="#feature-reciprocal-space-jastrow-factors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="two-body-jastrow">
+<h3>Two-body Jastrow<a class="headerlink" href="#two-body-jastrow" title="Permalink to this headline">¶</a></h3>
+<div class="math notranslate nohighlight" id="equation-eq233">
+<span class="eqno">(233)<a class="headerlink" href="#equation-eq233" title="Permalink to this equation">¶</a></span>\[J_2 = \sum_{\mathbf{G}\neq \mathbf{0}}\sum_{i\neq j} a_\mathbf{G}e^{i\mathbf{G}\cdot(\mathbf{r}_i-\mathbf{r}_j)}\:.\]</div>
+<p>This may be rewritten as</p>
+<div class="math notranslate nohighlight" id="equation-eq234">
+<span class="eqno">(234)<a class="headerlink" href="#equation-eq234" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ J_2 &amp; = &amp; \sum_{\mathbf{G}\neq \mathbf{0}}\sum_{i\neq j} a_\mathbf{G}e^{i\mathbf{G}\cdot\mathbf{r}_i}e^{-i\mathbf{G}\cdot\mathbf{r}_j}\:, \\
+ &amp; = &amp; \sum_{\mathbf{G}\neq \mathbf{0}} a_\mathbf{G}\left\{
+ \underbrace{\left[\sum_i e^{i\mathbf{G}\cdot\mathbf{r}_i} \right]}_{\rho_\mathbf{G}}
+ \underbrace{\left[\sum_j e^{-i\mathbf{G}\cdot\mathbf{r}_j} \right]}_{\rho_{-\mathbf{G}}}  -1 \right\}\:.\end{aligned}\end{split}\]</div>
+<p>The <span class="math notranslate nohighlight">\(-1\)</span> is just a constant term and may be subsumed into the
+<span class="math notranslate nohighlight">\(a_\mathbf{G}\)</span> coefficient by a simple redefinition. This leaves a
+simple, but general, form:</p>
+<div class="math notranslate nohighlight" id="equation-eq235">
+<span class="eqno">(235)<a class="headerlink" href="#equation-eq235" title="Permalink to this equation">¶</a></span>\[J_2 = \sum_{\mathbf{G}\neq\mathbf{0}} a_\mathbf{G}\rho_\mathbf{G}\rho_{-\mathbf{G}}\:.\]</div>
+<p>We may now further constrain this on physical grounds. First, we
+recognize that <span class="math notranslate nohighlight">\(J_2\)</span> should be real. Since
+<span class="math notranslate nohighlight">\(\rho_{-\mathbf{G}} =
+\rho_\mathbf{G}^*\)</span>, it follows that
+<span class="math notranslate nohighlight">\(\rho_{\mathbf{G}}\rho_{-\mathbf{G}} = |\rho_\mathbf{G}|^2\)</span> is
+real, so that <span class="math notranslate nohighlight">\(a_\mathbf{G}\)</span> must be real. Furthermore, we group
+the <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>’s into <span class="math notranslate nohighlight">\((+\mathbf{G}, -\mathbf{G})\)</span> pairs
+and sum over only the positive vectors to save time.</p>
+</div>
+<div class="section" id="one-body-jastrow">
+<h3>One-body Jastrow<a class="headerlink" href="#one-body-jastrow" title="Permalink to this headline">¶</a></h3>
+<p>The 1-body Jastrow has a similar form but depends on the displacement
+from the electrons to the ions in the system.</p>
+<div class="math notranslate nohighlight" id="equation-eq236">
+<span class="eqno">(236)<a class="headerlink" href="#equation-eq236" title="Permalink to this equation">¶</a></span>\[ J_1 = \sum_{\mathbf{G}\neq\mathbf{0}} \sum_{\alpha}
+ \sum_{i\in\mathbf{I}^\alpha}\sum_{j\in\text{elec.}} b^{\alpha}_\mathbf{G}
+   e^{i\mathbf{G}\cdot(\mathbf{I}^{\alpha}_i - \mathbf{r}_j)}\:,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> denotes the different ionic species. We may rewrite
+this in terms of <span class="math notranslate nohighlight">\(\rho^{\alpha}_\mathbf{G}\)</span>:</p>
+<div class="math notranslate nohighlight" id="equation-eq237">
+<span class="eqno">(237)<a class="headerlink" href="#equation-eq237" title="Permalink to this equation">¶</a></span>\[ J_1 = \sum_{\mathbf{G}\neq\mathbf{0}} \left[\sum_\alpha b^\alpha_\mathbf{G}
+   \rho_\mathbf{G}^\alpha\right] \rho_{-\mathbf{G}}\:,\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-eq238">
+<span class="eqno">(238)<a class="headerlink" href="#equation-eq238" title="Permalink to this equation">¶</a></span>\[\rho^\alpha_\mathbf{G}= \sum_{i\in\mathbf{I}^\alpha} e^{i\mathbf{G}\cdot\mathbf{I}^\alpha_i}\:.\]</div>
+<p>We note that in the preceding equation, for a single configuration of
+the ions, the sum in brackets can be rewritten as a single constant.
+This implies that the per-species 1-body coefficients,
+<span class="math notranslate nohighlight">\(b^\alpha_\mathbf{G}\)</span>, are underdetermined for single
+configuration of the ions. In general, if we have <span class="math notranslate nohighlight">\(N\)</span> species, we
+need <span class="math notranslate nohighlight">\(N\)</span> linearly independent ion configurations to uniquely
+determine <span class="math notranslate nohighlight">\(b^{\alpha}_\mathbf{G}\)</span>. For this reason, we will drop
+the <span class="math notranslate nohighlight">\(\alpha\)</span> superscript of <span class="math notranslate nohighlight">\(b_\mathbf{G}\)</span> for now.</p>
+<p>If we do desire to find a reciprocal space 1-body Jastrow that is
+transferable to systems with different ion positions and <span class="math notranslate nohighlight">\(N\)</span> ionic
+species, we must perform compute <span class="math notranslate nohighlight">\(b_\mathbf{G}\)</span> for <span class="math notranslate nohighlight">\(N\)</span>
+different ion configurations. We may then construct <span class="math notranslate nohighlight">\(N\)</span> equations
+at each value of <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> to solve for the <span class="math notranslate nohighlight">\(N\)</span> unknown
+values, <span class="math notranslate nohighlight">\(b^\alpha_\mathbf{G}\)</span>.</p>
+<p>In the 2-body case, <span class="math notranslate nohighlight">\(a_\mathbf{G}\)</span> was constrained to be real by
+the fact that <span class="math notranslate nohighlight">\(\rho_\mathbf{G}\rho_{-\mathbf{G}}\)</span> was real.
+However, in the 1-body case, there is no such guarantee about
+<span class="math notranslate nohighlight">\(\rho^\alpha_\mathbf{G}\rho_\mathbf{G}\)</span>. Therefore, in general,
+<span class="math notranslate nohighlight">\(b_\mathbf{G}\)</span> may be complex.</p>
+</div>
+<div class="section" id="symmetry-considerations">
+<h3>Symmetry considerations<a class="headerlink" href="#symmetry-considerations" title="Permalink to this headline">¶</a></h3>
+<p>For a crystal, many of the <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>-vectors will be equivalent
+by symmetry. It is useful then to divide the <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>-vectors
+into symmetry-related groups and then require that they share a common
+coefficient. Two vectors, <span class="math notranslate nohighlight">\(\mathbf{G}\)</span> and <span class="math notranslate nohighlight">\(\mathbf{G}'\)</span>,
+may be considered to be symmetry related if, for all <span class="math notranslate nohighlight">\(\alpha\)</span> and
+<span class="math notranslate nohighlight">\(\beta\)</span></p>
+<div class="math notranslate nohighlight" id="equation-eq239">
+<span class="eqno">(239)<a class="headerlink" href="#equation-eq239" title="Permalink to this equation">¶</a></span>\[\rho^\alpha_\mathbf{G}\rho^\beta_{-\mathbf{G}} = \rho^\alpha_{\mathbf{G}'} \rho^\beta_{-\mathbf{G}'}\:.\]</div>
+<p>For the 1-body term, we may also omit from our list of
+<span class="math notranslate nohighlight">\(\mathbf{G}\)</span>-vectors those for which all species structure factors
+are zero. This is equivalent to saying that if we are tiling a primitive
+cell we should include only the <span class="math notranslate nohighlight">\(\mathbf{G}\)</span>-vectors of the
+primitive cell and not the supercell. Note that this is not the case for
+the 2-body term since the XC hole should not have the periodicity of the
+primitive cell.</p>
+</div>
+<div class="section" id="gradients-and-laplacians">
+<h3>Gradients and Laplacians<a class="headerlink" href="#gradients-and-laplacians" title="Permalink to this headline">¶</a></h3>
+<div class="math notranslate nohighlight" id="equation-eq240">
+<span class="eqno">(240)<a class="headerlink" href="#equation-eq240" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+ \nabla_{\mathbf{r}_i} J_2 &amp; = &amp; \sum_{\mathbf{G}\neq 0} a_\mathbf{G}\left[\left(\nabla_{\mathbf{r}_i}\rho_\mathbf{G}\right) \rho_{-\mathbf{G}} + \text{c.c.}\right]\:, \\
+ &amp; = &amp; \sum_{\mathbf{G}\neq \mathbf{0}} 2\mathbf{G}a_\mathbf{G}\mathbf{Re}\left(i e^{i\mathbf{G}\cdot\mathbf{r}_i} \rho_{-\mathbf{G}} \right)\:, \\
+ &amp; = &amp; \sum_{\mathbf{G}\neq \mathbf{0}} -2\mathbf{G}a_\mathbf{G}\mathbf{Im}\left(e^{i\mathbf{G}\cdot\mathbf{r}_i} \rho_{-\mathbf{G}} \right)\:.\end{aligned}\end{split}\]</div>
+<p>The Laplacian is then given by</p>
+<div class="math notranslate nohighlight" id="equation-eq241">
+<span class="eqno">(241)<a class="headerlink" href="#equation-eq241" title="Permalink to this equation">¶</a></span>\[\begin{split} \begin{aligned}
+   \nabla^2 J_2 &amp; = &amp; \sum_{\mathbf{G}\neq\mathbf{0}} a_\mathbf{G}\left[\left(\nabla^2 \rho_\mathbf{G}\right) \rho_{-\mathbf{G}} + \text{c.c.}
+   + 2\left(\nabla \rho_\mathbf{G})\cdot(\nabla \rho_{-\mathbf{G}}\right)\right]\:, \\
+ &amp; = &amp; \sum_{\mathbf{G}\neq\mathbf{0}} a_\mathbf{G}\left[ -2G^2\mathbf{Re}(e^{i\mathbf{G}\cdot\mathbf{r}_i}\rho_{-\mathbf{G}}) +
+     2\left(i\mathbf{G}e^{i\mathbf{G}\cdot\mathbf{r}_i}\right) \cdot \left(-i\mathbf{G}e^{-i\mathbf{G}\cdot\mathbf{r}_i}\right)
+ \right]\:, \\
+ &amp; = &amp; 2 \sum_{\mathbf{G}\neq\mathbf{0}} G^2 a_\mathbf{G}\left[-\mathbf{Re}\left(e^{i\mathbf{G}\cdot\mathbf{r}_i}\rho_{-\mathbf{G}}\right) + 1\right]\:. \end{aligned}\end{split}\]</div>
+<p id="bibtex-bibliography-design_features-0"><dl class="citation">
+<dt class="bibtex label" id="natoli1995"><span class="brackets">NC95</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id3">3</a>)</span></dt>
+<dd><p>Vincent Natoli and David M. Ceperley. An optimized method for treating long-range potentials. <em>Journal of Computational Physics</em>, 117(1):171–178, 1995. URL: <a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0021999185710546">http://www.sciencedirect.com/science/article/pii/S0021999185710546</a>, <a class="reference external" href="https://doi.org/10.1006/jcph.1995.1054">doi:10.1006/jcph.1995.1054</a>.</p>
+</dd>
+</dl>
+</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="developing.html" class="btn btn-neutral float-right" title="Development Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="unit_testing.html" class="btn btn-neutral float-left" title="Unit Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, QMCPACK Developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
