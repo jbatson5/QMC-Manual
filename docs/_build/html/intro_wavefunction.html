@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,19 @@
   
 
   
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -30,10 +36,6 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Hamiltonian and Observables" href="hamiltonianobservable.html" />
@@ -51,7 +53,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> QMCPACK Manual
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> QMCPACK Manual
           
 
           
@@ -74,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -172,6 +175,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -210,7 +214,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Trial wavefunction specificaion</li>
     
@@ -2220,7 +2224,7 @@ corrections in periodic systems.</p>
 correlation functions in plane waves, with the coefficients comprising
 the optimizable parameters. The second type have few variational
 parameters and use the optimized breakup method of Natoli and
-Ceperley <a class="bibtex reference internal" href="simulationcell.html#natoli1995" id="id13">[NC95]</a> (the Yukawa and Gaskell RPA
+Ceperley <a class="bibtex reference internal" href="design_features.html#natoli1995" id="id13">[NC95]</a> (the Yukawa and Gaskell RPA
 Jastrows).</p>
 <div class="section" id="long-ranged-jastrow-k-space-jastrow">
 <h4>Long-ranged Jastrow: k-space Jastrow<a class="headerlink" href="#long-ranged-jastrow-k-space-jastrow" title="Permalink to this headline">¶</a></h4>
@@ -2472,7 +2476,7 @@ you are interested in using them.</strong></p>
 form similar to the Coulomb pair potential.  In periodic systems
 the Coulomb potential is replaced by an Ewald summation of the
 bare potential over all periodic image cells.  This sum is often
-handled by the optimized breakup method <a class="bibtex reference internal" href="simulationcell.html#natoli1995" id="id14">[NC95]</a> and this
+handled by the optimized breakup method <a class="bibtex reference internal" href="design_features.html#natoli1995" id="id14">[NC95]</a> and this
 same approach is applied to the long-ranged Jastrow factors in QMCPACK.</p>
 <p>There are two main long-ranged Jastrow factors of this type
 implemented in QMCPACK: the Gaskell RPA <a class="bibtex reference internal" href="#gaskell1961" id="id15">[Gas61]</a><a class="bibtex reference internal" href="#gaskell1962" id="id16">[Gas62]</a>
@@ -3203,11 +3207,19 @@ examples in “tests/models/sho.”</p></li>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, QMCPACK Developers
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -3218,7 +3230,6 @@ examples in “tests/models/sho.”</p></li>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

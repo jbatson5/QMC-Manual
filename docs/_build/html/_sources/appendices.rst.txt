@@ -90,7 +90,6 @@ while for nonuniform weighting we have
   :label: eq273
 
    \begin{aligned}
-   \label{eq:weighted_step}
      N_{step}^{weighted} &= \frac{\sum_{m=1}^Mw_m^2}{W^2}\frac{\kappa v}{\sigma_{target}^2} \nonumber\:,\\
                      &=\frac{\sum_{m=1}^Mw_m^2}{W}N_{step}^{uniform}\:.\end{aligned}
 
